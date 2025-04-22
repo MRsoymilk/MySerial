@@ -8,6 +8,13 @@
 #include <QDateTime>
 #define TIMESTAMP(format) (QDateTime::currentDateTime().toString(format))
 
+#include "../common/mylog.h"
+#define LOG_TRACE(...) MY_LOG.getLogger()->trace(__VA_ARGS__)
+#define LOG_INFO(...) MY_LOG.getLogger()->info(__VA_ARGS__)
+#define LOG_WARN(...) MY_LOG.getLogger()->warn(__VA_ARGS__)
+#define LOG_ERROR(...) MY_LOG.getLogger()->error(__VA_ARGS__)
+#define LOG_CRITICAL(...) MY_LOG.getLogger()->critical(__VA_ARGS__)
+
 #include "../common/mysetting.h"
 #define SETTING_GET(group, key, ...) MY_SETTING.getValue(group, key, ##__VA_ARGS__)
 #define SETTING_SET(group, key, value) MY_SETTING.setValue(group, key, value)

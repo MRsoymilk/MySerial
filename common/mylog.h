@@ -1,6 +1,7 @@
 #ifndef MYLOG_H
 #define MYLOG_H
 
+#include <QByteArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QString>
@@ -22,13 +23,23 @@ class MyLog
     static std::shared_ptr<spdlog::logger> s_logger;
 };
 
-template <>
+template<>
 struct fmt::formatter<QString> : formatter<std::string>
 {
-    template <typename FormatContext>
+    template<typename FormatContext>
     auto format(QString s, FormatContext &ctx) const
     {
         return formatter<std::string>::format(s.toStdString(), ctx);
+    }
+};
+
+template<>
+struct fmt::formatter<QByteArray> : fmt::formatter<std::string>
+{
+    template<typename FormatContext>
+    auto format(const QByteArray &s, FormatContext &ctx) const
+    {
+        return fmt::formatter<std::string>::format(s.toStdString(), ctx);
     }
 };
 

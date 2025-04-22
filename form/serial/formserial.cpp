@@ -103,6 +103,7 @@ void FormSerial::ini2UI()
 void FormSerial::on_btnSend_clicked()
 {
     QString text = ui->txtSend->toPlainText().trimmed();
+    LOG_INFO("serial send: {}", text);
 
     if (!(m_serialPort && m_serialPort->isOpen())) {
         qDebug() << "Serial port not open.";
@@ -177,6 +178,7 @@ void FormSerial::on_btnSerialSwitch_clicked()
 
 void FormSerial::openSerial()
 {
+    LOG_INFO("open serial");
     m_serialPort = new QSerialPort(this);
     QString portName = ui->cBoxPortName->currentText();
     m_serialPort->setPortName(portName);
@@ -221,6 +223,7 @@ void FormSerial::openSerial()
 
 void FormSerial::closeSerial()
 {
+    LOG_INFO("close serial");
     if (m_serialPort && m_serialPort->isOpen()) {
         m_serialPort->close();
     }
@@ -247,6 +250,7 @@ void FormSerial::on_cBoxPortName_activated(int index)
 void FormSerial::onReadyRead()
 {
     QByteArray data = m_serialPort->readAll();
+    LOG_INFO("serial recv: {}", data);
     QString to_show = data;
 
     if (m_hex_display) {

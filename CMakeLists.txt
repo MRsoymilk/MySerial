@@ -38,6 +38,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         res.qrc
         common/mysetting.h
         common/mysetting.cpp
+        common/mylog.h
+        common/mylog.cpp
         include/keydef.h
         include/datadef.h
         include/funcdef.h
@@ -88,3 +90,6 @@ install(TARGETS MySerial
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(MySerial)
 endif()
+
+add_subdirectory(vendor/spdlog-1.15.0/)
+target_link_libraries(MySerial PRIVATE spdlog::spdlog)
