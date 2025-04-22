@@ -23,6 +23,8 @@ public:
         QList<qint32> StandardBaudRates;
     };
 
+    enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
+
     struct INI_SERIAL
     {
         QString port_name;
@@ -40,6 +42,9 @@ public:
 private:
     void setINI();
     void getINI();
+    void init();
+    void openSerial();
+    void closeSerial();
 private slots:
     void on_btnRecvSave_clicked();
     void on_btnRecvClear_clicked();
@@ -47,17 +52,22 @@ private slots:
     void on_btnSerialSwitch_clicked();
     void on_cBoxPortName_activated(int index);
     void onReadyRead();
+    void on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &state);
+    void on_cBoxSendFormat_currentTextChanged(const QString &format);
+
+    void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &arg1);
 
 private:
     Ui::FormSerial *ui;
-    void init();
     QMap<QString, SERIAL> m_mapSerial;
     bool m_switch;
     QSerialPort *m_serialPort = nullptr;
     INI_SERIAL m_ini;
     QByteArray m_buffer;
-    void openSerial();
-    void closeSerial();
+    bool m_show_send;
+    SEND_FORMAT m_send_format;
+    void ini2UI();
+    bool m_hex_display;
 };
 
 #endif // FORMSERIAL_H

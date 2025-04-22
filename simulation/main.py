@@ -45,6 +45,9 @@ try:
                     time.sleep(0.5)
                 print("sending all packets done")
                 time.sleep(0.5)
+        else:
+            ser.write(b'return')
+        time.sleep(0.5)
 except KeyboardInterrupt:
     print("\nfinish\n")
 finally:
