@@ -11,11 +11,6 @@
 FormPlot::FormPlot(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::FormPlot)
-    , m_series(new QLineSeries())
-    , m_chart(new QChart())
-    , m_axisX(new QValueAxis())
-    , m_axisY(new QValueAxis())
-    , m_time(0.0)
 {
     ui->setupUi(this);
     init();
@@ -28,6 +23,12 @@ FormPlot::~FormPlot()
 
 void FormPlot::init()
 {
+    m_series = new QLineSeries();
+    m_chart = new QChart();
+    m_axisX = new QValueAxis();
+    m_axisY = new QValueAxis();
+    m_time = 0;
+
     m_chart->addSeries(m_series);
     m_chart->addAxis(m_axisX, Qt::AlignBottom);
     m_chart->addAxis(m_axisY, Qt::AlignLeft);

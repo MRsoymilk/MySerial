@@ -18,6 +18,7 @@ FormSerial::FormSerial(QWidget *parent)
 
 FormSerial::~FormSerial()
 {
+    closeSerial();
     delete ui;
 }
 
@@ -60,7 +61,7 @@ void FormSerial::init()
     ui->btnSerialSwitch->setText("To Open");
 #ifdef QT_DEBUG
     // ui->cBoxPortName->addItem(m_ini.test_port_name);
-    ui->cBoxPortName->addItem("/dev/pts/8");
+    ui->cBoxPortName->addItem("/dev/pts/10");
 #endif
     ui->cBoxPortName->addItems(port_names);
     on_cBoxPortName_activated(0);
@@ -82,8 +83,20 @@ void FormSerial::on_btnSend_clicked()
     qDebug() << "send (raw):" << text;
 
     if (m_serialPort && m_serialPort->isOpen()) {
-        QStringList byteStrings = text.trimmed().split(QRegularExpression("\\s+"),
-                                                       Qt::SkipEmptyParts);
+        QStringList byteStrings;
+
+        QString cleaned = text.trimmed().remove(
+            QRegularExpression("[^0-9A-Fa-f]")); // 去掉非16进制字符
+
+        if (text.contains(QRegularExpression("\\s+"))) {
+            // 有空格的格式
+            byteStrings = text.trimmed().split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+        } else {
+            // 无空格，按2个字符分割
+            for (int i = 0; i + 1 < cleaned.length(); i += 2) {
+                byteStrings << cleaned.mid(i, 2);
+            }
+        }
         QByteArray data;
         for (const QString &byteStr : byteStrings) {
             bool ok;
@@ -106,58 +119,66 @@ void FormSerial::on_btnSerialSwitch_clicked()
     m_switch = !m_switch;
     if (m_switch) {
         // open serial
-        m_serialPort = new QSerialPort(this);
-        QString portName = ui->cBoxPortName->currentText();
-        m_serialPort->setPortName(portName);
-        m_serialPort->setBaudRate(ui->cBoxBaudRate->currentText().toInt());
-        m_serialPort->setDataBits(
-            static_cast<QSerialPort::DataBits>(ui->cBoxDataBit->currentText().toInt()));
-
-        QString parityText = ui->cBoxCheckBit->currentText();
-        if (parityText == "None")
-            m_serialPort->setParity(QSerialPort::NoParity);
-        else if (parityText == "Even")
-            m_serialPort->setParity(QSerialPort::EvenParity);
-        else if (parityText == "Odd")
-            m_serialPort->setParity(QSerialPort::OddParity);
-        else if (parityText == "Mark")
-            m_serialPort->setParity(QSerialPort::MarkParity);
-
-        QString stopBitText = ui->cBoxStopBit->currentText();
-        if (stopBitText == "1")
-            m_serialPort->setStopBits(QSerialPort::OneStop);
-        else if (stopBitText == "1.5")
-            m_serialPort->setStopBits(QSerialPort::OneAndHalfStop);
-        else if (stopBitText == "2")
-            m_serialPort->setStopBits(QSerialPort::TwoStop);
-
-        m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
-
-        if (!m_serialPort->open(QIODevice::ReadWrite)) {
-            qDebug() << "Failed to open serial port!";
-            qDebug() << m_serialPort->errorString();
-            delete m_serialPort;
-            m_serialPort = nullptr;
-            m_switch = false;
-            return;
-        }
-
-        connect(m_serialPort, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
-
-        ui->btnSerialSwitch->setText("To Close");
-        ui->btnSerialSwitch->setStyleSheet("background-color: green; color: white;");
-
+        openSerial();
     } else {
         // close serial
-        if (m_serialPort && m_serialPort->isOpen()) {
-            m_serialPort->close();
-        }
+        closeSerial();
+    }
+}
+
+void FormSerial::openSerial()
+{
+    m_serialPort = new QSerialPort(this);
+    QString portName = ui->cBoxPortName->currentText();
+    m_serialPort->setPortName(portName);
+    m_serialPort->setBaudRate(ui->cBoxBaudRate->currentText().toInt());
+    m_serialPort->setDataBits(
+        static_cast<QSerialPort::DataBits>(ui->cBoxDataBit->currentText().toInt()));
+
+    QString parityText = ui->cBoxCheckBit->currentText();
+    if (parityText == "None")
+        m_serialPort->setParity(QSerialPort::NoParity);
+    else if (parityText == "Even")
+        m_serialPort->setParity(QSerialPort::EvenParity);
+    else if (parityText == "Odd")
+        m_serialPort->setParity(QSerialPort::OddParity);
+    else if (parityText == "Mark")
+        m_serialPort->setParity(QSerialPort::MarkParity);
+
+    QString stopBitText = ui->cBoxStopBit->currentText();
+    if (stopBitText == "1")
+        m_serialPort->setStopBits(QSerialPort::OneStop);
+    else if (stopBitText == "1.5")
+        m_serialPort->setStopBits(QSerialPort::OneAndHalfStop);
+    else if (stopBitText == "2")
+        m_serialPort->setStopBits(QSerialPort::TwoStop);
+
+    m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
+
+    if (!m_serialPort->open(QIODevice::ReadWrite)) {
+        qDebug() << "Failed to open serial port!";
+        qDebug() << m_serialPort->errorString();
         delete m_serialPort;
         m_serialPort = nullptr;
-
-        ui->btnSerialSwitch->setText("To Open");
-        ui->btnSerialSwitch->setStyleSheet("background-color: white; color: black;");
+        m_switch = false;
+        return;
     }
+
+    connect(m_serialPort, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+
+    ui->btnSerialSwitch->setText("To Close");
+    ui->btnSerialSwitch->setStyleSheet("background-color: green; color: white;");
+}
+void FormSerial::closeSerial()
+{
+    if (m_serialPort && m_serialPort->isOpen()) {
+        m_serialPort->close();
+    }
+    delete m_serialPort;
+    m_serialPort = nullptr;
+
+    ui->btnSerialSwitch->setText("To Open");
+    ui->btnSerialSwitch->setStyleSheet("background-color: white; color: black;");
 }
 
 void FormSerial::on_cBoxPortName_activated(int index)
@@ -172,19 +193,6 @@ void FormSerial::on_cBoxPortName_activated(int index)
     }
     ui->cBoxBaudRate->addItems(list_txt_bauds);
 }
-
-// void FormSerial::onReadyRead()
-// {
-//     QByteArray data = m_serialPort->readAll();
-//     qDebug() << "read: " << data.size();
-//     if (ui->checkBoxHexDisplay->isChecked()) {
-//         QString hexStr = data.toHex(' ').toUpper();
-//         ui->txtRecv->appendPlainText(hexStr);
-//     } else {
-//         ui->txtRecv->appendPlainText(QString::fromUtf8(data));
-//     }
-//     emit dataReceived(data);
-// }
 
 void FormSerial::onReadyRead()
 {

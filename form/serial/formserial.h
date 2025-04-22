@@ -56,6 +56,8 @@ private:
     QSerialPort *m_serialPort = nullptr;
     INI_SERIAL m_ini;
     QByteArray m_buffer;
+    void openSerial();
+    void closeSerial();
 };
 
 #endif // FORMSERIAL_H
