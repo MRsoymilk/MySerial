@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/icons/connectd.png</file>
+        <file>res/icons/data-off.png</file>
+        <file>res/icons/data-on.png</file>
+        <file>res/icons/disconnected.png</file>
+        <file>res/icons/plot-off.png</file>
+        <file>res/icons/plot-on.png</file>
+        <file>res/icons/usb-off.png</file>
+        <file>res/icons/usb-on.png</file>
+        <file>res/icons/log-off.png</file>
+        <file>res/icons/log-on.png</file>
+        <file>res/icons/send-off.png</file>
+        <file>res/icons/send-on.png</file>
+    </qresource>
+</RCC>
