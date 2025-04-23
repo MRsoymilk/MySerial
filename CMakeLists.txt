@@ -44,8 +44,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         include/datadef.h
         include/funcdef.h
         include/global.h
+        common/UILogSink.h
     )
-target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include")
+target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common")
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET MySerial APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
