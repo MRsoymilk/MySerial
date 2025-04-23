@@ -12,5 +12,6 @@
         <file>res/icons/log-on.png</file>
         <file>res/icons/send-off.png</file>
         <file>res/icons/send-on.png</file>
+        <file>res/icons/icon.png</file>
     </qresource>
 </RCC>
