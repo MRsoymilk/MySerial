@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 0.1 LANGUAGES CXX)
+project(MySerial VERSION 1.0.0 LANGUAGES CXX)
+message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -94,3 +95,9 @@ endif()
 
 add_subdirectory(vendor/spdlog-1.15.0/)
 target_link_libraries(MySerial PRIVATE spdlog::spdlog)
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/version.h
+)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})

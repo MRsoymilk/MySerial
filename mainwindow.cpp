@@ -4,13 +4,14 @@
 #include "form/log/formlog.h"
 #include "form/plot/formplot.h"
 #include "form/serial/formserial.h"
+#include "version.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    ui->statusbar->showMessage(QString("version: %1").arg(APP_VERSION));
     init();
 }
 
