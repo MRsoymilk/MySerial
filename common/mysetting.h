@@ -11,8 +11,9 @@ class MySetting
     ~MySetting();
     void setValue(const QString &group, const QString &key, const QString &val);
     QString getValue(const QString &group, const QString &key, const QString &val_dft = "");
+    void sync();
 
-   private:
+private:
     MySetting();
 
    private:

@@ -22,6 +22,11 @@ QString MySetting::getValue(const QString &group, const QString &key, const QStr
     return m_settings->value(QString("%1/%2").arg(group, key)).toString();
 }
 
+void MySetting::sync()
+{
+    m_settings->sync();
+}
+
 MySetting::MySetting()
 {
     m_settings = new QSettings("config/config.ini", QSettings::IniFormat);

@@ -14,6 +14,8 @@ class FormSerial : public QWidget
     Q_OBJECT
 
 public:
+    enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
+
     struct SERIAL
     {
         QString Description;
@@ -23,14 +25,13 @@ public:
         QList<qint32> StandardBaudRates;
     };
 
-    enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
-
     struct INI_SERIAL
     {
         QString port_name;
         QString baud_rate;
-        QString test_port_name;
-        QString test_baud_rate;
+        SEND_FORMAT send_format;
+        bool show_send;
+        bool hex_display;
     };
 signals:
     void dataReceived(const QByteArray &data);
@@ -66,7 +67,6 @@ private:
     QByteArray m_buffer;
     bool m_show_send;
     SEND_FORMAT m_send_format;
-    void ini2UI();
     bool m_hex_display;
 };
 

@@ -11,10 +11,8 @@ const QString VAL_SERIAL_SEND_NORMAL = "normal";
 const QString VAL_SERIAL_SEND_HEX = "hex";
 const QString VAL_SERIAL_SEND_HEX_TRANSLATE = "hex_translate";
 const QString CFG_SERIAL_SHOW_SEND = "show_send";
+const QString CFG_SERIAL_HEX_DISPLAY = "hex_display";
 const QString VAL_ENABLE = "enable";
 const QString VAL_DISABLE = "disable";
-const QString CFG_GROUP_TEST = "Test";
-const QString CFG_TEST_PORT_NAME = "port_name";
-const QString CFG_TEST_BAUD_RATE = "baud_rate";
 
 #endif
