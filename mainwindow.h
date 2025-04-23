@@ -22,6 +22,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    // QWidget interface
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+
 private slots:
     void on_btnSerial_clicked();
     void on_btnPlot_clicked();
@@ -29,13 +33,17 @@ private slots:
     void on_btnLog_clicked();
 
 private:
+    void init();
+    void initStackWidget();
+    void initToolbar();
+
+private:
     Ui::MainWindow *ui;
     FormSerial *formSerial;
     FormPlot *formPlot;
     FormData *formData;
     FormLog *formLog;
-    void init();
-    void initStackWidget();
-    void initToolbar();
+
+    int m_currentPageIndex = 0;
 };
 #endif // MAINWINDOW_H

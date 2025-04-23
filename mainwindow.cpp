@@ -27,8 +27,8 @@ void MainWindow::initStackWidget()
     formLog = new FormLog(this);
 
     ui->stackedWidget->addWidget(formSerial);
-    ui->stackedWidget->addWidget(formPlot);
     ui->stackedWidget->addWidget(formData);
+    ui->stackedWidget->addWidget(formPlot);
     ui->stackedWidget->addWidget(formLog);
     ui->stackedWidget->setCurrentWidget(formSerial);
 
@@ -93,4 +93,20 @@ void MainWindow::on_btnData_clicked()
 void MainWindow::on_btnLog_clicked()
 {
     ui->stackedWidget->setCurrentWidget(formLog);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Tab) {
+        int count = ui->stackedWidget->count();
+        m_currentPageIndex = (m_currentPageIndex + 1) % count;
+        ui->stackedWidget->setCurrentIndex(m_currentPageIndex);
+
+        QList<QToolButton *> buttonList = {ui->btnSerial, ui->btnData, ui->btnPlot, ui->btnLog};
+        buttonList[m_currentPageIndex]->click();
+
+        event->accept();
+    } else {
+        QMainWindow::keyPressEvent(event);
+    }
 }

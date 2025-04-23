@@ -84,16 +84,8 @@ void FormSerial::init()
     // TODO
     ui->groupBoxEnhancement->hide();
 
-    // disconnect(ui->cBoxSendFormat,
-    //            &QComboBox::currentTextChanged,
-    //            this,
-    //            &FormSerial::on_cBoxSendFormat_currentTextChanged);
     ui->cBoxSendFormat->addItems(
         {VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX, VAL_SERIAL_SEND_HEX_TRANSLATE});
-    // connect(ui->cBoxSendFormat,
-    //         &QComboBox::currentTextChanged,
-    //         this,
-    //         &FormSerial::on_cBoxSendFormat_currentTextChanged);
 
     // ini
     getINI();
