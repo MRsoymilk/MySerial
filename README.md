@@ -2,4 +2,4 @@
 
 Serial port assistant based on Qt6
 
-![MySerial](MySerial.gif)
+![MySerial](README/MySerial.gif)
