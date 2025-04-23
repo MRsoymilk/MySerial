@@ -70,9 +70,10 @@ void FormPlot::updateData(const QByteArray &data)
 
         double voltage = (signedRaw / double(1 << 23)) * 2.5;
 
-        m_series->append(m_T * i, voltage);
+        m_series->append(m_time + m_T * i, voltage);
     }
-    m_axisX->setRange(0, numPoints * m_T);
+    m_axisX->setRange(m_time, m_time + numPoints * m_T);
+    m_time += numPoints * m_T;
 }
 
 void FormPlot::onDataReceived(const QByteArray &data)
