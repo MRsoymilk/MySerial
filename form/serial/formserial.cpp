@@ -21,7 +21,6 @@ FormSerial::FormSerial(QWidget *parent)
 FormSerial::~FormSerial()
 {
     SETTING_SYNC();
-    closeSerial();
     delete ui;
 }
 
@@ -89,6 +88,11 @@ void FormSerial::init()
 
     // ini
     getINI();
+    QObject::connect(qApp, &QCoreApplication::aboutToQuit, [=]() {
+        if (m_serial->isOpen()) {
+            m_serial->close();
+        }
+    });
 }
 
 void FormSerial::on_btnSend_clicked()
@@ -96,7 +100,7 @@ void FormSerial::on_btnSend_clicked()
     QString text = ui->txtSend->toPlainText().trimmed();
     LOG_INFO("serial send: {}", text);
 
-    if (!(m_serialPort && m_serialPort->isOpen())) {
+    if (!(m_serial && m_serial->isOpen())) {
         qDebug() << "Serial port not open.";
         SHOW_AUTO_CLOSE_MSGBOX(this, "warning", "serial not open!");
         return;
@@ -149,7 +153,7 @@ void FormSerial::on_btnSend_clicked()
         qDebug() << "send (normal):" << data;
         to_show = data;
     }
-    m_serialPort->write(data);
+    m_serial->write(data);
     if (m_ini.show_send) {
         ui->txtRecv->appendPlainText("[TX] " + to_show);
     }
@@ -170,43 +174,43 @@ void FormSerial::on_btnSerialSwitch_clicked()
 void FormSerial::openSerial()
 {
     LOG_INFO("open serial");
-    m_serialPort = new QSerialPort(this);
+    m_serial = new QSerialPort(this);
     QString portName = ui->cBoxPortName->currentText();
-    m_serialPort->setPortName(portName);
-    m_serialPort->setBaudRate(ui->cBoxBaudRate->currentText().toInt());
-    m_serialPort->setDataBits(
+    m_serial->setPortName(portName);
+    m_serial->setBaudRate(ui->cBoxBaudRate->currentText().toInt());
+    m_serial->setDataBits(
         static_cast<QSerialPort::DataBits>(ui->cBoxDataBit->currentText().toInt()));
 
     QString check = ui->cBoxCheckBit->currentText();
     if (check == "None")
-        m_serialPort->setParity(QSerialPort::NoParity);
+        m_serial->setParity(QSerialPort::NoParity);
     else if (check == "Even")
-        m_serialPort->setParity(QSerialPort::EvenParity);
+        m_serial->setParity(QSerialPort::EvenParity);
     else if (check == "Odd")
-        m_serialPort->setParity(QSerialPort::OddParity);
+        m_serial->setParity(QSerialPort::OddParity);
     else if (check == "Mark")
-        m_serialPort->setParity(QSerialPort::MarkParity);
+        m_serial->setParity(QSerialPort::MarkParity);
 
     QString stopBitText = ui->cBoxStopBit->currentText();
     if (stopBitText == "1")
-        m_serialPort->setStopBits(QSerialPort::OneStop);
+        m_serial->setStopBits(QSerialPort::OneStop);
     else if (stopBitText == "1.5")
-        m_serialPort->setStopBits(QSerialPort::OneAndHalfStop);
+        m_serial->setStopBits(QSerialPort::OneAndHalfStop);
     else if (stopBitText == "2")
-        m_serialPort->setStopBits(QSerialPort::TwoStop);
+        m_serial->setStopBits(QSerialPort::TwoStop);
 
-    m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
+    m_serial->setFlowControl(QSerialPort::NoFlowControl);
 
-    if (!m_serialPort->open(QIODevice::ReadWrite)) {
+    if (!m_serial->open(QIODevice::ReadWrite)) {
         qDebug() << "Failed to open serial port!";
-        qDebug() << m_serialPort->errorString();
-        delete m_serialPort;
-        m_serialPort = nullptr;
+        qDebug() << m_serial->errorString();
+        delete m_serial;
+        m_serial = nullptr;
         m_switch = false;
         return;
     }
 
-    connect(m_serialPort, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+    connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
 
     ui->btnSerialSwitch->setText("To Close");
     ui->btnSerialSwitch->setStyleSheet("background-color: green; color: white;");
@@ -218,11 +222,11 @@ void FormSerial::openSerial()
 void FormSerial::closeSerial()
 {
     LOG_INFO("close serial");
-    if (m_serialPort && m_serialPort->isOpen()) {
-        m_serialPort->close();
+    if (m_serial && m_serial->isOpen()) {
+        m_serial->close();
     }
-    delete m_serialPort;
-    m_serialPort = nullptr;
+    delete m_serial;
+    m_serial = nullptr;
 
     ui->btnSerialSwitch->setText("To Open");
     ui->btnSerialSwitch->setStyleSheet("background-color: white; color: black;");
@@ -243,7 +247,7 @@ void FormSerial::on_cBoxPortName_activated(int index)
 
 void FormSerial::onReadyRead()
 {
-    QByteArray data = m_serialPort->readAll();
+    QByteArray data = m_serial->readAll();
     LOG_INFO("serial recv: {}", data);
     QString to_show = data;
     if (m_ini.hex_display) {

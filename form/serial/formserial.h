@@ -62,7 +62,7 @@ private:
     Ui::FormSerial *ui;
     QMap<QString, SERIAL> m_mapSerial;
     bool m_switch;
-    QSerialPort *m_serialPort = nullptr;
+    QSerialPort *m_serial = nullptr;
     INI_SERIAL m_ini;
     QByteArray m_buffer;
     bool m_show_send;
