@@ -30,9 +30,10 @@ void MainWindow::initStackWidget()
     ui->stackedWidget->addWidget(formPlot);
     ui->stackedWidget->addWidget(formData);
     ui->stackedWidget->addWidget(formLog);
-    QObject::connect(formSerial, &FormSerial::dataReceived, formPlot, &FormPlot::onDataReceived);
-
     ui->stackedWidget->setCurrentWidget(formSerial);
+
+    QObject::connect(formSerial, &FormSerial::recv2Plot, formPlot, &FormPlot::onDataReceived);
+    QObject::connect(formSerial, &FormSerial::recv2Data, formData, &FormData::onDataReceived);
 }
 
 void MainWindow::initToolbar()

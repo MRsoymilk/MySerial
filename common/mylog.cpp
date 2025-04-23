@@ -22,7 +22,7 @@ void MyLog::init(const std::string &file_name, size_t max_size, size_t max_files
     logSinks[0]->set_pattern("%^[%T] %n: %v%$");
     logSinks[1]->set_pattern("[%T] [%l] %n: %v");
 
-    s_logger = std::make_shared<spdlog::logger>("myYolo", begin(logSinks), end(logSinks));
+    s_logger = std::make_shared<spdlog::logger>("MySerial", begin(logSinks), end(logSinks));
     spdlog::register_logger(s_logger);
     s_logger->set_level(spdlog::level::trace);
     s_logger->flush_on(spdlog::level::trace);

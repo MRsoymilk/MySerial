@@ -34,7 +34,8 @@ public:
         bool hex_display;
     };
 signals:
-    void dataReceived(const QByteArray &data);
+    void recv2Plot(const QByteArray &data);
+    void recv2Data(const QByteArray &data);
 
 public:
     explicit FormSerial(QWidget *parent = nullptr);

@@ -81,7 +81,7 @@ void FormSerial::init()
     m_switch = false;
     ui->btnSerialSwitch->setText("To Open");
 #ifdef QT_DEBUG
-    ui->cBoxPortName->addItem("/dev/pts/10");
+    ui->cBoxPortName->addItem("/dev/pts/9");
 #endif
     ui->cBoxPortName->addItems(port_names);
     on_cBoxPortName_activated(0);
@@ -253,6 +253,8 @@ void FormSerial::onReadyRead()
 {
     QByteArray data = m_serialPort->readAll();
     LOG_INFO("serial recv: {}", data);
+    emit recv2Data(data);
+
     QString to_show = data;
 
     if (m_ini.hex_display) {
@@ -286,7 +288,7 @@ void FormSerial::onReadyRead()
         QByteArray frame = m_buffer.mid(startIdx, frameLen);
 
         // 处理完整帧数据
-        emit dataReceived(frame); // 发给 FormPlot
+        emit recv2Plot(frame); // 发给 FormPlot
 
         // 移除已处理数据
         m_buffer.remove(0, endIdx + footer.size());
