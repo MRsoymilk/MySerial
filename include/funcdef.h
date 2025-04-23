@@ -14,6 +14,14 @@
 #define LOG_WARN(...) MY_LOG.getLogger()->warn(__VA_ARGS__)
 #define LOG_ERROR(...) MY_LOG.getLogger()->error(__VA_ARGS__)
 #define LOG_CRITICAL(...) MY_LOG.getLogger()->critical(__VA_ARGS__)
+#define FORMAT_HEX(data) \
+    ([](const QByteArray &d) { \
+        QStringList hexList; \
+        for (uchar byte : d) { \
+            hexList << QString("0x%1").arg(byte, 2, 16, QLatin1Char('0')).toUpper(); \
+        } \
+        return hexList.join(" "); \
+    })(data)
 
 #include "../common/mysetting.h"
 #define SETTING_GET(group, key, ...) MY_SETTING.getValue(group, key, ##__VA_ARGS__)

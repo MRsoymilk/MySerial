@@ -253,15 +253,14 @@ void FormSerial::onReadyRead()
 {
     QByteArray data = m_serialPort->readAll();
     LOG_INFO("serial recv: {}", data);
-
     QString to_show = data;
-
     if (m_ini.hex_display) {
         to_show.clear();
         for (int i = 0; i < data.length(); ++i) {
             to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
         }
     }
+
     ui->txtRecv->appendPlainText("[RX] " + to_show);
     m_buffer.append(data);
 

@@ -20,12 +20,13 @@ FormData::~FormData()
 void FormData::init()
 {
     model = new QStandardItemModel(this);
-    model->setColumnCount(2);
+    model->setColumnCount(3);
     model->setHeaderData(0, Qt::Horizontal, "timestamp");
     model->setHeaderData(1, Qt::Horizontal, "data");
+    model->setHeaderData(2, Qt::Horizontal, "size");
 
     ui->table->setModel(model);
-    ui->table->horizontalHeader()->setStretchLastSection(true);
+    ui->table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 }
 
 void FormData::onDataReceived(const QByteArray &data)
@@ -38,6 +39,7 @@ void FormData::onDataReceived(const QByteArray &data)
         to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
     }
     rowItems << new QStandardItem(to_show);
+    rowItems << new QStandardItem(QString::number(data.length()));
 
     model->appendRow(rowItems);
 }
