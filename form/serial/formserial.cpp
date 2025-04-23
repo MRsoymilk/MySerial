@@ -20,30 +20,18 @@ FormSerial::FormSerial(QWidget *parent)
 
 FormSerial::~FormSerial()
 {
-    setINI();
+    SETTING_SYNC();
     closeSerial();
     delete ui;
-}
-
-void FormSerial::setINI()
-{
-    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME, ui->cBoxPortName->currentText());
-    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE, ui->cBoxBaudRate->currentText());
-    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_FORMAT, ui->cBoxSendFormat->currentText());
-    SETTING_SET(CFG_GROUP_SERIAL,
-                CFG_SERIAL_SHOW_SEND,
-                ui->checkBoxShowSend->isChecked() ? VAL_ENABLE : VAL_DISABLE);
-    SETTING_SET(CFG_GROUP_SERIAL,
-                CFG_SERIAL_HEX_DISPLAY,
-                ui->checkBoxHexDisplay->isChecked() ? VAL_ENABLE : VAL_DISABLE);
-    SETTING_SYNC();
 }
 
 void FormSerial::getINI()
 {
     m_ini.port_name = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME);
     m_ini.baud_rate = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE);
-    QString format = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_FORMAT, VAL_SERIAL_SEND_NORMAL);
+    m_ini.send_format = SETTING_GET(CFG_GROUP_SERIAL,
+                                    CFG_SERIAL_SEND_FORMAT,
+                                    VAL_SERIAL_SEND_NORMAL);
     m_ini.show_send = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE) == VAL_ENABLE
                           ? true
                           : false;
@@ -54,7 +42,7 @@ void FormSerial::getINI()
 
     ui->cBoxPortName->setCurrentText(m_ini.port_name);
     ui->cBoxBaudRate->setCurrentText(m_ini.baud_rate);
-    on_cBoxSendFormat_currentTextChanged(format);
+    on_cBoxSendFormat_currentTextChanged(m_ini.send_format);
     ui->checkBoxShowSend->setChecked(m_ini.show_send);
     ui->checkBoxHexDisplay->setChecked(m_ini.hex_display);
 }
@@ -96,8 +84,17 @@ void FormSerial::init()
     // TODO
     ui->groupBoxEnhancement->hide();
 
+    // disconnect(ui->cBoxSendFormat,
+    //            &QComboBox::currentTextChanged,
+    //            this,
+    //            &FormSerial::on_cBoxSendFormat_currentTextChanged);
     ui->cBoxSendFormat->addItems(
         {VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX, VAL_SERIAL_SEND_HEX_TRANSLATE});
+    // connect(ui->cBoxSendFormat,
+    //         &QComboBox::currentTextChanged,
+    //         this,
+    //         &FormSerial::on_cBoxSendFormat_currentTextChanged);
+
     // ini
     getINI();
 }
@@ -109,7 +106,7 @@ void FormSerial::on_btnSend_clicked()
 
     if (!(m_serialPort && m_serialPort->isOpen())) {
         qDebug() << "Serial port not open.";
-        SHOW_AUTO_CLOSE_MSGBOX(this, "warning", "串口未打开！");
+        SHOW_AUTO_CLOSE_MSGBOX(this, "warning", "serial not open!");
         return;
     }
 
@@ -120,7 +117,7 @@ void FormSerial::on_btnSend_clicked()
 
     QByteArray data;
     QString to_show;
-    if (m_ini.send_format == SEND_FORMAT::HEX) {
+    if (m_ini.send_format == VAL_SERIAL_SEND_HEX) {
         QString cleaned = text;
         cleaned.remove(QRegularExpression("[^0-9A-Fa-f\\s]"));
 
@@ -144,7 +141,7 @@ void FormSerial::on_btnSend_clicked()
         }
         qDebug() << "send (hex):" << data;
         to_show = data;
-    } else if (m_ini.send_format == SEND_FORMAT::HEX_TRANSLATE) {
+    } else if (m_ini.send_format == VAL_SERIAL_SEND_HEX_TRANSLATE) {
         QByteArray byteArray = text.toUtf8();
 
         QString hexString;
@@ -221,6 +218,9 @@ void FormSerial::openSerial()
 
     ui->btnSerialSwitch->setText("To Close");
     ui->btnSerialSwitch->setStyleSheet("background-color: green; color: white;");
+
+    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME, ui->cBoxPortName->currentText());
+    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE, ui->cBoxBaudRate->currentText());
 }
 
 void FormSerial::closeSerial()
@@ -253,7 +253,6 @@ void FormSerial::onReadyRead()
 {
     QByteArray data = m_serialPort->readAll();
     LOG_INFO("serial recv: {}", data);
-    emit recv2Data(data);
 
     QString to_show = data;
 
@@ -288,6 +287,7 @@ void FormSerial::onReadyRead()
         QByteArray frame = m_buffer.mid(startIdx, frameLen);
 
         // 处理完整帧数据
+        emit recv2Data(frame);
         emit recv2Plot(frame); // 发给 FormPlot
 
         // 移除已处理数据
@@ -317,27 +317,29 @@ void FormSerial::on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &sta
 {
     if (state == Qt::CheckState::Checked) {
         m_ini.show_send = true;
+        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE);
     } else {
         m_ini.show_send = false;
+        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_DISABLE);
     }
 }
 
 void FormSerial::on_cBoxSendFormat_currentTextChanged(const QString &format)
 {
-    if (format == VAL_SERIAL_SEND_HEX) {
-        m_ini.send_format = SEND_FORMAT::HEX;
-    } else if (format == VAL_SERIAL_SEND_HEX_TRANSLATE) {
-        m_ini.send_format = SEND_FORMAT::HEX_TRANSLATE;
-    } else {
-        m_ini.send_format = SEND_FORMAT::NORMAL;
+    if (!m_ini.send_format.isEmpty()) {
+        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_FORMAT, format);
     }
+    m_ini.send_format = format;
+    ui->cBoxSendFormat->setCurrentText(format);
 }
 
 void FormSerial::on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &state)
 {
     if (state == Qt::CheckState::Checked) {
         m_ini.hex_display = true;
+        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_ENABLE);
     } else {
         m_ini.hex_display = false;
+        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE);
     }
 }

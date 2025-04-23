@@ -15,11 +15,12 @@ void MySetting::setValue(const QString &group, const QString &key, const QString
 
 QString MySetting::getValue(const QString &group, const QString &key, const QString &val_dft)
 {
-    if (!val_dft.isEmpty())
-    {
+    QString val = m_settings->value(QString("%1/%2").arg(group, key)).toString();
+    if (val.isEmpty()) {
+        val = val_dft;
         m_settings->setValue(QString("%1/%2").arg(group, key), val_dft);
     }
-    return m_settings->value(QString("%1/%2").arg(group, key)).toString();
+    return val;
 }
 
 void MySetting::sync()

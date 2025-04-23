@@ -21,8 +21,8 @@ void FormData::init()
 {
     model = new QStandardItemModel(this);
     model->setColumnCount(2);
-    model->setHeaderData(1, Qt::Horizontal, "timestamp");
-    model->setHeaderData(2, Qt::Horizontal, "data");
+    model->setHeaderData(0, Qt::Horizontal, "timestamp");
+    model->setHeaderData(1, Qt::Horizontal, "data");
 
     ui->table->setModel(model);
     ui->table->horizontalHeader()->setStretchLastSection(true);
@@ -33,7 +33,11 @@ void FormData::onDataReceived(const QByteArray &data)
     QList<QStandardItem *> rowItems;
 
     rowItems << new QStandardItem(TIMESTAMP());
-    rowItems << new QStandardItem(QString::fromUtf8(data));
+    QString to_show;
+    for (int i = 0; i < data.length(); ++i) {
+        to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
+    }
+    rowItems << new QStandardItem(to_show);
 
     model->appendRow(rowItems);
 }

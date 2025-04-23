@@ -29,7 +29,7 @@ public:
     {
         QString port_name;
         QString baud_rate;
-        SEND_FORMAT send_format;
+        QString send_format;
         bool show_send;
         bool hex_display;
     };
@@ -42,7 +42,6 @@ public:
     ~FormSerial();
 
 private:
-    void setINI();
     void getINI();
     void init();
     void openSerial();
