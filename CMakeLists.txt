@@ -14,16 +14,10 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-)
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(MySerial
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
+        main/main.cpp
+        main/mainwindow.cpp
+        main/mainwindow.h
+        main/mainwindow.ui
         form/serial/formserial.h
         form/serial/formserial.cpp
         form/serial/formserial.ui
@@ -36,16 +30,22 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         form/log/formlog.h
         form/log/formlog.cpp
         form/log/formlog.ui
-        res.qrc
         common/mysetting.h
         common/mysetting.cpp
         common/mylog.h
         common/mylog.cpp
+        common/UILogSink.h
         include/keydef.h
         include/datadef.h
         include/funcdef.h
         include/global.h
-        common/UILogSink.h
+        res.qrc
+)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(MySerial
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
     )
 target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common")
 # Define target properties for Android with Qt 6 as:

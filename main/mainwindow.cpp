@@ -1,9 +1,9 @@
 #include "mainwindow.h"
+#include "../form/data/formdata.h"
+#include "../form/log/formlog.h"
+#include "../form/plot/formplot.h"
+#include "../form/serial/formserial.h"
 #include "./ui_mainwindow.h"
-#include "form/data/formdata.h"
-#include "form/log/formlog.h"
-#include "form/plot/formplot.h"
-#include "form/serial/formserial.h"
 #include "version.h"
 
 MainWindow::MainWindow(QWidget *parent)
