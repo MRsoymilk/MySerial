@@ -58,6 +58,12 @@ private slots:
 
     void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &arg1);
 
+    void on_tBtn_0_clicked();
+    void on_tBtn_1_clicked();
+    void on_tBtn_2_clicked();
+    void on_tBtn_3_clicked();
+    void on_tBtn_4_clicked();
+
 private:
     Ui::FormSerial *ui;
     QMap<QString, SERIAL> m_mapSerial;
@@ -68,6 +74,7 @@ private:
     bool m_show_send;
     SEND_FORMAT m_send_format;
     bool m_hex_display;
+    void send(const QString &text);
 };
 
 #endif // FORMSERIAL_H

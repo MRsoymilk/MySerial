@@ -52,6 +52,7 @@ void FormSerial::init()
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
         qDebug() << "No available serial port found!";
+        LOG_WARN("No available serial port found!");
         return;
     }
     QStringList port_names;
@@ -95,11 +96,9 @@ void FormSerial::init()
     });
 }
 
-void FormSerial::on_btnSend_clicked()
+void FormSerial::send(const QString &text)
 {
-    QString text = ui->txtSend->toPlainText().trimmed();
     LOG_INFO("serial send: {}", text);
-
     if (!(m_serial && m_serial->isOpen())) {
         qDebug() << "Serial port not open.";
         SHOW_AUTO_CLOSE_MSGBOX(this, "warning", "serial not open!");
@@ -108,6 +107,7 @@ void FormSerial::on_btnSend_clicked()
 
     if (text.isEmpty()) {
         qDebug() << "Send text is empty.";
+        LOG_WARN("Send txt is empty.");
         return;
     }
 
@@ -159,6 +159,13 @@ void FormSerial::on_btnSend_clicked()
     }
 }
 
+void FormSerial::on_btnSend_clicked()
+{
+    QString text = ui->txtSend->toPlainText().trimmed();
+    LOG_INFO("serial send: {}", text);
+    send(text);
+}
+
 void FormSerial::on_btnSerialSwitch_clicked()
 {
     m_switch = !m_switch;
@@ -204,6 +211,7 @@ void FormSerial::openSerial()
     if (!m_serial->open(QIODevice::ReadWrite)) {
         qDebug() << "Failed to open serial port!";
         qDebug() << m_serial->errorString();
+        LOG_WARN("Failed to open serial port: {}", m_serial->errorString());
         delete m_serial;
         m_serial = nullptr;
         m_switch = false;
@@ -337,4 +345,34 @@ void FormSerial::on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &s
         m_ini.hex_display = false;
         SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE);
     }
+}
+
+void FormSerial::on_tBtn_0_clicked()
+{
+    QString text = ui->lineEdit_cmd_0->text().trimmed();
+    send(text);
+}
+
+void FormSerial::on_tBtn_1_clicked()
+{
+    QString text = ui->lineEdit_cmd_1->text().trimmed();
+    send(text);
+}
+
+void FormSerial::on_tBtn_2_clicked()
+{
+    QString text = ui->lineEdit_cmd_2->text().trimmed();
+    send(text);
+}
+
+void FormSerial::on_tBtn_3_clicked()
+{
+    QString text = ui->lineEdit_cmd_3->text().trimmed();
+    send(text);
+}
+
+void FormSerial::on_tBtn_4_clicked()
+{
+    QString text = ui->lineEdit_cmd_4->text().trimmed();
+    send(text);
 }
