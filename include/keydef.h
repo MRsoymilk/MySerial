@@ -12,6 +12,10 @@ const QString VAL_SERIAL_SEND_HEX = "hex";
 const QString VAL_SERIAL_SEND_HEX_TRANSLATE = "hex_translate";
 const QString CFG_SERIAL_SHOW_SEND = "show_send";
 const QString CFG_SERIAL_HEX_DISPLAY = "hex_display";
+const QString CFG_SERIAL_CYCLE = "cycle";
+const QString CFG_SERIAL_SEND_PAGE = "send_page";
+const QString VAL_PAGE_SINGLE = "single";
+const QString VAL_PAGE_MULTIPE = "multipe";
 const QString VAL_ENABLE = "enable";
 const QString VAL_DISABLE = "disable";
 

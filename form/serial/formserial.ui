@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>825</width>
-    <height>727</height>
+    <width>916</width>
+    <height>1099</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -190,6 +190,54 @@
            </layout>
           </widget>
          </widget>
+        </item>
+        <item row="1" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayoutSendOption">
+          <item>
+           <widget class="QCheckBox" name="checkBoxScheduledDelivery">
+            <property name="text">
+             <string>scheduled delivery</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelCycle">
+            <property name="text">
+             <string>cycle</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEditCycle"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelMs">
+            <property name="text">
+             <string>ms</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

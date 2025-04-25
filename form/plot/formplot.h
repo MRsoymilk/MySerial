@@ -6,6 +6,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+
 namespace Ui {
 class FormPlot;
 }
@@ -22,6 +23,12 @@ public:
 public slots:
     void onDataReceived(const QByteArray &data);
 
+private slots:
+    void on_toolButton_clicked();
+
+private:
+    void init();
+
 private:
     Ui::FormPlot *ui;
     QLineSeries *m_series;
@@ -33,7 +40,9 @@ private:
     const int m_maxPoints = 200;
     const double m_fs = 3600.0;
     const double m_T = 1.0 / m_fs;
-    void init();
+    bool m_autoScaleY = true;
+    double m_fixedYMin = -2.5;
+    double m_fixedYMax = 2.5;
 };
 
 #endif // FORMPLOT_H

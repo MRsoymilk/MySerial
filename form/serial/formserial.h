@@ -46,6 +46,8 @@ private:
     void init();
     void openSerial();
     void closeSerial();
+    void send(const QString &text);
+
 private slots:
     void on_btnRecvSave_clicked();
     void on_btnRecvClear_clicked();
@@ -55,14 +57,18 @@ private slots:
     void onReadyRead();
     void on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &state);
     void on_cBoxSendFormat_currentTextChanged(const QString &format);
-
     void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &arg1);
-
     void on_tBtn_0_clicked();
     void on_tBtn_1_clicked();
     void on_tBtn_2_clicked();
     void on_tBtn_3_clicked();
     void on_tBtn_4_clicked();
+    void on_checkBoxScheduledDelivery_clicked();
+    void onAutoSend();
+
+    void on_lineEditCycle_editingFinished();
+
+    void on_tabWidget_currentChanged(int index);
 
 private:
     Ui::FormSerial *ui;
@@ -74,7 +80,7 @@ private:
     bool m_show_send;
     SEND_FORMAT m_send_format;
     bool m_hex_display;
-    void send(const QString &text);
+    QTimer *m_send_timer;
 };
 
 #endif // FORMSERIAL_H

@@ -38,12 +38,20 @@ void FormSerial::getINI()
                                 == VAL_ENABLE
                             ? true
                             : false;
+    QString cycle = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
+    QString send_page = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
 
     ui->cBoxPortName->setCurrentText(m_ini.port_name);
     ui->cBoxBaudRate->setCurrentText(m_ini.baud_rate);
     on_cBoxSendFormat_currentTextChanged(m_ini.send_format);
     ui->checkBoxShowSend->setChecked(m_ini.show_send);
     ui->checkBoxHexDisplay->setChecked(m_ini.hex_display);
+    ui->lineEditCycle->setText(cycle);
+    if (send_page == VAL_PAGE_SINGLE) {
+        ui->tabWidget->setCurrentWidget(ui->tabSingle);
+    } else {
+        ui->tabWidget->setCurrentWidget(ui->tabMultipe);
+    }
 }
 
 void FormSerial::init()
@@ -69,7 +77,7 @@ void FormSerial::init()
     m_switch = false;
     ui->btnSerialSwitch->setText("To Open");
 #ifdef QT_DEBUG
-    ui->cBoxPortName->addItem("/dev/pts/9");
+    ui->cBoxPortName->addItem("/dev/pts/7");
 #endif
     ui->cBoxPortName->addItems(port_names);
     on_cBoxPortName_activated(0);
@@ -94,6 +102,8 @@ void FormSerial::init()
             m_serial->close();
         }
     });
+    m_send_timer = new QTimer(this);
+    connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
 }
 
 void FormSerial::send(const QString &text)
@@ -175,6 +185,8 @@ void FormSerial::on_btnSerialSwitch_clicked()
     } else {
         // close serial
         closeSerial();
+        ui->checkBoxScheduledDelivery->setChecked(false);
+        on_checkBoxScheduledDelivery_clicked();
     }
 }
 
@@ -182,8 +194,8 @@ void FormSerial::openSerial()
 {
     LOG_INFO("open serial");
     m_serial = new QSerialPort(this);
-    QString portName = ui->cBoxPortName->currentText();
-    m_serial->setPortName(portName);
+    QString port_name = ui->cBoxPortName->currentText();
+    m_serial->setPortName(port_name);
     m_serial->setBaudRate(ui->cBoxBaudRate->currentText().toInt());
     m_serial->setDataBits(
         static_cast<QSerialPort::DataBits>(ui->cBoxDataBit->currentText().toInt()));
@@ -375,4 +387,61 @@ void FormSerial::on_tBtn_4_clicked()
 {
     QString text = ui->lineEdit_cmd_4->text().trimmed();
     send(text);
+}
+
+void FormSerial::on_checkBoxScheduledDelivery_clicked()
+{
+    if (ui->checkBoxScheduledDelivery->isChecked()) {
+        if (!m_switch) {
+            QMessageBox::warning(this, "Warning", "Please open serial port!");
+            ui->checkBoxScheduledDelivery->setChecked(false);
+            return;
+        }
+        QString ms_time = ui->lineEditCycle->text();
+
+        bool ok = false;
+        int interval = ms_time.toInt(&ok);
+        if (ok && interval > 0) {
+            m_send_timer->start(interval);
+            onAutoSend();
+        } else {
+            QMessageBox::warning(this, "Warning", "Please set valid time(ms)!");
+            ui->checkBoxScheduledDelivery->setChecked(false);
+        }
+    } else {
+        if (m_send_timer && m_send_timer->isActive()) {
+            m_send_timer->stop();
+        }
+    }
+}
+
+void FormSerial::onAutoSend()
+{
+    if (ui->tabWidget->currentWidget() == ui->tabSingle) {
+        QString msg = ui->txtSend->toPlainText();
+        if (!msg.isEmpty()) {
+            send(msg);
+        }
+    } else {
+        for (int i = 0; i <= 4; ++i) {
+            QString msg = findChild<QLineEdit *>(QString("lineEdit_cmd_%1").arg(i))->text();
+            if (!msg.isEmpty()) {
+                send(msg);
+            }
+        }
+    }
+}
+
+void FormSerial::on_lineEditCycle_editingFinished()
+{
+    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, ui->lineEditCycle->text());
+}
+
+void FormSerial::on_tabWidget_currentChanged(int index)
+{
+    if (index == 0) {
+        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
+    } else {
+        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_MULTIPE);
+    }
 }
