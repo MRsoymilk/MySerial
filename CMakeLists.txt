@@ -46,6 +46,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MySerial
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        form/plot/plotworker.h form/plot/plotworker.cpp
     )
 target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common")
 # Define target properties for Android with Qt 6 as:
