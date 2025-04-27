@@ -47,6 +47,12 @@ void FormPlot::init()
     QChartView *view = new QChartView(m_chart);
     view->setRenderHint(QPainter::Antialiasing);
     ui->gLayPlot->addWidget(view);
+
+    ui->tBtnZoom->setIcon(QIcon(":/res/icons/zoom.png"));
+    ui->tBtnZoom->setIconSize(QSize(16, 16));
+    ui->tBtnZoom->setCheckable(true);
+    ui->tBtnZoom->setChecked(m_autoZoom);
+    ui->tBtnZoom->setToolTip("Auto Zoom");
 }
 
 void FormPlot::updateData(const QByteArray &data)
@@ -88,7 +94,7 @@ void FormPlot::updateData(const QByteArray &data)
     m_time += numPoints * m_T;
 
     // ==== 设置 Y 轴 ====
-    if (m_autoScaleY) {
+    if (m_autoZoom) {
         double padding = (maxY - minY) * 0.1;
         if (padding == 0)
             padding = 0.1;
@@ -103,7 +109,48 @@ void FormPlot::onDataReceived(const QByteArray &data)
     updateData(data);
 }
 
-void FormPlot::on_toolButton_clicked()
+QRectF FormPlot::calculateSeriesBounds(QLineSeries *series)
 {
-    m_autoScaleY = !m_autoScaleY;
+    if (!series || series->points().isEmpty())
+        return QRectF();
+
+    qreal minX = series->points().first().x();
+    qreal maxX = series->points().first().x();
+    qreal minY = series->points().first().y();
+    qreal maxY = series->points().first().y();
+
+    for (const QPointF &point : series->points()) {
+        if (point.x() < minX)
+            minX = point.x();
+        if (point.x() > maxX)
+            maxX = point.x();
+        if (point.y() < minY)
+            minY = point.y();
+        if (point.y() > maxY)
+            maxY = point.y();
+    }
+
+    return QRectF(QPointF(minX, minY), QPointF(maxX, maxY));
+}
+
+void FormPlot::on_tBtnZoom_clicked()
+{
+    m_autoZoom = !m_autoZoom;
+    ui->tBtnZoom->setChecked(m_autoZoom);
+
+    if (m_series && m_chart) {
+        if (m_autoZoom) {
+            QRectF bounds = calculateSeriesBounds(m_series);
+            if (!bounds.isNull()) {
+                qreal marginX = (bounds.width()) * 0.05;
+                qreal marginY = (bounds.height()) * 0.05;
+
+                m_chart->axes(Qt::Vertical)
+                    .first()
+                    ->setRange(bounds.top() - marginY, bounds.bottom() + marginY);
+            }
+        } else {
+            m_chart->axes(Qt::Vertical).first()->setRange(m_fixedYMin, m_fixedYMax);
+        }
+    }
 }

@@ -20,11 +20,12 @@ public:
     ~FormPlot();
 
     void updateData(const QByteArray &data);
+    QRectF calculateSeriesBounds(QLineSeries *series);
 public slots:
     void onDataReceived(const QByteArray &data);
 
 private slots:
-    void on_toolButton_clicked();
+    void on_tBtnZoom_clicked();
 
 private:
     void init();
@@ -40,7 +41,7 @@ private:
     const int m_maxPoints = 200;
     const double m_fs = 3600.0;
     const double m_T = 1.0 / m_fs;
-    bool m_autoScaleY = true;
+    bool m_autoZoom = true;
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
 };

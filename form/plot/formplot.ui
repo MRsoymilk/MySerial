@@ -33,7 +33,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton">
+      <widget class="QToolButton" name="tBtnZoom">
        <property name="text">
         <string>zoom</string>
        </property>

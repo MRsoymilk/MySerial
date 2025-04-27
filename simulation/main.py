@@ -10,7 +10,7 @@ def load_spectrum_data(filename):
         return bytes(int(b, 16) for b in hex_parts)
 
 # 读取所有 packet*.txt 文件并按序加载为字节数据列表
-def load_all_packets(pattern='test*.txt'):
+def load_all_packets(pattern='packet*.txt'):
     packet_files = sorted(glob.glob(pattern), key=lambda x: int(''.join(filter(str.isdigit, x))))
     packets = []
     for file in packet_files:
@@ -23,7 +23,7 @@ spectrum_packets = load_all_packets()
 
 # 启动串口
 try:
-    ser = serial.Serial('/dev/pts/6', 115200, timeout=1)
+    ser = serial.Serial('/dev/pts/8', 115200, timeout=1)
 except serial.SerialException as e:
     print(f"open port fail: {e}")
     exit(1)

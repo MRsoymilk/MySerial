@@ -77,7 +77,7 @@ void FormSerial::init()
     m_switch = false;
     ui->btnSerialSwitch->setText("To Open");
 #ifdef QT_DEBUG
-    ui->cBoxPortName->addItem("/dev/pts/7");
+    ui->cBoxPortName->addItem("/dev/pts/9");
 #endif
     ui->cBoxPortName->addItems(port_names);
     on_cBoxPortName_activated(0);
