@@ -52,6 +52,18 @@ void FormSerial::getINI()
     } else {
         ui->tabWidget->setCurrentWidget(ui->tabMultipe);
     }
+    QString single_send = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
+    QString mult_0 = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_0);
+    QString mult_1 = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_1);
+    QString mult_2 = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_2);
+    QString mult_3 = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_3);
+    QString mult_4 = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_4);
+    ui->txtSend->setPlainText(single_send);
+    ui->lineEdit_cmd_0->setText(mult_0);
+    ui->lineEdit_cmd_1->setText(mult_1);
+    ui->lineEdit_cmd_2->setText(mult_2);
+    ui->lineEdit_cmd_3->setText(mult_3);
+    ui->lineEdit_cmd_4->setText(mult_4);
 }
 
 void FormSerial::init()
@@ -174,6 +186,7 @@ void FormSerial::on_btnSend_clicked()
     QString text = ui->txtSend->toPlainText().trimmed();
     LOG_INFO("serial send: {}", text);
     send(text);
+    SETTING_SET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND, text);
 }
 
 void FormSerial::on_btnSerialSwitch_clicked()
@@ -363,30 +376,35 @@ void FormSerial::on_tBtn_0_clicked()
 {
     QString text = ui->lineEdit_cmd_0->text().trimmed();
     send(text);
+    SETTING_SET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_0, text);
 }
 
 void FormSerial::on_tBtn_1_clicked()
 {
     QString text = ui->lineEdit_cmd_1->text().trimmed();
     send(text);
+    SETTING_SET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_1, text);
 }
 
 void FormSerial::on_tBtn_2_clicked()
 {
     QString text = ui->lineEdit_cmd_2->text().trimmed();
     send(text);
+    SETTING_SET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_2, text);
 }
 
 void FormSerial::on_tBtn_3_clicked()
 {
     QString text = ui->lineEdit_cmd_3->text().trimmed();
     send(text);
+    SETTING_SET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_3, text);
 }
 
 void FormSerial::on_tBtn_4_clicked()
 {
     QString text = ui->lineEdit_cmd_4->text().trimmed();
     send(text);
+    SETTING_SET(CFG_GROUP_HISTROY, CFG_HISTORY_MULT_4, text);
 }
 
 void FormSerial::on_checkBoxScheduledDelivery_clicked()

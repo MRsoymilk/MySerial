@@ -65,9 +65,7 @@ private slots:
     void on_tBtn_4_clicked();
     void on_checkBoxScheduledDelivery_clicked();
     void onAutoSend();
-
     void on_lineEditCycle_editingFinished();
-
     void on_tabWidget_currentChanged(int index);
 
 private:
