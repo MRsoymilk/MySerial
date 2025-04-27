@@ -17,6 +17,7 @@ public slots:
 signals:
     void dataReady(
         QLineSeries *line, int numPoints, double minY, double maxY, double minX, double maxX);
+    void pointsReady(const QList<QPointF> &points);
 
 private:
     double m_time = 0.0;

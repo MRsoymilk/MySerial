@@ -6,6 +6,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include "formplotdata.h"
 #include "plotworker.h"
 
 namespace Ui {
@@ -22,8 +23,11 @@ public:
 
 signals:
     void newDataReceived(const QByteArray &data);
+
 private slots:
     void on_tBtnZoom_clicked();
+    void on_tBtnData_clicked();
+    void plotDataClose();
     void updatePlot(QLineSeries *line,
                     const int &points,
                     const double &min_y,
@@ -44,10 +48,12 @@ private:
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
     bool m_autoZoom = true;
+    bool m_showData = false;
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
     QThread *m_workerThread;
     PlotWorker *m_worker;
+    FormPlotData *m_plotdata;
 };
 
 #endif // FORMPLOT_H

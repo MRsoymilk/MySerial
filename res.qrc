@@ -14,5 +14,6 @@
         <file>res/icons/send-on.png</file>
         <file>res/icons/icon.png</file>
         <file>res/icons/zoom.png</file>
+        <file>res/icons/data.png</file>
     </qresource>
 </RCC>

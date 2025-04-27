@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.0.4 LANGUAGES CXX)
+project(MySerial VERSION 1.0.5 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -47,6 +47,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         form/plot/plotworker.h form/plot/plotworker.cpp
+        form/plot/formplotdata.h form/plot/formplotdata.cpp form/plot/formplotdata.ui
     )
 target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common")
 # Define target properties for Android with Qt 6 as:

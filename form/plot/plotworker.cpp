@@ -41,6 +41,7 @@ void PlotWorker::processData(const QByteArray &data)
 
         series->append(m_time + m_T * i, voltage);
     }
+    emit pointsReady(series->points());
 
     double min_x = m_time;
     double max_x = m_time + numPoints * m_T;

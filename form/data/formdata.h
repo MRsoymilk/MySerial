@@ -19,6 +19,9 @@ public:
 public slots:
     void onDataReceived(const QByteArray &data);
 
+private slots:
+    void exportToCSV();
+
 private:
     void init();
 
@@ -26,8 +29,6 @@ private:
     Ui::FormData *ui;
     QStandardItemModel *model;
     void showContextMenu(const QPoint &pos);
-private slots:
-    void exportToCSV();
 };
 
 #endif // FORMDATA_H

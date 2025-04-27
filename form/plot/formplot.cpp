@@ -19,6 +19,10 @@ FormPlot::FormPlot(QWidget *parent)
 
 FormPlot::~FormPlot()
 {
+    if (m_plotdata) {
+        m_plotdata->close();
+        delete m_plotdata;
+    }
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
@@ -58,14 +62,28 @@ void FormPlot::init()
     ui->tBtnZoom->setChecked(m_autoZoom);
     ui->tBtnZoom->setToolTip("Auto Zoom");
 
+    ui->tBtnData->setIcon(QIcon(":/res/icons/data.png"));
+    ui->tBtnData->setIconSize(QSize(16, 16));
+    ui->tBtnData->setCheckable(true);
+    ui->tBtnData->setChecked(m_showData);
+    ui->tBtnData->setToolTip("Data");
+
     m_workerThread = new QThread(this);
     m_worker = new PlotWorker();
     m_worker->moveToThread(m_workerThread);
 
+    m_plotdata = new FormPlotData;
+    m_plotdata->hide();
+    connect(m_plotdata, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
+
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(this, &FormPlot::newDataReceived, m_worker, &PlotWorker::processData);
     connect(m_worker, &PlotWorker::dataReady, this, &FormPlot::updatePlot, Qt::QueuedConnection);
-
+    connect(m_worker,
+            &PlotWorker::pointsReady,
+            m_plotdata,
+            &FormPlotData::updateTable,
+            Qt::QueuedConnection);
     m_workerThread->start();
 }
 
@@ -106,4 +124,16 @@ void FormPlot::on_tBtnZoom_clicked()
 {
     m_autoZoom = !m_autoZoom;
     ui->tBtnZoom->setChecked(m_autoZoom);
+}
+
+void FormPlot::on_tBtnData_clicked()
+{
+    m_showData = !m_showData;
+    m_plotdata->setVisible(m_showData);
+}
+
+void FormPlot::plotDataClose()
+{
+    m_showData = false;
+    ui->tBtnData->setChecked(m_showData);
 }
