@@ -25,6 +25,9 @@ private:
 private:
     Ui::FormData *ui;
     QStandardItemModel *model;
+    void showContextMenu(const QPoint &pos);
+private slots:
+    void exportToCSV();
 };
 
 #endif // FORMDATA_H
