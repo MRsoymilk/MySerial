@@ -15,5 +15,7 @@
         <file>res/icons/icon.png</file>
         <file>res/icons/zoom.png</file>
         <file>res/icons/data.png</file>
+        <file>res/icons/setting-off.png</file>
+        <file>res/icons/setting-on.png</file>
     </qresource>
 </RCC>

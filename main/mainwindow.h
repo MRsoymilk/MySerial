@@ -7,6 +7,7 @@ class FormSerial;
 class FormPlot;
 class FormData;
 class FormLog;
+class FormSetting;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -31,6 +32,7 @@ private slots:
     void on_btnPlot_clicked();
     void on_btnData_clicked();
     void on_btnLog_clicked();
+    void on_btnSetting_clicked();
 
 private:
     void init();
@@ -43,6 +45,7 @@ private:
     FormPlot *formPlot;
     FormData *formData;
     FormLog *formLog;
+    FormSetting *formSetting;
 
     int m_currentPageIndex = 0;
 };

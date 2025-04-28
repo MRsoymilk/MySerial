@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.0.9 LANGUAGES CXX)
+project(MySerial VERSION 1.0.8 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -10,8 +10,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network)
 
 set(PROJECT_SOURCES
         main/main.cpp
@@ -30,6 +30,14 @@ set(PROJECT_SOURCES
         form/log/formlog.h
         form/log/formlog.cpp
         form/log/formlog.ui
+        form/plot/plotworker.h
+        form/plot/plotworker.cpp
+        form/plot/formplotdata.h
+        form/plot/formplotdata.cpp
+        form/plot/formplotdata.ui
+        form/setting/formsetting.h
+        form/setting/formsetting.cpp
+        form/setting/formsetting.ui
         common/mysetting.h
         common/mysetting.cpp
         common/mylog.h
@@ -46,8 +54,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(MySerial
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        form/plot/plotworker.h form/plot/plotworker.cpp
-        form/plot/formplotdata.h form/plot/formplotdata.cpp form/plot/formplotdata.ui
     )
 target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common")
 # Define target properties for Android with Qt 6 as:
@@ -68,13 +74,13 @@ else()
     endif()
 endif()
 
-target_link_libraries(MySerial PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts Qt${QT_VERSION_MAJOR}::SerialPort)
+target_link_libraries(MySerial PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts Qt${QT_VERSION_MAJOR}::SerialPort Qt${QT_VERSION_MAJOR}::Network)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.MySerial)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.soymilk.MySerial)
 endif()
 set_target_properties(MySerial PROPERTIES
     ${BUNDLE_ID_OPTION}

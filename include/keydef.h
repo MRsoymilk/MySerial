@@ -26,4 +26,7 @@ const QString CFG_HISTORY_MULT_2 = "mult_2";
 const QString CFG_HISTORY_MULT_3 = "mult_3";
 const QString CFG_HISTORY_MULT_4 = "mult_4";
 const QString CFG_MULT_LABEL = "label";
+const QString CFG_GROUP_SETTING = "Setting";
+const QString CFG_SETTING_UPDATE_URL = "update_url";
+const QString CFG_SETTING_UPDATE_CHECK = "update_check";
 #endif

@@ -3,6 +3,7 @@
 #include "../form/log/formlog.h"
 #include "../form/plot/formplot.h"
 #include "../form/serial/formserial.h"
+#include "../form/setting/formsetting.h"
 #include "./ui_mainwindow.h"
 #include "version.h"
 
@@ -26,11 +27,13 @@ void MainWindow::initStackWidget()
     formPlot = new FormPlot(this);
     formData = new FormData(this);
     formLog = new FormLog(this);
+    formSetting = new FormSetting(this);
 
     ui->stackedWidget->addWidget(formSerial);
     ui->stackedWidget->addWidget(formData);
     ui->stackedWidget->addWidget(formPlot);
     ui->stackedWidget->addWidget(formLog);
+    ui->stackedWidget->addWidget(formSetting);
     ui->stackedWidget->setCurrentWidget(formSerial);
 
     QObject::connect(formSerial, &FormSerial::recv2Plot, formPlot, &FormPlot::onDataReceived);
@@ -39,17 +42,29 @@ void MainWindow::initStackWidget()
 
 void MainWindow::initToolbar()
 {
-    QList<QToolButton *> buttonList = {ui->btnSerial, ui->btnData, ui->btnLog, ui->btnPlot};
+    QList<QToolButton *> buttonList = {
+        ui->btnSerial,
+        ui->btnData,
+        ui->btnLog,
+        ui->btnPlot,
+        ui->btnSetting,
+    };
 
-    QMap<QToolButton *, QString> onIcons = {{ui->btnSerial, ":/res/icons/usb-on.png"},
-                                            {ui->btnData, ":/res/icons/data-on.png"},
-                                            {ui->btnLog, ":/res/icons/log-on.png"},
-                                            {ui->btnPlot, ":/res/icons/plot-on.png"}};
+    QMap<QToolButton *, QString> onIcons = {
+        {ui->btnSerial, ":/res/icons/usb-on.png"},
+        {ui->btnData, ":/res/icons/data-on.png"},
+        {ui->btnLog, ":/res/icons/log-on.png"},
+        {ui->btnPlot, ":/res/icons/plot-on.png"},
+        {ui->btnSetting, ":/res/icons/setting-on.png"},
+    };
 
-    QMap<QToolButton *, QString> offIcons = {{ui->btnSerial, ":/res/icons/usb-off.png"},
-                                             {ui->btnData, ":/res/icons/data-off.png"},
-                                             {ui->btnLog, ":/res/icons/log-off.png"},
-                                             {ui->btnPlot, ":/res/icons/plot-off.png"}};
+    QMap<QToolButton *, QString> offIcons = {
+        {ui->btnSerial, ":/res/icons/usb-off.png"},
+        {ui->btnData, ":/res/icons/data-off.png"},
+        {ui->btnLog, ":/res/icons/log-off.png"},
+        {ui->btnPlot, ":/res/icons/plot-off.png"},
+        {ui->btnSetting, ":/res/icons/setting-off.png"},
+    };
 
     for (QToolButton *btn : buttonList) {
         btn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -110,4 +125,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     } else {
         QMainWindow::keyPressEvent(event);
     }
+}
+
+void MainWindow::on_btnSetting_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(formSetting);
 }
