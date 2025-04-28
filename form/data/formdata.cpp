@@ -22,13 +22,13 @@ FormData::~FormData()
 
 void FormData::init()
 {
-    model = new QStandardItemModel(this);
-    model->setColumnCount(3);
-    model->setHeaderData(0, Qt::Horizontal, "timestamp");
-    model->setHeaderData(1, Qt::Horizontal, "data");
-    model->setHeaderData(2, Qt::Horizontal, "size");
+    m_model = new QStandardItemModel(this);
+    m_model->setColumnCount(3);
+    m_model->setHeaderData(0, Qt::Horizontal, "timestamp");
+    m_model->setHeaderData(1, Qt::Horizontal, "data");
+    m_model->setHeaderData(2, Qt::Horizontal, "size");
 
-    ui->table->setModel(model);
+    ui->table->setModel(m_model);
     ui->table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     ui->table->setSelectionMode(QAbstractItemView::MultiSelection);
     ui->table->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -49,18 +49,27 @@ void FormData::onDataReceived(const QByteArray &data)
     rowItems << new QStandardItem(to_show);
     rowItems << new QStandardItem(QString::number(data.length()));
 
-    model->appendRow(rowItems);
+    m_model->appendRow(rowItems);
 }
 
 void FormData::showContextMenu(const QPoint &pos)
 {
     QMenu contextMenu(tr("Context Menu"), this);
 
+    QAction *clearAction = new QAction(tr("Clear"), this);
+    connect(clearAction, &QAction::triggered, this, &FormData::clearData);
+    contextMenu.addAction(clearAction);
+
     QAction *exportAction = new QAction(tr("Export to CSV"), this);
     connect(exportAction, &QAction::triggered, this, &FormData::exportToCSV);
     contextMenu.addAction(exportAction);
 
     contextMenu.exec(ui->table->viewport()->mapToGlobal(pos));
+}
+
+void FormData::clearData()
+{
+    m_model->clear();
 }
 
 void FormData::exportToCSV()
@@ -85,10 +94,10 @@ void FormData::exportToCSV()
     QModelIndexList selectedRows = ui->table->selectionModel()->selectedRows();
     if (selectedRows.isEmpty()) {
         LOG_INFO("save all data!");
-        for (int row = 0; row < model->rowCount(); ++row) {
-            QString timestamp = model->item(row, 0)->text();
-            QString data = model->item(row, 1)->text();
-            QString size = model->item(row, 2)->text();
+        for (int row = 0; row < m_model->rowCount(); ++row) {
+            QString timestamp = m_model->item(row, 0)->text();
+            QString data = m_model->item(row, 1)->text();
+            QString size = m_model->item(row, 2)->text();
 
             stream << timestamp << "," << data << "," << size << "\n";
         }
@@ -97,9 +106,9 @@ void FormData::exportToCSV()
         foreach (const QModelIndex &index, selectedRows) {
             int row = index.row();
 
-            QString timestamp = model->item(row, 0)->text();
-            QString data = model->item(row, 1)->text();
-            QString size = model->item(row, 2)->text();
+            QString timestamp = m_model->item(row, 0)->text();
+            QString data = m_model->item(row, 1)->text();
+            QString size = m_model->item(row, 2)->text();
 
             stream << timestamp << "," << data << "," << size << "\n";
         }

@@ -31,7 +31,7 @@ private:
 
 private:
     Ui::FormPlotData *ui;
-    QStandardItemModel *model;
+    QStandardItemModel *m_model;
 
     // QWidget interface
 protected:

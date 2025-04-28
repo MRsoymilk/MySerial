@@ -24,18 +24,18 @@ void FormPlotData::updateTable(const QVector<QPointF> &points)
         QList<QStandardItem *> rowItems;
         rowItems << new QStandardItem(QString::number(point.x()));
         rowItems << new QStandardItem(QString::number(point.y()));
-        model->appendRow(rowItems);
+        m_model->appendRow(rowItems);
     }
 }
 
 void FormPlotData::init()
 {
-    model = new QStandardItemModel(this);
-    model->setColumnCount(2);
-    model->setHeaderData(0, Qt::Horizontal, "x");
-    model->setHeaderData(1, Qt::Horizontal, "y");
+    m_model = new QStandardItemModel(this);
+    m_model->setColumnCount(2);
+    m_model->setHeaderData(0, Qt::Horizontal, "x");
+    m_model->setHeaderData(1, Qt::Horizontal, "y");
 
-    ui->table->setModel(model);
+    ui->table->setModel(m_model);
 
     ui->table->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->table->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -68,7 +68,7 @@ void FormPlotData::showContextMenu(const QPoint &pos)
 
 void FormPlotData::clearData()
 {
-    model->clear();
+    m_model->clear();
 }
 
 void FormPlotData::exportToCSV()
@@ -93,17 +93,17 @@ void FormPlotData::exportToCSV()
     QModelIndexList selectedRows = ui->table->selectionModel()->selectedRows();
     if (selectedRows.isEmpty()) {
         LOG_INFO("save all data!");
-        for (int row = 0; row < model->rowCount(); ++row) {
-            QString x = model->item(row, 0)->text();
-            QString y = model->item(row, 1)->text();
+        for (int row = 0; row < m_model->rowCount(); ++row) {
+            QString x = m_model->item(row, 0)->text();
+            QString y = m_model->item(row, 1)->text();
             stream << x << "," << y << "\n";
         }
     } else {
         LOG_INFO("save selected data!");
         foreach (const QModelIndex &index, selectedRows) {
             int row = index.row();
-            QString x = model->item(row, 0)->text();
-            QString y = model->item(row, 1)->text();
+            QString x = m_model->item(row, 0)->text();
+            QString y = m_model->item(row, 1)->text();
             stream << x << "," << y << "\n";
         }
     }

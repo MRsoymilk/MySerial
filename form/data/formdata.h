@@ -21,14 +21,15 @@ public slots:
 
 private slots:
     void exportToCSV();
+    void clearData();
 
 private:
     void init();
+    void showContextMenu(const QPoint &pos);
 
 private:
     Ui::FormData *ui;
-    QStandardItemModel *model;
-    void showContextMenu(const QPoint &pos);
+    QStandardItemModel *m_model;
 };
 
 #endif // FORMDATA_H
