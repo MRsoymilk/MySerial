@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-<<<<<<< HEAD
-project(MySerial VERSION 1.0.6 LANGUAGES CXX)
-=======
 project(MySerial VERSION 1.0.7 LANGUAGES CXX)
->>>>>>> 8f9e19d (add send label)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
