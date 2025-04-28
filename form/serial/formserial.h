@@ -58,11 +58,6 @@ private slots:
     void on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &state);
     void on_cBoxSendFormat_currentTextChanged(const QString &format);
     void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &arg1);
-    void on_tBtn_0_clicked();
-    void on_tBtn_1_clicked();
-    void on_tBtn_2_clicked();
-    void on_tBtn_3_clicked();
-    void on_tBtn_4_clicked();
     void on_checkBoxScheduledDelivery_clicked();
     void onAutoSend();
     void on_lineEditCycle_editingFinished();
@@ -79,6 +74,7 @@ private:
     SEND_FORMAT m_send_format;
     bool m_hex_display;
     QTimer *m_send_timer;
+    void initMultSend();
 };
 
 #endif // FORMSERIAL_H
