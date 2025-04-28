@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class FormTip;
+
 namespace Ui {
 class FormSetting;
 }
@@ -15,12 +17,14 @@ public:
     {
         QString url;
         QString check;
+        QString tip;
     };
 
 public:
     explicit FormSetting(QWidget *parent = nullptr);
     ~FormSetting();
-
+signals:
+    void showUpdates(const QString &url);
 private slots:
     void on_btnCheck_clicked();
     void on_checkBoxCheckUpdates_checkStateChanged(const Qt::CheckState &state);
@@ -30,13 +34,14 @@ public slots:
 
 private:
     void getINI();
+    void init();
+    bool checkAndDownload(const QString &filename);
+    void scriptAndUpdate(QStringList items);
 
 private:
     Ui::FormSetting *ui;
     INI_UPDATE m_update;
-    void init();
-    bool checkAndDownload(const QString &filename);
-    void scriptAndUpdate(QStringList items);
+    FormTip *m_tip;
 };
 
 #endif // FORMSETTING_H

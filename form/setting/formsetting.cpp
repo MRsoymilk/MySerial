@@ -8,6 +8,7 @@
 #include <QNetworkRequest>
 #include <QOperatingSystemVersion>
 #include <QProcess>
+#include "formtip.h"
 
 FormSetting::FormSetting(QWidget *parent)
     : QWidget(parent)
@@ -15,11 +16,13 @@ FormSetting::FormSetting(QWidget *parent)
 {
     ui->setupUi(this);
     init();
-    ui->checkBoxCheckUpdates->hide();
 }
 
 FormSetting::~FormSetting()
 {
+    if (m_tip) {
+        m_tip->close();
+    }
     SETTING_SYNC();
     delete ui;
 }
@@ -27,6 +30,13 @@ FormSetting::~FormSetting()
 void FormSetting::init()
 {
     getINI();
+    if (m_update.tip == VAL_ENABLE) {
+        m_tip = new FormTip;
+        connect(this, &FormSetting::showUpdates, m_tip, &FormTip::onFetchUpdates);
+        emit showUpdates(m_update.url);
+        m_tip->show();
+        SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
+    }
 }
 
 void FormSetting::on_btnCheck_clicked()
@@ -127,7 +137,7 @@ void FormSetting::onAutoUpdate()
 
 bool FormSetting::checkAndDownload(const QString &filename)
 {
-    QString url = m_update.url + "/" + filename;
+    QString url = m_update.url + "/latest" + "/" + filename;
     QString tempDir = QDir::tempPath();
     QString tempFilePath = tempDir + "/" + filename;
     QString localFilePath = QCoreApplication::applicationDirPath() + "/" + filename;
@@ -184,6 +194,7 @@ bool FormSetting::checkAndDownload(const QString &filename)
                                            QMessageBox::Yes | QMessageBox::No);
             if (toUpdate == QMessageBox::Yes) {
                 LOG_INFO("<update> Use Choose Update");
+                SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_ENABLE);
                 return true;
             } else {
                 LOG_INFO("<update> Use Choose Not Update");
@@ -209,8 +220,10 @@ void FormSetting::getINI()
 {
     m_update.url = SETTING_GET(CFG_GROUP_SETTING,
                                CFG_SETTING_UPDATE_URL,
-                               "http://192.168.123.14:8000/latest");
+                               "http://192.168.123.14:8000");
     m_update.check = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, VAL_DISABLE);
     ui->lineEditURL->setText(m_update.url);
     ui->checkBoxCheckUpdates->setChecked(m_update.check == VAL_ENABLE ? true : false);
+
+    m_update.tip = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
 }
