@@ -130,8 +130,8 @@ void FormSerial::init()
     // ini
     getINI();
     QObject::connect(qApp, &QCoreApplication::aboutToQuit, [=]() {
-        if (m_serial->isOpen()) {
-            m_serial->close();
+        if (m_serial && m_serial->isOpen()) {
+            QMetaObject::invokeMethod(m_serial, "close", Qt::QueuedConnection);
         }
     });
     m_send_timer = new QTimer(this);
