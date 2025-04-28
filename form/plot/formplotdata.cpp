@@ -68,7 +68,9 @@ void FormPlotData::showContextMenu(const QPoint &pos)
 
 void FormPlotData::clearData()
 {
-    m_model->clear();
+    if (m_model->rowCount() > 0) {
+        m_model->removeRows(0, m_model->rowCount());
+    }
 }
 
 void FormPlotData::exportToCSV()
