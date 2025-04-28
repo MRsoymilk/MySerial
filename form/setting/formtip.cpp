@@ -1,6 +1,7 @@
 #include "formtip.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include "funcdef.h"
 #include "ui_formtip.h"
 
 FormTip::FormTip(QWidget *parent)
@@ -28,10 +29,9 @@ void FormTip::onFetchUpdates(const QString &url)
 
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray data = reply->readAll();
-        qDebug() << "Response:" << data;
         ui->textBrowser->setText(data);
     } else {
-        qDebug() << "Error:" << reply->errorString();
+        LOG_WARN("Error: {}", reply->errorString());
     }
 
     reply->deleteLater();
