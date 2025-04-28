@@ -23,7 +23,7 @@ spectrum_packets = load_all_packets()
 
 # 启动串口
 try:
-    ser = serial.Serial('/dev/pts/5', 115200, timeout=1)
+    ser = serial.Serial('/dev/pts/10', 115200, timeout=1)
 except serial.SerialException as e:
     print(f"open port fail: {e}")
     exit(1)

@@ -87,6 +87,24 @@ void FormPlot::init()
     m_workerThread->start();
 }
 
+void FormPlot::wheelEvent(QWheelEvent *event)
+{
+    if (!m_autoZoom && (event->modifiers() & Qt::ControlModifier)) {
+        int delta = event->angleDelta().y();
+        double factor = (delta > 0) ? 0.9 : 1.1;
+
+        double center = (m_fixedYMin + m_fixedYMax) / 2.0;
+        double range = (m_fixedYMax - m_fixedYMin) * factor / 2.0;
+
+        m_fixedYMin = center - range;
+        m_fixedYMax = center + range;
+
+        m_axisY->setRange(m_fixedYMin, m_fixedYMax);
+    } else {
+        QWidget::wheelEvent(event);
+    }
+}
+
 void FormPlot::onDataReceived(const QByteArray &data)
 {
     emit newDataReceived(data);

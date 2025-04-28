@@ -54,6 +54,10 @@ private:
     QThread *m_workerThread;
     PlotWorker *m_worker;
     FormPlotData *m_plotdata;
+
+    // QWidget interface
+protected:
+    void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif // FORMPLOT_H
