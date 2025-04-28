@@ -64,6 +64,26 @@ void FormSerial::getINI()
     ui->lineEdit_cmd_2->setText(mult_2);
     ui->lineEdit_cmd_3->setText(mult_3);
     ui->lineEdit_cmd_4->setText(mult_4);
+
+    QStringList labels;
+    for (int i = 0; i < 5; ++i) {
+        labels.push_back(SETTING_GET(CFG_GROUP_SERIAL,
+                                     QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
+                                     QString("cmd_%1").arg(i)));
+    }
+
+    for (int i = 0; i < 5; ++i) {
+        QString lineEditName = QString("lineEdit_label_%1").arg(i);
+        QLineEdit *lineEdit = findChild<QLineEdit *>(lineEditName);
+        if (lineEdit) {
+            lineEdit->setPlaceholderText(labels.at(i));
+            connect(lineEdit, &QLineEdit::editingFinished, this, [this, lineEdit, i]() {
+                SETTING_SET(CFG_GROUP_SERIAL,
+                            QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
+                            lineEdit->text());
+            });
+        }
+    }
 }
 
 void FormSerial::init()
