@@ -13,10 +13,7 @@
   <property name="windowTitle">
    <string>Plot</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="1,18">
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gLayPlot"/>
-   </item>
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,9">
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -31,6 +28,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtn3D">
+       <property name="text">
+        <string>3D</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="tBtnZoom">
@@ -50,6 +54,9 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
   </layout>
  </widget>

@@ -3,11 +3,16 @@
 
 #include <QThread>
 #include <QTimer>
+#include <QWheelEvent>
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
-#include <cmath>
+
+#include <QtDataVisualization/Q3DSurface>
+#include <QtDataVisualization/QSurface3DSeries>
+#include <QtDataVisualization/QSurfaceDataArray>
+#include <QtDataVisualization/QSurfaceDataProxy>
 
 FormPlot::FormPlot(QWidget *parent)
     : QWidget(parent)
@@ -52,9 +57,44 @@ void FormPlot::init()
     m_chart->legend()->hide();
     m_chart->setTitle("Live ADC Waveform");
 
-    QChartView *view = new QChartView(m_chart);
-    view->setRenderHint(QPainter::Antialiasing);
-    ui->gLayPlot->addWidget(view);
+    m_chartView = new QChartView(m_chart);
+    m_chartView->setRenderHint(QPainter::Antialiasing);
+    ui->stackedWidget->addWidget(m_chartView);
+
+    m_surface = new Q3DSurface();
+    m_surfaceAxisX = new QValue3DAxis();
+    m_surfaceAxisY = new QValue3DAxis();
+    m_surfaceAxisZ = new QValue3DAxis();
+    m_surfaceAxisX->setTitle("Time (s)");
+    m_surfaceAxisY->setTitle("Voltage (V)");
+    m_surfaceAxisZ->setTitle("line");
+    m_surfaceAxisX->setTitleVisible(true);
+    m_surfaceAxisY->setTitleVisible(true);
+    m_surfaceAxisZ->setTitleVisible(true);
+    m_surface->setAxisX(m_surfaceAxisX);
+    m_surface->setAxisY(m_surfaceAxisY);
+    m_surface->setAxisZ(m_surfaceAxisZ);
+    m_surface->setTitle("Live ADC Waveform");
+    m_surfaceProxy = new QSurfaceDataProxy();
+    m_surfaceSeries = new QSurface3DSeries(m_surfaceProxy);
+
+    m_surfaceSeries->setMesh(QAbstract3DSeries::MeshCylinder);
+    m_surfaceSeries->setBaseColor(Qt::cyan);
+    m_surfaceSeries->setMeshSmooth(true);
+    m_surfaceSeries->setDrawMode(QSurface3DSeries::DrawSurface);
+
+    m_surface->activeTheme()->setGridEnabled(true);
+    m_surface->activeTheme()->setGridLineColor(Qt::gray);
+
+    m_surface->setShadowQuality(QAbstract3DGraph::ShadowQualityMedium);
+
+    m_surface->addSeries(m_surfaceSeries);
+    m_surface->setVisible(true);
+
+    m_surfaceWidget = QWidget::createWindowContainer(m_surface);
+    ui->stackedWidget->addWidget(m_surfaceWidget);
+
+    ui->stackedWidget->setCurrentWidget(m_chartView);
 
     ui->tBtnZoom->setIcon(QIcon(":/res/icons/zoom.png"));
     ui->tBtnZoom->setIconSize(QSize(16, 16));
@@ -67,6 +107,12 @@ void FormPlot::init()
     ui->tBtnData->setCheckable(true);
     ui->tBtnData->setChecked(m_showData);
     ui->tBtnData->setToolTip("Data");
+
+    ui->tBtn3D->setIcon(QIcon(":/res/icons/3d.png"));
+    ui->tBtn3D->setIconSize(QSize(16, 16));
+    ui->tBtn3D->setCheckable(true);
+    ui->tBtn3D->setChecked(m_show3D);
+    ui->tBtn3D->setToolTip("3D");
 
     m_workerThread = new QThread(this);
     m_worker = new PlotWorker();
@@ -136,6 +182,18 @@ void FormPlot::updatePlot(QLineSeries *line,
     }
 
     m_chart->update();
+
+    QSurfaceDataArray *data = new QSurfaceDataArray;
+    QSurfaceDataRow *surface_line = new QSurfaceDataRow;
+    QSurfaceDataRow *surface_line_ = new QSurfaceDataRow;
+
+    for (int i = 0; i < m_series->count(); ++i) {
+        (*surface_line) << QVector3D(m_series->at(i).x(), m_series->at(i).y(), 0);
+        (*surface_line_) << QVector3D(m_series->at(i).x(), m_series->at(i).y(), 0.1);
+    }
+    *data << surface_line << surface_line_;
+
+    m_surfaceProxy->resetArray(data);
 }
 
 void FormPlot::on_tBtnZoom_clicked()
@@ -154,4 +212,14 @@ void FormPlot::plotDataClose()
 {
     m_showData = false;
     ui->tBtnData->setChecked(m_showData);
+}
+
+void FormPlot::on_tBtn3D_clicked()
+{
+    m_show3D = !m_show3D;
+    if (m_show3D) {
+        ui->stackedWidget->setCurrentWidget(m_surfaceWidget);
+    } else {
+        ui->stackedWidget->setCurrentWidget(m_chartView);
+    }
 }
