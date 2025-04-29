@@ -91,7 +91,15 @@ void FormPlot::init()
     m_surface->addSeries(m_surfaceSeries);
     m_surface->setVisible(true);
 
+    QSurfaceDataArray *initData = new QSurfaceDataArray;
+    QSurfaceDataRow *row = new QSurfaceDataRow;
+    *row << QVector3D(0, 0, 0);
+    *initData << row;
+    m_surfaceProxy->resetArray(initData);
+
     m_surfaceWidget = QWidget::createWindowContainer(m_surface);
+    m_surfaceWidget->setFocusPolicy(Qt::ClickFocus);
+
     ui->stackedWidget->addWidget(m_surfaceWidget);
 
     ui->stackedWidget->setCurrentWidget(m_chartView);

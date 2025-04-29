@@ -17,5 +17,6 @@
         <file>res/icons/data.png</file>
         <file>res/icons/setting-off.png</file>
         <file>res/icons/setting-on.png</file>
+        <file>res/icons/3d.png</file>
     </qresource>
 </RCC>
