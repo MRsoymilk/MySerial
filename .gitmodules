@@ -1,0 +1,3 @@
+[submodule "vendor/qtgraphs"]
+	path = vendor/qtgraphs
+	url = https://github.com/qt/qtgraphs.git
