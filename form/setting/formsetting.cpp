@@ -9,6 +9,7 @@
 #include <QOperatingSystemVersion>
 #include <QProcess>
 #include "formtip.h"
+#include "server.h"
 
 FormSetting::FormSetting(QWidget *parent)
     : QWidget(parent)
@@ -30,12 +31,15 @@ FormSetting::~FormSetting()
 void FormSetting::init()
 {
     getINI();
-    if (m_update.tip == VAL_ENABLE) {
+    if (m_iniUpdate.tip == VAL_ENABLE) {
         m_tip = new FormTip;
         connect(this, &FormSetting::showUpdates, m_tip, &FormTip::onFetchUpdates);
-        emit showUpdates(m_update.url);
+        emit showUpdates(m_iniUpdate.url);
         m_tip->show();
         SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
+    }
+    if (m_iniServer.enable == VAL_ENABLE) {
+        m_server = new Server(m_iniServer.port.toInt());
     }
 }
 
@@ -48,17 +52,17 @@ void FormSetting::on_btnCheck_clicked()
 void FormSetting::on_checkBoxCheckUpdates_checkStateChanged(const Qt::CheckState &state)
 {
     if (state == Qt::CheckState::Checked) {
-        m_update.check = VAL_ENABLE;
+        m_iniUpdate.check = VAL_ENABLE;
     } else {
-        m_update.check = VAL_DISABLE;
+        m_iniUpdate.check = VAL_DISABLE;
     }
-    SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, m_update.check);
+    SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, m_iniUpdate.check);
 }
 
 void FormSetting::on_lineEditURL_editingFinished()
 {
-    m_update.url = ui->lineEditURL->text();
-    SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_URL, m_update.url);
+    m_iniUpdate.url = ui->lineEditURL->text();
+    SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_URL, m_iniUpdate.url);
 }
 
 void FormSetting::scriptAndUpdate(QStringList items)
@@ -137,7 +141,7 @@ void FormSetting::onAutoUpdate()
 
 bool FormSetting::checkAndDownload(const QString &filename)
 {
-    QString url = m_update.url + "/latest" + "/" + filename;
+    QString url = m_iniUpdate.url + "/latest" + "/" + filename;
     QString tempDir = QDir::tempPath();
     QString tempFilePath = tempDir + "/" + filename;
     QString localFilePath = QCoreApplication::applicationDirPath() + "/" + filename;
@@ -218,12 +222,31 @@ bool FormSetting::checkAndDownload(const QString &filename)
 
 void FormSetting::getINI()
 {
-    m_update.url = SETTING_GET(CFG_GROUP_SETTING,
-                               CFG_SETTING_UPDATE_URL,
-                               "http://192.168.123.14:8000");
-    m_update.check = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, VAL_DISABLE);
-    ui->lineEditURL->setText(m_update.url);
-    ui->checkBoxCheckUpdates->setChecked(m_update.check == VAL_ENABLE ? true : false);
+    m_iniUpdate.url = SETTING_GET(CFG_GROUP_SETTING,
+                                  CFG_SETTING_UPDATE_URL,
+                                  "http://192.168.123.14:8000");
+    m_iniUpdate.check = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, VAL_DISABLE);
+    ui->lineEditURL->setText(m_iniUpdate.url);
+    ui->checkBoxCheckUpdates->setChecked(m_iniUpdate.check == VAL_ENABLE ? true : false);
 
-    m_update.tip = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
+    m_iniUpdate.tip = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
+
+    m_iniServer.enable = SETTING_GET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, VAL_ENABLE);
+    m_iniServer.log = SETTING_GET(CFG_GROUP_SERVER, CFG_SERVER_LOG, VAL_DISABLE);
+    m_iniServer.port = SETTING_GET(CFG_GROUP_SERVER, CFG_SERVER_PORT, "12345");
+    ui->checkBoxEnable->setChecked(m_iniServer.enable == VAL_ENABLE ? true : false);
+    ui->checkBoxLog->setChecked(m_iniServer.log == VAL_ENABLE ? true : false);
+    ui->lineEditPort->setText(m_iniServer.port);
+}
+
+void FormSetting::on_checkBoxEnable_clicked()
+{
+    m_iniServer.enable = ui->checkBoxEnable->isChecked() ? VAL_ENABLE : VAL_DISABLE;
+    SETTING_SET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, m_iniServer.enable);
+}
+
+void FormSetting::on_checkBoxLog_clicked()
+{
+    m_iniServer.log = ui->checkBoxLog->isChecked() ? VAL_ENABLE : VAL_DISABLE;
+    SETTING_SET(CFG_GROUP_SERVER, CFG_SERVER_LOG, m_iniServer.log);
 }

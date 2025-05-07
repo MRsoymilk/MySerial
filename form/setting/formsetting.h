@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class FormTip;
+class Server;
 
 namespace Ui {
 class FormSetting;
@@ -20,6 +21,13 @@ public:
         QString tip;
     };
 
+    struct INI_SERVER
+    {
+        QString port;
+        QString enable;
+        QString log;
+    };
+
 public:
     explicit FormSetting(QWidget *parent = nullptr);
     ~FormSetting();
@@ -29,6 +37,10 @@ private slots:
     void on_btnCheck_clicked();
     void on_checkBoxCheckUpdates_checkStateChanged(const Qt::CheckState &state);
     void on_lineEditURL_editingFinished();
+    void on_checkBoxEnable_clicked();
+
+    void on_checkBoxLog_clicked();
+
 public slots:
     void onAutoUpdate();
 
@@ -40,8 +52,10 @@ private:
 
 private:
     Ui::FormSetting *ui;
-    INI_UPDATE m_update;
+    INI_UPDATE m_iniUpdate;
+    INI_SERVER m_iniServer;
     FormTip *m_tip;
+    Server *m_server;
 };
 
 #endif // FORMSETTING_H

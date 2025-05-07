@@ -18,6 +18,8 @@ set(PROJECT_SOURCES
         main/mainwindow.cpp
         main/mainwindow.h
         main/mainwindow.ui
+        module/server/server.h
+        module/server/server.cpp
         form/serial/formserial.h
         form/serial/formserial.cpp
         form/serial/formserial.ui
@@ -58,7 +60,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
-target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common")
+target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common" "${CMAKE_SOURCE_DIR}/module/server")
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET MySerial APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)

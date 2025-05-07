@@ -26,4 +26,8 @@ const QString CFG_GROUP_SETTING = "Setting";
 const QString CFG_SETTING_UPDATE_URL = "update_url";
 const QString CFG_SETTING_UPDATE_CHECK = "update_check";
 const QString CFG_SETTING_UPDATE_TIP = "update_tip";
+const QString CFG_GROUP_SERVER = "Server";
+const QString CFG_SERVER_ENABLE = "enable";
+const QString CFG_SERVER_PORT = "port";
+const QString CFG_SERVER_LOG = "log";
 #endif
