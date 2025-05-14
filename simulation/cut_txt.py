@@ -1,7 +1,7 @@
 import os
 
 # 设置路径
-input_filename = "4.21.txt"  # 原始数据文件
+input_filename = "512_TEST_23.txt"  # 原始数据文件
 output_prefix = "packet"         # 输出文件前缀，如 packet1.txt、packet2.txt
 
 # 读取文件内容
@@ -10,6 +10,7 @@ with open(input_filename, 'r') as f:
 
 # 包头和包尾定义
 header = ['DE', '3A', '09', '66', '31']
+header_1 = ['DE', '3A', '09', '66', '33']
 footer = ['CE', 'FF']
 
 i = 0
@@ -17,7 +18,7 @@ packet_count = 0
 
 while i < len(raw_data):
     # 查找包头
-    if raw_data[i:i+5] == header:
+    if raw_data[i:i+5] == header or raw_data[i:i+5] == header_1:
         # 找到开头，开始收集
         start = i
         i += 5

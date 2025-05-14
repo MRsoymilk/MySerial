@@ -17,7 +17,7 @@ public:
     ~FormData();
 
 public slots:
-    void onDataReceived(const QByteArray &data);
+    void onDataReceived(const QByteArray &data, const QString &name);
 
 private slots:
     void exportToCSV();

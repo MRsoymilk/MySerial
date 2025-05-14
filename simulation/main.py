@@ -23,7 +23,7 @@ spectrum_packets = load_all_packets()
 
 # 启动串口
 try:
-    ser = serial.Serial('/dev/pts/0', 115200, timeout=1)
+    ser = serial.Serial('/dev/pts/4', 115200, timeout=1)
 except serial.SerialException as e:
     print(f"open port fail: {e}")
     exit(1)
@@ -39,8 +39,8 @@ try:
 #            while True:
             if True:
                 print("start command received!")
-                for packet in spectrum_packets:
-                    print("sending packet: ", len(packet))
+                for i, packet in enumerate(spectrum_packets):
+                    print(f"sending packet_{i}: {len(packet)}")
                     ser.write(packet)
                     time.sleep(0.5)
                 print("sending all packets done")

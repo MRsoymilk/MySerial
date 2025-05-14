@@ -28,14 +28,18 @@ public:
     struct INI_SERIAL
     {
         QString port_name;
+        QString debug_port;
         QString baud_rate;
         QString send_format;
         bool show_send;
         bool hex_display;
+        QString cycle;
+        QString send_page;
+        QString single_send;
     };
 signals:
-    void recv2Plot(const QByteArray &data);
-    void recv2Data(const QByteArray &data);
+    void recv2Plot(const QByteArray &data, const QString &name);
+    void recv2Data(const QByteArray &data, const QString &name);
 
 public:
     explicit FormSerial(QWidget *parent = nullptr);
@@ -75,6 +79,19 @@ private:
     bool m_hex_display;
     QTimer *m_send_timer;
     void initMultSend();
+    struct FrameType
+    {
+        QByteArray header;
+        QString name;
+    };
+
+    const QList<FrameType> m_frameTypes = {
+        {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
+        {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
+    };
+
+    const QByteArray m_footer = QByteArray::fromHex("CEFF");
+    void setINI();
 };
 
 #endif // FORMSERIAL_H

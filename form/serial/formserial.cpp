@@ -38,25 +38,34 @@ void FormSerial::getINI()
                                 == VAL_ENABLE
                             ? true
                             : false;
-    QString cycle = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
-    QString send_page = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
+    m_ini.debug_port = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
+    m_ini.cycle = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
+    m_ini.send_page = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
+    m_ini.single_send = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
 
+    initMultSend();
+}
+
+void FormSerial::setINI()
+{
+#ifdef QT_DEBUG
+    ui->cBoxPortName->addItem(m_ini.debug_port);
+    on_cBoxPortName_activated(0);
+    ui->cBoxPortName->setCurrentText(m_ini.debug_port);
+#else
     ui->cBoxPortName->setCurrentText(m_ini.port_name);
+#endif
     ui->cBoxBaudRate->setCurrentText(m_ini.baud_rate);
     on_cBoxSendFormat_currentTextChanged(m_ini.send_format);
     ui->checkBoxShowSend->setChecked(m_ini.show_send);
     ui->checkBoxHexDisplay->setChecked(m_ini.hex_display);
-    ui->lineEditCycle->setText(cycle);
-    if (send_page == VAL_PAGE_SINGLE) {
+    ui->lineEditCycle->setText(m_ini.cycle);
+    if (m_ini.send_page == VAL_PAGE_SINGLE) {
         ui->tabWidget->setCurrentWidget(ui->tabSingle);
     } else {
         ui->tabWidget->setCurrentWidget(ui->tabMultipe);
     }
-
-    QString single_send = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
-    ui->txtSend->setPlainText(single_send);
-
-    initMultSend();
+    ui->txtSend->setPlainText(m_ini.single_send);
 }
 
 void FormSerial::initMultSend()
@@ -116,6 +125,8 @@ void FormSerial::initMultSend()
 
 void FormSerial::init()
 {
+    // ini
+    getINI();
     // init port
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
@@ -136,11 +147,7 @@ void FormSerial::init()
     }
     m_switch = false;
     ui->btnSerialSwitch->setText("To Open");
-#ifdef QT_DEBUG
-    ui->cBoxPortName->addItem("/dev/pts/5");
-#endif
     ui->cBoxPortName->addItems(port_names);
-    on_cBoxPortName_activated(0);
 
     ui->cBoxDataBit->addItems({"8", "7", "6", "5"});
     ui->cBoxCheckBit->addItems({"None", "Even", "Mark", "Odd"});
@@ -152,11 +159,10 @@ void FormSerial::init()
     // TODO
     ui->groupBoxEnhancement->hide();
 
+    QSignalBlocker blocker(ui->cBoxSendFormat);
     ui->cBoxSendFormat->addItems(
         {VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX, VAL_SERIAL_SEND_HEX_TRANSLATE});
 
-    // ini
-    getINI();
     QObject::connect(qApp, &QCoreApplication::aboutToQuit, [=]() {
         if (m_serial && m_serial->isOpen()) {
             QMetaObject::invokeMethod(m_serial, "close", Qt::QueuedConnection);
@@ -164,19 +170,18 @@ void FormSerial::init()
     });
     m_send_timer = new QTimer(this);
     connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
+    setINI();
 }
 
 void FormSerial::send(const QString &text)
 {
     LOG_INFO("serial send: {}", text);
     if (!(m_serial && m_serial->isOpen())) {
-        qDebug() << "Serial port not open.";
         SHOW_AUTO_CLOSE_MSGBOX(this, "warning", "serial not open!");
         return;
     }
 
     if (text.isEmpty()) {
-        qDebug() << "Send text is empty.";
         LOG_WARN("Send txt is empty.");
         return;
     }
@@ -223,7 +228,10 @@ void FormSerial::send(const QString &text)
         qDebug() << "send (normal):" << data;
         to_show = data;
     }
-    m_serial->write(data);
+    auto res = m_serial->write(data);
+    if (res == -1) {
+        qDebug() << "Write failed:" << m_serial->errorString();
+    }
     if (m_ini.show_send) {
         ui->txtRecv->appendPlainText("[TX] " + to_show);
     }
@@ -257,9 +265,10 @@ void FormSerial::openSerial()
     m_serial = new QSerialPort(this);
     QString port_name = ui->cBoxPortName->currentText();
     m_serial->setPortName(port_name);
-    m_serial->setBaudRate(ui->cBoxBaudRate->currentText().toInt());
-    m_serial->setDataBits(
-        static_cast<QSerialPort::DataBits>(ui->cBoxDataBit->currentText().toInt()));
+    int baud_rate = ui->cBoxBaudRate->currentText().toInt();
+    m_serial->setBaudRate(baud_rate);
+    int data_bits = ui->cBoxDataBit->currentText().toInt();
+    m_serial->setDataBits(static_cast<QSerialPort::DataBits>(data_bits));
 
     QString check = ui->cBoxCheckBit->currentText();
     if (check == "None")
@@ -271,12 +280,12 @@ void FormSerial::openSerial()
     else if (check == "Mark")
         m_serial->setParity(QSerialPort::MarkParity);
 
-    QString stopBitText = ui->cBoxStopBit->currentText();
-    if (stopBitText == "1")
+    QString stop_bits = ui->cBoxStopBit->currentText();
+    if (stop_bits == "1")
         m_serial->setStopBits(QSerialPort::OneStop);
-    else if (stopBitText == "1.5")
+    else if (stop_bits == "1.5")
         m_serial->setStopBits(QSerialPort::OneAndHalfStop);
-    else if (stopBitText == "2")
+    else if (stop_bits == "2")
         m_serial->setStopBits(QSerialPort::TwoStop);
 
     m_serial->setFlowControl(QSerialPort::NoFlowControl);
@@ -341,33 +350,43 @@ void FormSerial::onReadyRead()
     ui->txtRecv->appendPlainText("[RX] " + to_show);
     m_buffer.append(data);
 
-    const QByteArray header = QByteArray::fromHex("DE3A096631");
-    const QByteArray footer = QByteArray::fromHex("CEFF");
-
     while (true) {
-        int startIdx = m_buffer.indexOf(header);
-        if (startIdx == -1) {
-            // 没找到头，清除无用数据
+        int firstHeaderIdx = -1;
+        int matchedHeaderLen = 0;
+        QString matchedType;
+
+        // 找最前面出现的合法头部
+        for (const auto &type : m_frameTypes) {
+            int idx = m_buffer.indexOf(type.header);
+            if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
+                firstHeaderIdx = idx;
+                matchedHeaderLen = type.header.size();
+                matchedType = type.name;
+            }
+        }
+
+        if (firstHeaderIdx == -1) {
             if (m_buffer.size() > 1024)
                 m_buffer.clear();
             break;
         }
 
-        int endIdx = m_buffer.indexOf(footer, startIdx);
+        int endIdx = m_buffer.indexOf(m_footer, firstHeaderIdx + matchedHeaderLen);
         if (endIdx == -1) {
-            // 没找到尾，等待更多数据
+            // 没找到尾部，继续等数据
             break;
         }
 
-        int frameLen = endIdx + footer.size() - startIdx;
-        QByteArray frame = m_buffer.mid(startIdx, frameLen);
+        int frameLen = endIdx + m_footer.size() - firstHeaderIdx;
+        QByteArray frame = m_buffer.mid(firstHeaderIdx, frameLen);
 
-        // 处理完整帧数据
-        emit recv2Data(frame);
-        emit recv2Plot(frame); // 发给 FormPlot
+        LOG_INFO("Matched frame type: {}", matchedType.toStdString());
 
-        // 移除已处理数据
-        m_buffer.remove(0, endIdx + footer.size());
+        // 处理完整帧
+        emit recv2Data(frame, matchedType);
+        emit recv2Plot(frame, matchedType);
+
+        m_buffer.remove(0, endIdx + m_footer.size());
     }
 }
 
@@ -402,11 +421,9 @@ void FormSerial::on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &sta
 
 void FormSerial::on_cBoxSendFormat_currentTextChanged(const QString &format)
 {
-    if (!m_ini.send_format.isEmpty()) {
-        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_FORMAT, format);
-    }
     m_ini.send_format = format;
     ui->cBoxSendFormat->setCurrentText(format);
+    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_FORMAT, format);
 }
 
 void FormSerial::on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &state)
@@ -419,36 +436,6 @@ void FormSerial::on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &s
         SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE);
     }
 }
-
-// void FormSerial::on_tBtn_0_clicked()
-// {
-//     QString text = ui->lineEdit_cmd_0->text().trimmed();
-//     send(text);
-// }
-
-// void FormSerial::on_tBtn_1_clicked()
-// {
-//     QString text = ui->lineEdit_cmd_1->text().trimmed();
-//     send(text);
-// }
-
-// void FormSerial::on_tBtn_2_clicked()
-// {
-//     QString text = ui->lineEdit_cmd_2->text().trimmed();
-//     send(text);
-// }
-
-// void FormSerial::on_tBtn_3_clicked()
-// {
-//     QString text = ui->lineEdit_cmd_3->text().trimmed();
-//     send(text);
-// }
-
-// void FormSerial::on_tBtn_4_clicked()
-// {
-//     QString text = ui->lineEdit_cmd_4->text().trimmed();
-//     send(text);
-// }
 
 void FormSerial::on_checkBoxScheduledDelivery_clicked()
 {

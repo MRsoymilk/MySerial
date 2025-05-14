@@ -11,6 +11,7 @@
 #include <QtDataVisualization/QSurfaceDataProxy>
 #include "formplotdata.h"
 #include "plotworker.h"
+
 namespace Ui {
 class FormPlot;
 }
@@ -24,13 +25,14 @@ public:
     ~FormPlot();
 
 signals:
-    void newDataReceived(const QByteArray &data);
+    void newDataReceived(const QByteArray &data, const QString &name);
 
 private slots:
     void on_tBtnZoom_clicked();
     void on_tBtnData_clicked();
     void plotDataClose();
-    void updatePlot(QLineSeries *line,
+    void updatePlot(const QString &name,
+                    QLineSeries *line,
                     const int &points,
                     const double &min_y,
                     const double &max_y,
@@ -40,7 +42,7 @@ private slots:
     void on_tBtn3D_clicked();
 
 public slots:
-    void onDataReceived(const QByteArray &data);
+    void onDataReceived(const QByteArray &data, const QString &name);
 
 private:
     void init();
@@ -48,6 +50,7 @@ private:
 private:
     Ui::FormPlot *ui;
     QLineSeries *m_series;
+    QLineSeries *m_series_1;
     QChart *m_chart;
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
@@ -62,7 +65,9 @@ private:
 
     Q3DSurface *m_surface = nullptr;
     QSurface3DSeries *m_surfaceSeries = nullptr;
+    QSurface3DSeries *m_surfaceSeries_1 = nullptr;
     QSurfaceDataProxy *m_surfaceProxy = nullptr;
+    QSurfaceDataProxy *m_surfaceProxy_1 = nullptr;
     QWidget *m_surfaceWidget = nullptr;
     QValue3DAxis *m_surfaceAxisX;
     QValue3DAxis *m_surfaceAxisY;

@@ -37,7 +37,7 @@ void FormData::init()
     connect(ui->table, &QWidget::customContextMenuRequested, this, &FormData::showContextMenu);
 }
 
-void FormData::onDataReceived(const QByteArray &data)
+void FormData::onDataReceived(const QByteArray &data, const QString &name)
 {
     QList<QStandardItem *> rowItems;
 

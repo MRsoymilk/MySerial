@@ -12,11 +12,16 @@ public:
     ~PlotWorker();
 
 public slots:
-    void processData(const QByteArray &data);
+    void processData(const QByteArray &data, const QString &name);
 
 signals:
-    void dataReady(
-        QLineSeries *line, int numPoints, double minY, double maxY, double minX, double maxX);
+    void dataReady(const QString &name,
+                   QLineSeries *line,
+                   int numPoints,
+                   double minY,
+                   double maxY,
+                   double minX,
+                   double maxX);
     void pointsReady(const QList<QPointF> &points);
 
 private:

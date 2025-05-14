@@ -12,6 +12,7 @@ const QString VAL_SERIAL_SEND_HEX = "hex";
 const QString VAL_SERIAL_SEND_HEX_TRANSLATE = "hex_translate";
 const QString CFG_SERIAL_SHOW_SEND = "show_send";
 const QString CFG_SERIAL_HEX_DISPLAY = "hex_display";
+const QString CFG_SERIAL_DEBUG_PORT = "debug_port";
 const QString CFG_SERIAL_CYCLE = "cycle";
 const QString CFG_SERIAL_SEND_PAGE = "send_page";
 const QString VAL_PAGE_SINGLE = "single";

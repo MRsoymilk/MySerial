@@ -9,7 +9,7 @@ PlotWorker::PlotWorker(QObject *parent)
 
 PlotWorker::~PlotWorker() {}
 
-void PlotWorker::processData(const QByteArray &data)
+void PlotWorker::processData(const QByteArray &data, const QString &name)
 {
     QByteArray payload = data.mid(5, data.size() - 7);
     qDebug() << "payload: " << payload.size();
@@ -17,11 +17,22 @@ void PlotWorker::processData(const QByteArray &data)
         qWarning() << "Invalid data length";
         return;
     }
+    QByteArray filteredPayload;
+    for (int i = 0; i < payload.size(); i += 3) {
+        quint32 value = (static_cast<quint8>(payload[i]) << 16)
+                        | (static_cast<quint8>(payload[i + 1]) << 8)
+                        | static_cast<quint8>(payload[i + 2]);
+
+        if (value != 0) {
+            filteredPayload.append(payload.mid(i, 3));
+        }
+    }
+    payload = filteredPayload;
 
     int numPoints = payload.size() / 3;
 
-    double minY = std::numeric_limits<double>::max();
-    double maxY = std::numeric_limits<double>::lowest();
+    double yMin = std::numeric_limits<double>::max();
+    double yMax = std::numeric_limits<double>::lowest();
     QLineSeries *series = new QLineSeries;
     for (int i = 0; i < numPoints; ++i) {
         int idx = i * 3;
@@ -32,19 +43,25 @@ void PlotWorker::processData(const QByteArray &data)
         if (signedRaw & 0x800000)
             signedRaw |= 0xFF000000;
 
-        double voltage = (signedRaw / double(1 << 23)) * 2.5;
+        double voltage;
 
-        if (voltage < minY)
-            minY = voltage;
-        if (voltage > maxY)
-            maxY = voltage;
+        if (name == "curve_24bit") {
+            voltage = signedRaw / double(1 << 23) * 2.5;
+        } else if (name == "curve_14bit") {
+            voltage = signedRaw / double(65535) * 4;
+        }
+
+        if (voltage < yMin)
+            yMin = voltage;
+        if (voltage > yMax)
+            yMax = voltage;
 
         series->append(m_time + m_T * i, voltage);
     }
     emit pointsReady(series->points());
 
-    double min_x = m_time;
-    double max_x = m_time + numPoints * m_T;
-    m_time = max_x;
-    emit dataReady(series, numPoints, minY, maxY, min_x, max_x);
+    double xMin = m_time;
+    double xMax = m_time + numPoints * m_T;
+    // m_time = xMax;
+    emit dataReady(name, series, numPoints, yMin, yMax, xMin, xMax);
 }
