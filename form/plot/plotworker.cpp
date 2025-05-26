@@ -40,15 +40,27 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
                       | (quint8) payload[idx + 2];
 
         qint32 signedRaw = static_cast<qint32>(raw);
-        if (signedRaw & 0x800000)
-            signedRaw |= 0xFF000000;
+
+        if (name == "curve_24bit") {
+            if (signedRaw & 0x800000) {
+                signedRaw |= 0xFF000000;
+            }
+        } else if (name == "curve_14bit") {
+            // signedRaw &= 0x3FFF;
+            // if (signedRaw & 0x2000) {
+            //     signedRaw |= 0xFFFFC000;
+            // }
+            if (signedRaw > 0x1FFF) {
+                signedRaw = 0x3FFF - signedRaw;
+            }
+        }
 
         double voltage;
 
         if (name == "curve_24bit") {
             voltage = signedRaw / double(1 << 23) * 2.5;
         } else if (name == "curve_14bit") {
-            voltage = signedRaw / double(65535) * 4;
+            voltage = signedRaw / double(0x3FFF) * 1.65;
         }
 
         if (voltage < yMin)
@@ -56,12 +68,17 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
         if (voltage > yMax)
             yMax = voltage;
 
-        series->append(m_time + m_T * i, voltage);
+        // series->append(m_time + m_T * i, voltage);
+        series->append(i, voltage);
     }
     emit pointsReady(series->points());
 
-    double xMin = m_time;
-    double xMax = m_time + numPoints * m_T;
+    // double xMin = m_time;
+    // double xMax = m_time + numPoints * m_T;
+
+    double xMin = 1;
+    double xMax = 2000;
+
     // m_time = xMax;
     emit dataReady(name, series, numPoints, yMin, yMax, xMin, xMax);
 }
