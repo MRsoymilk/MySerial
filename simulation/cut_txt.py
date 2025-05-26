@@ -1,7 +1,7 @@
 import os
 
 # 设置路径
-input_filename = "512_TEST_23.txt"  # 原始数据文件
+input_filename = "./5.23_5.txt"  # 原始数据文件
 output_prefix = "packet"         # 输出文件前缀，如 packet1.txt、packet2.txt
 
 # 读取文件内容
