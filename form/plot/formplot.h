@@ -10,6 +10,7 @@
 #include <QtDataVisualization/QSurface3DSeries>
 #include <QtDataVisualization/QSurfaceDataProxy>
 #include "formplotdata.h"
+#include "formplothistory.h"
 #include "plotworker.h"
 
 namespace Ui {
@@ -30,7 +31,10 @@ signals:
 private slots:
     void on_tBtnZoom_clicked();
     void on_tBtnData_clicked();
+    void on_tBtn3D_clicked();
+    void on_tBtnHistory_clicked();
     void plotDataClose();
+    void plotHistoryClose();
     void updatePlot(const QString &name,
                     QLineSeries *line,
                     const int &points,
@@ -38,8 +42,6 @@ private slots:
                     const double &max_y,
                     const double &min_x,
                     const double &max_x);
-
-    void on_tBtn3D_clicked();
 
 public slots:
     void onDataReceived(const QByteArray &data, const QString &name);
@@ -57,11 +59,13 @@ private:
     bool m_autoZoom = true;
     bool m_showData = false;
     bool m_show3D = false;
+    bool m_showHistory = false;
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
     QThread *m_workerThread;
     PlotWorker *m_worker;
     FormPlotData *m_plotdata;
+    FormPlotHistory *m_plothistory;
 
     Q3DSurface *m_surface = nullptr;
     QSurface3DSeries *m_surfaceSeries = nullptr;
@@ -75,7 +79,9 @@ private:
 
     QChartView *m_chartView = nullptr;
 
-    // QWidget interface
+    QList<QList<QPointF>> m_points;
+    QList<QList<QPointF>> m_points_1;
+
 protected:
     void wheelEvent(QWheelEvent *event) override;
 };

@@ -29,6 +29,10 @@ FormPlot::~FormPlot()
         m_plotdata->close();
         delete m_plotdata;
     }
+    if (m_plothistory) {
+        m_plothistory->close();
+        delete m_plothistory;
+    }
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
@@ -155,6 +159,12 @@ void FormPlot::init()
     ui->tBtn3D->setChecked(m_show3D);
     ui->tBtn3D->setToolTip("3D");
 
+    ui->tBtnHistory->setIcon(QIcon(":/res/icons/history.png"));
+    ui->tBtnHistory->setIconSize(QSize(16, 16));
+    ui->tBtnHistory->setCheckable(true);
+    ui->tBtnHistory->setChecked(m_showHistory);
+    ui->tBtnHistory->setToolTip("History");
+
     // thread worker
     m_workerThread = new QThread(this);
     m_worker = new PlotWorker();
@@ -163,7 +173,11 @@ void FormPlot::init()
     m_plotdata = new FormPlotData;
     m_plotdata->hide();
 
+    m_plothistory = new FormPlotHistory;
+    m_plothistory->hide();
+
     connect(m_plotdata, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
+    connect(m_plothistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(this, &FormPlot::newDataReceived, m_worker, &PlotWorker::processData);
     connect(m_worker, &PlotWorker::dataReady, this, &FormPlot::updatePlot, Qt::QueuedConnection);
@@ -192,9 +206,11 @@ void FormPlot::updatePlot(const QString &name,
     if (name == "curve_24bit") {
         m_series->replace(line->points());
         m_series->setName(name);
+        m_points.push_back(line->points());
     } else if (name == "curve_14bit") {
         m_series_1->replace(line->points());
         m_series_1->setName(name);
+        m_points_1.push_back(line->points());
     }
 
     m_axisX->setRange(min_x, max_x);
@@ -267,6 +283,12 @@ void FormPlot::plotDataClose()
     ui->tBtnData->setChecked(false);
 }
 
+void FormPlot::plotHistoryClose()
+{
+    m_showHistory = false;
+    ui->tBtnHistory->setChecked(false);
+}
+
 void FormPlot::on_tBtn3D_clicked()
 {
     m_show3D = !m_show3D;
@@ -275,4 +297,13 @@ void FormPlot::on_tBtn3D_clicked()
     } else {
         ui->stackedWidget->setCurrentWidget(m_chartView);
     }
+}
+
+void FormPlot::on_tBtnHistory_clicked()
+{
+    m_showHistory = !m_showHistory;
+    if (m_showHistory) {
+        m_plothistory->updateData(m_points, m_points_1);
+    }
+    m_plothistory->setVisible(m_showHistory);
 }
