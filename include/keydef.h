@@ -31,4 +31,8 @@ const QString CFG_GROUP_SERVER = "Server";
 const QString CFG_SERVER_ENABLE = "enable";
 const QString CFG_SERVER_PORT = "port";
 const QString CFG_SERVER_LOG = "log";
+const QString CFG_GROUP_SIMULATE = "Simulate";
+const QString CFG_SIMULATE_HEAD = "head";
+const QString CFG_SIMULATE_TAIL = "tail";
+const QString CFG_SIMULATE_FILE = "file";
 #endif

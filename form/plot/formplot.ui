@@ -30,6 +30,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="tBtnSimulate">
+       <property name="text">
+        <string>simulate</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="tBtn3D">
        <property name="text">
         <string>3D</string>

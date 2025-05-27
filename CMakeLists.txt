@@ -40,6 +40,9 @@ set(PROJECT_SOURCES
         form/plot/formplothistory.h
         form/plot/formplothistory.cpp
         form/plot/formplothistory.ui
+        form/plot/formplothistory.h
+        form/plot/formplothistory.cpp
+        form/plot/formplothistory.ui
         form/setting/formsetting.h
         form/setting/formsetting.cpp
         form/setting/formsetting.ui

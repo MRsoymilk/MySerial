@@ -46,10 +46,6 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
                 signedRaw |= 0xFF000000;
             }
         } else if (name == "curve_14bit") {
-            // signedRaw &= 0x3FFF;
-            // if (signedRaw & 0x2000) {
-            //     signedRaw |= 0xFFFFC000;
-            // }
             if (signedRaw > 0x1FFF) {
                 signedRaw = 0x3FFF - signedRaw;
             }

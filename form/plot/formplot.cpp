@@ -33,6 +33,10 @@ FormPlot::~FormPlot()
         m_plothistory->close();
         delete m_plothistory;
     }
+    if (m_plotSimulate) {
+        m_plotSimulate->close();
+        delete m_plotSimulate;
+    }
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
@@ -165,6 +169,12 @@ void FormPlot::init()
     ui->tBtnHistory->setChecked(m_showHistory);
     ui->tBtnHistory->setToolTip("History");
 
+    ui->tBtnSimulate->setIcon(QIcon(":/res/icons/simulate.png"));
+    ui->tBtnSimulate->setIconSize(QSize(16, 16));
+    ui->tBtnSimulate->setCheckable(true);
+    ui->tBtnSimulate->setChecked(m_showSimulate);
+    ui->tBtnSimulate->setToolTip("Simulate");
+
     // thread worker
     m_workerThread = new QThread(this);
     m_worker = new PlotWorker();
@@ -176,8 +186,16 @@ void FormPlot::init()
     m_plothistory = new FormPlotHistory;
     m_plothistory->hide();
 
+    m_plotSimulate = new FormPlotSimulate;
+    m_plotSimulate->hide();
+
     connect(m_plotdata, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
     connect(m_plothistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
+    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormPlot::plotSimulateClose);
+    connect(m_plotSimulate,
+            &FormPlotSimulate::simulateDataReady,
+            m_worker,
+            &PlotWorker::processData);
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(this, &FormPlot::newDataReceived, m_worker, &PlotWorker::processData);
     connect(m_worker, &PlotWorker::dataReady, this, &FormPlot::updatePlot, Qt::QueuedConnection);
@@ -289,6 +307,12 @@ void FormPlot::plotHistoryClose()
     ui->tBtnHistory->setChecked(false);
 }
 
+void FormPlot::plotSimulateClose()
+{
+    m_showSimulate = false;
+    ui->tBtnSimulate->setChecked(false);
+}
+
 void FormPlot::on_tBtn3D_clicked()
 {
     m_show3D = !m_show3D;
@@ -304,6 +328,14 @@ void FormPlot::on_tBtnHistory_clicked()
     m_showHistory = !m_showHistory;
     if (m_showHistory) {
         m_plothistory->updateData(m_points14, m_points24);
+        m_points14.clear();
+        m_points24.clear();
     }
     m_plothistory->setVisible(m_showHistory);
+}
+
+void FormPlot::on_tBtnSimulate_clicked()
+{
+    m_showSimulate = !m_showSimulate;
+    m_plotSimulate->setVisible(m_showSimulate);
 }

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FormPlotSimulate</class>
+ <widget class="QWidget" name="FormPlotSimulate">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>550</width>
+    <height>465</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="hLayLoad">
+     <item>
+      <widget class="QLineEdit" name="lineEditPath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadFile">
+       <property name="text">
+        <string>load file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonRe">
+       <property name="text">
+        <string>re</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelHead">
+       <property name="text">
+        <string>head</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelTail">
+       <property name="text">
+        <string>tail</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEditHead"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEditTail"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>lineEditHead</tabstop>
+  <tabstop>lineEditTail</tabstop>
+  <tabstop>lineEditPath</tabstop>
+  <tabstop>btnLoadFile</tabstop>
+  <tabstop>toolButtonRe</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

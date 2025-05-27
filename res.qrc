@@ -21,5 +21,6 @@
         <file>res/icons/history.png</file>
         <file>res/icons/go-next.png</file>
         <file>res/icons/go-prev.png</file>
+        <file>res/icons/simulate.png</file>
     </qresource>
 </RCC>
