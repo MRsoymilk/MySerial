@@ -19,5 +19,7 @@
         <file>res/icons/setting-on.png</file>
         <file>res/icons/3d.png</file>
         <file>res/icons/history.png</file>
+        <file>res/icons/go-next.png</file>
+        <file>res/icons/go-prev.png</file>
     </qresource>
 </RCC>

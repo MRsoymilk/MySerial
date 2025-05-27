@@ -79,8 +79,8 @@ private:
 
     QChartView *m_chartView = nullptr;
 
-    QList<QList<QPointF>> m_points;
-    QList<QList<QPointF>> m_points_1;
+    QList<QList<QPointF>> m_points24;
+    QList<QList<QPointF>> m_points14;
 
 protected:
     void wheelEvent(QWheelEvent *event) override;

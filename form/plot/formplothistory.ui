@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>652</width>
-    <height>410</height>
+    <width>719</width>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="vLay14">
        <item>
         <layout class="QHBoxLayout" name="hLay14">
          <item>
@@ -44,16 +44,34 @@
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="labelStatus14">
-         <property name="text">
-          <string>status</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="hLay14Status">
+         <item>
+          <widget class="QLabel" name="labelStatus14">
+           <property name="text">
+            <string>status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="hLay14StatusGo">
+           <item>
+            <widget class="QLabel" name="label14Go">
+             <property name="text">
+              <string>go:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit14Go"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="vLay24">
        <item>
         <layout class="QHBoxLayout" name="hLay24">
          <item>
@@ -80,11 +98,29 @@
         </layout>
        </item>
        <item>
-        <widget class="QLabel" name="labelStatus24">
-         <property name="text">
-          <string>status</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="hLay24Status">
+         <item>
+          <widget class="QLabel" name="labelStatus24">
+           <property name="text">
+            <string>status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="hLay24StatusGo">
+           <item>
+            <widget class="QLabel" name="label24Go">
+             <property name="text">
+              <string>go:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit24Go"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>

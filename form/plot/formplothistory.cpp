@@ -8,6 +8,16 @@ FormPlotHistory::FormPlotHistory(QWidget *parent)
     , ui(new Ui::FormPlotHistory)
 {
     ui->setupUi(this);
+    init();
+}
+
+FormPlotHistory::~FormPlotHistory()
+{
+    delete ui;
+}
+
+void FormPlotHistory::init()
+{
     m_chartView14 = new QChartView(this);
     m_chartView24 = new QChartView(this);
 
@@ -17,11 +27,15 @@ FormPlotHistory::FormPlotHistory(QWidget *parent)
     ui->stackedWidget->insertWidget(0, m_chartView14);
     ui->stackedWidget->insertWidget(1, m_chartView24);
     ui->stackedWidget->setCurrentIndex(0);
-}
 
-FormPlotHistory::~FormPlotHistory()
-{
-    delete ui;
+    ui->tBtnPrev14->setIcon(QIcon(":/res/icons/go-prev.png"));
+    ui->tBtnPrev14->setToolTip("prev");
+    ui->tBtnNext14->setIcon(QIcon(":/res/icons/go-next.png"));
+    ui->tBtnNext14->setToolTip("next");
+    ui->tBtnPrev24->setIcon(QIcon(":/res/icons/go-prev.png"));
+    ui->tBtnPrev24->setToolTip("prev");
+    ui->tBtnNext24->setIcon(QIcon(":/res/icons/go-next.png"));
+    ui->tBtnNext24->setToolTip("next");
 }
 
 void FormPlotHistory::updateData(const QList<QList<QPointF> > &p14,
@@ -78,11 +92,18 @@ void FormPlotHistory::on_tBtnPrev24_clicked()
 void FormPlotHistory::updatePlot14()
 {
     if (m_index_14 >= m_p14.size() || m_p14.empty()) {
+        QChart *chart = m_chartView14->chart();
+        for (QAbstractSeries *series : chart->series()) {
+            chart->removeSeries(series);
+            delete series;
+        }
+        ui->labelStatus14->setText("status");
         return;
     }
 
     QChart *chart = new QChart();
     QLineSeries *series = new QLineSeries();
+    series->setColor(Qt::magenta);
 
     series->append(m_p14[m_index_14]);
 
@@ -98,6 +119,12 @@ void FormPlotHistory::updatePlot14()
 void FormPlotHistory::updatePlot24()
 {
     if (m_index_24 >= m_p24.size() || m_p24.empty()) {
+        QChart *chart = m_chartView24->chart();
+        for (QAbstractSeries *series : chart->series()) {
+            chart->removeSeries(series);
+            delete series;
+        }
+        ui->labelStatus24->setText("status");
         return;
     }
 
@@ -105,6 +132,7 @@ void FormPlotHistory::updatePlot24()
     QLineSeries *series = new QLineSeries();
 
     series->append(m_p24[m_index_24]);
+    series->setColor(Qt::blue);
 
     chart->addSeries(series);
     chart->createDefaultAxes();
@@ -119,4 +147,22 @@ void FormPlotHistory::closeEvent(QCloseEvent *event)
 {
     emit windowClose();
     QWidget::closeEvent(event);
+}
+
+void FormPlotHistory::on_lineEdit14Go_editingFinished()
+{
+    int val = ui->lineEdit14Go->text().toInt();
+    if (val > 0 && val <= m_p14.size()) {
+        m_index_14 = val - 1;
+        updatePlot14();
+    }
+}
+
+void FormPlotHistory::on_lineEdit24Go_editingFinished()
+{
+    int val = ui->lineEdit24Go->text().toInt();
+    if (val > 0 && val <= m_p24.size()) {
+        m_index_24 = val - 1;
+        updatePlot24();
+    }
 }

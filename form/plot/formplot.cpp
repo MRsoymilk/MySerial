@@ -206,11 +206,11 @@ void FormPlot::updatePlot(const QString &name,
     if (name == "curve_24bit") {
         m_series->replace(line->points());
         m_series->setName(name);
-        m_points.push_back(line->points());
+        m_points24.push_back(line->points());
     } else if (name == "curve_14bit") {
         m_series_1->replace(line->points());
         m_series_1->setName(name);
-        m_points_1.push_back(line->points());
+        m_points14.push_back(line->points());
     }
 
     m_axisX->setRange(min_x, max_x);
@@ -303,7 +303,7 @@ void FormPlot::on_tBtnHistory_clicked()
 {
     m_showHistory = !m_showHistory;
     if (m_showHistory) {
-        m_plothistory->updateData(m_points, m_points_1);
+        m_plothistory->updateData(m_points14, m_points24);
     }
     m_plothistory->setVisible(m_showHistory);
 }

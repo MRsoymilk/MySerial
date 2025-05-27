@@ -26,9 +26,13 @@ private slots:
     void on_tBtnNext24_clicked();
     void on_tBtnPrev24_clicked();
 
+    void on_lineEdit14Go_editingFinished();
+    void on_lineEdit24Go_editingFinished();
+
 private:
     void updatePlot14();
     void updatePlot24();
+    void init();
 
 private:
     Ui::FormPlotHistory *ui;
@@ -37,7 +41,6 @@ private:
     QChartView *m_chartView14;
     QChartView *m_chartView24;
 
-    // QWidget interface
 protected:
     void closeEvent(QCloseEvent *event);
 };
