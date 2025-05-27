@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->statusbar->showMessage(QString("version: %1").arg(APP_VERSION));
+    ui->statusbar->showMessage(QString("version: %1 on %2").arg(APP_VERSION).arg(APP_REPO));
     init();
 }
 
