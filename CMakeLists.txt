@@ -14,50 +14,50 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Netw
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools DataVisualization)
 
 set(PROJECT_SOURCES
-        main/main.cpp
-        main/mainwindow.cpp
-        main/mainwindow.h
-        main/mainwindow.ui
-        module/server/server.h
-        module/server/server.cpp
-        form/serial/formserial.h
-        form/serial/formserial.cpp
-        form/serial/formserial.ui
-        form/plot/formplot.h
-        form/plot/formplot.cpp
-        form/plot/formplot.ui
-        form/data/formdata.h
-        form/data/formdata.cpp
-        form/data/formdata.ui
-        form/log/formlog.h
-        form/log/formlog.cpp
-        form/log/formlog.ui
-        form/plot/plotworker.h
-        form/plot/plotworker.cpp
-        form/plot/formplotdata.h
-        form/plot/formplotdata.cpp
-        form/plot/formplotdata.ui
-        form/plot/formplothistory.h
-        form/plot/formplothistory.cpp
-        form/plot/formplothistory.ui
-        form/plot/formplotsimulate.h
-        form/plot/formplotsimulate.cpp
-        form/plot/formplotsimulate.ui
-        form/setting/formsetting.h
-        form/setting/formsetting.cpp
-        form/setting/formsetting.ui
-        form/setting/formtip.h
-        form/setting/formtip.cpp
-        form/setting/formtip.ui
-        common/mysetting.h
-        common/mysetting.cpp
-        common/mylog.h
-        common/mylog.cpp
-        common/UILogSink.h
-        include/keydef.h
-        include/datadef.h
-        include/funcdef.h
-        include/global.h
+        src/main/main.cpp
+        src/main/mainwindow.cpp
+        src/main/mainwindow.h
+        src/main/mainwindow.ui
+        src/module/server/server.h
+        src/module/server/server.cpp
+        src/form/serial/formserial.h
+        src/form/serial/formserial.cpp
+        src/form/serial/formserial.ui
+        src/form/plot/formplot.h
+        src/form/plot/formplot.cpp
+        src/form/plot/formplot.ui
+        src/form/data/formdata.h
+        src/form/data/formdata.cpp
+        src/form/data/formdata.ui
+        src/form/log/formlog.h
+        src/form/log/formlog.cpp
+        src/form/log/formlog.ui
+        src/form/plot/plotworker.h
+        src/form/plot/plotworker.cpp
+        src/form/plot/formplotdata.h
+        src/form/plot/formplotdata.cpp
+        src/form/plot/formplotdata.ui
+        src/form/plot/formplothistory.h
+        src/form/plot/formplothistory.cpp
+        src/form/plot/formplothistory.ui
+        src/form/plot/formplotsimulate.h
+        src/form/plot/formplotsimulate.cpp
+        src/form/plot/formplotsimulate.ui
+        src/form/setting/formsetting.h
+        src/form/setting/formsetting.cpp
+        src/form/setting/formsetting.ui
+        src/form/setting/formtip.h
+        src/form/setting/formtip.cpp
+        src/form/setting/formtip.ui
+        src/common/mysetting.h
+        src/common/mysetting.cpp
+        src/common/mylog.h
+        src/common/mylog.cpp
+        src/common/UILogSink.h
+        src/include/keydef.h
+        src/include/datadef.h
+        src/include/funcdef.h
+        src/include/global.h
         res.qrc
 )
 
@@ -66,7 +66,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
-target_include_directories(MySerial PUBLIC "${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/common" "${CMAKE_SOURCE_DIR}/module/server")
+
+target_include_directories(MySerial PUBLIC 
+  "${CMAKE_SOURCE_DIR}/src/include"
+  "${CMAKE_SOURCE_DIR}/src/common"
+  "${CMAKE_SOURCE_DIR}/src/module/server"
+)
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET MySerial APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
