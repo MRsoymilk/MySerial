@@ -48,10 +48,11 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
             }
             voltage = signedRaw / double(1 << 23) * 2.5;
         } else if (name == "curve_14bit") {
-            if (signedRaw > 0x1FFF) {
-                signedRaw = 0x3FFF - signedRaw;
+            signedRaw &= 0x3FFF;
+            if (signedRaw & 0x2000) {
+                signedRaw |= 0xFFFFC000;
             }
-            voltage = signedRaw / double(0x3FFF) * 3.3;
+            voltage = signedRaw / double(1 << 13) * 3.3;
         }
 
         if (voltage < yMin)
