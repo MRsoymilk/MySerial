@@ -23,7 +23,7 @@ public:
     ~FormPlotSimulate();
 signals:
     void windowClose();
-    void simulateDataReady(const QByteArray &data, const QString &name);
+    void simulateDataReady(const QByteArray &data, const QString &name, const int &offset = 1);
 
 protected:
     void closeEvent(QCloseEvent *event);

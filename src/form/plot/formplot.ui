@@ -30,6 +30,23 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="labelOffset">
+       <property name="text">
+        <string>offset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBoxOffset">
+       <property name="minimum">
+        <number>-10</number>
+       </property>
+       <property name="maximum">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="tBtnSimulate">
        <property name="text">
         <string>simulate</string>

@@ -46,11 +46,15 @@ private slots:
                     const double &min_x,
                     const double &max_x);
 
+    void on_spinBoxOffset_valueChanged(int val);
+
 public slots:
     void onDataReceived(const QByteArray &data, const QString &name);
 
 private:
     void init();
+    void getINI();
+    void setINI();
 
 private:
     Ui::FormPlot *ui;

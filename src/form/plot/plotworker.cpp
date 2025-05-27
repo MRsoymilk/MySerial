@@ -9,6 +9,11 @@ PlotWorker::PlotWorker(QObject *parent)
 
 PlotWorker::~PlotWorker() {}
 
+void PlotWorker::setOffset(const int &offset)
+{
+    m_offset = offset;
+}
+
 void PlotWorker::processData(const QByteArray &data, const QString &name)
 {
     QByteArray payload = data.mid(5, data.size() - 7);
@@ -27,7 +32,20 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
             filteredPayload.append(payload.mid(i, 3));
         }
     }
-    payload = filteredPayload;
+
+    if (m_offset > 0) {
+        payload = QByteArray(m_offset, 0) + filteredPayload;
+    } else if (m_offset < 0) {
+        int skip = -m_offset;
+        if (skip >= filteredPayload.size()) {
+            qWarning() << "Offset too large";
+            return;
+        }
+        payload = filteredPayload.mid(skip);
+        payload.append(QByteArray(skip, 0));
+    } else {
+        payload = filteredPayload;
+    }
 
     int numPoints = payload.size() / 3;
 

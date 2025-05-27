@@ -14,6 +14,7 @@
 #include <QtDataVisualization/QSurface3DSeries>
 #include <QtDataVisualization/QSurfaceDataArray>
 #include <QtDataVisualization/QSurfaceDataProxy>
+#include "funcdef.h"
 
 FormPlot::FormPlot(QWidget *parent)
     : QWidget(parent)
@@ -42,6 +43,20 @@ FormPlot::~FormPlot()
         m_workerThread->wait();
     }
     delete ui;
+}
+
+void FormPlot::getINI()
+{
+    int offset = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET, "0").toInt();
+    if (offset != 0) {
+        ui->spinBoxOffset->setValue(offset);
+    }
+}
+
+void FormPlot::setINI()
+{
+    int offset = ui->spinBoxOffset->value();
+    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET, QString::number(offset));
 }
 
 void FormPlot::init()
@@ -206,6 +221,7 @@ void FormPlot::init()
             Qt::QueuedConnection);
 
     m_workerThread->start();
+    getINI();
 }
 
 void FormPlot::onDataReceived(const QByteArray &data, const QString &name)
@@ -338,4 +354,10 @@ void FormPlot::on_tBtnSimulate_clicked()
 {
     m_showSimulate = !m_showSimulate;
     m_plotSimulate->setVisible(m_showSimulate);
+}
+
+void FormPlot::on_spinBoxOffset_valueChanged(int val)
+{
+    m_worker->setOffset(val);
+    setINI();
 }
