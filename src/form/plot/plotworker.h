@@ -12,6 +12,7 @@ public:
     ~PlotWorker();
     void setOffset14(const int &offset);
     void setOffset24(const int &offset);
+
 public slots:
     void processData(const QByteArray &data, const QString &name);
 

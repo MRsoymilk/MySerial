@@ -21,27 +21,27 @@ public:
 public:
     explicit FormPlotSimulate(QWidget *parent = nullptr);
     ~FormPlotSimulate();
+
 signals:
     void windowClose();
-    void simulateDataReady(const QByteArray &data, const QString &name, const int &offset = 1);
+    void simulateDataReady(const QByteArray &data, const QString &name);
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
     void on_btnLoadFile_clicked();
-
     void on_toolButtonRe_clicked();
 
 private:
     void init();
     void getINI();
     void setINI();
+    void simulate();
 
 private:
     Ui::FormPlotSimulate *ui;
     INI_SIMULATE m_ini;
-    void simulate();
 };
 
 #endif // FORMPLOTSIMULATE_H

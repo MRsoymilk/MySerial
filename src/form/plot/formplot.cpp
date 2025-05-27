@@ -26,13 +26,13 @@ FormPlot::FormPlot(QWidget *parent)
 
 FormPlot::~FormPlot()
 {
-    if (m_plotdata) {
-        m_plotdata->close();
-        delete m_plotdata;
+    if (m_plotData) {
+        m_plotData->close();
+        delete m_plotData;
     }
-    if (m_plothistory) {
-        m_plothistory->close();
-        delete m_plothistory;
+    if (m_plotHistory) {
+        m_plotHistory->close();
+        delete m_plotHistory;
     }
     if (m_plotSimulate) {
         m_plotSimulate->close();
@@ -68,22 +68,22 @@ void FormPlot::setINI()
 void FormPlot::init()
 {
     // 2D chart
-    m_series = new QLineSeries();
-    m_series_1 = new QLineSeries();
+    m_series24 = new QLineSeries();
+    m_series14 = new QLineSeries();
     m_chart = new QChart();
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
 
-    m_chart->addSeries(m_series);
-    m_chart->addSeries(m_series_1);
+    m_chart->addSeries(m_series24);
+    m_chart->addSeries(m_series14);
     m_chart->addAxis(m_axisX, Qt::AlignBottom);
     m_chart->addAxis(m_axisY, Qt::AlignLeft);
-    m_series->attachAxis(m_axisX);
-    m_series->attachAxis(m_axisY);
-    m_series_1->attachAxis(m_axisX);
-    m_series_1->attachAxis(m_axisY);
-    m_series->setColor(Qt::blue);
-    m_series_1->setColor(Qt::magenta);
+    m_series24->attachAxis(m_axisX);
+    m_series24->attachAxis(m_axisY);
+    m_series14->attachAxis(m_axisX);
+    m_series14->attachAxis(m_axisY);
+    m_series24->setColor(Qt::blue);
+    m_series14->setColor(Qt::magenta);
 
     m_axisX->setTitleText("Time (s)");
     m_axisX->setRange(0, 0.2);
@@ -129,36 +129,36 @@ void FormPlot::init()
     m_surface->activeTheme()->setGridLineColor(Qt::gray);
     m_surface->setShadowQuality(QAbstract3DGraph::ShadowQualityMedium);
 
-    m_surfaceProxy = new QSurfaceDataProxy();
-    m_surfaceProxy_1 = new QSurfaceDataProxy();
+    m_surfaceProxy24 = new QSurfaceDataProxy();
+    m_surfaceProxy14 = new QSurfaceDataProxy();
 
-    m_surfaceSeries = new QSurface3DSeries(m_surfaceProxy);
-    m_surfaceSeries_1 = new QSurface3DSeries(m_surfaceProxy_1);
+    m_surfaceSeries24 = new QSurface3DSeries(m_surfaceProxy24);
+    m_surfaceSeries14 = new QSurface3DSeries(m_surfaceProxy14);
 
-    m_surfaceSeries->setMesh(QAbstract3DSeries::MeshCylinder);
-    m_surfaceSeries->setBaseColor(Qt::cyan);
-    m_surfaceSeries->setDrawMode(QSurface3DSeries::DrawSurface);
+    m_surfaceSeries24->setMesh(QAbstract3DSeries::MeshCylinder);
+    m_surfaceSeries24->setBaseColor(Qt::cyan);
+    m_surfaceSeries24->setDrawMode(QSurface3DSeries::DrawSurface);
 
-    m_surfaceSeries_1->setMesh(QAbstract3DSeries::MeshCylinder);
-    m_surfaceSeries_1->setBaseColor(Qt::magenta);
-    m_surfaceSeries_1->setDrawMode(QSurface3DSeries::DrawSurface);
+    m_surfaceSeries14->setMesh(QAbstract3DSeries::MeshCylinder);
+    m_surfaceSeries14->setBaseColor(Qt::magenta);
+    m_surfaceSeries14->setDrawMode(QSurface3DSeries::DrawSurface);
 
-    m_surface->addSeries(m_surfaceSeries);
-    m_surface->addSeries(m_surfaceSeries_1);
+    m_surface->addSeries(m_surfaceSeries24);
+    m_surface->addSeries(m_surfaceSeries14);
 
     QSurfaceDataArray *initData = new QSurfaceDataArray;
     initData->reserve(1);
     QSurfaceDataRow *row = new QSurfaceDataRow;
     row->append(QSurfaceDataItem(QVector3D(0, 0, 0)));
     initData->append(row);
-    m_surfaceProxy->resetArray(initData);
+    m_surfaceProxy24->resetArray(initData);
 
     QSurfaceDataArray *initData1 = new QSurfaceDataArray;
     initData1->reserve(1);
     QSurfaceDataRow *row1 = new QSurfaceDataRow;
     row1->append(QSurfaceDataItem(QVector3D(0, 0, 0)));
     initData1->append(row1);
-    m_surfaceProxy_1->resetArray(initData1);
+    m_surfaceProxy14->resetArray(initData1);
 
     m_surfaceWidget = QWidget::createWindowContainer(m_surface);
     m_surfaceWidget->setFocusPolicy(Qt::ClickFocus);
@@ -201,17 +201,17 @@ void FormPlot::init()
     m_worker = new PlotWorker();
     m_worker->moveToThread(m_workerThread);
 
-    m_plotdata = new FormPlotData;
-    m_plotdata->hide();
+    m_plotData = new FormPlotData;
+    m_plotData->hide();
 
-    m_plothistory = new FormPlotHistory;
-    m_plothistory->hide();
+    m_plotHistory = new FormPlotHistory;
+    m_plotHistory->hide();
 
     m_plotSimulate = new FormPlotSimulate;
     m_plotSimulate->hide();
 
-    connect(m_plotdata, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
-    connect(m_plothistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
+    connect(m_plotData, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
+    connect(m_plotHistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
     connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormPlot::plotSimulateClose);
     connect(m_plotSimulate,
             &FormPlotSimulate::simulateDataReady,
@@ -222,7 +222,7 @@ void FormPlot::init()
     connect(m_worker, &PlotWorker::dataReady, this, &FormPlot::updatePlot, Qt::QueuedConnection);
     connect(m_worker,
             &PlotWorker::pointsReady,
-            m_plotdata,
+            m_plotData,
             &FormPlotData::updateTable,
             Qt::QueuedConnection);
 
@@ -244,12 +244,12 @@ void FormPlot::updatePlot(const QString &name,
                           const double &max_x)
 {
     if (name == "curve_24bit") {
-        m_series->replace(line->points());
-        m_series->setName(name);
+        m_series24->replace(line->points());
+        m_series24->setName(name);
         m_points24.push_back(line->points());
     } else if (name == "curve_14bit") {
-        m_series_1->replace(line->points());
-        m_series_1->setName(name);
+        m_series14->replace(line->points());
+        m_series14->setName(name);
         m_points14.push_back(line->points());
     }
 
@@ -280,8 +280,8 @@ void FormPlot::updatePlot(const QString &name,
         return data;
     };
 
-    m_surfaceProxy->resetArray(toSurfaceArray(m_series, 0));
-    m_surfaceProxy_1->resetArray(toSurfaceArray(m_series_1, 0));
+    m_surfaceProxy24->resetArray(toSurfaceArray(m_series24, 0));
+    m_surfaceProxy14->resetArray(toSurfaceArray(m_series14, 0));
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -314,7 +314,7 @@ void FormPlot::on_tBtnZoom_clicked()
 void FormPlot::on_tBtnData_clicked()
 {
     m_showData = !m_showData;
-    m_plotdata->setVisible(m_showData);
+    m_plotData->setVisible(m_showData);
 }
 
 void FormPlot::plotDataClose()
@@ -349,11 +349,11 @@ void FormPlot::on_tBtnHistory_clicked()
 {
     m_showHistory = !m_showHistory;
     if (m_showHistory) {
-        m_plothistory->updateData(m_points14, m_points24);
+        m_plotHistory->updateData(m_points14, m_points24);
         m_points14.clear();
         m_points24.clear();
     }
-    m_plothistory->setVisible(m_showHistory);
+    m_plotHistory->setVisible(m_showHistory);
 }
 
 void FormPlot::on_tBtnSimulate_clicked()

@@ -29,6 +29,12 @@ public:
 signals:
     void newDataReceived(const QByteArray &data, const QString &name);
 
+public slots:
+    void onDataReceived(const QByteArray &data, const QString &name);
+
+protected:
+    void wheelEvent(QWheelEvent *event) override;
+
 private slots:
     void on_tBtnZoom_clicked();
     void on_tBtnData_clicked();
@@ -48,9 +54,6 @@ private slots:
     void on_spinBox14Offset_valueChanged(int val);
     void on_spinBox24Offset_valueChanged(int val);
 
-public slots:
-    void onDataReceived(const QByteArray &data, const QString &name);
-
 private:
     void init();
     void getINI();
@@ -58,8 +61,8 @@ private:
 
 private:
     Ui::FormPlot *ui;
-    QLineSeries *m_series;
-    QLineSeries *m_series_1;
+    QLineSeries *m_series24;
+    QLineSeries *m_series14;
     QChart *m_chart;
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
@@ -72,15 +75,15 @@ private:
     double m_fixedYMax = 2.5;
     QThread *m_workerThread;
     PlotWorker *m_worker;
-    FormPlotData *m_plotdata;
-    FormPlotHistory *m_plothistory;
+    FormPlotData *m_plotData;
+    FormPlotHistory *m_plotHistory;
     FormPlotSimulate *m_plotSimulate;
 
     Q3DSurface *m_surface = nullptr;
-    QSurface3DSeries *m_surfaceSeries = nullptr;
-    QSurface3DSeries *m_surfaceSeries_1 = nullptr;
-    QSurfaceDataProxy *m_surfaceProxy = nullptr;
-    QSurfaceDataProxy *m_surfaceProxy_1 = nullptr;
+    QSurface3DSeries *m_surfaceSeries24 = nullptr;
+    QSurface3DSeries *m_surfaceSeries14 = nullptr;
+    QSurfaceDataProxy *m_surfaceProxy24 = nullptr;
+    QSurfaceDataProxy *m_surfaceProxy14 = nullptr;
     QWidget *m_surfaceWidget = nullptr;
     QValue3DAxis *m_surfaceAxisX;
     QValue3DAxis *m_surfaceAxisY;
@@ -90,9 +93,6 @@ private:
 
     QList<QList<QPointF>> m_points24;
     QList<QList<QPointF>> m_points14;
-
-protected:
-    void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif // FORMPLOT_H

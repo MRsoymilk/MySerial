@@ -31,8 +31,10 @@ public:
 public:
     explicit FormSetting(QWidget *parent = nullptr);
     ~FormSetting();
+
 signals:
     void showUpdates(const QString &url);
+
 private slots:
     void on_btnCheck_clicked();
     void on_checkBoxCheckUpdates_checkStateChanged(const Qt::CheckState &state);

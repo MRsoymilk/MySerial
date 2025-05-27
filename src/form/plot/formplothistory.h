@@ -15,17 +15,19 @@ class FormPlotHistory : public QWidget
 public:
     explicit FormPlotHistory(QWidget *parent = nullptr);
     ~FormPlotHistory();
-
     void updateData(const QList<QList<QPointF>> &p14, const QList<QList<QPointF>> &p24);
 
 signals:
     void windowClose();
+
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private slots:
     void on_tBtnNext14_clicked();
     void on_tBtnPrev14_clicked();
     void on_tBtnNext24_clicked();
     void on_tBtnPrev24_clicked();
-
     void on_lineEdit14Go_editingFinished();
     void on_lineEdit24Go_editingFinished();
 
@@ -40,9 +42,6 @@ private:
     int m_index_14, m_index_24;
     QChartView *m_chartView14;
     QChartView *m_chartView24;
-
-protected:
-    void closeEvent(QCloseEvent *event);
 };
 
 #endif // FORMPLOTHISTORY_H

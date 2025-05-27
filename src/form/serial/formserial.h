@@ -37,13 +37,14 @@ public:
         QString send_page;
         QString single_send;
     };
-signals:
-    void recv2Plot(const QByteArray &data, const QString &name);
-    void recv2Data(const QByteArray &data, const QString &name);
 
 public:
     explicit FormSerial(QWidget *parent = nullptr);
     ~FormSerial();
+
+signals:
+    void recv2Plot(const QByteArray &data, const QString &name);
+    void recv2Data(const QByteArray &data, const QString &name);
 
 private:
     void getINI();
@@ -51,6 +52,8 @@ private:
     void openSerial();
     void closeSerial();
     void send(const QString &text);
+    void initMultSend();
+    void setINI();
 
 private slots:
     void on_btnRecvSave_clicked();
@@ -78,20 +81,16 @@ private:
     SEND_FORMAT m_send_format;
     bool m_hex_display;
     QTimer *m_send_timer;
-    void initMultSend();
     struct FrameType
     {
         QByteArray header;
         QString name;
     };
-
     const QList<FrameType> m_frameTypes = {
         {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
         {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
     };
-
     const QByteArray m_footer = QByteArray::fromHex("CEFF");
-    void setINI();
 };
 
 #endif // FORMSERIAL_H

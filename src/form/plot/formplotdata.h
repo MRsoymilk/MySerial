@@ -17,13 +17,16 @@ public:
     ~FormPlotData();
 signals:
     void windowClose();
+
 public slots:
     void updateTable(const QList<QPointF> &points);
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void showContextMenu(const QPoint &pos);
     void exportToCSV();
-
     void clearData();
 
 private:
@@ -32,10 +35,6 @@ private:
 private:
     Ui::FormPlotData *ui;
     QStandardItemModel *m_model;
-
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent *event);
 };
 
 #endif // FORMPLOTDATA_H

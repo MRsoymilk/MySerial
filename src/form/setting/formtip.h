@@ -14,6 +14,7 @@ class FormTip : public QWidget
 public:
     explicit FormTip(QWidget *parent = nullptr);
     ~FormTip();
+
 public slots:
     void onFetchUpdates(const QString &url);
 
