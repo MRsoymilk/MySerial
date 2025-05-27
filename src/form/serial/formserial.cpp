@@ -81,7 +81,7 @@ void FormSerial::initMultSend()
         if (lineEdit) {
             lineEdit->setText(cmds.at(i));
             connect(lineEdit, &QLineEdit::editingFinished, this, [this, lineEdit, i, &cmds]() {
-                SETTING_SET(CFG_GROUP_SERIAL,
+                SETTING_SET(CFG_GROUP_HISTROY,
                             QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i),
                             lineEdit->text());
             });
@@ -90,7 +90,7 @@ void FormSerial::initMultSend()
 
     QStringList labels;
     for (int i = 0; i < 5; ++i) {
-        labels.push_back(SETTING_GET(CFG_GROUP_SERIAL,
+        labels.push_back(SETTING_GET(CFG_GROUP_HISTROY,
                                      QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
                                      QString("cmd_%1").arg(i)));
     }
@@ -101,7 +101,7 @@ void FormSerial::initMultSend()
         if (lineEdit) {
             lineEdit->setPlaceholderText(labels.at(i));
             connect(lineEdit, &QLineEdit::editingFinished, this, [this, lineEdit, i]() {
-                SETTING_SET(CFG_GROUP_SERIAL,
+                SETTING_SET(CFG_GROUP_HISTROY,
                             QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
                             lineEdit->text());
             });
