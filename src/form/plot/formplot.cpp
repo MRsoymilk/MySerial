@@ -47,16 +47,22 @@ FormPlot::~FormPlot()
 
 void FormPlot::getINI()
 {
-    int offset = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET, "0").toInt();
-    if (offset != 0) {
-        ui->spinBoxOffset->setValue(offset);
+    int offset14 = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, "0").toInt();
+    int offset24 = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, "0").toInt();
+    if (offset14 != 0) {
+        ui->spinBox14Offset->setValue(offset14);
+    }
+    if (offset24 != 0) {
+        ui->spinBox24Offset->setValue(offset24);
     }
 }
 
 void FormPlot::setINI()
 {
-    int offset = ui->spinBoxOffset->value();
-    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET, QString::number(offset));
+    int offset14 = ui->spinBox14Offset->value();
+    int offset24 = ui->spinBox24Offset->value();
+    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, QString::number(offset14));
+    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, QString::number(offset24));
 }
 
 void FormPlot::init()
@@ -356,8 +362,14 @@ void FormPlot::on_tBtnSimulate_clicked()
     m_plotSimulate->setVisible(m_showSimulate);
 }
 
-void FormPlot::on_spinBoxOffset_valueChanged(int val)
+void FormPlot::on_spinBox14Offset_valueChanged(int val)
 {
-    m_worker->setOffset(val);
+    m_worker->setOffset14(val);
+    setINI();
+}
+
+void FormPlot::on_spinBox24Offset_valueChanged(int val)
+{
+    m_worker->setOffset24(val);
     setINI();
 }

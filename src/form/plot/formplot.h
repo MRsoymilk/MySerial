@@ -45,8 +45,8 @@ private slots:
                     const double &max_y,
                     const double &min_x,
                     const double &max_x);
-
-    void on_spinBoxOffset_valueChanged(int val);
+    void on_spinBox14Offset_valueChanged(int val);
+    void on_spinBox24Offset_valueChanged(int val);
 
 public slots:
     void onDataReceived(const QByteArray &data, const QString &name);

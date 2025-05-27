@@ -9,9 +9,14 @@ PlotWorker::PlotWorker(QObject *parent)
 
 PlotWorker::~PlotWorker() {}
 
-void PlotWorker::setOffset(const int &offset)
+void PlotWorker::setOffset14(const int &offset)
 {
-    m_offset = offset;
+    m_offset14 = offset;
+}
+
+void PlotWorker::setOffset24(const int &offset)
+{
+    m_offset24 = offset;
 }
 
 void PlotWorker::processData(const QByteArray &data, const QString &name)
@@ -33,18 +38,23 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
         }
     }
 
-    if (m_offset > 0) {
-        payload = QByteArray(m_offset, 0) + filteredPayload;
-    } else if (m_offset < 0) {
-        int skip = -m_offset;
-        if (skip >= filteredPayload.size()) {
-            qWarning() << "Offset too large";
-            return;
+    payload = filteredPayload;
+    if (name == "curve_14bit") {
+        if (m_offset14 > 0) {
+            payload = QByteArray(m_offset14, 0) + filteredPayload;
+        } else if (m_offset14 < 0) {
+            int skip = -m_offset14;
+            payload = filteredPayload.mid(skip);
+            payload.append(QByteArray(skip, 0));
         }
-        payload = filteredPayload.mid(skip);
-        payload.append(QByteArray(skip, 0));
-    } else {
-        payload = filteredPayload;
+    } else if (name == "curve_24bit") {
+        if (m_offset24 > 0) {
+            payload = QByteArray(m_offset24, 0) + filteredPayload;
+        } else if (m_offset24 < 0) {
+            int skip = -m_offset24;
+            payload = filteredPayload.mid(skip);
+            payload.append(QByteArray(skip, 0));
+        }
     }
 
     int numPoints = payload.size() / 3;

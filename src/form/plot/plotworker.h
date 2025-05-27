@@ -10,7 +10,8 @@ class PlotWorker : public QObject
 public:
     explicit PlotWorker(QObject *parent = nullptr);
     ~PlotWorker();
-    void setOffset(const int &offset);
+    void setOffset14(const int &offset);
+    void setOffset24(const int &offset);
 public slots:
     void processData(const QByteArray &data, const QString &name);
 
@@ -28,7 +29,8 @@ private:
     double m_time = 0.0;
     const double m_fs = 3600.0;
     const double m_T = 1.0 / m_fs;
-    int m_offset = 0;
+    int m_offset14 = 0;
+    int m_offset24 = 0;
 };
 
 #endif // PLOTWORKER_H
