@@ -40,23 +40,18 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
                       | (quint8) payload[idx + 2];
 
         qint32 signedRaw = static_cast<qint32>(raw);
+        double voltage;
 
         if (name == "curve_24bit") {
             if (signedRaw & 0x800000) {
                 signedRaw |= 0xFF000000;
             }
+            voltage = signedRaw / double(1 << 23) * 2.5;
         } else if (name == "curve_14bit") {
             if (signedRaw > 0x1FFF) {
                 signedRaw = 0x3FFF - signedRaw;
             }
-        }
-
-        double voltage;
-
-        if (name == "curve_24bit") {
-            voltage = signedRaw / double(1 << 23) * 2.5;
-        } else if (name == "curve_14bit") {
-            voltage = signedRaw / double(0x3FFF) * 1.65;
+            voltage = signedRaw / double(0x3FFF) * 3.3;
         }
 
         if (voltage < yMin)
