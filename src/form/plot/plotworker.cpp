@@ -61,7 +61,7 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
 
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();
-    QLineSeries *series = new QLineSeries;
+    m_series = new QLineSeries(this);
     for (int i = 0; i < numPoints; ++i) {
         int idx = i * 3;
         quint32 raw = (quint8) payload[idx] << 16 | (quint8) payload[idx + 1] << 8
@@ -89,9 +89,10 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
             yMax = voltage;
 
         // series->append(m_time + m_T * i, voltage);
-        series->append(i, voltage);
+        m_series->append(i, voltage);
     }
-    emit pointsReady(series->points());
+
+    emit pointsReady(m_series);
 
     // double xMin = m_time;
     // double xMax = m_time + numPoints * m_T;
@@ -100,5 +101,5 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
     double xMax = 2000;
 
     // m_time = xMax;
-    emit dataReady(name, series, numPoints, yMin, yMax, xMin, xMax);
+    emit dataReady(name, m_series, numPoints, yMin, yMax, xMin, xMax);
 }

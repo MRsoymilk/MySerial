@@ -24,17 +24,20 @@ MainWindow::~MainWindow()
 void MainWindow::initStackWidget()
 {
     formSerial = new FormSerial(this);
-    formPlot = new FormPlot(this);
-    formData = new FormData(this);
-    formLog = new FormLog(this);
-    formSetting = new FormSetting(this);
-
     ui->stackedWidget->addWidget(formSerial);
-    ui->stackedWidget->addWidget(formData);
-    ui->stackedWidget->addWidget(formPlot);
-    ui->stackedWidget->addWidget(formLog);
-    ui->stackedWidget->addWidget(formSetting);
     ui->stackedWidget->setCurrentWidget(formSerial);
+
+    formPlot = new FormPlot(this);
+    ui->stackedWidget->addWidget(formPlot);
+
+    formData = new FormData(this);
+    ui->stackedWidget->addWidget(formData);
+
+    formLog = new FormLog(this);
+    ui->stackedWidget->addWidget(formLog);
+
+    formSetting = new FormSetting(this);
+    ui->stackedWidget->addWidget(formSetting);
 
     QObject::connect(formSerial, &FormSerial::recv2Plot, formPlot, &FormPlot::onDataReceived);
     QObject::connect(formSerial, &FormSerial::recv2Data, formData, &FormData::onDataReceived);

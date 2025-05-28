@@ -38,4 +38,6 @@ const QString CFG_SIMULATE_FILE = "file";
 const QString CFG_GROUP_PLOT = "Plot";
 const QString CFG_PLOT_OFFSET14 = "offset14";
 const QString CFG_PLOT_OFFSET24 = "offset24";
+const QString CFG_GROUP_DATA = "Data";
+const QString CFG_DATA_LIMIT = "limit";
 #endif

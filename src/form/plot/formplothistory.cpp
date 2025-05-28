@@ -13,6 +13,12 @@ FormPlotHistory::FormPlotHistory(QWidget *parent)
 
 FormPlotHistory::~FormPlotHistory()
 {
+    if (m_chartView14) {
+        delete m_chartView14;
+    }
+    if (m_chartView24) {
+        delete m_chartView24;
+    }
     delete ui;
 }
 
@@ -145,6 +151,8 @@ void FormPlotHistory::updatePlot24()
 
 void FormPlotHistory::closeEvent(QCloseEvent *event)
 {
+    m_p14.clear();
+    m_p24.clear();
     emit windowClose();
     QWidget::closeEvent(event);
 }

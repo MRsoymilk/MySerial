@@ -24,6 +24,9 @@ FormSetting::~FormSetting()
     if (m_tip) {
         m_tip->close();
     }
+    if (m_server) {
+        delete m_server;
+    }
     SETTING_SYNC();
     delete ui;
 }

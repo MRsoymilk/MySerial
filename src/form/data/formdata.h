@@ -23,13 +23,18 @@ private slots:
     void exportToCSV();
     void clearData();
 
+    void on_lineEditDataLimit_editingFinished();
+
 private:
     void init();
     void showContextMenu(const QPoint &pos);
+    void getINI();
+    void setINI();
 
 private:
     Ui::FormData *ui;
     QStandardItemModel *m_model;
+    int m_limit;
 };
 
 #endif // FORMDATA_H

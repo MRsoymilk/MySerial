@@ -12,6 +12,7 @@ FormLog::FormLog(QWidget *parent)
     ui_sink->set_pattern("[%H:%M:%S] [%l] %v");
 
     MY_LOG.getLogger()->sinks().push_back(ui_sink);
+    ui->txtLog->setMaximumBlockCount(1000);
 }
 
 FormLog::~FormLog()

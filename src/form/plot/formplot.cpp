@@ -41,6 +41,7 @@ FormPlot::~FormPlot()
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
+        delete m_workerThread;
     }
     delete ui;
 }

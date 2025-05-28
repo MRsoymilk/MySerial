@@ -1,6 +1,7 @@
 #ifndef FORMPLOTDATA_H
 #define FORMPLOTDATA_H
 
+#include <QLineSeries>
 #include <QStandardItem>
 #include <QWidget>
 
@@ -19,7 +20,7 @@ signals:
     void windowClose();
 
 public slots:
-    void updateTable(const QList<QPointF> &points);
+    void updateTable(QLineSeries *line);
 
 protected:
     void closeEvent(QCloseEvent *event);

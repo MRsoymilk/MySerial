@@ -15,12 +15,16 @@ FormPlotData::FormPlotData(QWidget *parent)
 
 FormPlotData::~FormPlotData()
 {
+    if (m_model) {
+        delete m_model;
+    }
     delete ui;
 }
 
-void FormPlotData::updateTable(const QVector<QPointF> &points)
+void FormPlotData::updateTable(QLineSeries *line)
 {
-    for (const QPointF &point : points) {
+    m_model->removeRows(0, m_model->rowCount());
+    for (const QPointF &point : line->points()) {
         QList<QStandardItem *> rowItems;
         rowItems << new QStandardItem(QString::number(point.x()));
         rowItems << new QStandardItem(QString::number(point.y()));
@@ -47,6 +51,7 @@ void FormPlotData::init()
 
 void FormPlotData::closeEvent(QCloseEvent *event)
 {
+    m_model->removeRows(0, m_model->rowCount());
     emit windowClose();
     QWidget::closeEvent(event);
 }

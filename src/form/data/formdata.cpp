@@ -17,6 +17,9 @@ FormData::FormData(QWidget *parent)
 
 FormData::~FormData()
 {
+    if (m_model) {
+        delete m_model;
+    }
     delete ui;
 }
 
@@ -35,6 +38,7 @@ void FormData::init()
 
     ui->table->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->table, &QWidget::customContextMenuRequested, this, &FormData::showContextMenu);
+    getINI();
 }
 
 void FormData::onDataReceived(const QByteArray &data, const QString &name)
@@ -50,6 +54,9 @@ void FormData::onDataReceived(const QByteArray &data, const QString &name)
     rowItems << new QStandardItem(QString::number(data.length()));
 
     m_model->appendRow(rowItems);
+    while (m_model->rowCount() > m_limit) {
+        m_model->removeRow(0);
+    }
 }
 
 void FormData::showContextMenu(const QPoint &pos)
@@ -65,6 +72,17 @@ void FormData::showContextMenu(const QPoint &pos)
     contextMenu.addAction(exportAction);
 
     contextMenu.exec(ui->table->viewport()->mapToGlobal(pos));
+}
+
+void FormData::getINI()
+{
+    m_limit = SETTING_GET(CFG_GROUP_DATA, CFG_DATA_LIMIT, "10").toInt();
+    ui->lineEditDataLimit->setText(QString::number(m_limit));
+}
+
+void FormData::setINI()
+{
+    SETTING_SET(CFG_GROUP_DATA, CFG_DATA_LIMIT, QString::number(m_limit));
 }
 
 void FormData::clearData()
@@ -118,4 +136,10 @@ void FormData::exportToCSV()
 
     file.close();
     LOG_INFO("Data exported to {}", path);
+}
+
+void FormData::on_lineEditDataLimit_editingFinished()
+{
+    m_limit = ui->lineEditDataLimit->text().toInt();
+    setINI();
 }

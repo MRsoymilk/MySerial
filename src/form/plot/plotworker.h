@@ -24,7 +24,7 @@ signals:
                    double maxY,
                    double minX,
                    double maxX);
-    void pointsReady(const QList<QPointF> &points);
+    void pointsReady(QLineSeries *line);
 
 private:
     double m_time = 0.0;
@@ -32,6 +32,7 @@ private:
     const double m_T = 1.0 / m_fs;
     int m_offset14 = 0;
     int m_offset24 = 0;
+    QLineSeries *m_series;
 };
 
 #endif // PLOTWORKER_H

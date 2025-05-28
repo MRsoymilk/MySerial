@@ -170,6 +170,7 @@ void FormSerial::init()
     });
     m_send_timer = new QTimer(this);
     connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
+    ui->txtRecv->setMaximumBlockCount(1000);
     setINI();
 }
 
