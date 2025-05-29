@@ -16,6 +16,12 @@ class FormSerial : public QWidget
 public:
     enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
 
+    struct FRAME
+    {
+        QByteArray bit14;
+        QByteArray bit24;
+    };
+
     struct SERIAL
     {
         QString Description;
@@ -45,6 +51,8 @@ public:
 signals:
     void recv2Plot(const QByteArray &data, const QString &name);
     void recv2Data(const QByteArray &data, const QString &name);
+    void recv2Plot4k(const QByteArray &data14, const QByteArray &data24);
+    void recv2Data4k(const QByteArray &data14, const QByteArray &data24);
 
 private:
     void getINI();

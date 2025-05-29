@@ -32,6 +32,23 @@ void FormPlotData::updateTable(QLineSeries *line)
     }
 }
 
+void FormPlotData::updateTable4k(const QVector<double> &v14, const QVector<double> &v24)
+{
+    m_model->removeRows(0, m_model->rowCount());
+    for (int i = 0; i < v14.size(); ++i) {
+        QList<QStandardItem *> rowItems;
+        rowItems << new QStandardItem(i);
+        rowItems << new QStandardItem(v14[i]);
+        m_model->appendRow(rowItems);
+    }
+    for (int i = 0; i < v24.size(); ++i) {
+        QList<QStandardItem *> rowItems;
+        rowItems << new QStandardItem(i);
+        rowItems << new QStandardItem(v24[i]);
+        m_model->appendRow(rowItems);
+    }
+}
+
 void FormPlotData::init()
 {
     m_model = new QStandardItemModel(this);

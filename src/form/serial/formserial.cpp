@@ -335,7 +335,7 @@ void FormSerial::on_cBoxPortName_activated(int index)
     }
     ui->cBoxBaudRate->addItems(list_txt_bauds);
 }
-
+FormSerial::FRAME frame;
 void FormSerial::onReadyRead()
 {
     QByteArray data = m_serial->readAll();
@@ -356,7 +356,6 @@ void FormSerial::onReadyRead()
         int matchedHeaderLen = 0;
         QString matchedType;
 
-        // 找最前面出现的合法头部
         for (const auto &type : m_frameTypes) {
             int idx = m_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
@@ -374,19 +373,26 @@ void FormSerial::onReadyRead()
 
         int endIdx = m_buffer.indexOf(m_footer, firstHeaderIdx + matchedHeaderLen);
         if (endIdx == -1) {
-            // 没找到尾部，继续等数据
             break;
         }
 
         int frameLen = endIdx + m_footer.size() - firstHeaderIdx;
-        QByteArray frame = m_buffer.mid(firstHeaderIdx, frameLen);
+        QByteArray tmp_frame = m_buffer.mid(firstHeaderIdx, frameLen);
+        if (matchedType.toStdString() == "curve_24bit") {
+            LOG_INFO("Matched frame type: {}", matchedType.toStdString());
+            frame.bit24 = tmp_frame;
+        } else if (matchedType.toStdString() == "curve_14bit") {
+            LOG_INFO("Matched frame type: {}", matchedType.toStdString());
+            frame.bit14 = tmp_frame;
+            if (!frame.bit24.isEmpty()) {
+                emit recv2Data4k(frame.bit14, frame.bit24);
+                emit recv2Plot4k(frame.bit14, frame.bit24);
+            }
+        }
 
-        LOG_INFO("Matched frame type: {}", matchedType.toStdString());
-
-        // 处理完整帧
-        emit recv2Data(frame, matchedType);
-        emit recv2Plot(frame, matchedType);
-
+        // // 处理完整帧
+        // emit recv2Data(tmp_frame, matchedType);
+        // emit recv2Plot(tmp_frame, matchedType);
         m_buffer.remove(0, endIdx + m_footer.size());
     }
 }

@@ -39,8 +39,8 @@ void MainWindow::initStackWidget()
     formSetting = new FormSetting(this);
     ui->stackedWidget->addWidget(formSetting);
 
-    QObject::connect(formSerial, &FormSerial::recv2Plot, formPlot, &FormPlot::onDataReceived);
-    QObject::connect(formSerial, &FormSerial::recv2Data, formData, &FormData::onDataReceived);
+    QObject::connect(formSerial, &FormSerial::recv2Plot4k, formPlot, &FormPlot::onDataReceived4k);
+    QObject::connect(formSerial, &FormSerial::recv2Data4k, formData, &FormData::onDataReceived4k);
 }
 
 void MainWindow::initToolbar()

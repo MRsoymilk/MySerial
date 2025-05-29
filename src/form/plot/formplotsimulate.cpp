@@ -90,29 +90,129 @@ void FormPlotSimulate::simulate()
     for (const QString &tailStr : m_ini.tail) {
         tailList.append(QByteArray::fromHex(tailStr.trimmed().toUtf8()));
     }
+
     QMap<QByteArray, QString> m_name{
         {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
         {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
     };
-    if (!headList.isEmpty() && !tailList.isEmpty()) {
-        for (const QByteArray &headBytes : headList) {
-            for (const QByteArray &tailBytes : tailList) {
-                int pos = 0;
-                while ((pos = dataBytes.indexOf(headBytes, pos)) != -1) {
-                    int start = pos + headBytes.size();
-                    int end = dataBytes.indexOf(tailBytes, start);
-                    if (end != -1) {
-                        QByteArray frame = headBytes + dataBytes.mid(start, end - start)
-                                           + tailBytes;
-                        emit simulateDataReady(frame, m_name[headBytes]);
-                        pos = end + tailBytes.size();
-                    } else {
-                        break;
-                    }
-                }
+
+    if (headList.isEmpty() || tailList.isEmpty()) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, "Simulate", "Unsupport head/tail");
+        return;
+    }
+
+    QByteArray buffer = dataBytes;
+    int index_bit_choice = 0;
+    while (true) {
+        int firstHeaderIdx = -1;
+        int matchedHeaderLen = 0;
+        QByteArray matchedHeader;
+        QString matchedType;
+
+        QByteArray headBytes = headList[index_bit_choice % 2];
+        ++index_bit_choice;
+        int idx = buffer.indexOf(headBytes);
+        if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
+            firstHeaderIdx = idx;
+            matchedHeaderLen = headBytes.size();
+            matchedHeader = headBytes;
+            matchedType = m_name.value(headBytes, "unknown");
+        }
+
+        if (firstHeaderIdx == -1) {
+            if (buffer.size() > 1024)
+                buffer.clear();
+            break;
+        }
+        int endIdx = -1;
+        QByteArray matchedTail;
+        for (const QByteArray &tailBytes : tailList) {
+            int idx = buffer.indexOf(tailBytes, firstHeaderIdx + matchedHeaderLen);
+            if (idx != -1 && (endIdx == -1 || idx < endIdx)) {
+                endIdx = idx;
+                matchedTail = tailBytes;
             }
         }
+
+        if (endIdx == -1) {
+            break;
+        }
+
+        int frameLen = endIdx + matchedTail.size() - firstHeaderIdx;
+        QByteArray frame = buffer.mid(firstHeaderIdx, frameLen);
+
+        emit simulateDataReady(frame, matchedType);
+
+        buffer.remove(0, endIdx + matchedTail.size());
+    }
+}
+
+void FormPlotSimulate::simulate4k()
+{
+    QFile file(m_ini.file);
+    QString data;
+    if (file.open(QIODevice::ReadOnly)) {
+        data = file.readAll();
+        data.replace("0x", "");
+        data.remove(QRegularExpression("[\\s\r\n\t]"));
+        file.close();
     } else {
-        SHOW_AUTO_CLOSE_MSGBOX(this, "Simulate", "Unsupport head/tail");
+        return;
+    }
+
+    QByteArray dataBytes = QByteArray::fromHex(data.toUtf8());
+    QByteArray buffer = dataBytes;
+    struct FrameType
+    {
+        QByteArray header;
+        QString name;
+    };
+    struct FRAME
+    {
+        QByteArray bit14;
+        QByteArray bit24;
+    };
+    const QByteArray footer = QByteArray::fromHex("CEFF");
+    FRAME frame;
+    const QList<FrameType> m_frameTypes = {
+        {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
+        {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
+    };
+    while (true) {
+        int firstHeaderIdx = -1;
+        int matchedHeaderLen = 0;
+        QString matchedType;
+
+        for (const auto &type : m_frameTypes) {
+            int idx = buffer.indexOf(type.header);
+            if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
+                firstHeaderIdx = idx;
+                matchedHeaderLen = type.header.size();
+                matchedType = type.name;
+            }
+        }
+
+        if (firstHeaderIdx == -1) {
+            break;
+        }
+
+        int endIdx = buffer.indexOf(footer, firstHeaderIdx + matchedHeaderLen);
+        if (endIdx == -1) {
+            break;
+        }
+
+        int frameLen = endIdx + footer.size() - firstHeaderIdx;
+        QByteArray tmp_frame = buffer.mid(firstHeaderIdx, frameLen);
+
+        if (matchedType == "curve_24bit") {
+            frame.bit24 = tmp_frame;
+        } else if (matchedType == "curve_14bit") {
+            frame.bit14 = tmp_frame;
+            if (!frame.bit24.isEmpty()) {
+                emit simulateDataReady(frame.bit14, frame.bit24);
+            }
+        }
+
+        buffer.remove(0, endIdx + footer.size());
     }
 }

@@ -222,26 +222,34 @@ void FormPlot::init()
     connect(m_plotHistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
     connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormPlot::plotSimulateClose);
     connect(m_plotSimulate,
-            &FormPlotSimulate::simulateDataReady,
+            &FormPlotSimulate::simulateDataReady4k,
             m_worker,
-            &PlotWorker::processData);
+            &PlotWorker::processData4k);
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
-    connect(this, &FormPlot::newDataReceived, m_worker, &PlotWorker::processData);
-    connect(m_worker, &PlotWorker::dataReady, this, &FormPlot::updatePlot, Qt::QueuedConnection);
+    connect(this, &FormPlot::newDataReceived4k, m_worker, &PlotWorker::processData4k);
+    connect(m_worker, &PlotWorker::dataReady4k, this, &FormPlot::updatePlot4k, Qt::QueuedConnection);
     connect(m_worker,
-            &PlotWorker::pointsReady,
+            &PlotWorker::pointsReady4k,
             m_plotData,
-            &FormPlotData::updateTable,
+            &FormPlotData::updateTable4k,
             Qt::QueuedConnection);
 
     m_workerThread->start();
     getINI();
 }
 
+void FormPlot::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
+{
+    emit newDataReceived4k(data14, data24);
+}
+
 void FormPlot::onDataReceived(const QByteArray &data, const QString &name)
 {
     emit newDataReceived(data, name);
 }
+
+double g_min_y = 9999.0;
+double g_max_y = -9999.0;
 
 void FormPlot::updatePlot(const QString &name,
                           QLineSeries *line,
@@ -262,13 +270,14 @@ void FormPlot::updatePlot(const QString &name,
     }
 
     m_axisX->setRange(min_x, max_x);
-
+    g_min_y = std::min(g_min_y, min_y);
+    g_max_y = std::max(g_max_y, max_y);
     if (m_autoZoom) {
-        double padding = (max_y - min_y) * 0.1;
+        double padding = (g_max_y - g_min_y) * 0.1;
         if (padding == 0) {
             padding = 0.1;
         }
-        m_axisY->setRange(min_y - padding, max_y + padding);
+        m_axisY->setRange(g_min_y - padding, g_max_y + padding);
     } else {
         m_axisY->setRange(m_fixedYMin, m_fixedYMax);
     }
@@ -290,6 +299,34 @@ void FormPlot::updatePlot(const QString &name,
 
     m_surfaceProxy24->resetArray(toSurfaceArray(m_series24, 0));
     m_surfaceProxy14->resetArray(toSurfaceArray(m_series14, 0));
+}
+
+void FormPlot::updatePlot4k(const QList<QPointF> &data14,
+                            const QList<QPointF> &data24,
+                            const double &xMin,
+                            const double &xMax,
+                            const double &yMin,
+                            const double &yMax)
+{
+    m_series14->replace(data14);
+    m_series14->setName("curve14_bit");
+    m_points14.push_back(data14);
+    m_series24->replace(data24);
+    m_series24->setName("curve24_bit");
+    m_points24.push_back(data24);
+
+    m_axisX->setRange(xMin, xMax);
+    g_min_y = std::min(g_min_y, yMin);
+    g_max_y = std::max(g_max_y, yMax);
+    if (m_autoZoom) {
+        double padding = (g_max_y - g_min_y) * 0.1;
+        if (padding == 0) {
+            padding = 0.1;
+        }
+        m_axisY->setRange(g_min_y - padding, g_max_y + padding);
+    } else {
+        m_axisY->setRange(m_fixedYMin, m_fixedYMax);
+    }
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)

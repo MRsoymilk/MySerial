@@ -25,6 +25,7 @@ public:
 signals:
     void windowClose();
     void simulateDataReady(const QByteArray &data, const QString &name);
+    void simulateDataReady4k(const QByteArray &data14, const QByteArray &data24);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -38,6 +39,7 @@ private:
     void getINI();
     void setINI();
     void simulate();
+    void simulate4k();
 
 private:
     Ui::FormPlotSimulate *ui;

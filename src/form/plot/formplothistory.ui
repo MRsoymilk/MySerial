@@ -14,8 +14,25 @@
    <string>PlotHistory</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="1,9">
+   <item row="0" column="1">
+    <widget class="QStackedWidget" name="stackedWidget"/>
+   </item>
    <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,9,9">
+     <item>
+      <widget class="QCheckBox" name="checkBoxMix">
+       <property name="text">
+        <string>mix</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxSplit">
+       <property name="text">
+        <string>split</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <layout class="QVBoxLayout" name="vLay14">
        <item>
@@ -125,9 +142,6 @@
       </layout>
      </item>
     </layout>
-   </item>
-   <item row="0" column="1">
-    <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
   </layout>
  </widget>

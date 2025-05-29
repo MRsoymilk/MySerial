@@ -31,9 +31,11 @@ public:
 
 signals:
     void newDataReceived(const QByteArray &data, const QString &name);
+    void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);
 
 public slots:
     void onDataReceived(const QByteArray &data, const QString &name);
+    void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
@@ -54,9 +56,14 @@ private slots:
                     const double &max_y,
                     const double &min_x,
                     const double &max_x);
+    void updatePlot4k(const QList<QPointF> &data14,
+                      const QList<QPointF> &data24,
+                      const double &xMin,
+                      const double &xMax,
+                      const double &yMin,
+                      const double &yMax);
     void on_spinBox14Offset_valueChanged(int val);
     void on_spinBox24Offset_valueChanged(int val);
-
     void on_comboBoxAlgorithm_currentIndexChanged(int index);
 
 private:
