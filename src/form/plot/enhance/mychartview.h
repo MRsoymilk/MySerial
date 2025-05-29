@@ -1,7 +1,9 @@
 #ifndef MYCHARTVIEW_H
 #define MYCHARTVIEW_H
+
 #include <QGraphicsSimpleTextItem>
 #include <QtCharts>
+#include <limits>
 
 class MyChartView : public QChartView
 {
@@ -19,7 +21,13 @@ public:
 
         m_coordText = new QGraphicsSimpleTextItem(m_chart);
         m_coordText->setZValue(11);
+
+        m_marker = m_chart->scene()->addEllipse(QRectF(0, 0, 8, 8), QPen(Qt::red), QBrush(Qt::red));
+        m_marker->setZValue(10);
+        m_marker->hide();
     }
+
+    void setChart(QChart *chart) {}
 
 protected:
     void mouseMoveEvent(QMouseEvent *event) override
@@ -32,6 +40,7 @@ protected:
             m_lineV->hide();
             m_lineH->hide();
             m_coordText->hide();
+            m_marker->hide();
             return;
         }
 
@@ -42,7 +51,26 @@ protected:
         qreal x = value.x();
         qreal y = value.y();
 
-        // Update crosshair
+        // 吸附：查找所有 QXYSeries 中最近的点
+        QPointF closestPoint;
+        qreal minDist = std::numeric_limits<qreal>::max();
+        for (auto *series : m_chart->series()) {
+            auto *xySeries = qobject_cast<QXYSeries *>(series);
+            if (!xySeries)
+                continue;
+
+            const auto &points = xySeries->points();
+            for (const QPointF &p : points) {
+                qreal dist = std::hypot(p.x() - x, p.y() - y);
+                if (dist < minDist) {
+                    minDist = dist;
+                    closestPoint = p;
+                }
+            }
+        }
+
+        // 更新十字线
+        QPointF sceneMouse = mapToScene(pos.toPoint());
         QPointF top = QPointF(pos.x(), plotArea.top());
         QPointF bottom = QPointF(pos.x(), plotArea.bottom());
         QPointF left = QPointF(plotArea.left(), pos.y());
@@ -51,10 +79,17 @@ protected:
         m_lineV->setLine(QLineF(mapToScene(top.toPoint()), mapToScene(bottom.toPoint())));
         m_lineH->setLine(QLineF(mapToScene(left.toPoint()), mapToScene(right.toPoint())));
 
-        // Update text
-        QString coordText = QString("X: %1\nY: %2").arg(x, 0, 'f', 3).arg(y, 0, 'f', 3);
+        // 更新吸附点圆圈
+        QPointF closestScenePos = mapToScene(m_chart->mapToPosition(closestPoint).toPoint());
+        m_marker->setRect(closestScenePos.x() - 4, closestScenePos.y() - 4, 8, 8);
+        m_marker->show();
+
+        // 更新坐标文本
+        QString coordText = QString("X: %1\nY: %2")
+                                .arg(closestPoint.x(), 0, 'f', 3)
+                                .arg(closestPoint.y(), 0, 'f', 3);
         m_coordText->setText(coordText);
-        m_coordText->setPos(mapToScene(pos.toPoint()) + QPointF(10, -30));
+        m_coordText->setPos(closestScenePos + QPointF(10, -30));
 
         QChartView::mouseMoveEvent(event);
     }
@@ -64,5 +99,7 @@ private:
     QGraphicsLineItem *m_lineV;
     QGraphicsLineItem *m_lineH;
     QGraphicsSimpleTextItem *m_coordText;
+    QGraphicsEllipseItem *m_marker; // 用于标记最近点
 };
-#endif
+
+#endif // MYCHARTVIEW_H
