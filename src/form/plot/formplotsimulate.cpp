@@ -49,7 +49,7 @@ void FormPlotSimulate::on_btnLoadFile_clicked()
     m_ini.head = ui->lineEditHead->text().split(",", Qt::SkipEmptyParts);
     m_ini.tail = ui->lineEditTail->text().split(",", Qt::SkipEmptyParts);
     m_ini.file = filePath;
-    simulate();
+    simulate4k();
     setINI();
 }
 
@@ -64,7 +64,7 @@ void FormPlotSimulate::on_toolButtonRe_clicked()
     m_ini.head = ui->lineEditHead->text().split(",", Qt::SkipEmptyParts);
     m_ini.tail = ui->lineEditTail->text().split(",", Qt::SkipEmptyParts);
     m_ini.file = ui->lineEditPath->text();
-    simulate();
+    simulate4k();
     setINI();
 }
 
@@ -209,7 +209,7 @@ void FormPlotSimulate::simulate4k()
         } else if (matchedType == "curve_14bit") {
             frame.bit14 = tmp_frame;
             if (!frame.bit24.isEmpty()) {
-                emit simulateDataReady(frame.bit14, frame.bit24);
+                emit simulateDataReady4k(frame.bit14, frame.bit24);
             }
         }
 
