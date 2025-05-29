@@ -43,6 +43,8 @@ set(PROJECT_SOURCES
         src/form/plot/formplotsimulate.h
         src/form/plot/formplotsimulate.cpp
         src/form/plot/formplotsimulate.ui
+        src/form/plot/enhance/mychartview.h
+        src/form/plot/enhance/mychartview.cpp
         src/form/setting/formsetting.h
         src/form/setting/formsetting.cpp
         src/form/setting/formsetting.ui

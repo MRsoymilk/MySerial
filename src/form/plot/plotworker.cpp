@@ -19,6 +19,11 @@ void PlotWorker::setOffset24(const int &offset)
     m_offset24 = offset;
 }
 
+void PlotWorker::setAlgorithm(int algorithm)
+{
+    m_algorithm = algorithm;
+}
+
 void PlotWorker::processData(const QByteArray &data, const QString &name)
 {
     QByteArray payload = data.mid(5, data.size() - 7);
@@ -62,6 +67,7 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();
     m_series = new QLineSeries(this);
+    QVector<double> v_voltage;
     for (int i = 0; i < numPoints; ++i) {
         int idx = i * 3;
         quint32 raw = (quint8) payload[idx] << 16 | (quint8) payload[idx + 1] << 8
@@ -88,18 +94,38 @@ void PlotWorker::processData(const QByteArray &data, const QString &name)
         if (voltage > yMax)
             yMax = voltage;
 
-        // series->append(m_time + m_T * i, voltage);
-        m_series->append(i, voltage);
+        v_voltage.push_back(voltage);
+    }
+
+    // algorithm
+    if (m_algorithm == 1) {
+        if (name == "curve_14bit") {
+            double val95 = yMax * 0.95;
+            int index = 0;
+            for (; index < numPoints; ++index) {
+                if (v_voltage[index] > val95) {
+                    m_index_algorithm_neg_max95 = index;
+                    break;
+                }
+            }
+        }
+        int endIndex = std::min(m_index_algorithm_neg_max95 + 1000, numPoints);
+
+        int indexNew = 0;
+        for (int i = m_index_algorithm_neg_max95; i < endIndex; ++i) {
+            m_series->append(indexNew++, v_voltage[i]);
+        }
+        numPoints = 1000;
+    } else {
+        for (int i = 0; i < numPoints; ++i) {
+            m_series->append(i, v_voltage[i]);
+        }
     }
 
     emit pointsReady(m_series);
 
-    // double xMin = m_time;
-    // double xMax = m_time + numPoints * m_T;
-
     double xMin = 1;
-    double xMax = 2000;
+    double xMax = numPoints;
 
-    // m_time = xMax;
     emit dataReady(name, m_series, numPoints, yMin, yMax, xMin, xMax);
 }

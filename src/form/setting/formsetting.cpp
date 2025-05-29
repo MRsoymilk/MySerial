@@ -22,7 +22,7 @@ FormSetting::FormSetting(QWidget *parent)
 FormSetting::~FormSetting()
 {
     if (m_tip) {
-        m_tip->close();
+        delete m_tip;
     }
     if (m_server) {
         delete m_server;

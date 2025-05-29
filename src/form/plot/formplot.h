@@ -9,6 +9,7 @@
 #include <QtDataVisualization/Q3DSurface>
 #include <QtDataVisualization/QSurface3DSeries>
 #include <QtDataVisualization/QSurfaceDataProxy>
+#include "enhance/mychartview.h"
 #include "formplotdata.h"
 #include "formplothistory.h"
 #include "formplotsimulate.h"
@@ -21,6 +22,8 @@ class FormPlot;
 class FormPlot : public QWidget
 {
     Q_OBJECT
+public:
+    enum class PLOT_ALGORITHM { NORMAL = 0, MAX_NEG_95 };
 
 public:
     explicit FormPlot(QWidget *parent = nullptr);
@@ -53,6 +56,8 @@ private slots:
                     const double &max_x);
     void on_spinBox14Offset_valueChanged(int val);
     void on_spinBox24Offset_valueChanged(int val);
+
+    void on_comboBoxAlgorithm_currentIndexChanged(int index);
 
 private:
     void init();
@@ -89,7 +94,7 @@ private:
     QValue3DAxis *m_surfaceAxisY;
     QValue3DAxis *m_surfaceAxisZ;
 
-    QChartView *m_chartView = nullptr;
+    MyChartView *m_chartView = nullptr;
 
     QList<QList<QPointF>> m_points24;
     QList<QList<QPointF>> m_points14;

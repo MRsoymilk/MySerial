@@ -56,8 +56,8 @@ private:
     Ui::FormSetting *ui;
     INI_UPDATE m_iniUpdate;
     INI_SERVER m_iniServer;
-    FormTip *m_tip;
-    Server *m_server;
+    FormTip *m_tip = nullptr;
+    Server *m_server = nullptr;
 };
 
 #endif // FORMSETTING_H

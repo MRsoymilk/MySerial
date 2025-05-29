@@ -56,6 +56,13 @@ void FormPlot::getINI()
     if (offset24 != 0) {
         ui->spinBox24Offset->setValue(offset24);
     }
+
+    ui->comboBoxAlgorithm->blockSignals(true);
+    ui->comboBoxAlgorithm->addItems({"normal", "max_neg_95"});
+    ui->comboBoxAlgorithm->blockSignals(false);
+
+    int algorithm = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
+    ui->comboBoxAlgorithm->setCurrentIndex(algorithm);
 }
 
 void FormPlot::setINI()
@@ -104,7 +111,7 @@ void FormPlot::init()
     }
     m_chart->setTitle("Live ADC Waveform");
 
-    m_chartView = new QChartView(m_chart);
+    m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->stackedWidget->addWidget(m_chartView);
 
@@ -373,4 +380,14 @@ void FormPlot::on_spinBox24Offset_valueChanged(int val)
 {
     m_worker->setOffset24(val);
     setINI();
+}
+
+void FormPlot::on_comboBoxAlgorithm_currentIndexChanged(int index)
+{
+    if (index == static_cast<int>(PLOT_ALGORITHM::NORMAL)) {
+        m_worker->setAlgorithm(index);
+    } else if (index == static_cast<int>(PLOT_ALGORITHM::MAX_NEG_95)) {
+        m_worker->setAlgorithm(index);
+    }
+    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, QString::number(index));
 }
