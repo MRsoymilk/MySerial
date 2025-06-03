@@ -37,14 +37,10 @@
         QMessageBox *msgBox = new QMessageBox(PARENT); \
         msgBox->setWindowTitle(TITLE); \
         msgBox->setText(TEXT); \
-        msgBox->setIcon(QMessageBox::Warning); \
         msgBox->setAttribute(Qt::WA_DeleteOnClose); \
         msgBox->show(); \
 \
-        QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(msgBox); \
-        msgBox->setGraphicsEffect(effect); \
-\
-        QPropertyAnimation *fadeAnim = new QPropertyAnimation(effect, "opacity", msgBox); \
+        QPropertyAnimation *fadeAnim = new QPropertyAnimation(msgBox, "windowOpacity", msgBox); \
         fadeAnim->setDuration(1000); \
         fadeAnim->setStartValue(1.0); \
         fadeAnim->setEndValue(0.0); \

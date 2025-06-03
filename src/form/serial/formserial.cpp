@@ -179,6 +179,7 @@ void FormSerial::send(const QString &text)
     LOG_INFO("serial send: {}", text);
     if (!(m_serial && m_serial->isOpen())) {
         SHOW_AUTO_CLOSE_MSGBOX(this, "warning", "serial not open!");
+        LOG_ERROR("Serial not open!");
         return;
     }
 

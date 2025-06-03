@@ -98,6 +98,7 @@ void FormPlotSimulate::simulate()
 
     if (headList.isEmpty() || tailList.isEmpty()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, "Simulate", "Unsupport head/tail");
+        LOG_WARN("Simulate: Unsupport head/tail");
         return;
     }
 
@@ -193,12 +194,15 @@ void FormPlotSimulate::simulate4k()
         }
 
         if (firstHeaderIdx == -1) {
+            SHOW_AUTO_CLOSE_MSGBOX(this, "Simulate", "no header found!");
+            LOG_WARN("no header found: {}", file.fileName());
             break;
         }
 
         int endIdx = buffer.indexOf(footer, firstHeaderIdx + matchedHeaderLen);
         if (endIdx == -1) {
-            break;
+            SHOW_AUTO_CLOSE_MSGBOX(this, "Simulate", "simulate finish");
+            return;
         }
 
         int frameLen = endIdx + footer.size() - firstHeaderIdx;

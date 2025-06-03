@@ -248,9 +248,6 @@ void FormPlot::onDataReceived(const QByteArray &data, const QString &name)
     emit newDataReceived(data, name);
 }
 
-double g_min_y = 9999.0;
-double g_max_y = -9999.0;
-
 void FormPlot::updatePlot(const QString &name,
                           QLineSeries *line,
                           const int &points,
@@ -270,14 +267,12 @@ void FormPlot::updatePlot(const QString &name,
     }
 
     m_axisX->setRange(min_x, max_x);
-    g_min_y = std::min(g_min_y, min_y);
-    g_max_y = std::max(g_max_y, max_y);
     if (m_autoZoom) {
-        double padding = (g_max_y - g_min_y) * 0.1;
+        double padding = (max_y - min_y) * 0.1;
         if (padding == 0) {
             padding = 0.1;
         }
-        m_axisY->setRange(g_min_y - padding, g_max_y + padding);
+        m_axisY->setRange(min_y - padding, max_y + padding);
     } else {
         m_axisY->setRange(m_fixedYMin, m_fixedYMax);
     }
@@ -316,14 +311,12 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
     m_points24.push_back(data24);
 
     m_axisX->setRange(xMin, xMax);
-    g_min_y = std::min(g_min_y, yMin);
-    g_max_y = std::max(g_max_y, yMax);
     if (m_autoZoom) {
-        double padding = (g_max_y - g_min_y) * 0.1;
+        double padding = (yMax - yMin) * 0.1;
         if (padding == 0) {
             padding = 0.1;
         }
-        m_axisY->setRange(g_min_y - padding, g_max_y + padding);
+        m_axisY->setRange(yMin - padding, yMax + padding);
     } else {
         m_axisY->setRange(m_fixedYMin, m_fixedYMax);
     }
