@@ -5,6 +5,7 @@
 #include "../form/serial/formserial.h"
 #include "../form/setting/formsetting.h"
 #include "./ui_mainwindow.h"
+#include "funcdef.h"
 #include "version.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -19,6 +20,19 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::initLanguage()
+{
+    QString language = SETTING_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, "en");
+    connect(ui->menuLanguage, &QMenu::triggered, this, &MainWindow::menuLanguageSelect);
+    const QList<QAction *> actions = ui->menuLanguage->actions();
+    for (QAction *act : actions) {
+        if (act->text() == language) {
+            menuLanguageSelect(act);
+            return;
+        }
+    }
 }
 
 void MainWindow::initStackWidget()
@@ -87,6 +101,9 @@ void MainWindow::initToolbar()
 
 void MainWindow::init()
 {
+    // init language
+    initLanguage();
+
     // init stacked widget
     initStackWidget();
 
@@ -133,4 +150,30 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::on_btnSetting_clicked()
 {
     ui->stackedWidget->setCurrentWidget(formSetting);
+}
+
+void MainWindow::setLanguage(const QString &language)
+{
+    QTranslator *translator = new QTranslator(this);
+    if (translator->load(QString(":/res/i18n/%1.qm").arg(language))) {
+        qApp->installTranslator(translator);
+        ui->retranslateUi(this);
+    }
+    SETTING_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);
+}
+
+void MainWindow::menuLanguageSelect(QAction *selectedAction)
+{
+    QString language = selectedAction->text();
+    setLanguage(language);
+    const QList<QAction *> actions = ui->menuLanguage->actions();
+    for (QAction *act : actions) {
+        if (act == selectedAction) {
+            act->setChecked(true);
+            act->setIcon(QIcon(":res/icons/yes.png"));
+        } else {
+            act->setChecked(false);
+            act->setIcon(QIcon());
+        }
+    }
 }

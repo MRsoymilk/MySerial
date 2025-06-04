@@ -78,11 +78,35 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+    <addaction name="action_en"/>
+    <addaction name="action_zh_simple"/>
+    <addaction name="action_zh_traditional"/>
+   </widget>
+   <addaction name="menuLanguage"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_en">
+   <property name="text">
+    <string>en</string>
+   </property>
+  </action>
+  <action name="action_zh_simple">
+   <property name="text">
+    <string>zh_simple</string>
+   </property>
+  </action>
+  <action name="action_zh_traditional">
+   <property name="text">
+    <string>zh_traditional</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>btnSerial</tabstop>

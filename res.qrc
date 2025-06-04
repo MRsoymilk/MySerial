@@ -22,5 +22,11 @@
         <file>res/icons/go-next.png</file>
         <file>res/icons/go-prev.png</file>
         <file>res/icons/simulate.png</file>
+        <file>res/i18n/en.ts</file>
+        <file>res/i18n/zh_simple.qm</file>
+        <file>res/i18n/zh_simple.ts</file>
+        <file>res/i18n/zh_traditional.qm</file>
+        <file>res/i18n/zh_traditional.ts</file>
+        <file>res/icons/yes.png</file>
     </qresource>
 </RCC>

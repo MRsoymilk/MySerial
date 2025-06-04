@@ -33,9 +33,12 @@ private slots:
     void on_btnData_clicked();
     void on_btnLog_clicked();
     void on_btnSetting_clicked();
+    void menuLanguageSelect(QAction *selectedAction);
 
 private:
     void init();
+    void initLanguage();
+    void setLanguage(const QString &language);
     void initStackWidget();
     void initToolbar();
 
