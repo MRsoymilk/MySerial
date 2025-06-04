@@ -14,6 +14,8 @@ class FormLog : public QWidget
 public:
     explicit FormLog(QWidget *parent = nullptr);
     ~FormLog();
+    void retranslateUI();
+
 private:
     Ui::FormLog *ui;
 };

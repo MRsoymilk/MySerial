@@ -21,6 +21,7 @@ public:
 public:
     explicit FormPlotSimulate(QWidget *parent = nullptr);
     ~FormPlotSimulate();
+    void retranslateUI();
 
 signals:
     void windowClose();

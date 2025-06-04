@@ -24,6 +24,11 @@ FormSerial::~FormSerial()
     delete ui;
 }
 
+void FormSerial::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormSerial::getINI()
 {
     m_ini.port_name = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME);

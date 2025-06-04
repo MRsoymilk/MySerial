@@ -15,9 +15,9 @@ class FormData : public QWidget
 public:
     explicit FormData(QWidget *parent = nullptr);
     ~FormData();
+    void retranslateUI();
 
 public slots:
-    // void onDataReceived(const QByteArray &data, const QString &name);
     void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
 
 private slots:

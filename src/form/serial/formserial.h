@@ -47,6 +47,7 @@ public:
 public:
     explicit FormSerial(QWidget *parent = nullptr);
     ~FormSerial();
+    void retranslateUI();
 
 signals:
     void recv2Plot4k(const QByteArray &data14, const QByteArray &data24);

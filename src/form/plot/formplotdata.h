@@ -16,6 +16,8 @@ class FormPlotData : public QWidget
 public:
     explicit FormPlotData(QWidget *parent = nullptr);
     ~FormPlotData();
+    void retranslateUI();
+
 signals:
     void windowClose();
 

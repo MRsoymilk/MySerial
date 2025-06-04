@@ -18,6 +18,7 @@ public:
 public:
     explicit FormPlotHistory(QWidget *parent = nullptr);
     ~FormPlotHistory();
+    void retranslateUI();
     void updateData(const QList<QList<QPointF>> &p14, const QList<QList<QPointF>> &p24);
 
 signals:

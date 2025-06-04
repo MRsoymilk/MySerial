@@ -16,6 +16,11 @@ FormPlotSimulate::~FormPlotSimulate()
     delete ui;
 }
 
+void FormPlotSimulate::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormPlotSimulate::getINI()
 {
     m_ini.file = SETTING_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);

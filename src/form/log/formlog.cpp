@@ -19,3 +19,8 @@ FormLog::~FormLog()
 {
     delete ui;
 }
+
+void FormLog::retranslateUI()
+{
+    ui->retranslateUi(this);
+}

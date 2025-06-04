@@ -21,6 +21,11 @@ FormPlotData::~FormPlotData()
     delete ui;
 }
 
+void FormPlotData::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormPlotData::updateTable4k(const QVector<double> &v14, const QVector<double> &v24)
 {
     m_model->removeRows(0, m_model->rowCount());

@@ -31,6 +31,11 @@ FormSetting::~FormSetting()
     delete ui;
 }
 
+void FormSetting::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormSetting::init()
 {
     getINI();

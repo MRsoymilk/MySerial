@@ -28,6 +28,7 @@ public:
 public:
     explicit FormPlot(QWidget *parent = nullptr);
     ~FormPlot();
+    void retranslateUI();
 
 signals:
     void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);

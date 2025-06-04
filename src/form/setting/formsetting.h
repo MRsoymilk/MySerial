@@ -31,6 +31,7 @@ public:
 public:
     explicit FormSetting(QWidget *parent = nullptr);
     ~FormSetting();
+    void retranslateUI();
 
 signals:
     void showUpdates(const QString &url);

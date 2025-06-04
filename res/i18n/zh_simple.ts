@@ -9,27 +9,32 @@
         <translation>数据</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="57"/>
+        <location filename="../../src/form/data/formdata.ui" line="38"/>
+        <source>data limit</source>
+        <translation>数据限制</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/data/formdata.cpp" line="70"/>
         <source>Context Menu</source>
         <translation>上下文菜单</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="59"/>
+        <location filename="../../src/form/data/formdata.cpp" line="72"/>
         <source>Clear</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="63"/>
+        <location filename="../../src/form/data/formdata.cpp" line="76"/>
         <source>Export to CSV</source>
         <translation>导出CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="79"/>
+        <location filename="../../src/form/data/formdata.cpp" line="103"/>
         <source>Save CSV</source>
         <translation>保存CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="79"/>
+        <location filename="../../src/form/data/formdata.cpp" line="103"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
@@ -51,26 +56,41 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="35"/>
+        <source>algorithm</source>
+        <translation>算法</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="51"/>
+        <source>offset_14bit</source>
+        <translation>14bit偏移</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="72"/>
+        <source>offset_24bit</source>
+        <translation>24bit偏移</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="93"/>
         <source>simulate</source>
         <translation>模拟</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="42"/>
+        <location filename="../../src/form/plot/formplot.ui" line="100"/>
         <source>3D</source>
         <translation>3D</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="49"/>
+        <location filename="../../src/form/plot/formplot.ui" line="107"/>
         <source>zoom</source>
         <translation>缩放</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="59"/>
+        <location filename="../../src/form/plot/formplot.ui" line="117"/>
         <source>data</source>
         <translation>数据</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="66"/>
+        <location filename="../../src/form/plot/formplot.ui" line="124"/>
         <source>history</source>
         <translation>历史</translation>
     </message>
@@ -83,27 +103,27 @@
         <translation>图像数据</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplotdata.cpp" line="56"/>
+        <location filename="../../src/form/plot/formplotdata.cpp" line="72"/>
         <source>Context Menu</source>
         <translation>上下文菜单</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplotdata.cpp" line="58"/>
+        <location filename="../../src/form/plot/formplotdata.cpp" line="74"/>
         <source>Clear</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplotdata.cpp" line="62"/>
+        <location filename="../../src/form/plot/formplotdata.cpp" line="78"/>
         <source>Export to CSV</source>
         <translation>导出CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplotdata.cpp" line="78"/>
+        <location filename="../../src/form/plot/formplotdata.cpp" line="94"/>
         <source>Save CSV</source>
         <translation>保存CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplotdata.cpp" line="78"/>
+        <location filename="../../src/form/plot/formplotdata.cpp" line="94"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
@@ -116,38 +136,48 @@
         <translation>图像历史</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplothistory.ui" line="26"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="29"/>
         <source>curve 14bit</source>
         <translation>14bit曲线</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplothistory.ui" line="33"/>
-        <location filename="../../src/form/plot/formplothistory.ui" line="87"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="36"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="90"/>
         <source>prev</source>
         <translation>前一项</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplothistory.ui" line="40"/>
-        <location filename="../../src/form/plot/formplothistory.ui" line="94"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="43"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="97"/>
         <source>next</source>
         <translation>后一项</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplothistory.ui" line="51"/>
-        <location filename="../../src/form/plot/formplothistory.ui" line="105"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="54"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="108"/>
         <source>status</source>
         <translation>状态</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplothistory.ui" line="60"/>
-        <location filename="../../src/form/plot/formplothistory.ui" line="114"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="63"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="117"/>
         <source>go:</source>
         <translation>跳转：</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplothistory.ui" line="80"/>
+        <location filename="../../src/form/plot/formplothistory.ui" line="83"/>
         <source>curve 24bit</source>
         <translation>24bit曲线</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplothistory.ui" line="150"/>
+        <source>mix</source>
+        <translation>混合</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplothistory.ui" line="157"/>
+        <source>split</source>
+        <translation>分隔</translation>
     </message>
 </context>
 <context>
@@ -409,6 +439,26 @@
         <location filename="../../src/main/mainwindow.ui" line="64"/>
         <source>Setting</source>
         <translation>设置</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="86"/>
+        <source>Language</source>
+        <translation>语言</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="97"/>
+        <source>en</source>
+        <translation>en</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="102"/>
+        <source>zh_simple</source>
+        <translation>zh_simple</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="107"/>
+        <source>zh_traditional</source>
+        <translation>zh_traditional</translation>
     </message>
 </context>
 </TS>

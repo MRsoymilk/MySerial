@@ -23,6 +23,11 @@ FormData::~FormData()
     delete ui;
 }
 
+void FormData::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormData::init()
 {
     m_model = new QStandardItemModel(this);

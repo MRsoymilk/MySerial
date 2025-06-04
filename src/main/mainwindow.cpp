@@ -101,14 +101,14 @@ void MainWindow::initToolbar()
 
 void MainWindow::init()
 {
-    // init language
-    initLanguage();
-
     // init stacked widget
     initStackWidget();
 
     // init toolbar
     initToolbar();
+
+    // init language
+    initLanguage();
 }
 
 void MainWindow::on_btnSerial_clicked()
@@ -158,6 +158,21 @@ void MainWindow::setLanguage(const QString &language)
     if (translator->load(QString(":/res/i18n/%1.qm").arg(language))) {
         qApp->installTranslator(translator);
         ui->retranslateUi(this);
+        if (formSerial) {
+            formSerial->retranslateUI();
+        }
+        if (formData) {
+            formData->retranslateUI();
+        }
+        if (formPlot) {
+            formPlot->retranslateUI();
+        }
+        if (formLog) {
+            formLog->retranslateUI();
+        }
+        if (formSetting) {
+            formSetting->retranslateUI();
+        }
     }
     SETTING_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);
 }

@@ -46,6 +46,14 @@ FormPlot::~FormPlot()
     delete ui;
 }
 
+void FormPlot::retranslateUI()
+{
+    ui->retranslateUi(this);
+    m_plotData->retranslateUI();
+    m_plotHistory->retranslateUI();
+    m_plotData->retranslateUI();
+}
+
 void FormPlot::getINI()
 {
     int offset14 = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, "0").toInt();

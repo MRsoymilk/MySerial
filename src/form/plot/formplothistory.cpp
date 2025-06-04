@@ -22,6 +22,11 @@ FormPlotHistory::~FormPlotHistory()
     delete ui;
 }
 
+void FormPlotHistory::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormPlotHistory::init()
 {
     m_chartView14 = new QChartView(this);
