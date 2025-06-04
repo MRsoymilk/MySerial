@@ -14,12 +14,36 @@
    <string>Serial</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBoxPortControl">
      <property name="title">
       <string>Port Control</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
@@ -92,6 +116,18 @@
         <string>Receive</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QPlainTextEdit" name="txtRecv"/>
         </item>
@@ -104,6 +140,18 @@
         <string>Send</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
@@ -114,6 +162,18 @@
             <string>Single</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_6">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item row="0" column="0">
              <widget class="QPlainTextEdit" name="txtSend"/>
             </item>
@@ -137,6 +197,18 @@
             <string>Multipe</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,8,1" columnminimumwidth="1,8,1">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item row="3" column="2">
              <widget class="QToolButton" name="tBtn_3">
               <property name="text">
@@ -265,6 +337,18 @@
       <string>Receive Control</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QCheckBox" name="checkBoxHexDisplay">
         <property name="text">
@@ -299,6 +383,18 @@
       <string>Send Control</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
