@@ -14,18 +14,9 @@ public:
     void setOffset24(const int &offset);
     void setAlgorithm(int);
 public slots:
-    void processData(const QByteArray &data, const QString &name);
     void processData4k(const QByteArray &data14, const QByteArray &data24);
 
 signals:
-    void dataReady(const QString &name,
-                   QLineSeries *line,
-                   int numPoints,
-                   double minY,
-                   double maxY,
-                   double minX,
-                   double maxX);
-    void pointsReady(QLineSeries *line);
     void pointsReady4k(const QVector<double> &v14, const QVector<double> &v24);
     void dataReady4k(const QList<QPointF> &v14,
                      const QList<QPointF> &v24,

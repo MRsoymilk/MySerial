@@ -145,14 +145,21 @@ void FormPlot::init()
 
     m_surfaceSeries24->setMesh(QAbstract3DSeries::MeshCylinder);
     m_surfaceSeries24->setBaseColor(Qt::cyan);
-    m_surfaceSeries24->setDrawMode(QSurface3DSeries::DrawSurface);
+    m_surfaceSeries24->setMeshSmooth(true);
+    m_surfaceSeries24->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
 
     m_surfaceSeries14->setMesh(QAbstract3DSeries::MeshCylinder);
     m_surfaceSeries14->setBaseColor(Qt::magenta);
-    m_surfaceSeries14->setDrawMode(QSurface3DSeries::DrawSurface);
+    m_surfaceSeries14->setMeshSmooth(true);
+    m_surfaceSeries14->setDrawMode(QSurface3DSeries::DrawSurfaceAndWireframe);
 
     m_surface->addSeries(m_surfaceSeries24);
     m_surface->addSeries(m_surfaceSeries14);
+
+    m_surface->activeTheme()->setGridEnabled(true);
+    m_surface->activeTheme()->setGridLineColor(Qt::gray);
+
+    m_surface->setShadowQuality(QAbstract3DGraph::ShadowQualityMedium);
 
     QSurfaceDataArray *initData = new QSurfaceDataArray;
     initData->reserve(1);
@@ -243,59 +250,6 @@ void FormPlot::onDataReceived4k(const QByteArray &data14, const QByteArray &data
     emit newDataReceived4k(data14, data24);
 }
 
-void FormPlot::onDataReceived(const QByteArray &data, const QString &name)
-{
-    emit newDataReceived(data, name);
-}
-
-void FormPlot::updatePlot(const QString &name,
-                          QLineSeries *line,
-                          const int &points,
-                          const double &min_y,
-                          const double &max_y,
-                          const double &min_x,
-                          const double &max_x)
-{
-    if (name == "curve_24bit") {
-        m_series24->replace(line->points());
-        m_series24->setName(name);
-        m_points24.push_back(line->points());
-    } else if (name == "curve_14bit") {
-        m_series14->replace(line->points());
-        m_series14->setName(name);
-        m_points14.push_back(line->points());
-    }
-
-    m_axisX->setRange(min_x, max_x);
-    if (m_autoZoom) {
-        double padding = (max_y - min_y) * 0.1;
-        if (padding == 0) {
-            padding = 0.1;
-        }
-        m_axisY->setRange(min_y - padding, max_y + padding);
-    } else {
-        m_axisY->setRange(m_fixedYMin, m_fixedYMax);
-    }
-
-    // Update 3D
-    auto toSurfaceArray = [](const QLineSeries *series, float z) -> QSurfaceDataArray * {
-        QSurfaceDataArray *data = new QSurfaceDataArray;
-
-        QSurfaceDataRow *surface_line = new QSurfaceDataRow;
-        QSurfaceDataRow *surface_line_ = new QSurfaceDataRow;
-
-        for (int i = 0; i < series->count(); ++i) {
-            (*surface_line) << QVector3D(series->at(i).x(), series->at(i).y(), z);
-            (*surface_line_) << QVector3D(series->at(i).x(), series->at(i).y(), z + 0.1);
-        }
-        *data << surface_line << surface_line_;
-        return data;
-    };
-
-    m_surfaceProxy24->resetArray(toSurfaceArray(m_series24, 0));
-    m_surfaceProxy14->resetArray(toSurfaceArray(m_series14, 0));
-}
-
 void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                             const QList<QPointF> &data24,
                             const double &xMin,
@@ -303,6 +257,7 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                             const double &yMin,
                             const double &yMax)
 {
+    // 2D
     m_series14->replace(data14);
     m_series14->setName("curve14_bit");
     m_points14.push_back(data14);
@@ -320,6 +275,28 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
     } else {
         m_axisY->setRange(m_fixedYMin, m_fixedYMax);
     }
+    // 3D
+    auto toSurfaceArray = [](const QLineSeries *series, float z) -> QSurfaceDataArray * {
+        QSurfaceDataArray *data = new QSurfaceDataArray;
+
+        QSurfaceDataRow *surface_line = new QSurfaceDataRow;
+        QSurfaceDataRow *surface_line_ = new QSurfaceDataRow;
+
+        for (int i = 0; i < series->count(); ++i) {
+            (*surface_line) << QVector3D(series->at(i).x(), series->at(i).y(), z);
+            (*surface_line_) << QVector3D(series->at(i).x(), series->at(i).y(), z + 0.4);
+        }
+        *data << surface_line << surface_line_;
+        return data;
+    };
+
+    QSurfaceDataArray *data3D24 = toSurfaceArray(m_series24, 0);
+    QSurfaceDataArray *data3D14 = toSurfaceArray(m_series14, 0.5);
+    m_surfaceProxy24->resetArray(data3D24);
+    m_surfaceProxy14->resetArray(data3D14);
+    m_surfaceAxisX->setRange(xMin, xMax);
+    m_surfaceAxisY->setRange(yMin, yMax);
+    m_surfaceAxisZ->setRange(0, 1);
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)

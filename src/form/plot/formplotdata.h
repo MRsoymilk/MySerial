@@ -20,7 +20,6 @@ signals:
     void windowClose();
 
 public slots:
-    void updateTable(QLineSeries *line);
     void updateTable4k(const QVector<double> &v14, const QVector<double> &v24);
 
 protected:

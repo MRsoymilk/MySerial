@@ -391,9 +391,6 @@ void FormSerial::onReadyRead()
             }
         }
 
-        // // 处理完整帧
-        // emit recv2Data(tmp_frame, matchedType);
-        // emit recv2Plot(tmp_frame, matchedType);
         m_buffer.remove(0, endIdx + m_footer.size());
     }
 }

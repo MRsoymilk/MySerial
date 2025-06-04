@@ -21,17 +21,6 @@ FormPlotData::~FormPlotData()
     delete ui;
 }
 
-void FormPlotData::updateTable(QLineSeries *line)
-{
-    m_model->removeRows(0, m_model->rowCount());
-    for (const QPointF &point : line->points()) {
-        QList<QStandardItem *> rowItems;
-        rowItems << new QStandardItem(QString::number(point.x()));
-        rowItems << new QStandardItem(QString::number(point.y()));
-        m_model->appendRow(rowItems);
-    }
-}
-
 void FormPlotData::updateTable4k(const QVector<double> &v14, const QVector<double> &v24)
 {
     m_model->removeRows(0, m_model->rowCount());

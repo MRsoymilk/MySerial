@@ -41,24 +41,6 @@ void FormData::init()
     getINI();
 }
 
-void FormData::onDataReceived(const QByteArray &data, const QString &name)
-{
-    QList<QStandardItem *> rowItems;
-
-    rowItems << new QStandardItem(TIMESTAMP());
-    QString to_show;
-    for (int i = 0; i < data.length(); ++i) {
-        to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
-    }
-    rowItems << new QStandardItem(to_show);
-    rowItems << new QStandardItem(QString::number(data.length()));
-
-    m_model->appendRow(rowItems);
-    while (m_model->rowCount() > m_limit) {
-        m_model->removeRow(0);
-    }
-}
-
 void FormData::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
 {
     QList<QStandardItem *> rowItems;

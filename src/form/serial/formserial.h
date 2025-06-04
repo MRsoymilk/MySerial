@@ -49,8 +49,6 @@ public:
     ~FormSerial();
 
 signals:
-    void recv2Plot(const QByteArray &data, const QString &name);
-    void recv2Data(const QByteArray &data, const QString &name);
     void recv2Plot4k(const QByteArray &data14, const QByteArray &data24);
     void recv2Data4k(const QByteArray &data14, const QByteArray &data24);
 

@@ -30,11 +30,9 @@ public:
     ~FormPlot();
 
 signals:
-    void newDataReceived(const QByteArray &data, const QString &name);
     void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);
 
 public slots:
-    void onDataReceived(const QByteArray &data, const QString &name);
     void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
 
 protected:
@@ -49,13 +47,6 @@ private slots:
     void plotDataClose();
     void plotHistoryClose();
     void plotSimulateClose();
-    void updatePlot(const QString &name,
-                    QLineSeries *line,
-                    const int &points,
-                    const double &min_y,
-                    const double &max_y,
-                    const double &min_x,
-                    const double &max_x);
     void updatePlot4k(const QList<QPointF> &data14,
                       const QList<QPointF> &data24,
                       const double &xMin,

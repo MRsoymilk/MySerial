@@ -38,7 +38,6 @@ private:
     void init();
     void getINI();
     void setINI();
-    void simulate();
     void simulate4k();
 
 private:
