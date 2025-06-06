@@ -2,6 +2,8 @@
 
 Serial port assistant based on Qt6
 
+my gitee copy: https://gitee.com/mrsoymilk/my-serial
+
 ## Qt Dependence
 
 - Widgets
