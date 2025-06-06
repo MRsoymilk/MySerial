@@ -1,0 +1,33 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/icons/connectd.png</file>
+        <file>res/icons/data-off.png</file>
+        <file>res/icons/data-on.png</file>
+        <file>res/icons/disconnected.png</file>
+        <file>res/icons/plot-off.png</file>
+        <file>res/icons/plot-on.png</file>
+        <file>res/icons/usb-off.png</file>
+        <file>res/icons/usb-on.png</file>
+        <file>res/icons/log-off.png</file>
+        <file>res/icons/log-on.png</file>
+        <file>res/icons/send-off.png</file>
+        <file>res/icons/send-on.png</file>
+        <file>res/icons/icon.png</file>
+        <file>res/icons/zoom.png</file>
+        <file>res/icons/data.png</file>
+        <file>res/icons/setting-off.png</file>
+        <file>res/icons/setting-on.png</file>
+        <file>res/icons/3d.png</file>
+        <file>res/icons/history.png</file>
+        <file>res/icons/go-next.png</file>
+        <file>res/icons/go-prev.png</file>
+        <file>res/icons/simulate.png</file>
+        <file>res/i18n/en.ts</file>
+        <file>res/i18n/zh_simple.qm</file>
+        <file>res/i18n/zh_simple.ts</file>
+        <file>res/i18n/zh_traditional.qm</file>
+        <file>res/i18n/zh_traditional.ts</file>
+        <file>res/icons/yes.png</file>
+        <file>res/i18n/en.qm</file>
+    </qresource>
+</RCC>
