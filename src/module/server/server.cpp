@@ -9,7 +9,7 @@ Server::Server(const int &port, QObject *parent)
     connect(m_tcpServer, &QTcpServer::newConnection, this, &Server::onNewConnection);
     m_tcpServer->listen(QHostAddress::Any, port);
     LOG_INFO("Server start: {}", port);
-    m_bLog = SETTING_GET(CFG_GROUP_SERVER, CFG_SERVER_LOG, VAL_DISABLE) == VAL_ENABLE ? true
+    m_bLog = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_LOG, VAL_DISABLE) == VAL_ENABLE ? true
                                                                                       : false;
 }
 

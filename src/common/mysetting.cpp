@@ -8,27 +8,31 @@ MySetting &MySetting::getInstance()
 
 MySetting::~MySetting() {}
 
-void MySetting::setValue(const QString &group, const QString &key, const QString &val)
+void MySetting::setValue(SETTING s, const QString &group, const QString &key, const QString &val)
 {
-    m_settings->setValue(QString("%1/%2").arg(group, key), val);
+    m_settings[s]->setValue(QString("%1/%2").arg(group, key), val);
 }
 
-QString MySetting::getValue(const QString &group, const QString &key, const QString &val_dft)
+QString MySetting::getValue(SETTING s,
+                            const QString &group,
+                            const QString &key,
+                            const QString &val_dft)
 {
-    QString val = m_settings->value(QString("%1/%2").arg(group, key)).toString();
+    QString val = m_settings[s]->value(QString("%1/%2").arg(group, key)).toString();
     if (val.isEmpty()) {
         val = val_dft;
-        m_settings->setValue(QString("%1/%2").arg(group, key), val_dft);
+        m_settings[s]->setValue(QString("%1/%2").arg(group, key), val_dft);
     }
     return val;
 }
 
-void MySetting::sync()
+void MySetting::sync(SETTING s)
 {
-    m_settings->sync();
+    m_settings[s]->sync();
 }
 
 MySetting::MySetting()
 {
-    m_settings = new QSettings("config/config.ini", QSettings::IniFormat);
+    m_settings[SETTING::CONFIG] = new QSettings("config/config.ini", QSettings::IniFormat);
+    m_settings[SETTING::FRAME] = new QSettings("config/frame.ini", QSettings::IniFormat);
 }

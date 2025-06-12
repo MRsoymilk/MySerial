@@ -24,7 +24,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::initLanguage()
 {
-    QString language = SETTING_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, "en");
+    QString language = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, "en");
     connect(ui->menuLanguage, &QMenu::triggered, this, &MainWindow::menuLanguageSelect);
     const QList<QAction *> actions = ui->menuLanguage->actions();
     for (QAction *act : actions) {
@@ -174,7 +174,7 @@ void MainWindow::setLanguage(const QString &language)
             formSetting->retranslateUI();
         }
     }
-    SETTING_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);
+    SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);
 }
 
 void MainWindow::menuLanguageSelect(QAction *selectedAction)

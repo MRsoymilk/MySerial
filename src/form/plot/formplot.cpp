@@ -56,8 +56,8 @@ void FormPlot::retranslateUI()
 
 void FormPlot::getINI()
 {
-    int offset14 = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, "0").toInt();
-    int offset24 = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, "0").toInt();
+    int offset14 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, "0").toInt();
+    int offset24 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, "0").toInt();
     if (offset14 != 0) {
         ui->spinBox14Offset->setValue(offset14);
     }
@@ -69,7 +69,7 @@ void FormPlot::getINI()
     ui->comboBoxAlgorithm->addItems({"normal", "max_neg_95"});
     ui->comboBoxAlgorithm->blockSignals(false);
 
-    int algorithm = SETTING_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
+    int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
     ui->comboBoxAlgorithm->setCurrentIndex(algorithm);
 }
 
@@ -77,8 +77,8 @@ void FormPlot::setINI()
 {
     int offset14 = ui->spinBox14Offset->value();
     int offset24 = ui->spinBox24Offset->value();
-    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, QString::number(offset14));
-    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, QString::number(offset24));
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, QString::number(offset14));
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, QString::number(offset24));
 }
 
 void FormPlot::init()
@@ -404,5 +404,5 @@ void FormPlot::on_comboBoxAlgorithm_currentIndexChanged(int index)
     } else if (index == static_cast<int>(PLOT_ALGORITHM::MAX_NEG_95)) {
         m_worker->setAlgorithm(index);
     }
-    SETTING_SET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, QString::number(index));
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, QString::number(index));
 }

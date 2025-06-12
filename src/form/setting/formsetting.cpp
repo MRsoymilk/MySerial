@@ -27,7 +27,7 @@ FormSetting::~FormSetting()
     if (m_server) {
         delete m_server;
     }
-    SETTING_SYNC();
+    SETTING_CONFIG_SYNC();
     delete ui;
 }
 
@@ -44,7 +44,7 @@ void FormSetting::init()
         connect(this, &FormSetting::showUpdates, m_tip, &FormTip::onFetchUpdates);
         emit showUpdates(m_iniUpdate.url);
         m_tip->show();
-        SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
+        SETTING_CONFIG_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
     }
     if (m_iniServer.enable == VAL_ENABLE) {
         m_server = new Server(m_iniServer.port.toInt());
@@ -64,13 +64,13 @@ void FormSetting::on_checkBoxCheckUpdates_checkStateChanged(const Qt::CheckState
     } else {
         m_iniUpdate.check = VAL_DISABLE;
     }
-    SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, m_iniUpdate.check);
+    SETTING_CONFIG_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, m_iniUpdate.check);
 }
 
 void FormSetting::on_lineEditURL_editingFinished()
 {
     m_iniUpdate.url = ui->lineEditURL->text();
-    SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_URL, m_iniUpdate.url);
+    SETTING_CONFIG_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_URL, m_iniUpdate.url);
 }
 
 void FormSetting::scriptAndUpdate(QStringList items)
@@ -206,7 +206,7 @@ bool FormSetting::checkAndDownload(const QString &filename)
                                            QMessageBox::Yes | QMessageBox::No);
             if (toUpdate == QMessageBox::Yes) {
                 LOG_INFO("<update> Use Choose Update");
-                SETTING_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_ENABLE);
+                SETTING_CONFIG_SET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_ENABLE);
                 return true;
             } else {
                 LOG_INFO("<update> Use Choose Not Update");
@@ -230,18 +230,18 @@ bool FormSetting::checkAndDownload(const QString &filename)
 
 void FormSetting::getINI()
 {
-    m_iniUpdate.url = SETTING_GET(CFG_GROUP_SETTING,
+    m_iniUpdate.url = SETTING_CONFIG_GET(CFG_GROUP_SETTING,
                                   CFG_SETTING_UPDATE_URL,
                                   "http://192.168.123.14:8000");
-    m_iniUpdate.check = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, VAL_DISABLE);
+    m_iniUpdate.check = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, VAL_DISABLE);
     ui->lineEditURL->setText(m_iniUpdate.url);
     ui->checkBoxCheckUpdates->setChecked(m_iniUpdate.check == VAL_ENABLE ? true : false);
 
-    m_iniUpdate.tip = SETTING_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
+    m_iniUpdate.tip = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
 
-    m_iniServer.enable = SETTING_GET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, VAL_ENABLE);
-    m_iniServer.log = SETTING_GET(CFG_GROUP_SERVER, CFG_SERVER_LOG, VAL_DISABLE);
-    m_iniServer.port = SETTING_GET(CFG_GROUP_SERVER, CFG_SERVER_PORT, "12345");
+    m_iniServer.enable = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, VAL_ENABLE);
+    m_iniServer.log = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_LOG, VAL_DISABLE);
+    m_iniServer.port = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_PORT, "12345");
     ui->checkBoxEnable->setChecked(m_iniServer.enable == VAL_ENABLE ? true : false);
     ui->checkBoxLog->setChecked(m_iniServer.log == VAL_ENABLE ? true : false);
     ui->lineEditPort->setText(m_iniServer.port);
@@ -250,11 +250,11 @@ void FormSetting::getINI()
 void FormSetting::on_checkBoxEnable_clicked()
 {
     m_iniServer.enable = ui->checkBoxEnable->isChecked() ? VAL_ENABLE : VAL_DISABLE;
-    SETTING_SET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, m_iniServer.enable);
+    SETTING_CONFIG_SET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, m_iniServer.enable);
 }
 
 void FormSetting::on_checkBoxLog_clicked()
 {
     m_iniServer.log = ui->checkBoxLog->isChecked() ? VAL_ENABLE : VAL_DISABLE;
-    SETTING_SET(CFG_GROUP_SERVER, CFG_SERVER_LOG, m_iniServer.log);
+    SETTING_CONFIG_SET(CFG_GROUP_SERVER, CFG_SERVER_LOG, m_iniServer.log);
 }

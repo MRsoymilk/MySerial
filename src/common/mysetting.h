@@ -6,18 +6,24 @@
 
 class MySetting
 {
-   public:
+public:
+    enum class SETTING { CONFIG, FRAME };
+
+public:
     static MySetting &getInstance();
     ~MySetting();
-    void setValue(const QString &group, const QString &key, const QString &val);
-    QString getValue(const QString &group, const QString &key, const QString &val_dft = "");
-    void sync();
+    void setValue(SETTING s, const QString &group, const QString &key, const QString &val);
+    QString getValue(SETTING s,
+                     const QString &group,
+                     const QString &key,
+                     const QString &val_dft = "");
+    void sync(SETTING s);
 
 private:
     MySetting();
 
-   private:
-    QSettings *m_settings;
+private:
+    QMap<SETTING, QSettings *> m_settings;
 };
 
 #define MY_SETTING MySetting::getInstance()

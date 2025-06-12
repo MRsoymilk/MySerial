@@ -20,7 +20,7 @@ FormSerial::FormSerial(QWidget *parent)
 
 FormSerial::~FormSerial()
 {
-    SETTING_SYNC();
+    SETTING_CONFIG_SYNC();
     delete ui;
 }
 
@@ -31,22 +31,23 @@ void FormSerial::retranslateUI()
 
 void FormSerial::getINI()
 {
-    m_ini.port_name = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME);
-    m_ini.baud_rate = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE);
-    m_ini.send_format = SETTING_GET(CFG_GROUP_SERIAL,
-                                    CFG_SERIAL_SEND_FORMAT,
-                                    VAL_SERIAL_SEND_NORMAL);
-    m_ini.show_send = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE) == VAL_ENABLE
+    m_ini.port_name = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME);
+    m_ini.baud_rate = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE);
+    m_ini.send_format = SETTING_CONFIG_GET(CFG_GROUP_SERIAL,
+                                           CFG_SERIAL_SEND_FORMAT,
+                                           VAL_SERIAL_SEND_NORMAL);
+    m_ini.show_send = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE)
+                              == VAL_ENABLE
                           ? true
                           : false;
-    m_ini.hex_display = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE)
+    m_ini.hex_display = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE)
                                 == VAL_ENABLE
                             ? true
                             : false;
-    m_ini.debug_port = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
-    m_ini.cycle = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
-    m_ini.send_page = SETTING_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
-    m_ini.single_send = SETTING_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
+    m_ini.debug_port = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
+    m_ini.cycle = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
+    m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
+    m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
 
     initMultSend();
 }
@@ -78,7 +79,7 @@ void FormSerial::initMultSend()
     QStringList cmds;
     for (int i = 0; i < 5; ++i) {
         cmds.push_back(
-            SETTING_GET(CFG_GROUP_HISTROY, QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i)));
+            SETTING_CONFIG_GET(CFG_GROUP_HISTROY, QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i)));
     }
     for (int i = 0; i < 5; ++i) {
         QString lineEditName = QString("lineEdit_cmd_%1").arg(i);
@@ -86,18 +87,18 @@ void FormSerial::initMultSend()
         if (lineEdit) {
             lineEdit->setText(cmds.at(i));
             connect(lineEdit, &QLineEdit::editingFinished, this, [this, lineEdit, i, &cmds]() {
-                SETTING_SET(CFG_GROUP_HISTROY,
-                            QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i),
-                            lineEdit->text());
+                SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
+                                   QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i),
+                                   lineEdit->text());
             });
         }
     }
 
     QStringList labels;
     for (int i = 0; i < 5; ++i) {
-        labels.push_back(SETTING_GET(CFG_GROUP_HISTROY,
-                                     QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
-                                     QString("cmd_%1").arg(i)));
+        labels.push_back(SETTING_CONFIG_GET(CFG_GROUP_HISTROY,
+                                            QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
+                                            QString("cmd_%1").arg(i)));
     }
 
     for (int i = 0; i < 5; ++i) {
@@ -106,9 +107,9 @@ void FormSerial::initMultSend()
         if (lineEdit) {
             lineEdit->setPlaceholderText(labels.at(i));
             connect(lineEdit, &QLineEdit::editingFinished, this, [this, lineEdit, i]() {
-                SETTING_SET(CFG_GROUP_HISTROY,
-                            QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
-                            lineEdit->text());
+                SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
+                                   QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
+                                   lineEdit->text());
             });
         }
     }
@@ -248,7 +249,7 @@ void FormSerial::on_btnSend_clicked()
     QString text = ui->txtSend->toPlainText().trimmed();
     LOG_INFO("serial send: {}", text);
     send(text);
-    SETTING_SET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND, text);
+    SETTING_CONFIG_SET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND, text);
 }
 
 void FormSerial::on_btnSerialSwitch_clicked()
@@ -309,8 +310,8 @@ void FormSerial::openSerial()
     ui->btnSerialSwitch->setText("To Close");
     ui->btnSerialSwitch->setStyleSheet("background-color: green; color: white;");
 
-    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME, ui->cBoxPortName->currentText());
-    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE, ui->cBoxBaudRate->currentText());
+    SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME, ui->cBoxPortName->currentText());
+    SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE, ui->cBoxBaudRate->currentText());
 }
 
 void FormSerial::closeSerial()
@@ -419,10 +420,10 @@ void FormSerial::on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &sta
 {
     if (state == Qt::CheckState::Checked) {
         m_ini.show_send = true;
-        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE);
+        SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE);
     } else {
         m_ini.show_send = false;
-        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_DISABLE);
+        SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_DISABLE);
     }
 }
 
@@ -430,17 +431,17 @@ void FormSerial::on_cBoxSendFormat_currentTextChanged(const QString &format)
 {
     m_ini.send_format = format;
     ui->cBoxSendFormat->setCurrentText(format);
-    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_FORMAT, format);
+    SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_FORMAT, format);
 }
 
 void FormSerial::on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &state)
 {
     if (state == Qt::CheckState::Checked) {
         m_ini.hex_display = true;
-        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_ENABLE);
+        SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_ENABLE);
     } else {
         m_ini.hex_display = false;
-        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE);
+        SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE);
     }
 }
 
@@ -489,14 +490,14 @@ void FormSerial::onAutoSend()
 
 void FormSerial::on_lineEditCycle_editingFinished()
 {
-    SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, ui->lineEditCycle->text());
+    SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, ui->lineEditCycle->text());
 }
 
 void FormSerial::on_tabWidget_currentChanged(int index)
 {
     if (index == 0) {
-        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
+        SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     } else {
-        SETTING_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_MULTIPE);
+        SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_MULTIPE);
     }
 }

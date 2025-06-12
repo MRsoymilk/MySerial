@@ -24,9 +24,16 @@
     })(data)
 
 #include "../common/mysetting.h"
-#define SETTING_GET(group, key, ...) MY_SETTING.getValue(group, key, ##__VA_ARGS__)
-#define SETTING_SET(group, key, value) MY_SETTING.setValue(group, key, value)
-#define SETTING_SYNC() MY_SETTING.sync();
+#define SETTING_CONFIG_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::CONFIG, group, key, ##__VA_ARGS__)
+#define SETTING_CONFIG_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::CONFIG, group, key, value)
+#define SETTING_CONFIG_SYNC() MY_SETTING.sync(MySetting::SETTING::CONFIG);
+#define SETTING_FRAME_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::FRAME, group, key, ##__VA_ARGS__)
+#define SETTING_FRAME_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::FRAME, group, key, value)
+#define SETTING_FRAME_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME);
 
 #include <QGraphicsOpacityEffect>
 #include <QMessageBox>

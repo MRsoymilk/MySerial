@@ -23,9 +23,9 @@ void FormPlotSimulate::retranslateUI()
 
 void FormPlotSimulate::getINI()
 {
-    m_ini.file = SETTING_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);
-    m_ini.head = SETTING_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_HEAD).split(",");
-    m_ini.tail = SETTING_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_TAIL).split(",");
+    m_ini.file = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);
+    m_ini.head = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_HEAD).split(",");
+    m_ini.tail = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_TAIL).split(",");
     ui->lineEditHead->setText(m_ini.head.join(","));
     ui->lineEditTail->setText(m_ini.tail.join(","));
     ui->lineEditPath->setText(m_ini.file);
@@ -33,9 +33,9 @@ void FormPlotSimulate::getINI()
 
 void FormPlotSimulate::setINI()
 {
-    SETTING_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_HEAD, m_ini.head.join(","));
-    SETTING_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_TAIL, m_ini.tail.join(","));
-    SETTING_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE, m_ini.file);
+    SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_HEAD, m_ini.head.join(","));
+    SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_TAIL, m_ini.tail.join(","));
+    SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE, m_ini.file);
 }
 
 void FormPlotSimulate::init()

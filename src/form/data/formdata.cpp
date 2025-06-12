@@ -82,13 +82,13 @@ void FormData::showContextMenu(const QPoint &pos)
 
 void FormData::getINI()
 {
-    m_limit = SETTING_GET(CFG_GROUP_DATA, CFG_DATA_LIMIT, "10").toInt();
+    m_limit = SETTING_CONFIG_GET(CFG_GROUP_DATA, CFG_DATA_LIMIT, "10").toInt();
     ui->lineEditDataLimit->setText(QString::number(m_limit));
 }
 
 void FormData::setINI()
 {
-    SETTING_SET(CFG_GROUP_DATA, CFG_DATA_LIMIT, QString::number(m_limit));
+    SETTING_CONFIG_SET(CFG_GROUP_DATA, CFG_DATA_LIMIT, QString::number(m_limit));
 }
 
 void FormData::clearData()
