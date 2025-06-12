@@ -25,7 +25,6 @@ public:
 
 signals:
     void windowClose();
-    void simulateDataReady(const QByteArray &data, const QString &name);
     void simulateDataReady4k(const QByteArray &data14, const QByteArray &data24);
 
 protected:
