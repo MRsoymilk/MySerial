@@ -1,7 +1,7 @@
 #include "plotworker.h"
-
 #include <QLineSeries>
 #include <QPointF>
+#include "funcdef.h"
 
 PlotWorker::PlotWorker(QObject *parent)
     : QObject(parent)
@@ -34,9 +34,8 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
     int numPoints = 0;
     {
         QByteArray payload = data14.mid(5, data14.size() - 7);
-        qDebug() << "payload: " << payload.size();
         if (payload.size() % 3 != 0) {
-            qWarning() << "Invalid data length";
+            LOG_WARN("Invalid data length: {}", payload.size());
             return;
         }
         QByteArray filteredPayload;
@@ -91,9 +90,8 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
 
     {
         QByteArray payload = data24.mid(5, data24.size() - 7);
-        qDebug() << "payload: " << payload.size();
         if (payload.size() % 3 != 0) {
-            qWarning() << "Invalid data length";
+            LOG_WARN("Invalid data length: {}", payload.size());
             return;
         }
         QByteArray filteredPayload;

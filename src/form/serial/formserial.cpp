@@ -135,7 +135,6 @@ void FormSerial::init()
     // init port
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
-        qDebug() << "No available serial port found!";
         LOG_WARN("No available serial port found!");
         return;
     }
@@ -214,10 +213,10 @@ void FormSerial::send(const QString &text)
             if (ok) {
                 data.append(static_cast<char>(byte));
             } else {
-                qDebug() << "illegal hex: " << byteStr;
+                LOG_WARN("illegal hex: {}", byteStr);
             }
         }
-        qDebug() << "send (hex):" << data;
+        LOG_INFO("send (hex): {}", data);
         to_show = data;
     } else if (m_ini.send_format == VAL_SERIAL_SEND_HEX_TRANSLATE) {
         QByteArray byteArray = text.toUtf8();
@@ -227,17 +226,17 @@ void FormSerial::send(const QString &text)
             hexString.append(
                 QString("%1 ").arg((unsigned char) byteArray[i], 2, 16, QChar('0')).toUpper());
         }
-        qDebug() << "send (hex translate):" << hexString;
+        LOG_INFO("send (hex translate): {}", hexString);
         data = byteArray;
         to_show = hexString;
     } else {
         data = text.toUtf8();
-        qDebug() << "send (normal):" << data;
+        LOG_INFO("send (normal): {}", data);
         to_show = data;
     }
     auto res = m_serial->write(data);
     if (res == -1) {
-        qDebug() << "Write failed:" << m_serial->errorString();
+        LOG_WARN("Write failed: {}", m_serial->errorString());
     }
     if (m_ini.show_send) {
         ui->txtRecv->appendPlainText("[TX] " + to_show);
@@ -298,8 +297,6 @@ void FormSerial::openSerial()
     m_serial->setFlowControl(QSerialPort::NoFlowControl);
 
     if (!m_serial->open(QIODevice::ReadWrite)) {
-        qDebug() << "Failed to open serial port!";
-        qDebug() << m_serial->errorString();
         LOG_WARN("Failed to open serial port: {}", m_serial->errorString());
         delete m_serial;
         m_serial = nullptr;
