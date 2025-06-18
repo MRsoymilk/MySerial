@@ -14,7 +14,7 @@ class MyLog
    public:
     static MyLog &getInstance();
     ~MyLog();
-    void init(const std::string &file_name = "./log/myYolo.log", size_t max_size = 10 * 1024 * 1024,
+    void init(const std::string &file_name = "./log/mySerial.log", size_t max_size = 10 * 1024 * 1024,
               size_t max_files = 10);
     static std::shared_ptr<spdlog::logger> getLogger();
 
