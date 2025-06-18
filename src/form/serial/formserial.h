@@ -88,16 +88,23 @@ private:
     SEND_FORMAT m_send_format;
     bool m_hex_display;
     QTimer *m_send_timer;
+    // struct FrameType
+    // {
+    //     QByteArray header;
+    //     QString name;
+    // };
     struct FrameType
     {
-        QByteArray header;
         QString name;
+        QByteArray header;
+        QByteArray footer;
     };
-    const QList<FrameType> m_frameTypes = {
-        {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
-        {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
+
+    QList<FrameType> m_frameTypes = {
+        // {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
+        // {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
     };
-    const QByteArray m_footer = QByteArray::fromHex("CEFF");
+    // const QByteArray m_footer = QByteArray::fromHex("CEFF");
 };
 
 #endif // FORMSERIAL_H

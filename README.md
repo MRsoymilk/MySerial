@@ -8,7 +8,6 @@ Serial port assistant based on Qt6
 - Charts
 - SerialPort
 - Network
-- DataVisualization
 
 ## Function
 

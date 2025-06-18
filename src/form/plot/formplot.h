@@ -6,9 +6,9 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
-#include <QtDataVisualization/Q3DSurface>
-#include <QtDataVisualization/QSurface3DSeries>
-#include <QtDataVisualization/QSurfaceDataProxy>
+// #include <QtDataVisualization/QSurface3DSeries>
+// #include <QtDataVisualization/QSurfaceDataProxy>
+#include "3d/myglcurvewidget.h"
 #include "enhance/mychartview.h"
 #include "formplotdata.h"
 #include "formplothistory.h"
@@ -22,8 +22,6 @@ class FormPlot;
 class FormPlot : public QWidget
 {
     Q_OBJECT
-public:
-    enum class PLOT_ALGORITHM { NORMAL = 0, MAX_NEG_95 };
 
 public:
     explicit FormPlot(QWidget *parent = nullptr);
@@ -60,8 +58,23 @@ private slots:
 
 private:
     void init();
+    void init2d();
+    void init3d();
+    void initToolButtons();
     void getINI();
     void setINI();
+    void updatePlot2d(const QList<QPointF> &data14,
+                      const QList<QPointF> &data24,
+                      const double &xMin,
+                      const double &xMax,
+                      const double &yMin,
+                      const double &yMax);
+    void updatePlot3d(const QList<QPointF> &data14,
+                      const QList<QPointF> &data24,
+                      const double &xMin,
+                      const double &xMax,
+                      const double &yMin,
+                      const double &yMax);
 
 private:
     Ui::FormPlot *ui;
@@ -83,17 +96,8 @@ private:
     FormPlotHistory *m_plotHistory;
     FormPlotSimulate *m_plotSimulate;
 
-    Q3DSurface *m_surface = nullptr;
-    QSurface3DSeries *m_surfaceSeries24 = nullptr;
-    QSurface3DSeries *m_surfaceSeries14 = nullptr;
-    QSurfaceDataProxy *m_surfaceProxy24 = nullptr;
-    QSurfaceDataProxy *m_surfaceProxy14 = nullptr;
-    QWidget *m_surfaceWidget = nullptr;
-    QValue3DAxis *m_surfaceAxisX;
-    QValue3DAxis *m_surfaceAxisY;
-    QValue3DAxis *m_surfaceAxisZ;
-
     MyChartView *m_chartView = nullptr;
+    MyGLCurveWidget *m_glWidget = nullptr;
 
     QList<QList<QPointF>> m_points24;
     QList<QList<QPointF>> m_points14;

@@ -17,6 +17,7 @@ public:
                      const QString &group,
                      const QString &key,
                      const QString &val_dft = "");
+    QStringList getGroups(SETTING s);
     void sync(SETTING s);
 
 private:

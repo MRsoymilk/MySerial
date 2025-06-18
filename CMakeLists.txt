@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.0.14 LANGUAGES CXX)
+project(MySerial VERSION 1.1.01 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -10,8 +10,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools DataVisualization)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools DataVisualization)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL)
 
 set(PROJECT_SOURCES
         src/main/main.cpp
@@ -32,6 +32,11 @@ set(PROJECT_SOURCES
         src/form/log/formlog.h
         src/form/log/formlog.cpp
         src/form/log/formlog.ui
+        src/form/plot/plot_algorithm.h
+        src/form/plot/3d/myglcurvewidget.h
+        src/form/plot/3d/myglcurvewidget.cpp
+        src/form/plot/enhance/mychartview.h
+        src/form/plot/enhance/mychartview.cpp
         src/form/plot/plotworker.h
         src/form/plot/plotworker.cpp
         src/form/plot/formplotdata.h
@@ -43,8 +48,6 @@ set(PROJECT_SOURCES
         src/form/plot/formplotsimulate.h
         src/form/plot/formplotsimulate.cpp
         src/form/plot/formplotsimulate.ui
-        src/form/plot/enhance/mychartview.h
-        src/form/plot/enhance/mychartview.cpp
         src/form/setting/formsetting.h
         src/form/setting/formsetting.cpp
         src/form/setting/formsetting.ui
@@ -64,12 +67,12 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(MySerial
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
+  qt_add_executable(MySerial
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+  )
 
-target_include_directories(MySerial PUBLIC 
+target_include_directories(MySerial PUBLIC
   "${CMAKE_SOURCE_DIR}/src/include"
   "${CMAKE_SOURCE_DIR}/src/common"
   "${CMAKE_SOURCE_DIR}/src/module/server"
@@ -98,7 +101,8 @@ target_link_libraries(MySerial PRIVATE
   Qt${QT_VERSION_MAJOR}::Charts
   Qt${QT_VERSION_MAJOR}::SerialPort
   Qt${QT_VERSION_MAJOR}::Network
-  Qt${QT_VERSION_MAJOR}::DataVisualization
+  Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+  Qt${QT_VERSION_MAJOR}::OpenGL
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

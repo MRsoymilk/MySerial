@@ -43,4 +43,7 @@ const QString CFG_PLOT_OFFSET24 = "offset24";
 const QString CFG_PLOT_ALGORITHM = "algorithm";
 const QString CFG_GROUP_DATA = "Data";
 const QString CFG_DATA_LIMIT = "limit";
+
+const QString FRAME_HEADER = "header";
+const QString FRAME_FOOTER = "footer";
 #endif

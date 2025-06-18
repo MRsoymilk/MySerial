@@ -49,6 +49,26 @@ void FormSerial::getINI()
     m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
 
+    QStringList groups = SETTING_FRAME_GROUPS();
+    if (!groups.empty()) {
+        for (const auto &g : groups) {
+            FrameType frame;
+            frame.name = g;
+            frame.header = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_HEADER).toUtf8());
+            frame.footer = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_FOOTER).toUtf8());
+            m_frameTypes.push_back(frame);
+        }
+    } else {
+        m_frameTypes = {
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
+            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
+        };
+        for (const auto &frame : m_frameTypes) {
+            SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
+            SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
+        }
+    }
+
     initMultSend();
 }
 
@@ -357,15 +377,18 @@ void FormSerial::onReadyRead()
 
     while (true) {
         int firstHeaderIdx = -1;
-        int matchedHeaderLen = 0;
-        QString matchedType;
-
+        // int matchedHeaderLen = 0;
+        // QString matchedType;
+        FrameType current_frame;
         for (const auto &type : m_frameTypes) {
             int idx = m_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
                 firstHeaderIdx = idx;
-                matchedHeaderLen = type.header.size();
-                matchedType = type.name;
+                // matchedHeaderLen = type.header.size();
+                // matchedType = type.name;
+                current_frame.name = type.name;
+                current_frame.header = type.header;
+                current_frame.footer = type.footer;
             }
         }
 
@@ -375,18 +398,19 @@ void FormSerial::onReadyRead()
             break;
         }
 
-        int endIdx = m_buffer.indexOf(m_footer, firstHeaderIdx + matchedHeaderLen);
+        int endIdx = m_buffer.indexOf(current_frame.footer,
+                                      firstHeaderIdx + current_frame.header.size());
         if (endIdx == -1) {
             break;
         }
 
-        int frameLen = endIdx + m_footer.size() - firstHeaderIdx;
+        int frameLen = endIdx + current_frame.footer.size() - firstHeaderIdx;
         QByteArray tmp_frame = m_buffer.mid(firstHeaderIdx, frameLen);
-        if (matchedType.toStdString() == "curve_24bit") {
-            LOG_INFO("Matched frame type: {}", matchedType.toStdString());
+        if (current_frame.name.toStdString() == "curve_24bit") {
+            LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
             frame.bit24 = tmp_frame;
-        } else if (matchedType.toStdString() == "curve_14bit") {
-            LOG_INFO("Matched frame type: {}", matchedType.toStdString());
+        } else if (current_frame.name.toStdString() == "curve_14bit") {
+            LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
             frame.bit14 = tmp_frame;
             if (!frame.bit24.isEmpty()) {
                 emit recv2Data4k(frame.bit14, frame.bit24);
@@ -394,7 +418,7 @@ void FormSerial::onReadyRead()
             }
         }
 
-        m_buffer.remove(0, endIdx + m_footer.size());
+        m_buffer.remove(0, endIdx + current_frame.footer.size());
     }
 }
 

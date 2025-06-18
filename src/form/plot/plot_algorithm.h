@@ -1,0 +1,4 @@
+#ifndef PLOT_ALGORITHM_H
+#define PLOT_ALGORITHM_H
+enum class PLOT_ALGORITHM { NORMAL = 0, MAX_NEG_95, FITTING_kb };
+#endif // PLOT_ALGORITHM_H

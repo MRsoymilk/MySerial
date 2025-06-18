@@ -90,8 +90,9 @@ void FormPlotSimulate::simulate4k()
     QByteArray buffer = dataBytes;
     struct FrameType
     {
-        QByteArray header;
         QString name;
+        QByteArray header;
+        QByteArray footer;
     };
     struct FRAME
     {
@@ -101,8 +102,8 @@ void FormPlotSimulate::simulate4k()
     const QByteArray footer = QByteArray::fromHex("CEFF");
     FRAME frame;
     const QList<FrameType> m_frameTypes = {
-        {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
-        {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
+        {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
+        {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
     };
     while (true) {
         int firstHeaderIdx = -1;

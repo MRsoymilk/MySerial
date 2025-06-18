@@ -26,6 +26,11 @@ QString MySetting::getValue(SETTING s,
     return val;
 }
 
+QStringList MySetting::getGroups(SETTING s)
+{
+    return m_settings[s]->childGroups();
+}
+
 void MySetting::sync(SETTING s)
 {
     m_settings[s]->sync();
