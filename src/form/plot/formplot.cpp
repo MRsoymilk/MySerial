@@ -11,7 +11,6 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include "funcdef.h"
-#include "plot_algorithm.h"
 
 FormPlot::FormPlot(QWidget *parent)
     : QWidget(parent)

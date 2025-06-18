@@ -6,7 +6,11 @@
 // FUNCTION ===================================================================
 
 #include <QDateTime>
-#define TIMESTAMP(format) (QDateTime::currentDateTime().toString(format))
+#define TIMESTAMP_0() (QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
+#define TIMESTAMP_1(format) (QDateTime::currentDateTime().toString(format))
+#define TIMESTAMP(...) TIMESTAMP_MACRO(__VA_ARGS__, TIMESTAMP_1, TIMESTAMP_0)(__VA_ARGS__)
+
+#define TIMESTAMP_MACRO(_1, _2, NAME, ...) NAME
 
 #include "../common/mylog.h"
 #define LOG_TRACE(...) MY_LOG.getLogger()->trace(__VA_ARGS__)
