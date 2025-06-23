@@ -156,7 +156,16 @@ void FormPlotHistory::updatePlot(int index)
 {
     bool isMix = ui->radioButtonMix->isChecked();
     bool isSplit = ui->radioButtonSplit->isChecked();
-
+    auto setXAxisInteger = [](QChart *chart) {
+        QList<QAbstractAxis *> axesX = chart->axes(Qt::Horizontal);
+        if (!axesX.isEmpty()) {
+            QValueAxis *axisX = qobject_cast<QValueAxis *>(axesX.first());
+            if (axisX) {
+                axisX->setLabelFormat("%d");
+                axisX->setTickType(QValueAxis::TicksFixed);
+            }
+        }
+    };
     if (isMix) {
         if (index == INDEX_14) {
             if (m_index_14 < m_p24.size()) {
@@ -185,6 +194,7 @@ void FormPlotHistory::updatePlot(int index)
         chart->addSeries(series14);
 
         chart->createDefaultAxes();
+        setXAxisInteger(chart);
         chart->setTitle(tr("curve_mix"));
 
         m_chartMix->setChart(chart);
@@ -201,6 +211,7 @@ void FormPlotHistory::updatePlot(int index)
 
             chart->addSeries(series);
             chart->createDefaultAxes();
+            setXAxisInteger(chart);
             chart->setTitle(tr("curve_14bit"));
 
             m_chartView14->setChart(chart);
@@ -217,6 +228,7 @@ void FormPlotHistory::updatePlot(int index)
 
             chart->addSeries(series);
             chart->createDefaultAxes();
+            setXAxisInteger(chart);
             chart->setTitle(tr("curve_24bit"));
 
             m_chartView24->setChart(chart);
@@ -241,6 +253,7 @@ void FormPlotHistory::updatePlot(int index)
             }
             chart->addSeries(series);
             chart->createDefaultAxes();
+            setXAxisInteger(chart);
             ui->stackedWidget->setCurrentIndex(3);
         }
     }
