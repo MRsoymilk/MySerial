@@ -145,9 +145,9 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
         std::swap(idx_min, idx_max);
     }
 
-    const int window = 3;               // 平滑窗口大小
+    const int window = 5;               // 平滑窗口大小
     const int min_distance = 3;         // 峰值间最小间隔
-    const double min_prominence = 0.05; // 峰值最低突出度
+    const double min_prominence = 0.02; // 峰值最低突出度
 
     // 中值滤波平滑
     QVector<double> smoothed = smoothCenteredMovingAverage(v24, min_distance);
