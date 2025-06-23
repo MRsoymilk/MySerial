@@ -1,4 +1,5 @@
 #include "formplotcorrection.h"
+#include <QDir>
 #include <QFile>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
@@ -152,7 +153,11 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     QVector<double> smoothed = smoothCenteredMovingAverage(v24, min_distance);
 
     static int file_idx = 1;
-    QFile file(QString("smoothed_%1.csv").arg(file_idx++));
+    QDir dir;
+    if (!dir.exists("correction")) {
+        dir.mkpath("correction");
+    }
+    QFile file(QString("correction/smoothed_%1.csv").arg(file_idx++));
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
         out << "index,original,smoothed\n";
