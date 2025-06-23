@@ -69,6 +69,17 @@ void FormPlotHistory::init()
     ui->tBtnPrev24->setToolTip("prev");
     ui->tBtnNext24->setIcon(QIcon(":/res/icons/go-next.png"));
     ui->tBtnNext24->setToolTip("next");
+
+    QString fitting_k = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_K, "0.0");
+    QString fitting_b = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_B, "0.0");
+    ui->lineEditK->setText(fitting_k);
+    ui->lineEditB->setText(fitting_b);
+    QString conversion = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_CONVERSION, VAL_ENABLE);
+    if (conversion == VAL_ENABLE) {
+        ui->checkBoxConversion->setChecked(true);
+    } else {
+        ui->checkBoxConversion->setChecked(false);
+    }
 }
 
 void FormPlotHistory::updateData(const QList<QList<QPointF> > &p14,
@@ -308,6 +319,12 @@ void FormPlotHistory::on_toolButtonFitting_clicked()
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Empty Params"), tr("k and b can not be empty!"));
         return;
     }
+
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_K, txt_k);
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_B, txt_b);
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT,
+                       CFG_PLOT_FITTING_CONVERSION,
+                       ui->checkBoxConversion->isChecked() ? VAL_ENABLE : VAL_DISABLE);
 
     float k = txt_k.toFloat();
     float b = txt_b.toFloat();
