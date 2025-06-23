@@ -31,9 +31,9 @@ void FormPlotHistory::retranslateUI()
 
 void FormPlotHistory::init()
 {
-    m_chartView14 = new QChartView(this);
-    m_chartView24 = new QChartView(this);
-    m_chartMix = new QChartView(this);
+    m_chartView14 = new MyChartView(new QChart(), this);
+    m_chartView24 = new MyChartView(new QChart(), this);
+    m_chartMix = new MyChartView(new QChart(), this);
 
     m_chartView14->setRenderHint(QPainter::Antialiasing);
     m_chartView24->setRenderHint(QPainter::Antialiasing);
@@ -43,8 +43,8 @@ void FormPlotHistory::init()
     ui->stackedWidget->insertWidget(1, m_chartView24);
     ui->stackedWidget->insertWidget(2, m_chartMix);
 
-    m_chartView14Split = new QChartView(this);
-    m_chartView24Split = new QChartView(this);
+    m_chartView14Split = new MyChartView(new QChart(), this);
+    m_chartView24Split = new MyChartView(new QChart(), this);
     m_chartView14Split->setRenderHint(QPainter::Antialiasing);
     m_chartView24Split->setRenderHint(QPainter::Antialiasing);
 

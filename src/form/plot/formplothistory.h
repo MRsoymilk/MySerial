@@ -1,8 +1,8 @@
 #ifndef FORMPLOTHISTORY_H
 #define FORMPLOTHISTORY_H
 
-#include <QChartView>
 #include <QWidget>
+#include "enhance/mychartview.h"
 
 namespace Ui {
 class FormPlotHistory;
@@ -48,11 +48,11 @@ private:
     Ui::FormPlotHistory *ui;
     QList<QList<QPointF>> m_p14, m_p24;
     int m_index_14, m_index_24;
-    QChartView *m_chartView14;
-    QChartView *m_chartView24;
-    QChartView *m_chartView14Split = nullptr;
-    QChartView *m_chartView24Split = nullptr;
-    QChartView *m_chartMix;
+    MyChartView *m_chartView14;
+    MyChartView *m_chartView24;
+    MyChartView *m_chartView14Split = nullptr;
+    MyChartView *m_chartView24Split = nullptr;
+    MyChartView *m_chartMix;
     QWidget *m_charSplit;
 };
 

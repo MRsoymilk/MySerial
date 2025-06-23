@@ -12,9 +12,25 @@ class MyChartView : public QChartView
 public:
     MyChartView(QChart *chart, QWidget *parent = nullptr)
         : QChartView(chart, parent)
-        , m_chart(chart)
     {
         setMouseTracking(true);
+        setChart(chart);
+    }
+
+    void setChart(QChart *chart)
+    {
+        QChartView::setChart(chart);
+        m_chart = chart;
+
+        clearHelpers();
+        initHelpers();
+    }
+
+private:
+    void initHelpers()
+    {
+        if (!m_chart)
+            return;
 
         m_lineV = m_chart->scene()->addLine(QLineF(), QPen(Qt::DashLine));
         m_lineH = m_chart->scene()->addLine(QLineF(), QPen(Qt::DashLine));
@@ -27,7 +43,28 @@ public:
         m_marker->hide();
     }
 
-    void setChart(QChart *chart) {}
+    void clearHelpers()
+    {
+        if (m_lineV) {
+            scene()->removeItem(m_lineV);
+            delete m_lineV;
+            m_lineV = nullptr;
+        }
+        if (m_lineH) {
+            scene()->removeItem(m_lineH);
+            delete m_lineH;
+            m_lineH = nullptr;
+        }
+        if (m_coordText) {
+            delete m_coordText;
+            m_coordText = nullptr;
+        }
+        if (m_marker) {
+            scene()->removeItem(m_marker);
+            delete m_marker;
+            m_marker = nullptr;
+        }
+    }
 
 protected:
     void mouseMoveEvent(QMouseEvent *event) override
@@ -95,11 +132,11 @@ protected:
     }
 
 private:
-    QChart *m_chart;
-    QGraphicsLineItem *m_lineV;
-    QGraphicsLineItem *m_lineH;
-    QGraphicsSimpleTextItem *m_coordText;
-    QGraphicsEllipseItem *m_marker; // 用于标记最近点
+    QChart *m_chart = nullptr;
+    QGraphicsLineItem *m_lineV = nullptr;
+    QGraphicsLineItem *m_lineH = nullptr;
+    QGraphicsSimpleTextItem *m_coordText = nullptr;
+    QGraphicsEllipseItem *m_marker = nullptr;
 };
 
 #endif // MYCHARTVIEW_H
