@@ -2,6 +2,8 @@
 #include "ui_formplothistory.h"
 
 #include <QLineSeries>
+#include <QValueAxis>
+#include "funcdef.h"
 
 FormPlotHistory::FormPlotHistory(QWidget *parent)
     : QWidget(parent)
@@ -57,10 +59,7 @@ void FormPlotHistory::init()
     ui->stackedWidget->insertWidget(3, m_charSplit);
     ui->stackedWidget->setCurrentIndex(0);
 
-    m_bMix = true;
-    m_bSplit = false;
-    ui->checkBoxMix->setChecked(m_bMix);
-    ui->checkBoxSplit->setChecked(m_bSplit);
+    ui->radioButtonMix->setChecked(true);
 
     ui->tBtnPrev14->setIcon(QIcon(":/res/icons/go-prev.png"));
     ui->tBtnPrev14->setToolTip("prev");
@@ -155,7 +154,10 @@ void FormPlotHistory::updatePlot24()
 
 void FormPlotHistory::updatePlot(int index)
 {
-    if (m_bMix) {
+    bool isMix = ui->radioButtonMix->isChecked();
+    bool isSplit = ui->radioButtonSplit->isChecked();
+
+    if (isMix) {
         if (index == INDEX_14) {
             if (m_index_14 < m_p24.size()) {
                 m_index_24 = m_index_14;
@@ -183,7 +185,7 @@ void FormPlotHistory::updatePlot(int index)
         chart->addSeries(series14);
 
         chart->createDefaultAxes();
-        chart->setTitle("curve_mix");
+        chart->setTitle(tr("curve_mix"));
 
         m_chartMix->setChart(chart);
         ui->stackedWidget->setCurrentWidget(m_chartMix);
@@ -199,10 +201,10 @@ void FormPlotHistory::updatePlot(int index)
 
             chart->addSeries(series);
             chart->createDefaultAxes();
-            chart->setTitle("curve_14bit");
+            chart->setTitle(tr("curve_14bit"));
 
             m_chartView14->setChart(chart);
-            if (!m_bSplit) {
+            if (!isSplit) {
                 ui->stackedWidget->setCurrentWidget(m_chartView14);
             }
             ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
@@ -215,26 +217,26 @@ void FormPlotHistory::updatePlot(int index)
 
             chart->addSeries(series);
             chart->createDefaultAxes();
-            chart->setTitle("curve_24bit");
+            chart->setTitle(tr("curve_24bit"));
 
             m_chartView24->setChart(chart);
-            if (!m_bSplit) {
+            if (!isSplit) {
                 ui->stackedWidget->setCurrentWidget(m_chartView24);
             }
             ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
         }
-        if (m_bSplit) {
+        if (isSplit) {
             QChart *chart = new QChart();
             QLineSeries *series = new QLineSeries();
             if (index == INDEX_14) {
                 series->append(m_p14[m_index_14]);
                 series->setColor(Qt::magenta);
-                chart->setTitle("curve_14bit");
+                chart->setTitle(tr("curve_14bit"));
                 m_chartView14Split->setChart(chart);
             } else {
                 series->append(m_p24[m_index_24]);
                 series->setColor(Qt::blue);
-                chart->setTitle("curve_24bit");
+                chart->setTitle(tr("curve_24bit"));
                 m_chartView24Split->setChart(chart);
             }
             chart->addSeries(series);
@@ -270,24 +272,78 @@ void FormPlotHistory::on_lineEdit24Go_editingFinished()
     }
 }
 
-void FormPlotHistory::on_checkBoxMix_checkStateChanged(const Qt::CheckState &state)
+void FormPlotHistory::on_radioButtonMix_clicked()
 {
-    if (state == Qt::CheckState::Checked) {
-        m_bMix = true;
-        ui->checkBoxSplit->setChecked(false);
-    } else {
-        m_bMix = false;
-    }
+    updatePlot(INDEX_14);
 }
 
-void FormPlotHistory::on_checkBoxSplit_checkStateChanged(const Qt::CheckState &state)
+void FormPlotHistory::on_radioButtonSplit_clicked()
 {
-    if (state == Qt::CheckState::Checked) {
-        m_bSplit = true;
-        ui->checkBoxMix->setChecked(false);
-        ui->stackedWidget->setCurrentIndex(3);
-    } else {
-        m_bSplit = false;
-        ui->stackedWidget->setCurrentIndex(0);
+    updatePlot(INDEX_14);
+}
+
+void FormPlotHistory::on_toolButtonFitting_clicked()
+{
+    // 14bit
+    if (m_index_14 >= m_p14.size() || m_p14[m_index_14].isEmpty()) {
+        return;
     }
+
+    QString txt_k = ui->lineEditK->text();
+    QString txt_b = ui->lineEditB->text();
+    if (txt_k.isEmpty() || txt_b.isEmpty()) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Empty Params"), tr("k and b can not be empty!"));
+        return;
+    }
+
+    float k = txt_k.toFloat();
+    float b = txt_b.toFloat();
+    if (ui->checkBoxConversion->isChecked()) {
+        k = k / 0x1FFF * 3.3;
+        b = b / 0x1FFF * 3.3;
+    }
+    const QList<QPointF> &points = m_p14[m_index_14];
+    double xMin = points.first().x();
+    double xMax = points.last().x();
+    if (xMin > xMax)
+        std::swap(xMin, xMax);
+
+    QLineSeries *line = new QLineSeries();
+    line->setColor(Qt::red);
+    line->setName("Fitting Line");
+    for (const QPointF &pt : points) {
+        double x = pt.x();
+        double y = k * x + b;
+        line->append(x, y);
+    }
+
+    QChart *chart = nullptr;
+    if (ui->radioButtonMix->isChecked()) {
+        chart = m_chartMix->chart();
+    } else if (ui->radioButtonSplit->isChecked()) {
+        chart = m_chartView14Split->chart();
+    } else {
+        chart = m_chartView14->chart();
+    }
+
+    if (!chart)
+        return;
+
+    QList<QAbstractSeries *> existing = chart->series();
+    for (QAbstractSeries *s : existing) {
+        if (s->name() == "Fitting Line") {
+            chart->removeSeries(s);
+            delete s;
+            break;
+        }
+    }
+
+    chart->addSeries(line);
+    QList<QAbstractAxis *> axes = chart->axes(Qt::Horizontal);
+    if (!axes.isEmpty())
+        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
+
+    axes = chart->axes(Qt::Vertical);
+    if (!axes.isEmpty())
+        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
 }

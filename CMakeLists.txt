@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.1.02 LANGUAGES CXX)
+project(MySerial VERSION 1.1.03 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -48,6 +48,9 @@ set(PROJECT_SOURCES
         src/form/plot/formplotsimulate.h
         src/form/plot/formplotsimulate.cpp
         src/form/plot/formplotsimulate.ui
+        src/form/plot/formplotcorrection.h
+        src/form/plot/formplotcorrection.cpp
+        src/form/plot/formplotcorrection.ui
         src/form/setting/formsetting.h
         src/form/setting/formsetting.cpp
         src/form/setting/formsetting.ui

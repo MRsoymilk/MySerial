@@ -34,8 +34,9 @@ private slots:
     void on_tBtnPrev24_clicked();
     void on_lineEdit14Go_editingFinished();
     void on_lineEdit24Go_editingFinished();
-    void on_checkBoxMix_checkStateChanged(const Qt::CheckState &state);
-    void on_checkBoxSplit_checkStateChanged(const Qt::CheckState &state);
+    void on_radioButtonMix_clicked();
+    void on_radioButtonSplit_clicked();
+    void on_toolButtonFitting_clicked();
 
 private:
     void updatePlot14();
@@ -53,8 +54,6 @@ private:
     QChartView *m_chartView24Split = nullptr;
     QChartView *m_chartMix;
     QWidget *m_charSplit;
-    bool m_bMix;
-    bool m_bSplit;
 };
 
 #endif // FORMPLOTHISTORY_H

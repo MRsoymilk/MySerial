@@ -129,34 +129,40 @@ void FormPlot::init3d()
 void FormPlot::initToolButtons()
 {
     ui->tBtnZoom->setIcon(QIcon(":/res/icons/zoom.png"));
-    ui->tBtnZoom->setIconSize(QSize(16, 16));
+    ui->tBtnZoom->setIconSize(QSize(24, 24));
     ui->tBtnZoom->setCheckable(true);
     ui->tBtnZoom->setChecked(m_autoZoom);
     ui->tBtnZoom->setToolTip("Auto Zoom");
 
     ui->tBtnData->setIcon(QIcon(":/res/icons/data.png"));
-    ui->tBtnData->setIconSize(QSize(16, 16));
+    ui->tBtnData->setIconSize(QSize(24, 24));
     ui->tBtnData->setCheckable(true);
     ui->tBtnData->setChecked(m_showData);
     ui->tBtnData->setToolTip("Data");
 
     ui->tBtn3D->setIcon(QIcon(":/res/icons/3d.png"));
-    ui->tBtn3D->setIconSize(QSize(16, 16));
+    ui->tBtn3D->setIconSize(QSize(24, 24));
     ui->tBtn3D->setCheckable(true);
     ui->tBtn3D->setChecked(m_show3D);
     ui->tBtn3D->setToolTip("3D");
 
     ui->tBtnHistory->setIcon(QIcon(":/res/icons/history.png"));
-    ui->tBtnHistory->setIconSize(QSize(16, 16));
+    ui->tBtnHistory->setIconSize(QSize(24, 24));
     ui->tBtnHistory->setCheckable(true);
     ui->tBtnHistory->setChecked(m_showHistory);
     ui->tBtnHistory->setToolTip("History");
 
     ui->tBtnSimulate->setIcon(QIcon(":/res/icons/simulate.png"));
-    ui->tBtnSimulate->setIconSize(QSize(16, 16));
+    ui->tBtnSimulate->setIconSize(QSize(24, 24));
     ui->tBtnSimulate->setCheckable(true);
     ui->tBtnSimulate->setChecked(m_showSimulate);
     ui->tBtnSimulate->setToolTip("Simulate");
+
+    ui->tBtnCorrection->setIcon(QIcon(":/res/icons/correction.png"));
+    ui->tBtnCorrection->setIconSize(QSize(24, 24));
+    ui->tBtnCorrection->setCheckable(true);
+    ui->tBtnCorrection->setChecked(m_showCorrection);
+    ui->tBtnCorrection->setToolTip("Correction");
 }
 
 void FormPlot::init()
@@ -179,9 +185,17 @@ void FormPlot::init()
     m_plotSimulate = new FormPlotSimulate;
     m_plotSimulate->hide();
 
+    m_plotCorrection = new FormPlotCorrection;
+    m_plotCorrection->hide();
+
     connect(m_plotData, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
     connect(m_plotHistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
     connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormPlot::plotSimulateClose);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::windowClose,
+            this,
+            &FormPlot::plotCorrectionClose);
+    connect(m_plotCorrection, &FormPlotCorrection::sendKB, this, &FormPlot::sendKB);
     connect(m_plotSimulate,
             &FormPlotSimulate::simulateDataReady4k,
             m_worker,
@@ -316,6 +330,16 @@ void FormPlot::plotSimulateClose()
     ui->tBtnSimulate->setChecked(false);
 }
 
+void FormPlot::plotCorrectionClose()
+{
+    m_showCorrection = false;
+    ui->tBtnCorrection->setChecked(false);
+    disconnect(m_worker,
+               &PlotWorker::pointsReady4k,
+               m_plotCorrection,
+               &FormPlotCorrection::onEpochCorrection);
+}
+
 void FormPlot::on_tBtn3D_clicked()
 {
     m_show3D = !m_show3D;
@@ -359,4 +383,17 @@ void FormPlot::on_comboBoxAlgorithm_currentIndexChanged(int index)
 {
     m_worker->setAlgorithm(index);
     SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, QString::number(index));
+}
+
+void FormPlot::on_tBtnCorrection_clicked()
+{
+    m_showCorrection = !m_showCorrection;
+    m_plotCorrection->setVisible(m_showCorrection);
+    if (m_showCorrection) {
+        connect(m_worker,
+                &PlotWorker::pointsReady4k,
+                m_plotCorrection,
+                &FormPlotCorrection::onEpochCorrection,
+                Qt::QueuedConnection);
+    }
 }

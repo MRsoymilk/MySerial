@@ -157,16 +157,54 @@
       </spacer>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBoxMix">
+      <layout class="QHBoxLayout" name="hLayFitting">
+       <item>
+        <widget class="QToolButton" name="toolButtonFitting">
+         <property name="text">
+          <string>Fitting</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelK">
+         <property name="text">
+          <string>k</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditK"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelB">
+         <property name="text">
+          <string>b</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditB"/>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxConversion">
+         <property name="text">
+          <string>conversion</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radioButtonSplit">
        <property name="text">
-        <string>mix</string>
+        <string>Split</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBoxSplit">
+      <widget class="QRadioButton" name="radioButtonMix">
        <property name="text">
-        <string>split</string>
+        <string>Mix</string>
        </property>
       </widget>
      </item>

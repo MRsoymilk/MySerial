@@ -94,6 +94,18 @@ void FormSerial::setINI()
     ui->txtSend->setPlainText(m_ini.single_send);
 }
 
+void FormSerial::sendRaw(const QByteArray &bytes)
+{
+    if (!m_serial) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, "Error", "Serial not open!");
+        return;
+    }
+    auto res = m_serial->write(bytes);
+    if (res == -1) {
+        LOG_WARN("Write failed: {}", m_serial->errorString());
+    }
+}
+
 void FormSerial::initMultSend()
 {
     QStringList cmds;
@@ -377,15 +389,11 @@ void FormSerial::onReadyRead()
 
     while (true) {
         int firstHeaderIdx = -1;
-        // int matchedHeaderLen = 0;
-        // QString matchedType;
         FrameType current_frame;
         for (const auto &type : m_frameTypes) {
             int idx = m_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
                 firstHeaderIdx = idx;
-                // matchedHeaderLen = type.header.size();
-                // matchedType = type.name;
                 current_frame.name = type.name;
                 current_frame.header = type.header;
                 current_frame.footer = type.footer;

@@ -55,6 +55,7 @@ void MainWindow::initStackWidget()
 
     QObject::connect(formSerial, &FormSerial::recv2Plot4k, formPlot, &FormPlot::onDataReceived4k);
     QObject::connect(formSerial, &FormSerial::recv2Data4k, formData, &FormData::onDataReceived4k);
+    QObject::connect(formPlot, &FormPlot::sendKB, formSerial, &FormSerial::sendRaw);
 }
 
 void MainWindow::initToolbar()

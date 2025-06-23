@@ -6,10 +6,9 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
-// #include <QtDataVisualization/QSurface3DSeries>
-// #include <QtDataVisualization/QSurfaceDataProxy>
 #include "3d/myglcurvewidget.h"
 #include "enhance/mychartview.h"
+#include "formplotcorrection.h"
 #include "formplotdata.h"
 #include "formplothistory.h"
 #include "formplotsimulate.h"
@@ -30,6 +29,7 @@ public:
 
 signals:
     void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);
+    void sendKB(const QByteArray &bytes);
 
 public slots:
     void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
@@ -46,6 +46,7 @@ private slots:
     void plotDataClose();
     void plotHistoryClose();
     void plotSimulateClose();
+    void plotCorrectionClose();
     void updatePlot4k(const QList<QPointF> &data14,
                       const QList<QPointF> &data24,
                       const double &xMin,
@@ -55,6 +56,7 @@ private slots:
     void on_spinBox14Offset_valueChanged(int val);
     void on_spinBox24Offset_valueChanged(int val);
     void on_comboBoxAlgorithm_currentIndexChanged(int index);
+    void on_tBtnCorrection_clicked();
 
 private:
     void init();
@@ -88,6 +90,7 @@ private:
     bool m_show3D = false;
     bool m_showHistory = false;
     bool m_showSimulate = false;
+    bool m_showCorrection = false;
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
     QThread *m_workerThread;
@@ -95,6 +98,7 @@ private:
     FormPlotData *m_plotData;
     FormPlotHistory *m_plotHistory;
     FormPlotSimulate *m_plotSimulate;
+    FormPlotCorrection *m_plotCorrection;
 
     MyChartView *m_chartView = nullptr;
     MyGLCurveWidget *m_glWidget = nullptr;

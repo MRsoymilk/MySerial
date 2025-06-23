@@ -29,5 +29,6 @@
         <file>res/i18n/zh_traditional.ts</file>
         <file>res/icons/yes.png</file>
         <file>res/i18n/en.qm</file>
+        <file>res/icons/correction.png</file>
     </qresource>
 </RCC>

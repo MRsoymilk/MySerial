@@ -144,7 +144,7 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
 
     QList<QPointF> out14, out24;
 
-    if (m_algorithm == static_cast<int>(PLOT_ALGORITHM::MAX_NEG_95)) {
+    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)) {
         double val95 = yMax14 * 0.95;
         for (int index = 0; index < v_voltage14.size(); ++index) {
             if (v_voltage14[index] > val95) {
@@ -161,7 +161,6 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
             ++index;
         }
         xMax = std::min(out14.size(), out24.size());
-    } else if (m_algorithm == static_cast<int>(PLOT_ALGORITHM::FITTING_kb)) {
     } else {
         numPoints = std::min(v_voltage14.size(), v_voltage24.size());
         for (int i = 0; i < numPoints; ++i) {

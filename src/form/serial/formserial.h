@@ -62,6 +62,9 @@ private:
     void initMultSend();
     void setINI();
 
+public slots:
+    void sendRaw(const QByteArray &bytes);
+
 private slots:
     void on_btnRecvSave_clicked();
     void on_btnRecvClear_clicked();
@@ -88,11 +91,6 @@ private:
     SEND_FORMAT m_send_format;
     bool m_hex_display;
     QTimer *m_send_timer;
-    // struct FrameType
-    // {
-    //     QByteArray header;
-    //     QString name;
-    // };
     struct FrameType
     {
         QString name;
@@ -100,11 +98,7 @@ private:
         QByteArray footer;
     };
 
-    QList<FrameType> m_frameTypes = {
-        // {QByteArray::fromHex("DE3A096631"), "curve_24bit"},
-        // {QByteArray::fromHex("DE3A096633"), "curve_14bit"},
-    };
-    // const QByteArray m_footer = QByteArray::fromHex("CEFF");
+    QList<FrameType> m_frameTypes = {};
 };
 
 #endif // FORMSERIAL_H
