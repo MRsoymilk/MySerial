@@ -95,28 +95,10 @@ QByteArray FormPlotCorrection::wrapKB(const float &k, const float &b)
     return packet;
 }
 
-void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVector<double> &v24)
+void FormPlotCorrection::findV14_MaxMinIdx(const QVector<double> &v14, int &idx_min, int &idx_max)
 {
-    if (!m_start) {
-        ui->btnStart->setStyleSheet("");
-        return;
-    }
-    QString status = QString("===== %1/%2 =====").arg(++m_current_round).arg(m_ini.round);
-    LOG_INFO("status: {}", status);
-    ui->labelStatus->setText(status);
-    ui->textEdit->append(status);
-    bool bSend = false;
-    if (m_current_round >= m_ini.round) {
-        ui->btnStart->setStyleSheet("");
-        bSend = true;
-        m_start = false;
-    }
-
-    // find v14 {min, max, idx_min, idx_max}
     double min_v14 = std::numeric_limits<double>::max();
     double max_v14 = std::numeric_limits<double>::lowest();
-    int idx_min = -1;
-    int idx_max = -1;
     for (int i = 0; i < v14.size(); ++i) {
         if (v14[i] < min_v14) {
             min_v14 = v14[i];
@@ -137,33 +119,16 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     // swap range if needed
     if (idx_min > idx_max)
         std::swap(idx_min, idx_max);
+}
 
-    // 平滑参数
-    const int window = 5;               // 平滑窗口
-    const int min_distance = 3;         // 最小峰间距
-    const double min_prominence = 0.02; // 最小突出度
-
-    // 平滑曲线
-    QVector<double> smoothed = smoothCenteredMovingAverage(v24, window);
-
-    static int file_idx = 1;
-    QDir dir;
-    if (!dir.exists("correction")) {
-        dir.mkpath("correction");
-    }
-    QFile file(QString("correction/smoothed_%1.csv").arg(file_idx++));
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        out << "index,original,smoothed\n";
-        for (int i = idx_min; i <= idx_max; ++i) {
-            out << i << "," << v24[i] << "," << smoothed[i] << "\n";
-        }
-        file.close();
-        qDebug() << "Saved smoothed data to smoothed.csv";
-    } else {
-        qWarning() << "Failed to open file for writing!";
-    }
-
+bool FormPlotCorrection::findPeak(const int &idx_min,
+                                  const int &idx_max,
+                                  const QVector<double> &smoothed,
+                                  const int &min_distance,
+                                  const double &min_prominence,
+                                  const QVector<double> &v14,
+                                  const QVector<double> &v24)
+{
     QVector<QPointF> v_14_correspond;
     QVector<double> peak;
     QVector<int> peak_location;
@@ -171,7 +136,6 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     int index_peak = 1;
     bool isPeekFound = false;
 
-    // 峰值查找增强版
     const int window_size = 5; // 滑动窗口，必须是奇数
     const int half_window = window_size / 2;
 
@@ -232,6 +196,59 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     }
 
     m_v14.push_back(v_14_correspond);
+    return isPeekFound;
+}
+
+void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVector<double> &v24)
+{
+    if (!m_start) {
+        ui->btnStart->setStyleSheet("");
+        return;
+    }
+    QString status = QString("===== %1/%2 =====").arg(++m_current_round).arg(m_ini.round);
+    LOG_INFO("status: {}", status);
+    ui->labelStatus->setText(status);
+    ui->textEdit->append(status);
+    bool bSend = false;
+    if (m_current_round >= m_ini.round) {
+        ui->btnStart->setStyleSheet("");
+        bSend = true;
+        m_start = false;
+    }
+
+    // find v14 {min, max, idx_min, idx_max}
+    int idx_min = -1;
+    int idx_max = -1;
+    findV14_MaxMinIdx(v14, idx_min, idx_max);
+
+    // 平滑参数
+    const int window = 5;               // 平滑窗口
+    const int min_distance = 3;         // 最小峰间距
+    const double min_prominence = 0.02; // 最小突出度
+
+    // 平滑曲线
+    QVector<double> smoothed = smoothCenteredMovingAverage(v24, window);
+
+    static int file_idx = 1;
+    QDir dir;
+    if (!dir.exists("correction")) {
+        dir.mkpath("correction");
+    }
+    QFile file(QString("correction/smoothed_%1.csv").arg(file_idx++));
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+        out << "index,original,smoothed\n";
+        for (int i = idx_min; i <= idx_max; ++i) {
+            out << i << "," << v24[i] << "," << smoothed[i] << "\n";
+        }
+        file.close();
+        qDebug() << "Saved smoothed data to smoothed.csv";
+    } else {
+        qWarning() << "Failed to open file for writing!";
+    }
+
+    // 峰值查找增强版
+    bool isPeekFound = findPeak(idx_min, idx_max, smoothed, min_distance, min_prominence, v14, v24);
 
     if (!isPeekFound) {
         QString msg = "no peak found!";
@@ -245,6 +262,26 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     LOG_INFO(msg);
     float avg_k = 0.0;
     float avg_b = 0.0;
+    fittingKB(avg_k, avg_b);
+    drawKB(avg_k, avg_b);
+    ui->labelValK->setText(QString("%1").arg(avg_k));
+    ui->labelValB->setText(QString("%1").arg(avg_b));
+
+    if (bSend) {
+        auto packet = wrapKB(avg_k, avg_b);
+        emit sendKB(packet);
+        LOG_INFO("send kb bytes: {}", packet.toHex());
+
+        QString msg = QString("send k: %1, b: %2").arg(avg_k).arg(avg_b);
+        ui->textEdit->append(msg);
+        LOG_INFO(msg);
+    }
+
+    QCoreApplication::processEvents();
+}
+
+void FormPlotCorrection::fittingKB(float &avg_k, float &avg_b)
+{
     int avg_count = 0;
     for (int i = 0; i < m_v14.size(); ++i) {
         int peak_size = m_v14.at(i).size();
@@ -272,21 +309,6 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     }
     avg_k /= avg_count;
     avg_b /= avg_count;
-    drawKB(avg_k, avg_b);
-    ui->labelValK->setText(QString("%1").arg(avg_k));
-    ui->labelValB->setText(QString("%1").arg(avg_b));
-
-    if (bSend) {
-        auto packet = wrapKB(avg_k, avg_b);
-        emit sendKB(packet);
-        LOG_INFO("send kb bytes: {}", packet.toHex());
-
-        QString msg = QString("send k: %1, b: %2").arg(avg_k).arg(avg_b);
-        ui->textEdit->append(msg);
-        LOG_INFO(msg);
-    }
-
-    QCoreApplication::processEvents();
 }
 
 void FormPlotCorrection::init()
