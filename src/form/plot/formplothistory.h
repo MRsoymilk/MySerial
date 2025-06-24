@@ -51,13 +51,13 @@ private:
     Ui::FormPlotHistory *ui;
     QList<QList<QPointF>> m_p14, m_p24;
     int m_index_14, m_index_24;
-    MyChartView *m_chartView14;
-    MyChartView *m_chartView24;
+    MyChartView *m_chartView14 = nullptr;
+    MyChartView *m_chartView24 = nullptr;
     MyChartView *m_chartView14Split = nullptr;
     MyChartView *m_chartView24Split = nullptr;
-    MyChartView *m_chartMix;
+    MyChartView *m_chartMix = nullptr;
     QChart *m_chart = nullptr;
-    QWidget *m_charSplit;
+    QWidget *m_charSplit = nullptr;
     bool m_fitting;
 };
 

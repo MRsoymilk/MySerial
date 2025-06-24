@@ -30,5 +30,25 @@
         <file>res/icons/yes.png</file>
         <file>res/i18n/en.qm</file>
         <file>res/icons/correction.png</file>
+        <file>res/themes/Dark.qss</file>
+        <file>res/themes/Lite.qss</file>
+        <file>res/themes/OSX_Dark.qss</file>
+        <file>res/themes/OSX_Lite.qss</file>
+        <file>res/themes/icons/arrow_down_disabled.svg</file>
+        <file>res/themes/icons/arrow_down.svg</file>
+        <file>res/themes/icons/arrow_up_disabled.svg</file>
+        <file>res/themes/icons/arrow_up.svg</file>
+        <file>res/themes/icons/branch_closed.svg</file>
+        <file>res/themes/icons/branch_open.svg</file>
+        <file>res/themes/icons/checkbox_check_dark.svg</file>
+        <file>res/themes/icons/checkbox_check_disabled.svg</file>
+        <file>res/themes/icons/checkbox_check_lite.svg</file>
+        <file>res/themes/icons/handle_horizontal.svg</file>
+        <file>res/themes/icons/handle_vertical.svg</file>
+        <file>res/themes/icons/radio_check_dark.svg</file>
+        <file>res/themes/icons/radio_check_disabled.svg</file>
+        <file>res/themes/icons/radio_check_lite.svg</file>
+        <file>res/themes/icons/toolbar_ext.svg</file>
+        <file>res/themes/icons/yes.svg</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 
 const QString CFG_GROUP_PROGRAM = "Program";
 const QString CFG_PROGRAM_LANGUAGE = "language";
+const QString CFG_PROGRAM_THEME = "theme";
 const QString CFG_GROUP_SERIAL = "Serial";
 const QString CFG_SERIAL_PORT_NAME = "port_name";
 const QString CFG_SERIAL_BAUD_RATE = "baud_rate";

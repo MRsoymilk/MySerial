@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.1.09 LANGUAGES CXX)
+project(MySerial VERSION 1.1.10 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -76,9 +76,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   )
 
 target_include_directories(MySerial PUBLIC
-  "${CMAKE_SOURCE_DIR}/src/include"
-  "${CMAKE_SOURCE_DIR}/src/common"
-  "${CMAKE_SOURCE_DIR}/src/module/server"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/common"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/module/server"
 )
 
 # Define target properties for Android with Qt 6 as:

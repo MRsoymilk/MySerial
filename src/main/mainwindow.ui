@@ -104,7 +104,17 @@
     <addaction name="action_zh_simple"/>
     <addaction name="action_zh_traditional"/>
    </widget>
+   <widget class="QMenu" name="menuTheme">
+    <property name="title">
+     <string>Theme</string>
+    </property>
+    <addaction name="actionLite"/>
+    <addaction name="actionDark"/>
+    <addaction name="actionOSX_Lite"/>
+    <addaction name="actionOSX_Dark"/>
+   </widget>
    <addaction name="menuLanguage"/>
+   <addaction name="menuTheme"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_en">
@@ -120,6 +130,26 @@
   <action name="action_zh_traditional">
    <property name="text">
     <string>zh_traditional</string>
+   </property>
+  </action>
+  <action name="actionLite">
+   <property name="text">
+    <string>Lite</string>
+   </property>
+  </action>
+  <action name="actionDark">
+   <property name="text">
+    <string>Dark</string>
+   </property>
+  </action>
+  <action name="actionOSX_Lite">
+   <property name="text">
+    <string>OSX_Lite</string>
+   </property>
+  </action>
+  <action name="actionOSX_Dark">
+   <property name="text">
+    <string>OSX_Dark</string>
    </property>
   </action>
  </widget>

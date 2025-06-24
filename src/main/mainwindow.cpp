@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->statusbar->showMessage(QString("version: %1 on %2").arg(APP_VERSION).arg(APP_REPO));
     init();
 }
 
@@ -22,6 +21,33 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::initMsgBar()
+{
+    QLabel *linkLabel = new QLabel(this);
+    linkLabel->setText(
+        QString(
+            "version: %1 on "
+            "<a href='%2'><span style='text-decoration: underline; color: #2980b9;'>%2</span></a>")
+            .arg(APP_VERSION)
+            .arg(APP_REPO));
+    linkLabel->setTextFormat(Qt::RichText);
+    linkLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    linkLabel->setOpenExternalLinks(true);
+    ui->statusbar->addPermanentWidget(linkLabel);
+}
+
+void MainWindow::initTheme()
+{
+    QString theme = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_THEME, "Lite");
+    connect(ui->menuTheme, &QMenu::triggered, this, &MainWindow::menuThemeSelect);
+    const QList<QAction *> actions = ui->menuTheme->actions();
+    for (QAction *act : actions) {
+        if (act->text() == theme) {
+            menuThemeSelect(act);
+            return;
+        }
+    }
+}
 void MainWindow::initLanguage()
 {
     QString language = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, "en");
@@ -102,14 +128,11 @@ void MainWindow::initToolbar()
 
 void MainWindow::init()
 {
-    // init stacked widget
+    initMsgBar();
     initStackWidget();
-
-    // init toolbar
     initToolbar();
-
-    // init language
     initLanguage();
+    initTheme();
 }
 
 void MainWindow::on_btnSerial_clicked()
@@ -178,6 +201,16 @@ void MainWindow::setLanguage(const QString &language)
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);
 }
 
+void MainWindow::setTheme(const QString &theme)
+{
+    QFile file(QString(":/res/themes/%1.qss").arg(theme));
+    if (file.open(QFile::ReadOnly | QFile::Text)) {
+        QString style = file.readAll();
+        qApp->setStyleSheet(style);
+    }
+    SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_THEME, theme);
+}
+
 void MainWindow::menuLanguageSelect(QAction *selectedAction)
 {
     QString language = selectedAction->text();
@@ -185,6 +218,22 @@ void MainWindow::menuLanguageSelect(QAction *selectedAction)
     const QList<QAction *> actions = ui->menuLanguage->actions();
     for (QAction *act : actions) {
         if (act == selectedAction) {
+            act->setChecked(true);
+            act->setIcon(QIcon(":res/icons/yes.png"));
+        } else {
+            act->setChecked(false);
+            act->setIcon(QIcon());
+        }
+    }
+}
+
+void MainWindow::menuThemeSelect(QAction *selectedTheme)
+{
+    QString theme = selectedTheme->text();
+    setTheme(theme);
+    const QList<QAction *> actions = ui->menuTheme->actions();
+    for (QAction *act : actions) {
+        if (act == selectedTheme) {
             act->setChecked(true);
             act->setIcon(QIcon(":res/icons/yes.png"));
         } else {
