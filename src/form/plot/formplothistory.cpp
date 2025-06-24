@@ -80,6 +80,8 @@ void FormPlotHistory::init()
     } else {
         ui->checkBoxConversion->setChecked(false);
     }
+    ui->toolButtonFitting->setCheckable(true);
+    m_fitting = false;
 }
 
 void FormPlotHistory::updateData(const QList<QList<QPointF> > &p14,
@@ -268,6 +270,11 @@ void FormPlotHistory::updatePlot(int index)
             ui->stackedWidget->setCurrentIndex(3);
         }
     }
+    if (m_fitting) {
+        getFittingChart();
+        clearFitting();
+        drawFitting();
+    }
 }
 
 void FormPlotHistory::closeEvent(QCloseEvent *event)
@@ -306,13 +313,35 @@ void FormPlotHistory::on_radioButtonSplit_clicked()
     updatePlot(INDEX_14);
 }
 
-void FormPlotHistory::on_toolButtonFitting_clicked()
+void FormPlotHistory::getFittingChart()
 {
-    // 14bit
+    if (ui->radioButtonMix->isChecked()) {
+        m_chart = m_chartMix->chart();
+    } else if (ui->radioButtonSplit->isChecked()) {
+        m_chart = m_chartView14Split->chart();
+    } else {
+        m_chart = m_chartView14->chart();
+    }
+}
+
+void FormPlotHistory::clearFitting()
+{
+    QList<QAbstractSeries *> existing = m_chart->series();
+    for (QAbstractSeries *s : existing) {
+        if (s->name() == "Fitting Line") {
+            m_chart->removeSeries(s);
+            delete s;
+            break;
+        }
+    }
+}
+
+void FormPlotHistory::drawFitting()
+{
     if (m_index_14 >= m_p14.size() || m_p14[m_index_14].isEmpty()) {
+        LOG_WARN("curve 14 is empty!");
         return;
     }
-
     QString txt_k = ui->lineEditK->text();
     QString txt_b = ui->lineEditB->text();
     if (txt_k.isEmpty() || txt_b.isEmpty()) {
@@ -347,33 +376,29 @@ void FormPlotHistory::on_toolButtonFitting_clicked()
         line->append(x, y);
     }
 
-    QChart *chart = nullptr;
-    if (ui->radioButtonMix->isChecked()) {
-        chart = m_chartMix->chart();
-    } else if (ui->radioButtonSplit->isChecked()) {
-        chart = m_chartView14Split->chart();
-    } else {
-        chart = m_chartView14->chart();
-    }
-
-    if (!chart)
+    if (!m_chart)
         return;
 
-    QList<QAbstractSeries *> existing = chart->series();
-    for (QAbstractSeries *s : existing) {
-        if (s->name() == "Fitting Line") {
-            chart->removeSeries(s);
-            delete s;
-            break;
-        }
+    m_chart->addSeries(line);
+    QList<QAbstractAxis *> axes = m_chart->axes(Qt::Horizontal);
+    if (!axes.isEmpty())
+        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
+
+    axes = m_chart->axes(Qt::Vertical);
+    if (!axes.isEmpty())
+        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
+}
+
+void FormPlotHistory::on_toolButtonFitting_clicked()
+{
+    // 14bit
+    m_fitting = !m_fitting;
+    ui->toolButtonFitting->setChecked(m_fitting);
+    getFittingChart();
+    if (m_fitting) {
+        clearFitting();
+        drawFitting();
+    } else {
+        clearFitting();
     }
-
-    chart->addSeries(line);
-    QList<QAbstractAxis *> axes = chart->axes(Qt::Horizontal);
-    if (!axes.isEmpty())
-        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
-
-    axes = chart->axes(Qt::Vertical);
-    if (!axes.isEmpty())
-        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
 }

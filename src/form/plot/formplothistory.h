@@ -43,6 +43,9 @@ private:
     void updatePlot24();
     void updatePlot(int index = 0);
     void init();
+    void clearFitting();
+    void drawFitting();
+    void getFittingChart();
 
 private:
     Ui::FormPlotHistory *ui;
@@ -53,7 +56,9 @@ private:
     MyChartView *m_chartView14Split = nullptr;
     MyChartView *m_chartView24Split = nullptr;
     MyChartView *m_chartMix;
+    QChart *m_chart = nullptr;
     QWidget *m_charSplit;
+    bool m_fitting;
 };
 
 #endif // FORMPLOTHISTORY_H
