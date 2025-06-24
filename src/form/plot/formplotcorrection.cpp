@@ -117,7 +117,6 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     double max_v14 = std::numeric_limits<double>::lowest();
     int idx_min = -1;
     int idx_max = -1;
-
     for (int i = 0; i < v14.size(); ++i) {
         if (v14[i] < min_v14) {
             min_v14 = v14[i];
@@ -134,23 +133,18 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     LOG_INFO("curve14:\n{}\n{}",
              QString("max %1 at %2").arg(max_v14).arg(idx_max),
              QString("min %1 at %2").arg(min_v14).arg(idx_min));
-    // find v24[idx_min] -> v24[idx_max] peak
-    ui->textEdit->append("curve24:");
-    LOG_INFO("curve24:");
-    QVector<double> peak;
-    QVector<int> peak_location;
-    bool isPeekFound = false;
-    int index_peak = 1;
-    if (idx_min > idx_max) {
+
+    // swap range if needed
+    if (idx_min > idx_max)
         std::swap(idx_min, idx_max);
-    }
 
-    const int window = 5;               // 平滑窗口大小
-    const int min_distance = 3;         // 峰值间最小间隔
-    const double min_prominence = 0.02; // 峰值最低突出度
+    // 平滑参数
+    const int window = 5;               // 平滑窗口
+    const int min_distance = 3;         // 最小峰间距
+    const double min_prominence = 0.02; // 最小突出度
 
-    // 中值滤波平滑
-    QVector<double> smoothed = smoothCenteredMovingAverage(v24, min_distance);
+    // 平滑曲线
+    QVector<double> smoothed = smoothCenteredMovingAverage(v24, window);
 
     static int file_idx = 1;
     QDir dir;
@@ -171,32 +165,72 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     }
 
     QVector<QPointF> v_14_correspond;
-    // 查找尖峰
+    QVector<double> peak;
+    QVector<int> peak_location;
     int last_peak_index = -min_distance;
-    for (int i = idx_min + 1; i < idx_max - 1; ++i) {
-        if (smoothed[i] > smoothed[i - 1] && smoothed[i] > smoothed[i + 1]) {
-            // 检查是否满足最小突出度
-            double left = smoothed[i - 1];
-            double right = smoothed[i + 1];
-            double base = (left + right) / 2.0;
-            double prominence = smoothed[i] - base;
+    int index_peak = 1;
+    bool isPeekFound = false;
 
-            if (prominence >= min_prominence && i - last_peak_index >= min_distance) {
-                peak.append(v24[i]); // 使用原始数据作为峰值
-                peak_location.append(i);
-                last_peak_index = i;
-                QString msg = QString("peak_%1: %2 at %3").arg(index_peak).arg(v24[i]).arg(i);
-                ui->textEdit->append(msg);
-                LOG_INFO(msg);
-                index_peak++;
-                isPeekFound = true;
-                QPointF d14_correspond;
-                d14_correspond.setX(i);
-                d14_correspond.setY(v14[i]);
-                v_14_correspond.push_back(d14_correspond);
+    // 峰值查找增强版
+    const int window_size = 5; // 滑动窗口，必须是奇数
+    const int half_window = window_size / 2;
+
+    ui->textEdit->append("curve24:");
+    LOG_INFO("curve24:");
+
+    for (int i = idx_min + half_window; i <= idx_max - half_window; ++i) {
+        // 判断是否为局部最大值（允许 plateau）
+        bool is_peak = true;
+        for (int j = -half_window; j <= half_window; ++j) {
+            if (j == 0)
+                continue;
+            if (smoothed[i] < smoothed[i + j]) {
+                is_peak = false;
+                break;
             }
         }
+
+        if (!is_peak)
+            continue;
+
+        // 左侧 valley
+        double left_valley = smoothed[i];
+        for (int j = i - 1; j >= idx_min; --j) {
+            if (smoothed[j] < left_valley)
+                left_valley = smoothed[j];
+            else
+                break;
+        }
+
+        // 右侧 valley
+        double right_valley = smoothed[i];
+        for (int j = i + 1; j <= idx_max; ++j) {
+            if (smoothed[j] < right_valley)
+                right_valley = smoothed[j];
+            else
+                break;
+        }
+
+        double prominence = smoothed[i] - std::max(left_valley, right_valley);
+
+        if (prominence >= min_prominence && i - last_peak_index >= min_distance) {
+            peak.append(v24[i]); // 原始值
+            peak_location.append(i);
+            last_peak_index = i;
+
+            QString msg = QString("peak_%1: %2 at %3").arg(index_peak).arg(v24[i]).arg(i);
+            ui->textEdit->append(msg);
+            LOG_INFO(msg);
+            index_peak++;
+            isPeekFound = true;
+
+            QPointF d14_correspond;
+            d14_correspond.setX(i);
+            d14_correspond.setY(v14[i]);
+            v_14_correspond.push_back(d14_correspond);
+        }
     }
+
     m_v14.push_back(v_14_correspond);
 
     if (!isPeekFound) {
@@ -204,7 +238,8 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
         ui->textEdit->append(msg);
         LOG_WARN(msg);
     }
-    // try to fitting y = kx + b
+
+    // 线性拟合 y = kx + b
     QString msg = "try to fitting y = kx + b";
     ui->textEdit->append(msg);
     LOG_INFO(msg);
@@ -215,7 +250,6 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
         int peak_size = m_v14.at(i).size();
         if (peak_size < 2) {
             QString msg = QString("group %1 is invalid").arg(i + 1);
-            ui->textEdit->append(msg);
             LOG_WARN(msg);
             continue;
         }
@@ -234,14 +268,11 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
                           .arg(k_conversion)
                           .arg(b)
                           .arg(b_conversion);
-        ui->textEdit->append(msg);
         LOG_INFO(msg);
     }
     avg_k /= avg_count;
     avg_b /= avg_count;
-    // y = avg_k * x + avg_b
     drawKB(avg_k, avg_b);
-
     ui->labelValK->setText(QString("%1").arg(avg_k));
     ui->labelValB->setText(QString("%1").arg(avg_b));
 
@@ -254,6 +285,7 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
         ui->textEdit->append(msg);
         LOG_INFO(msg);
     }
+
     QCoreApplication::processEvents();
 }
 

@@ -23,6 +23,10 @@ Serial port assistant based on Qt6
 
 ![Plot](README/plot.jpg)
 
+Correction
+
+![Plot Correction](README/plot_correction.jpg)
+
 ### Log
 
 ![Log](README/log.jpg)
@@ -31,3 +35,14 @@ Serial port assistant based on Qt6
 
 ![Setting](README/setting.jpg)
 
+## Tool
+
+Dependence
+
+```bash
+pip install -r tool/requirements.txt
+```
+
+`show_smoothed.py`: find peak and show (`correction/*.csv`)
+
+![show smoothed](README/show_smoothed.jpg)
