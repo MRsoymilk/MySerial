@@ -35,6 +35,24 @@ Correction
 
 ![Setting](README/setting.jpg)
 
+### Theme
+
+Dark
+
+![theme Dark](README/theme_Dark.jpg)
+
+Lite
+
+![theme Lite](README/theme_Lite.jpg)
+
+OSX Dark
+
+![theme OSX Dark](README/theme_OSX_Dark.jpg)
+
+OSX Lite
+
+![theme OSX Lite](README/theme_OSX_Lite.jpg)
+
 ## Tool
 
 Dependence
