@@ -278,6 +278,7 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     ui->labelValB->setText(QString("%1").arg(avg_b));
 
     if (bSend) {
+        file_idx = 0;
         auto packet = wrapKB(avg_k, avg_b);
         emit sendKB(packet);
         LOG_INFO("send kb bytes: {}", packet.toHex());
