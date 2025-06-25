@@ -13,6 +13,7 @@ public:
     void setOffset14(const int &offset);
     void setOffset24(const int &offset);
     void setAlgorithm(int);
+
 public slots:
     void processData4k(const QByteArray &data14, const QByteArray &data24);
 
@@ -24,6 +25,17 @@ signals:
                      const double &xMax,
                      const double &yMin,
                      const double &yMax);
+
+private:
+    void processCurve14(const QByteArray &data14,
+                        QVector<double> &v_voltage14,
+                        double &yMin,
+                        double &yMax,
+                        double &yMax14);
+    void processCurve24(const QByteArray &data24,
+                        QVector<double> &v_voltage24,
+                        double &yMin,
+                        double &yMax);
 
 private:
     double m_time = 0.0;

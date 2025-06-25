@@ -25,14 +25,12 @@ void PlotWorker::setAlgorithm(int algorithm)
     m_algorithm = algorithm;
 }
 
-void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data24)
+void PlotWorker::processCurve14(const QByteArray &data14,
+                                QVector<double> &v_voltage14,
+                                double &yMin,
+                                double &yMax,
+                                double &yMax14)
 {
-    double yMin = std::numeric_limits<double>::max();
-    double yMax = std::numeric_limits<double>::lowest();
-    double yMax14 = std::numeric_limits<double>::lowest();
-    QVector<double> v_voltage14;
-    QVector<double> v_voltage24;
-    int numPoints = 0;
     {
         QByteArray payload = data14.mid(5, data14.size() - 7);
         if (payload.size() % 3 != 0) {
@@ -88,7 +86,13 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
             v_voltage14.push_back(voltage);
         }
     }
+}
 
+void PlotWorker::processCurve24(const QByteArray &data24,
+                                QVector<double> &v_voltage24,
+                                double &yMin,
+                                double &yMax)
+{
     {
         QByteArray payload = data24.mid(5, data24.size() - 7);
         if (payload.size() % 3 != 0) {
@@ -139,6 +143,21 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
             v_voltage24.push_back(voltage);
         }
     }
+}
+
+void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data24)
+{
+    double yMin = std::numeric_limits<double>::max();
+    double yMax = std::numeric_limits<double>::lowest();
+    double yMax14 = std::numeric_limits<double>::lowest();
+    QVector<double> v_voltage14;
+    QVector<double> v_voltage24;
+    int numPoints = 0;
+
+    processCurve14(data14, v_voltage14, yMin, yMax, yMax14);
+
+    processCurve24(data24, v_voltage24, yMin, yMax);
+
     double xMin = 0.0;
     double xMax = 1999.0;
 
