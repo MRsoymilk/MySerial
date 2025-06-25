@@ -234,17 +234,27 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     if (!dir.exists("correction")) {
         dir.mkpath("correction");
     }
-    QFile file(QString("correction/smoothed_%1.csv").arg(file_idx++));
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        out << "index,original,smoothed\n";
-        for (int i = idx_min; i <= idx_max; ++i) {
-            out << i << "," << v24[i] << "," << smoothed[i] << "\n";
-        }
-        file.close();
-        qDebug() << "Saved smoothed data to smoothed.csv";
+
+    if (v24.empty() || v24.size() < idx_max) {
+        QString msg = QString("Abnormal data: curve24 size: %1, curve14 idx_max: %2")
+                          .arg(v24.size())
+                          .arg(idx_max);
+        LOG_ERROR(msg);
+        ui->textEdit->append(msg);
+        return;
     } else {
-        qWarning() << "Failed to open file for writing!";
+        QFile file(QString("correction/smoothed_%1.csv").arg(file_idx++));
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(&file);
+            out << "index,original,smoothed\n";
+            for (int i = idx_min; i <= idx_max; ++i) {
+                out << i << "," << v24[i] << "," << smoothed[i] << "\n";
+            }
+            file.close();
+            LOG_INFO("Saved smoothed data to smoothed.csv");
+        } else {
+            LOG_WARN("Failed to open file for writing!");
+        }
     }
 
     // 峰值查找增强版
