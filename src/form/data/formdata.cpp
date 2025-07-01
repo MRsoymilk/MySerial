@@ -49,7 +49,7 @@ void FormData::init()
 void FormData::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
 {
     QList<QStandardItem *> rowItems;
-    auto data = data14 + data24;
+    auto data = data24 + data14;
     rowItems << new QStandardItem(TIMESTAMP());
     QString to_show;
     for (int i = 0; i < data.length(); ++i) {
