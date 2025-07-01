@@ -83,14 +83,41 @@ void FormPlotSimulate::simulate4k()
 {
     QFile file(m_ini.file);
     QString data;
-    if (file.open(QIODevice::ReadOnly)) {
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QString suffix = QFileInfo(file).suffix().toLower();
+
+    if (suffix == "csv") {
+        QTextStream in(&file);
+        QString headerLine = in.readLine();
+        QStringList headers = headerLine.split(',');
+
+        int dataIndex = headers.indexOf("data");
+        if (dataIndex == -1) {
+            file.close();
+            return;
+        }
+
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            QStringList fields = line.split(',');
+            if (fields.size() > dataIndex) {
+                QString value = fields[dataIndex];
+                value.replace("0x", "");
+                value.remove(QRegularExpression("[\\s\r\n\t]"));
+                data += value;
+            }
+        }
+    } else {
         data = file.readAll();
         data.replace("0x", "");
         data.remove(QRegularExpression("[\\s\r\n\t]"));
-        file.close();
-    } else {
-        return;
     }
+
+    file.close();
 
     QByteArray dataBytes = QByteArray::fromHex(data.toUtf8());
     QByteArray buffer = dataBytes;
