@@ -8,6 +8,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QToolButton>
+#include "../plot/plot_algorithm.h"
 #include "funcdef.h"
 
 FormSerial::FormSerial(QWidget *parent)
@@ -68,6 +69,13 @@ void FormSerial::getINI()
             SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
         }
     }
+    int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
+    m_algorithm = current_algorithm;
+    if (current_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+        m_frameTypes = {
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
+        };
+    }
 
     initMultSend();
 }
@@ -104,6 +112,22 @@ void FormSerial::sendRaw(const QByteArray &bytes)
     if (res == -1) {
         LOG_WARN("Write failed: {}", m_serial->errorString());
     }
+}
+
+void FormSerial::onChangeFrameType(int index)
+{
+    if (index == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+        m_frameTypes = {
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
+            // {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
+        };
+    } else {
+        m_frameTypes = {
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
+            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
+        };
+    }
+    m_algorithm = index;
 }
 
 void FormSerial::initMultSend()
@@ -414,13 +438,24 @@ void FormSerial::onReadyRead()
 
         int frameLen = endIdx + current_frame.footer.size() - firstHeaderIdx;
         QByteArray tmp_frame = m_buffer.mid(firstHeaderIdx, frameLen);
-        if (current_frame.name.toStdString() == "curve_24bit") {
-            LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
-            frame.bit24 = tmp_frame;
-        } else if (current_frame.name.toStdString() == "curve_14bit") {
-            LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
-            frame.bit14 = tmp_frame;
-            if (!frame.bit24.isEmpty()) {
+
+        if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
+            || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
+            if (current_frame.name.toStdString() == "curve_24bit") {
+                LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
+                frame.bit24 = tmp_frame;
+            } else if (current_frame.name.toStdString() == "curve_14bit") {
+                LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
+                frame.bit14 = tmp_frame;
+                if (!frame.bit24.isEmpty()) {
+                    emit recv2Data4k(frame.bit14, frame.bit24);
+                    emit recv2Plot4k(frame.bit14, frame.bit24);
+                }
+            }
+        } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+            if (current_frame.name.toStdString() == "curve_24bit") {
+                LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
+                frame.bit24 = tmp_frame;
                 emit recv2Data4k(frame.bit14, frame.bit24);
                 emit recv2Plot4k(frame.bit14, frame.bit24);
             }

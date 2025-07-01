@@ -50,5 +50,6 @@
         <file>res/themes/icons/radio_check_lite.svg</file>
         <file>res/themes/icons/toolbar_ext.svg</file>
         <file>res/themes/icons/yes.svg</file>
+        <file>res/icons/img_save.png</file>
     </qresource>
 </RCC>

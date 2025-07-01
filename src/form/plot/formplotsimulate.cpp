@@ -1,6 +1,7 @@
 #include "formplotsimulate.h"
 #include <QFileDialog>
 #include "funcdef.h"
+#include "plot_algorithm.h"
 #include "ui_formplotsimulate.h"
 
 FormPlotSimulate::FormPlotSimulate(QWidget *parent)
@@ -19,6 +20,11 @@ FormPlotSimulate::~FormPlotSimulate()
 void FormPlotSimulate::retranslateUI()
 {
     ui->retranslateUi(this);
+}
+
+void FormPlotSimulate::onChangeFrameType(int index)
+{
+    m_algorithm = index;
 }
 
 void FormPlotSimulate::getINI()
@@ -101,10 +107,18 @@ void FormPlotSimulate::simulate4k()
     };
     const QByteArray footer = QByteArray::fromHex("CEFF");
     FRAME frame;
-    const QList<FrameType> m_frameTypes = {
-        {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
-        {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
-    };
+    QList<FrameType> m_frameTypes;
+    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
+        || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
+        m_frameTypes = {
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
+            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
+        };
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+        m_frameTypes = {
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
+        };
+    }
     while (true) {
         int firstHeaderIdx = -1;
         int matchedHeaderLen = 0;
@@ -134,11 +148,19 @@ void FormPlotSimulate::simulate4k()
         int frameLen = endIdx + footer.size() - firstHeaderIdx;
         QByteArray tmp_frame = buffer.mid(firstHeaderIdx, frameLen);
 
-        if (matchedType == "curve_24bit") {
-            frame.bit24 = tmp_frame;
-        } else if (matchedType == "curve_14bit") {
-            frame.bit14 = tmp_frame;
-            if (!frame.bit24.isEmpty()) {
+        if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
+            || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
+            if (matchedType == "curve_24bit") {
+                frame.bit24 = tmp_frame;
+            } else if (matchedType == "curve_14bit") {
+                frame.bit14 = tmp_frame;
+                if (!frame.bit24.isEmpty()) {
+                    emit simulateDataReady4k(frame.bit14, frame.bit24);
+                }
+            }
+        } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+            if (matchedType == "curve_24bit") {
+                frame.bit24 = tmp_frame;
                 emit simulateDataReady4k(frame.bit14, frame.bit24);
             }
         }

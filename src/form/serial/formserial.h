@@ -64,6 +64,7 @@ private:
 
 public slots:
     void sendRaw(const QByteArray &bytes);
+    void onChangeFrameType(int index);
 
 private slots:
     void on_btnRecvSave_clicked();
@@ -99,6 +100,7 @@ private:
     };
 
     QList<FrameType> m_frameTypes = {};
+    int m_algorithm;
 };
 
 #endif // FORMSERIAL_H

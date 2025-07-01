@@ -30,6 +30,7 @@ public:
 signals:
     void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);
     void sendKB(const QByteArray &bytes);
+    void changeFrameType(int index);
 
 public slots:
     void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
@@ -57,6 +58,7 @@ private slots:
     void on_spinBox24Offset_valueChanged(int val);
     void on_comboBoxAlgorithm_currentIndexChanged(int index);
     void on_tBtnCorrection_clicked();
+    void on_tBtnImgSave_clicked();
 
 private:
     void init();
@@ -77,6 +79,7 @@ private:
                       const double &xMax,
                       const double &yMin,
                       const double &yMax);
+    void saveChartAsImage(const QString &filePath);
 
 private:
     Ui::FormPlot *ui;

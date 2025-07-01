@@ -154,9 +154,13 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
     QVector<double> v_voltage24;
     int numPoints = 0;
 
-    processCurve14(data14, v_voltage14, yMin, yMax, yMax14);
-
-    processCurve24(data24, v_voltage24, yMin, yMax);
+    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
+        || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
+        processCurve14(data14, v_voltage14, yMin, yMax, yMax14);
+        processCurve24(data24, v_voltage24, yMin, yMax);
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+        processCurve24(data24, v_voltage24, yMin, yMax);
+    }
 
     double xMin = 0.0;
     double xMax = 1999.0;
@@ -180,6 +184,14 @@ void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data2
             ++index;
         }
         xMax = std::min(out14.size(), out24.size());
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+        xMin = 980;
+        xMax = std::min(xMin + v_voltage24.size(), xMin + 660);
+        out14.clear();
+        v_voltage14.clear();
+        for (int i = 0; i < v_voltage24.size(); ++i) {
+            out24.push_back({static_cast<double>(i + xMin), v_voltage24[i]});
+        }
     } else {
         numPoints = std::min(v_voltage14.size(), v_voltage24.size());
         for (int i = 0; i < numPoints; ++i) {

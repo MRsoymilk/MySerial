@@ -48,6 +48,7 @@ void MainWindow::initTheme()
         }
     }
 }
+
 void MainWindow::initLanguage()
 {
     QString language = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, "en");
@@ -63,12 +64,12 @@ void MainWindow::initLanguage()
 
 void MainWindow::initStackWidget()
 {
+    formPlot = new FormPlot(this);
+    ui->stackedWidget->addWidget(formPlot);
+
     formSerial = new FormSerial(this);
     ui->stackedWidget->addWidget(formSerial);
     ui->stackedWidget->setCurrentWidget(formSerial);
-
-    formPlot = new FormPlot(this);
-    ui->stackedWidget->addWidget(formPlot);
 
     formData = new FormData(this);
     ui->stackedWidget->addWidget(formData);
@@ -82,6 +83,10 @@ void MainWindow::initStackWidget()
     QObject::connect(formSerial, &FormSerial::recv2Plot4k, formPlot, &FormPlot::onDataReceived4k);
     QObject::connect(formSerial, &FormSerial::recv2Data4k, formData, &FormData::onDataReceived4k);
     QObject::connect(formPlot, &FormPlot::sendKB, formSerial, &FormSerial::sendRaw);
+    QObject::connect(formPlot,
+                     &FormPlot::changeFrameType,
+                     formSerial,
+                     &FormSerial::onChangeFrameType);
 }
 
 void MainWindow::initToolbar()

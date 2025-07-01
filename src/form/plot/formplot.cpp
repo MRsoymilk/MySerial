@@ -1,8 +1,11 @@
 #include "formplot.h"
 #include "ui_formplot.h"
 
+#include <QKeySequence>
 #include <QLabel>
 #include <QLegendMarker>
+#include <QPainter>
+#include <QShortcut>
 #include <QThread>
 #include <QTimer>
 #include <QWheelEvent>
@@ -11,6 +14,23 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include "funcdef.h"
+
+void FormPlot::saveChartAsImage(const QString &filePath)
+{
+    if (!m_chartView)
+        return;
+
+    QSize size = m_chartView->size();
+
+    QImage image(size, QImage::Format_ARGB32);
+    image.fill(Qt::white);
+
+    QPainter painter(&image);
+    m_chartView->render(&painter);
+    painter.end();
+
+    image.save(filePath);
+}
 
 FormPlot::FormPlot(QWidget *parent)
     : QWidget(parent)
@@ -150,7 +170,7 @@ void FormPlot::initToolButtons()
     ui->tBtnHistory->setIconSize(QSize(24, 24));
     ui->tBtnHistory->setCheckable(true);
     ui->tBtnHistory->setChecked(m_showHistory);
-    ui->tBtnHistory->setToolTip("History");
+    ui->tBtnHistory->setToolTip("History (ctrl+h)");
 
     ui->tBtnSimulate->setIcon(QIcon(":/res/icons/simulate.png"));
     ui->tBtnSimulate->setIconSize(QSize(24, 24));
@@ -163,6 +183,10 @@ void FormPlot::initToolButtons()
     ui->tBtnCorrection->setCheckable(true);
     ui->tBtnCorrection->setChecked(m_showCorrection);
     ui->tBtnCorrection->setToolTip("Correction");
+
+    ui->tBtnImgSave->setIcon(QIcon(":/res/icons/img_save.png"));
+    ui->tBtnImgSave->setIconSize(QSize(24, 24));
+    ui->tBtnImgSave->setToolTip("image save (ctrl+s)");
 }
 
 void FormPlot::init()
@@ -200,6 +224,10 @@ void FormPlot::init()
             &FormPlotSimulate::simulateDataReady4k,
             m_worker,
             &PlotWorker::processData4k);
+    QObject::connect(this,
+                     &FormPlot::changeFrameType,
+                     m_plotSimulate,
+                     &FormPlotSimulate::onChangeFrameType);
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(this, &FormPlot::newDataReceived4k, m_worker, &PlotWorker::processData4k);
     connect(m_worker, &PlotWorker::dataReady4k, this, &FormPlot::updatePlot4k, Qt::QueuedConnection);
@@ -211,6 +239,12 @@ void FormPlot::init()
 
     m_workerThread->start();
     getINI();
+
+    QShortcut *shortcut_ImgSave = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this);
+    connect(shortcut_ImgSave, &QShortcut::activated, this, &FormPlot::on_tBtnImgSave_clicked);
+
+    QShortcut *shortcut_History = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_H), this);
+    connect(shortcut_History, &QShortcut::activated, this, &FormPlot::on_tBtnHistory_clicked);
 }
 
 void FormPlot::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
@@ -383,6 +417,7 @@ void FormPlot::on_comboBoxAlgorithm_currentIndexChanged(int index)
 {
     m_worker->setAlgorithm(index);
     SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, QString::number(index));
+    emit changeFrameType(index);
 }
 
 void FormPlot::on_tBtnCorrection_clicked()
@@ -395,5 +430,16 @@ void FormPlot::on_tBtnCorrection_clicked()
                 m_plotCorrection,
                 &FormPlotCorrection::onEpochCorrection,
                 Qt::QueuedConnection);
+    }
+}
+
+void FormPlot::on_tBtnImgSave_clicked()
+{
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                    "Save Chart",
+                                                    "",
+                                                    "PNG Image (*.png);;JPEG Image (*.jpg)");
+    if (!filePath.isEmpty()) {
+        saveChartAsImage(filePath);
     }
 }

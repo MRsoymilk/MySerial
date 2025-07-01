@@ -32,12 +32,18 @@
    <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <item row="0" column="8">
-    <widget class="QToolButton" name="tBtnHistory">
-     <property name="text">
-      <string>history</string>
+   <item row="0" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
-    </widget>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>209</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="0" column="4">
     <widget class="QToolButton" name="tBtnSimulate">
@@ -46,18 +52,12 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="6">
-    <widget class="QToolButton" name="tBtnZoom">
+   <item row="0" column="3">
+    <widget class="QToolButton" name="tBtnCorrection">
      <property name="text">
-      <string>zoom</string>
-     </property>
-     <property name="icon">
-      <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
+      <string>correction</string>
      </property>
     </widget>
-   </item>
-   <item row="1" column="0" colspan="9">
-    <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
    <item row="0" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -72,6 +72,13 @@
       <widget class="QComboBox" name="comboBoxAlgorithm"/>
      </item>
     </layout>
+   </item>
+   <item row="0" column="5">
+    <widget class="QToolButton" name="tBtn3D">
+     <property name="text">
+      <string>3D</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="7">
     <widget class="QToolButton" name="tBtnData">
@@ -129,32 +136,32 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>209</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="5">
-    <widget class="QToolButton" name="tBtn3D">
+   <item row="0" column="8">
+    <widget class="QToolButton" name="tBtnHistory">
      <property name="text">
-      <string>3D</string>
+      <string>history</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QToolButton" name="tBtnCorrection">
+   <item row="0" column="6">
+    <widget class="QToolButton" name="tBtnZoom">
      <property name="text">
-      <string>correction</string>
+      <string>zoom</string>
+     </property>
+     <property name="icon">
+      <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
      </property>
     </widget>
+   </item>
+   <item row="0" column="9">
+    <widget class="QToolButton" name="tBtnImgSave">
+     <property name="text">
+      <string>img_save</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="10">
+    <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
   </layout>
  </widget>
