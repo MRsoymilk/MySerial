@@ -157,6 +157,20 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="toolButtonDumpPlot">
+       <property name="text">
+        <string>dump plot</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonDumpData">
+       <property name="text">
+        <string>dump data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="hLayFitting">
        <item>
         <widget class="QToolButton" name="toolButtonFitting">

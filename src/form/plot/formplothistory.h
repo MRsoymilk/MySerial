@@ -38,6 +38,10 @@ private slots:
     void on_radioButtonSplit_clicked();
     void on_toolButtonFitting_clicked();
 
+    void on_toolButtonDumpPlot_clicked();
+
+    void on_toolButtonDumpData_clicked();
+
 private:
     void updatePlot14();
     void updatePlot24();
