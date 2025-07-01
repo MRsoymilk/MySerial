@@ -164,6 +164,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="checkBoxAll">
+       <property name="text">
+        <string>all</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="toolButtonDumpData">
        <property name="text">
         <string>dump data</string>

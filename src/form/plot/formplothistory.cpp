@@ -438,39 +438,92 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
     if (!ui->radioButtonMix->isChecked()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Failed"), tr("Only support Mix!"));
     }
-    QString dftName = QString("%1.csv").arg(m_index_14 + 1);
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                                    tr("Save Curve Data"),
-                                                    dftName,
-                                                    tr("CSV Files (*.csv)"));
-    if (filePath.isEmpty()) {
-        return;
+    if (ui->checkBoxAll->isChecked()) {
+        QString filePath = QFileDialog::getSaveFileName(this,
+                                                        tr("Save Curve Data"),
+                                                        "_all.csv",
+                                                        tr("CSV Files (*.csv)"));
+        if (filePath.isEmpty()) {
+            return;
+        }
+        QFile file(filePath);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Failed to Open File"), file.errorString());
+            return;
+        }
+
+        QTextStream out(&file);
+
+        out << "index";
+        int groupCount = qMax(m_p14.size(), m_p24.size());
+        for (int i = 0; i < groupCount; ++i) {
+            out << QString(",14bit%1,24bit%2").arg(i + 1).arg(i + 1);
+        }
+        out << "\n";
+
+        int maxPoints = 0;
+        for (int i = 0; i < groupCount; ++i) {
+            int len14 = (i < m_p14.size()) ? m_p14[i].size() : 0;
+            int len24 = (i < m_p24.size()) ? m_p24[i].size() : 0;
+            maxPoints = qMax(maxPoints, qMax(len14, len24));
+        }
+
+        for (int i = 0; i < maxPoints; ++i) {
+            out << QString::number(i);
+            for (int g = 0; g < groupCount; ++g) {
+                QString y14 = (g < m_p14.size() && i < m_p14[g].size())
+                                  ? QString::number(m_p14[g][i].y())
+                                  : "";
+                QString y24 = (g < m_p24.size() && i < m_p24[g].size())
+                                  ? QString::number(m_p24[g][i].y())
+                                  : "";
+                out << "," << y14 << "," << y24;
+            }
+            out << "\n";
+        }
+
+        file.close();
+
+        SHOW_AUTO_CLOSE_MSGBOX(this,
+                               tr("Export Successful"),
+                               tr("All data exported to:\n%1").arg(filePath));
+    } else {
+        QString dftName = QString("%1.csv").arg(m_index_14 + 1);
+        QString filePath = QFileDialog::getSaveFileName(this,
+                                                        tr("Save Curve Data"),
+                                                        dftName,
+                                                        tr("CSV Files (*.csv)"));
+        if (filePath.isEmpty()) {
+            return;
+        }
+
+        QFile file(filePath);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Failed to Open File"), file.errorString());
+            return;
+        }
+
+        QTextStream out(&file);
+        out << "index,14bit,24bit\n";
+
+        int size = qMax(m_p14.size() > m_index_14 ? m_p14[m_index_14].size() : 0,
+                        m_p24.size() > m_index_24 ? m_p24[m_index_24].size() : 0);
+
+        const QList<QPointF> &list14 = (m_index_14 < m_p14.size()) ? m_p14[m_index_14]
+                                                                   : QList<QPointF>();
+        const QList<QPointF> &list24 = (m_index_24 < m_p24.size()) ? m_p24[m_index_24]
+                                                                   : QList<QPointF>();
+
+        for (int i = 0; i < size; ++i) {
+            QString indexStr = QString::number(i);
+            QString y14Str = (i < list14.size()) ? QString::number(list14[i].y()) : "";
+            QString y24Str = (i < list24.size()) ? QString::number(list24[i].y()) : "";
+            out << indexStr << "," << y14Str << "," << y24Str << "\n";
+        }
+
+        file.close();
+        SHOW_AUTO_CLOSE_MSGBOX(this,
+                               tr("Export Successful"),
+                               tr("Data exported to:\n%1").arg(filePath));
     }
-
-    QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Failed to Open File"), file.errorString());
-        return;
-    }
-
-    QTextStream out(&file);
-    out << "index,14bit,24bit\n";
-
-    int size = qMax(m_p14.size() > m_index_14 ? m_p14[m_index_14].size() : 0,
-                    m_p24.size() > m_index_24 ? m_p24[m_index_24].size() : 0);
-
-    const QList<QPointF> &list14 = (m_index_14 < m_p14.size()) ? m_p14[m_index_14]
-                                                               : QList<QPointF>();
-    const QList<QPointF> &list24 = (m_index_24 < m_p24.size()) ? m_p24[m_index_24]
-                                                               : QList<QPointF>();
-
-    for (int i = 0; i < size; ++i) {
-        QString indexStr = QString::number(i);
-        QString y14Str = (i < list14.size()) ? QString::number(list14[i].y()) : "";
-        QString y24Str = (i < list24.size()) ? QString::number(list24[i].y()) : "";
-        out << indexStr << "," << y14Str << "," << y24Str << "\n";
-    }
-
-    file.close();
-    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Successful"), tr("Data exported to:\n%1").arg(filePath));
 }
