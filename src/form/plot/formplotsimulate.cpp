@@ -35,6 +35,7 @@ void FormPlotSimulate::getINI()
     ui->lineEditHead->setText(m_ini.head.join(","));
     ui->lineEditTail->setText(m_ini.tail.join(","));
     ui->lineEditPath->setText(m_ini.file);
+    m_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
 }
 
 void FormPlotSimulate::setINI()
