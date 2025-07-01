@@ -43,9 +43,10 @@ void PlotWorker::processCurve14(const QByteArray &data14,
                             | (static_cast<quint8>(payload[i + 1]) << 8)
                             | static_cast<quint8>(payload[i + 2]);
 
-            if (value != 0) {
-                filteredPayload.append(payload.mid(i, 3));
-            }
+            // if (value != 0) {
+            //     filteredPayload.append(payload.mid(i, 3));
+            // }
+            filteredPayload.append(payload.mid(i, 3));
         }
 
         payload = filteredPayload;
@@ -105,9 +106,10 @@ void PlotWorker::processCurve24(const QByteArray &data24,
                             | (static_cast<quint8>(payload[i + 1]) << 8)
                             | static_cast<quint8>(payload[i + 2]);
 
-            if (value != 0) {
-                filteredPayload.append(payload.mid(i, 3));
-            }
+            // if (value != 0) {
+            //     filteredPayload.append(payload.mid(i, 3));
+            // }
+            filteredPayload.append(payload.mid(i, 3));
         }
 
         payload = filteredPayload;
