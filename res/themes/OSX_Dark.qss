@@ -15,6 +15,12 @@
  * See project README
  *
  */
+
+* {
+  background-color: #1D1D1D;
+  color: #d8d8d8;
+}
+
 ApplicationPalette {
   qproperty-window: #2e2e2e;
   qproperty-windowtext: #eee;
