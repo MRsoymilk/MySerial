@@ -125,7 +125,6 @@ void FormPlotData::clearData()
         m_model->removeRows(0, m_model->rowCount());
     }
 }
-
 void FormPlotData::exportAllToCSV()
 {
     QString path = QFileDialog::getSaveFileName(this,
@@ -157,6 +156,11 @@ void FormPlotData::exportAllToCSV()
 
     int rowCount = listV14[0].size();
 
+    bool exportV14 = ui->cBoxV14->isChecked();
+    bool exportV24 = ui->cBoxV24->isChecked();
+    bool exportRaw14 = ui->cBoxRaw14->isChecked();
+    bool exportRaw24 = ui->cBoxRaw24->isChecked();
+
     QStringList headers;
     headers << m_model->headerData(0, Qt::Horizontal).toString();
     QString nameV14 = m_model->headerData(1, Qt::Horizontal).toString();
@@ -164,10 +168,14 @@ void FormPlotData::exportAllToCSV()
     QString nameRaw14 = m_model->headerData(3, Qt::Horizontal).toString();
     QString nameRaw24 = m_model->headerData(4, Qt::Horizontal).toString();
     for (int i = 0; i < groupCount; ++i) {
-        headers << QString("%1_%2").arg(nameV14).arg(i + 1);
-        headers << QString("%1_%2").arg(nameV24).arg(i + 1);
-        headers << QString("%1_%2").arg(nameRaw14).arg(i + 1);
-        headers << QString("%1_%2").arg(nameRaw24).arg(i + 1);
+        if (exportV14)
+            headers << QString("%1_%2").arg(nameV14).arg(i + 1);
+        if (exportV24)
+            headers << QString("%1_%2").arg(nameV24).arg(i + 1);
+        if (exportRaw14)
+            headers << QString("%1_%2").arg(nameRaw14).arg(i + 1);
+        if (exportRaw24)
+            headers << QString("%1_%2").arg(nameRaw24).arg(i + 1);
     }
     stream << headers.join(",") << "\n";
 
@@ -181,20 +189,31 @@ void FormPlotData::exportAllToCSV()
             const auto &raw24 = listRaw24[g];
 
             if (row < v14.size() && row < v24.size() && row < raw14.size() && row < raw24.size()) {
-                rowData << QString::number(v14[row], 'f', 6);
-                rowData << QString::number(v24[row], 'f', 6);
-                rowData << QString::number(raw14[row]);
-                rowData << QString::number(raw24[row]);
+                if (exportV14)
+                    rowData << QString::number(v14[row], 'f', 6);
+                if (exportV24)
+                    rowData << QString::number(v24[row], 'f', 6);
+                if (exportRaw14)
+                    rowData << QString::number(raw14[row]);
+                if (exportRaw24)
+                    rowData << QString::number(raw24[row]);
             } else {
-                rowData << "" << "" << "" << "";
+                if (exportV14)
+                    rowData << "";
+                if (exportV24)
+                    rowData << "";
+                if (exportRaw14)
+                    rowData << "";
+                if (exportRaw24)
+                    rowData << "";
             }
         }
         stream << rowData.join(",") << "\n";
     }
 
     file.close();
-    QString msg = QString("All group data exported to %1").arg(path);
-    SHOW_AUTO_CLOSE_MSGBOX(this, "Exprot", msg);
+    QString msg = QString("Selected group data exported to %1").arg(path);
+    SHOW_AUTO_CLOSE_MSGBOX(this, "Export", msg);
     LOG_INFO(msg);
 }
 
@@ -220,28 +239,42 @@ void FormPlotData::exportCurrentToCSV()
 
     QTextStream stream(&file);
 
-    int columnCount = m_model->columnCount();
-    int rowCount = m_model->rowCount();
+    QVector<int> selectedCols;
+    selectedCols << 0;
+
+    if (ui->cBoxV14->isChecked())
+        selectedCols << 1;
+    if (ui->cBoxV24->isChecked())
+        selectedCols << 2;
+    if (ui->cBoxRaw14->isChecked())
+        selectedCols << 3;
+    if (ui->cBoxRaw24->isChecked())
+        selectedCols << 4;
+
+    if (selectedCols.size() == 1) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, "Export", "No data columns selected for export.");
+        return;
+    }
 
     QStringList headers;
-    for (int col = 0; col < columnCount; ++col) {
-        QString header = m_model->headerData(col, Qt::Horizontal).toString();
-        headers << header;
+    for (int col : selectedCols) {
+        headers << m_model->headerData(col, Qt::Horizontal).toString();
     }
     stream << headers.join(",") << "\n";
 
-    LOG_INFO("Exporting all data...");
+    int rowCount = m_model->rowCount();
     for (int row = 0; row < rowCount; ++row) {
         QStringList rowData;
-        for (int col = 0; col < columnCount; ++col) {
-            rowData << m_model->item(row, col)->text();
+        for (int col : selectedCols) {
+            QStandardItem *item = m_model->item(row, col);
+            rowData << (item ? item->text() : "");
         }
         stream << rowData.join(",") << "\n";
     }
 
     file.close();
-    QString msg = QString("Data exported to %1").arg(path);
-    SHOW_AUTO_CLOSE_MSGBOX(this, "Exprot", msg);
+    QString msg = QString("Selected data exported to %1").arg(path);
+    SHOW_AUTO_CLOSE_MSGBOX(this, "Export", msg);
     LOG_INFO(msg);
 }
 
