@@ -51,5 +51,21 @@
         <file>res/themes/icons/toolbar_ext.svg</file>
         <file>res/themes/icons/yes.svg</file>
         <file>res/icons/img_save.png</file>
+        <file>res/icons/3d_white.png</file>
+        <file>res/icons/correction_white.png</file>
+        <file>res/icons/data_white.png</file>
+        <file>res/icons/go-next_white.png</file>
+        <file>res/icons/go-prev_white.png</file>
+        <file>res/icons/history_white.png</file>
+        <file>res/icons/img_save_white.png</file>
+        <file>res/icons/log-off_white.png</file>
+        <file>res/icons/plot-off_white.png</file>
+        <file>res/icons/send-off_white.png</file>
+        <file>res/icons/setting-off_white.png</file>
+        <file>res/icons/simulate_white.png</file>
+        <file>res/icons/usb-off_white.png</file>
+        <file>res/icons/yes_white.png</file>
+        <file>res/icons/zoom_white.png</file>
+        <file>res/icons/data-off_white.png</file>
     </qresource>
 </RCC>

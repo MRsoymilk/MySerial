@@ -1104,4 +1104,80 @@ QToolButton:on:pressed {
   background-color: transparent;
 }
 
+QToolButton#zoom {
+  qproperty-icon: url(:/res/icons/zoom_white.png);
+}
+
+QToolButton#data {
+  qproperty-icon: url(:/res/icons/data_white.png);
+}
+
+QToolButton#3d {
+  qproperty-icon: url(:/res/icons/3d_white.png);
+}
+
+QToolButton#history {
+  qproperty-icon: url(:/res/icons/history_white.png);
+}
+
+QToolButton#simulate {
+  qproperty-icon: url(:/res/icons/simulate_white.png);
+}
+
+QToolButton#correction {
+  qproperty-icon: url(:/res/icons/correction_white.png);
+}
+
+QToolButton#img_save {
+  qproperty-icon: url(:/res/icons/img_save_white.png);
+}
+
+QToolButton#go-prev {
+  qproperty-icon: url(:/res/icons/go-prev_white.png);
+}
+
+QToolButton#go-next {
+  qproperty-icon: url(:/res/icons/go-next_white.png);
+}
+
+QToolButton#usb-off {
+  qproperty-icon: url(:/res/icons/usb-off_white.png);
+}
+
+QToolButton#data-off {
+  qproperty-icon: url(:/res/icons/data-off_white.png);
+}
+
+QToolButton#log-off {
+  qproperty-icon: url(:/res/icons/log-off_white.png);
+}
+
+QToolButton#plot-off {
+  qproperty-icon: url(:/res/icons/plot-off_white.png);
+}
+
+QToolButton#setting-off {
+  qproperty-icon: url(:/res/icons/setting-off_white.png);
+}
+
+QToolButton#usb-on {
+  qproperty-icon: url(:/res/icons/usb-on.png);
+}
+
+QToolButton#data-on {
+  qproperty-icon: url(:/res/icons/data-on.png);
+}
+
+QToolButton#log-on {
+  qproperty-icon: url(:/res/icons/log-on.png);
+}
+
+QToolButton#plot-on {
+  qproperty-icon: url(:/res/icons/plot-on.png);
+}
+
+QToolButton#setting-on {
+  qproperty-icon: url(:/res/icons/setting-on.png);
+}
+
 /*# sourceMappingURL=OSX%20Dark.qss.map */

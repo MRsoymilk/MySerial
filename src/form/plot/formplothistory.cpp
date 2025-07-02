@@ -64,13 +64,17 @@ void FormPlotHistory::init()
 
     ui->radioButtonMix->setChecked(true);
 
-    ui->tBtnPrev14->setIcon(QIcon(":/res/icons/go-prev.png"));
+    // ui->tBtnPrev14->setIcon(QIcon(":/res/icons/go-prev.png"));
+    ui->tBtnPrev14->setObjectName("go-prev");
     ui->tBtnPrev14->setToolTip("prev");
-    ui->tBtnNext14->setIcon(QIcon(":/res/icons/go-next.png"));
+    // ui->tBtnNext14->setIcon(QIcon(":/res/icons/go-next.png"));
+    ui->tBtnNext14->setObjectName("go-next");
     ui->tBtnNext14->setToolTip("next");
-    ui->tBtnPrev24->setIcon(QIcon(":/res/icons/go-prev.png"));
+    // ui->tBtnPrev24->setIcon(QIcon(":/res/icons/go-prev.png"));
+    ui->tBtnPrev24->setObjectName("go-prev");
     ui->tBtnPrev24->setToolTip("prev");
-    ui->tBtnNext24->setIcon(QIcon(":/res/icons/go-next.png"));
+    // ui->tBtnNext24->setIcon(QIcon(":/res/icons/go-next.png"));
+    ui->tBtnNext24->setObjectName("go-next");
     ui->tBtnNext24->setToolTip("next");
 
     QString fitting_k = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_K, "0.0");

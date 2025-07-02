@@ -100,19 +100,19 @@ void MainWindow::initToolbar()
     };
 
     QMap<QToolButton *, QString> onIcons = {
-        {ui->btnSerial, ":/res/icons/usb-on.png"},
-        {ui->btnData, ":/res/icons/data-on.png"},
-        {ui->btnLog, ":/res/icons/log-on.png"},
-        {ui->btnPlot, ":/res/icons/plot-on.png"},
-        {ui->btnSetting, ":/res/icons/setting-on.png"},
+        {ui->btnSerial, "usb-on"},
+        {ui->btnData, "data-on"},
+        {ui->btnLog, "log-on"},
+        {ui->btnPlot, "plot-on"},
+        {ui->btnSetting, "setting-on"},
     };
 
     QMap<QToolButton *, QString> offIcons = {
-        {ui->btnSerial, ":/res/icons/usb-off.png"},
-        {ui->btnData, ":/res/icons/data-off.png"},
-        {ui->btnLog, ":/res/icons/log-off.png"},
-        {ui->btnPlot, ":/res/icons/plot-off.png"},
-        {ui->btnSetting, ":/res/icons/setting-off.png"},
+        {ui->btnSerial, "usb-off"},
+        {ui->btnData, "data-off"},
+        {ui->btnLog, "log-off"},
+        {ui->btnPlot, "plot-off"},
+        {ui->btnSetting, "setting-off"},
     };
 
     for (QToolButton *btn : buttonList) {
@@ -121,10 +121,16 @@ void MainWindow::initToolbar()
         btn->setStyleSheet("QToolButton { border: none; background: transparent; }");
 
         connect(btn, &QToolButton::clicked, this, [=]() {
-            for (QToolButton *b : buttonList) {
-                b->setIcon(QIcon(offIcons[b]));
+            for (QToolButton *b_off : buttonList) {
+                b_off->setObjectName(offIcons[b_off]);
+                b_off->style()->unpolish(b_off);
+                b_off->style()->polish(b_off);
+                b_off->update();
             }
-            btn->setIcon(QIcon(onIcons[btn]));
+            btn->setObjectName(onIcons[btn]);
+            btn->style()->unpolish(btn);
+            btn->style()->polish(btn);
+            btn->update();
         });
     }
 
@@ -224,7 +230,12 @@ void MainWindow::menuLanguageSelect(QAction *selectedAction)
     for (QAction *act : actions) {
         if (act == selectedAction) {
             act->setChecked(true);
-            act->setIcon(QIcon(":res/icons/yes.png"));
+            if (m_theme.endsWith("Lite")) {
+                act->setIcon(QIcon(":res/icons/yes.png"));
+            } else {
+                act->setIcon(QIcon(":res/icons/yes_white.png"));
+            }
+
         } else {
             act->setChecked(false);
             act->setIcon(QIcon());
@@ -236,11 +247,17 @@ void MainWindow::menuThemeSelect(QAction *selectedTheme)
 {
     QString theme = selectedTheme->text();
     setTheme(theme);
+    m_theme = theme;
     const QList<QAction *> actions = ui->menuTheme->actions();
     for (QAction *act : actions) {
         if (act == selectedTheme) {
             act->setChecked(true);
-            act->setIcon(QIcon(":res/icons/yes.png"));
+            if (theme.endsWith("Lite")) {
+                act->setIcon(QIcon(":res/icons/yes.png"));
+            } else {
+                act->setIcon(QIcon(":res/icons/yes_white.png"));
+            }
+
         } else {
             act->setChecked(false);
             act->setIcon(QIcon());

@@ -1091,4 +1091,80 @@ TalkingUI > QFrame {
   border-radius: 2px;
 }
 
+QToolButton#zoom {
+    qproperty-icon: url(:/res/icons/zoom.png);
+}
+
+QToolButton#data {
+    qproperty-icon: url(:/res/icons/data.png);
+}
+
+QToolButton#3d {
+    qproperty-icon: url(:/res/icons/3d.png);
+}
+
+QToolButton#history {
+    qproperty-icon: url(:/res/icons/history.png);
+}
+
+QToolButton#simulate {
+    qproperty-icon: url(:/res/icons/simulate.png);
+}
+
+QToolButton#correction {
+    qproperty-icon: url(:/res/icons/correction.png);
+}
+
+QToolButton#img_save {
+    qproperty-icon: url(:/res/icons/img_save.png);
+}
+
+QToolButton#go-prev {
+  qproperty-icon: url(:/res/icons/go-prev.png);
+}
+
+QToolButton#go-next {
+  qproperty-icon: url(:/res/icons/go-next.png);
+}
+
+QToolButton#usb-off {
+  qproperty-icon: url(:/res/icons/usb-off.png);
+}
+
+QToolButton#data-off {
+  qproperty-icon: url(:/res/icons/data-off.png);
+}
+
+QToolButton#log-off {
+  qproperty-icon: url(:/res/icons/log-off.png);
+}
+
+QToolButton#plot-off {
+  qproperty-icon: url(:/res/icons/plot-off.png);
+}
+
+QToolButton#setting-off {
+  qproperty-icon: url(:/res/icons/setting-off.png);
+}
+
+QToolButton#usb-on {
+  qproperty-icon: url(:/res/icons/usb-on.png);
+}
+
+QToolButton#data-on {
+  qproperty-icon: url(:/res/icons/data-on.png);
+}
+
+QToolButton#log-on {
+  qproperty-icon: url(:/res/icons/log-on.png);
+}
+
+QToolButton#plot-on {
+  qproperty-icon: url(:/res/icons/plot-on.png);
+}
+
+QToolButton#setting-on {
+  qproperty-icon: url(:/res/icons/setting-on.png);
+}
+
 /*# sourceMappingURL=Lite.qss.map */

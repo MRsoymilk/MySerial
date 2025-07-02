@@ -55,5 +55,6 @@ private:
     FormSetting *formSetting;
 
     int m_currentPageIndex = 0;
+    QString m_theme;
 };
 #endif // MAINWINDOW_H
