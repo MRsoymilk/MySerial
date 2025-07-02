@@ -148,45 +148,59 @@ void FormPlot::init3d()
 
 void FormPlot::initToolButtons()
 {
-    ui->tBtnZoom->setIcon(QIcon(":/res/icons/zoom.png"));
+    // ui->tBtnZoom->setIcon(QIcon(":/res/icons/zoom.png"));
+    ui->tBtnZoom->setObjectName("zoom");
     ui->tBtnZoom->setIconSize(QSize(24, 24));
     ui->tBtnZoom->setCheckable(true);
     ui->tBtnZoom->setChecked(m_autoZoom);
     ui->tBtnZoom->setToolTip("Auto Zoom");
+    ui->tBtnZoom->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    ui->tBtnData->setIcon(QIcon(":/res/icons/data.png"));
+    // ui->tBtnData->setIcon(QIcon(":/res/icons/data.png"));
+    ui->tBtnData->setObjectName("data");
     ui->tBtnData->setIconSize(QSize(24, 24));
     ui->tBtnData->setCheckable(true);
     ui->tBtnData->setChecked(m_showData);
     ui->tBtnData->setToolTip("Data");
+    ui->tBtnData->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    ui->tBtn3D->setIcon(QIcon(":/res/icons/3d.png"));
+    // ui->tBtn3D->setIcon(QIcon(":/res/icons/3d.png"));
+    ui->tBtn3D->setObjectName("3d");
     ui->tBtn3D->setIconSize(QSize(24, 24));
     ui->tBtn3D->setCheckable(true);
     ui->tBtn3D->setChecked(m_show3D);
     ui->tBtn3D->setToolTip("3D");
+    ui->tBtn3D->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    ui->tBtnHistory->setIcon(QIcon(":/res/icons/history.png"));
+    // ui->tBtnHistory->setIcon(QIcon(":/res/icons/history.png"));
+    ui->tBtnHistory->setObjectName("history");
     ui->tBtnHistory->setIconSize(QSize(24, 24));
     ui->tBtnHistory->setCheckable(true);
     ui->tBtnHistory->setChecked(m_showHistory);
     ui->tBtnHistory->setToolTip("History (ctrl+h)");
+    ui->tBtnHistory->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    ui->tBtnSimulate->setIcon(QIcon(":/res/icons/simulate.png"));
+    // ui->tBtnSimulate->setIcon(QIcon(":/res/icons/simulate.png"));
+    ui->tBtnSimulate->setObjectName("simulate");
     ui->tBtnSimulate->setIconSize(QSize(24, 24));
     ui->tBtnSimulate->setCheckable(true);
     ui->tBtnSimulate->setChecked(m_showSimulate);
     ui->tBtnSimulate->setToolTip("Simulate");
+    ui->tBtnSimulate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    ui->tBtnCorrection->setIcon(QIcon(":/res/icons/correction.png"));
+    // ui->tBtnCorrection->setIcon(QIcon(":/res/icons/correction.png"));
+    ui->tBtnCorrection->setObjectName("correction");
     ui->tBtnCorrection->setIconSize(QSize(24, 24));
     ui->tBtnCorrection->setCheckable(true);
     ui->tBtnCorrection->setChecked(m_showCorrection);
     ui->tBtnCorrection->setToolTip("Correction");
+    ui->tBtnCorrection->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    ui->tBtnImgSave->setIcon(QIcon(":/res/icons/img_save.png"));
+    // ui->tBtnImgSave->setIcon(QIcon(":/res/icons/img_save.png"));
+    ui->tBtnImgSave->setObjectName("img_save");
     ui->tBtnImgSave->setIconSize(QSize(24, 24));
     ui->tBtnImgSave->setToolTip("image save (ctrl+s)");
+    ui->tBtnImgSave->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 
 void FormPlot::init()
