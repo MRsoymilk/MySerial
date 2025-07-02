@@ -26,11 +26,8 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QTableView" name="table"/>
-   </item>
    <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="hLaySetting">
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -55,6 +52,9 @@
       <widget class="QLineEdit" name="lineEditDataLimit"/>
      </item>
     </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTableView" name="table"/>
    </item>
   </layout>
  </widget>

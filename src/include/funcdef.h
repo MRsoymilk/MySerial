@@ -51,7 +51,7 @@
         QMessageBox *msgBox = new QMessageBox(PARENT); \
         msgBox->setWindowTitle(TITLE); \
         msgBox->setText(TEXT); \
-        msgBox->setAttribute(Qt::WA_DeleteOnClose); \
+        msgBox->setAttribute(Qt::WA_DeleteOnClose, false); \
         msgBox->show(); \
 \
         QPropertyAnimation *fadeAnim = new QPropertyAnimation(msgBox, "windowOpacity", msgBox); \
@@ -64,6 +64,7 @@
             fadeAnim->start(); \
             QObject::connect(fadeAnim, &QPropertyAnimation::finished, msgBox, [msgBox]() { \
                 msgBox->close(); \
+                msgBox->deleteLater(); \
             }); \
         }); \
     } while (0)
