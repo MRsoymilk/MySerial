@@ -214,6 +214,7 @@ void FormPlot::init()
 
     connect(m_plotData, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
     connect(m_plotHistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
+    connect(this, &FormPlot::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv);
     connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormPlot::plotSimulateClose);
     connect(m_plotCorrection,
             &FormPlotCorrection::windowClose,
@@ -261,10 +262,8 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data14,
 {
     m_series14->replace(data14);
     m_series14->setName("curve14_bit");
-    m_points14.push_back(data14);
     m_series24->replace(data24);
     m_series24->setName("curve24_bit");
-    m_points24.push_back(data24);
 
     m_axisX->setRange(xMin, xMax);
     if (m_autoZoom) {
@@ -309,6 +308,7 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                             const double &yMin,
                             const double &yMax)
 {
+    emit toHistory(data14, data24);
     updatePlot2d(data14, data24, xMin, xMax, yMin, yMax);
     updatePlot3d(data14, data24, xMin, xMax, yMin, yMax);
 }
@@ -387,11 +387,6 @@ void FormPlot::on_tBtn3D_clicked()
 void FormPlot::on_tBtnHistory_clicked()
 {
     m_showHistory = !m_showHistory;
-    if (m_showHistory) {
-        m_plotHistory->updateData(m_points14, m_points24);
-        m_points14.clear();
-        m_points24.clear();
-    }
     m_plotHistory->setVisible(m_showHistory);
 }
 

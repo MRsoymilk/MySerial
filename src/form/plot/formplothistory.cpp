@@ -87,17 +87,6 @@ void FormPlotHistory::init()
     m_fitting = false;
 }
 
-void FormPlotHistory::updateData(const QList<QList<QPointF> > &p14,
-                                 const QList<QList<QPointF> > &p24)
-{
-    m_p14 = p14;
-    m_p24 = p24;
-    m_index_14 = 0;
-    m_index_24 = 0;
-    updatePlot14();
-    updatePlot24();
-}
-
 void FormPlotHistory::on_tBtnNext14_clicked()
 {
     if (m_index_14 + 1 < m_p14.size()) {
@@ -201,10 +190,12 @@ void FormPlotHistory::updatePlot(int index)
         QLineSeries *series24 = new QLineSeries();
         series24->append(m_p24[m_index_24]);
         series24->setColor(Qt::blue);
+        series24->setName("curve24");
 
         QLineSeries *series14 = new QLineSeries();
         series14->append(m_p14[m_index_14]);
         series14->setColor(Qt::magenta);
+        series14->setName("curve14");
 
         chart->addSeries(series24);
         chart->addSeries(series14);
@@ -222,8 +213,8 @@ void FormPlotHistory::updatePlot(int index)
             QChart *chart = new QChart();
             QLineSeries *series = new QLineSeries();
             series->setColor(Qt::magenta);
-
             series->append(m_p14[m_index_14]);
+            series->setName("curve14");
 
             chart->addSeries(series);
             chart->createDefaultAxes();
@@ -241,6 +232,7 @@ void FormPlotHistory::updatePlot(int index)
 
             series->append(m_p24[m_index_24]);
             series->setColor(Qt::blue);
+            series->setName("curve24");
 
             chart->addSeries(series);
             chart->createDefaultAxes();
@@ -259,11 +251,13 @@ void FormPlotHistory::updatePlot(int index)
             if (index == INDEX_14) {
                 series->append(m_p14[m_index_14]);
                 series->setColor(Qt::magenta);
+                series->setName("curve14");
                 chart->setTitle(tr("curve_14bit"));
                 m_chartView14Split->setChart(chart);
             } else {
                 series->append(m_p24[m_index_24]);
                 series->setColor(Qt::blue);
+                series->setName("curve24");
                 chart->setTitle(tr("curve_24bit"));
                 m_chartView24Split->setChart(chart);
             }
@@ -284,8 +278,25 @@ void FormPlotHistory::closeEvent(QCloseEvent *event)
 {
     m_p14.clear();
     m_p24.clear();
+    updatePlot14();
+    updatePlot24();
+
     emit windowClose();
     QWidget::closeEvent(event);
+}
+
+void FormPlotHistory::onHistoryRecv(const QList<QPointF> &data14, const QList<QPointF> &data24)
+{
+    if (this->isVisible()) {
+        m_p14.append(data14);
+        m_p24.append(data24);
+        m_index_14 = m_p14.size() - 1;
+        m_index_24 = m_p24.size() - 1;
+        ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
+        ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
+        updatePlot14();
+        updatePlot24();
+    }
 }
 
 void FormPlotHistory::on_lineEdit14Go_editingFinished()

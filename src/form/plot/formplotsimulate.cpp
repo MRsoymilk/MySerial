@@ -99,6 +99,7 @@ void FormPlotSimulate::simulate4k()
         int dataIndex = headers.indexOf("data");
         if (dataIndex == -1) {
             file.close();
+            SHOW_AUTO_CLOSE_MSGBOX(this, "Error Read CSV", "no data column found!");
             return;
         }
 

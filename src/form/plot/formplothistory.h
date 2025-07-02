@@ -19,13 +19,15 @@ public:
     explicit FormPlotHistory(QWidget *parent = nullptr);
     ~FormPlotHistory();
     void retranslateUI();
-    void updateData(const QList<QList<QPointF>> &p14, const QList<QList<QPointF>> &p24);
 
 signals:
     void windowClose();
 
 protected:
     void closeEvent(QCloseEvent *event);
+
+public slots:
+    void onHistoryRecv(const QList<QPointF> &data14, const QList<QPointF> &data24);
 
 private slots:
     void on_tBtnNext14_clicked();
@@ -37,9 +39,7 @@ private slots:
     void on_radioButtonMix_clicked();
     void on_radioButtonSplit_clicked();
     void on_toolButtonFitting_clicked();
-
     void on_toolButtonDumpPlot_clicked();
-
     void on_toolButtonDumpData_clicked();
 
 private:

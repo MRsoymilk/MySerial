@@ -31,6 +31,7 @@ signals:
     void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);
     void sendKB(const QByteArray &bytes);
     void changeFrameType(int index);
+    void toHistory(const QList<QPointF> &data14, const QList<QPointF> &data24);
 
 public slots:
     void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
@@ -105,9 +106,6 @@ private:
 
     MyChartView *m_chartView = nullptr;
     MyGLCurveWidget *m_glWidget = nullptr;
-
-    QList<QList<QPointF>> m_points24;
-    QList<QList<QPointF>> m_points14;
 };
 
 #endif // FORMPLOT_H
