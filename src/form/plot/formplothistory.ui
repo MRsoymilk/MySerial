@@ -178,40 +178,95 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="hLayFitting">
+      <layout class="QVBoxLayout" name="vLayFitting">
        <item>
-        <widget class="QToolButton" name="toolButtonFitting">
-         <property name="text">
-          <string>Fitting</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="hLayFittingSin">
+         <item>
+          <widget class="QToolButton" name="tBtnFittingSin">
+           <property name="text">
+            <string>FittingSin</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_y0">
+           <property name="text">
+            <string>y0</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_y0"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_xc">
+           <property name="text">
+            <string>xc</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_xc"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_w">
+           <property name="text">
+            <string>w</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_w"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_A">
+           <property name="text">
+            <string>A</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit_A"/>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QLabel" name="labelK">
-         <property name="text">
-          <string>k</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEditK"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelB">
-         <property name="text">
-          <string>b</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEditB"/>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBoxConversion">
-         <property name="text">
-          <string>conversion</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="hLayFittingKB">
+         <item>
+          <widget class="QToolButton" name="tBtnFittingKB">
+           <property name="text">
+            <string>FittingKB</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelK">
+           <property name="text">
+            <string>k</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditK"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelB">
+           <property name="text">
+            <string>b</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditB"/>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxConversion">
+           <property name="text">
+            <string>conversion</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>

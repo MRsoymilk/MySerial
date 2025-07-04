@@ -38,9 +38,10 @@ private slots:
     void on_lineEdit24Go_editingFinished();
     void on_radioButtonMix_clicked();
     void on_radioButtonSplit_clicked();
-    void on_toolButtonFitting_clicked();
     void on_toolButtonDumpPlot_clicked();
     void on_toolButtonDumpData_clicked();
+    void on_tBtnFittingSin_clicked();
+    void on_tBtnFittingKB_clicked();
 
 private:
     void updatePlot14();
@@ -63,6 +64,8 @@ private:
     QChart *m_chart = nullptr;
     QWidget *m_charSplit = nullptr;
     bool m_fitting;
+    void drawFittingKB();
+    void drawFittingSin();
 };
 
 #endif // FORMPLOTHISTORY_H

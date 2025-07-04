@@ -87,7 +87,16 @@ void FormPlotHistory::init()
     } else {
         ui->checkBoxConversion->setChecked(false);
     }
-    ui->toolButtonFitting->setCheckable(true);
+    ui->tBtnFittingKB->setCheckable(true);
+    QString fitting_A = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_A, "0.0");
+    QString fitting_y0 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_y0, "0.0");
+    QString fitting_w = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_w, "1.0");
+    QString fitting_xc = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_xc, "0.0");
+    ui->lineEdit_A->setText(fitting_A);
+    ui->lineEdit_y0->setText(fitting_y0);
+    ui->lineEdit_w->setText(fitting_w);
+    ui->lineEdit_xc->setText(fitting_xc);
+    ui->tBtnFittingSin->setCheckable(true);
     m_fitting = false;
 }
 
@@ -354,12 +363,83 @@ void FormPlotHistory::clearFitting()
     }
 }
 
-void FormPlotHistory::drawFitting()
+void FormPlotHistory::drawFittingSin()
 {
-    if (m_index_14 >= m_p14.size() || m_p14[m_index_14].isEmpty()) {
-        LOG_WARN("curve 14 is empty!");
+    QString txt_A = ui->lineEdit_A->text();
+    QString txt_y0 = ui->lineEdit_y0->text();
+    QString txt_w = ui->lineEdit_w->text();
+    QString txt_xc = ui->lineEdit_xc->text();
+
+    if (txt_A.isEmpty() || txt_y0.isEmpty() || txt_w.isEmpty() || txt_xc.isEmpty()) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Empty Params"), tr("A, y0, w, and xc can not be empty!"));
         return;
     }
+
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_A, txt_A);
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_y0, txt_y0);
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_w, txt_w);
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_xc, txt_xc);
+
+    bool okA, okY0, okW, okXc;
+    float A = txt_A.toFloat(&okA);
+    float y0 = txt_y0.toFloat(&okY0);
+    float w = txt_w.toFloat(&okW);
+    float xc = txt_xc.toFloat(&okXc);
+
+    if (!(okA && okY0 && okW && okXc)) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Wrong Params"), tr("Invalid number format."));
+        return;
+    }
+
+    if (w == 0.0f) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Wrong Params"), tr("w can not be 0!"));
+        return;
+    }
+
+    const QList<QPointF> &points = m_p14[m_index_14];
+    if (points.isEmpty())
+        return;
+
+    double minAbsY = std::numeric_limits<double>::max();
+    double x0 = 0;
+    for (const QPointF &pt : points) {
+        if (std::abs(pt.y()) < minAbsY) {
+            minAbsY = std::abs(pt.y());
+            x0 = pt.x();
+        }
+    }
+
+    double offset = 1310.0 - x0;
+
+    QLineSeries *line = new QLineSeries();
+    line->setColor(Qt::red);
+    line->setName("Fitting Line");
+    QPen pen(Qt::red);
+    pen.setStyle(Qt::DashLine);
+    line->setPen(pen);
+
+    for (const QPointF &pt : points) {
+        double x = pt.x();
+        double shiftedX = x + offset;
+        double y = y0 + A * qSin(M_PI * (shiftedX - xc) / w);
+        line->append(x, y);
+    }
+
+    if (!m_chart)
+        return;
+
+    m_chart->addSeries(line);
+    QList<QAbstractAxis *> axes = m_chart->axes(Qt::Horizontal);
+    if (!axes.isEmpty())
+        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
+
+    axes = m_chart->axes(Qt::Vertical);
+    if (!axes.isEmpty())
+        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
+}
+
+void FormPlotHistory::drawFittingKB()
+{
     QString txt_k = ui->lineEditK->text();
     QString txt_b = ui->lineEditB->text();
     if (txt_k.isEmpty() || txt_b.isEmpty()) {
@@ -380,14 +460,14 @@ void FormPlotHistory::drawFitting()
         b = b / 0x1FFF * 3.3;
     }
     const QList<QPointF> &points = m_p14[m_index_14];
-    double xMin = points.first().x();
-    double xMax = points.last().x();
-    if (xMin > xMax)
-        std::swap(xMin, xMax);
 
     QLineSeries *line = new QLineSeries();
     line->setColor(Qt::red);
     line->setName("Fitting Line");
+    QPen pen(Qt::red);
+    pen.setStyle(Qt::DashLine);
+    line->setPen(pen);
+
     for (const QPointF &pt : points) {
         double x = pt.x();
         double y = k * x + b;
@@ -407,17 +487,16 @@ void FormPlotHistory::drawFitting()
         line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
 }
 
-void FormPlotHistory::on_toolButtonFitting_clicked()
+void FormPlotHistory::drawFitting()
 {
-    // 14bit
-    m_fitting = !m_fitting;
-    ui->toolButtonFitting->setChecked(m_fitting);
-    getFittingChart();
-    if (m_fitting) {
-        clearFitting();
-        drawFitting();
-    } else {
-        clearFitting();
+    if (m_index_14 >= m_p14.size() || m_p14[m_index_14].isEmpty()) {
+        LOG_WARN("curve 14 is empty!");
+        return;
+    }
+    if (ui->tBtnFittingKB->isChecked()) {
+        drawFittingKB();
+    } else if (ui->tBtnFittingSin->isChecked()) {
+        drawFittingSin();
     }
 }
 
@@ -540,5 +619,32 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
         SHOW_AUTO_CLOSE_MSGBOX(this,
                                tr("Export Successful"),
                                tr("Data exported to:\n%1").arg(filePath));
+    }
+}
+
+void FormPlotHistory::on_tBtnFittingSin_clicked()
+{
+    m_fitting = !m_fitting;
+    ui->tBtnFittingSin->setChecked(m_fitting);
+    getFittingChart();
+    if (m_fitting) {
+        clearFitting();
+        drawFitting();
+    } else {
+        clearFitting();
+    }
+}
+
+void FormPlotHistory::on_tBtnFittingKB_clicked()
+{
+    // 14bit
+    m_fitting = !m_fitting;
+    ui->tBtnFittingKB->setChecked(m_fitting);
+    getFittingChart();
+    if (m_fitting) {
+        clearFitting();
+        drawFitting();
+    } else {
+        clearFitting();
     }
 }
