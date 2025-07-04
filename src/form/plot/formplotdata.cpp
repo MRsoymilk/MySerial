@@ -125,6 +125,7 @@ void FormPlotData::clearData()
         m_model->removeRows(0, m_model->rowCount());
     }
 }
+
 void FormPlotData::exportAllToCSV()
 {
     QString path = QFileDialog::getSaveFileName(this,
@@ -154,7 +155,7 @@ void FormPlotData::exportAllToCSV()
         return;
     }
 
-    int rowCount = listV14[0].size();
+    int rowCount = m_model->rowCount();
 
     bool exportV14 = ui->cBoxV14->isChecked();
     bool exportV24 = ui->cBoxV24->isChecked();
@@ -188,23 +189,31 @@ void FormPlotData::exportAllToCSV()
             const auto &raw14 = listRaw14[g];
             const auto &raw24 = listRaw24[g];
 
-            if (row < v14.size() && row < v24.size() && row < raw14.size() && row < raw24.size()) {
-                if (exportV14)
+            if (exportV14) {
+                if (row < v14.size())
                     rowData << QString::number(v14[row], 'f', 6);
-                if (exportV24)
+                else
+                    rowData << "";
+            }
+
+            if (exportV24) {
+                if (row < v24.size())
                     rowData << QString::number(v24[row], 'f', 6);
-                if (exportRaw14)
+                else
+                    rowData << "";
+            }
+
+            if (exportRaw14) {
+                if (row < raw14.size())
                     rowData << QString::number(raw14[row]);
-                if (exportRaw24)
+                else
+                    rowData << "";
+            }
+
+            if (exportRaw24) {
+                if (row < raw24.size())
                     rowData << QString::number(raw24[row]);
-            } else {
-                if (exportV14)
-                    rowData << "";
-                if (exportV24)
-                    rowData << "";
-                if (exportRaw14)
-                    rowData << "";
-                if (exportRaw24)
+                else
                     rowData << "";
             }
         }
