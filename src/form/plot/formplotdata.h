@@ -38,6 +38,7 @@ private slots:
     void on_tBtnPrev_clicked();
     void on_tBtnNext_clicked();
     void on_lineEditGo_editingFinished();
+    void on_checkBoxChooseGroup_checkStateChanged(const Qt::CheckState &state);
 
 private:
     void init();

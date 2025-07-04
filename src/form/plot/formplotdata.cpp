@@ -89,6 +89,9 @@ void FormPlotData::init()
 
     m_count = 0;
     ui->lineEditGo->setText("1");
+
+    ui->checkBoxChooseGroup->setCheckState(Qt::CheckState::Unchecked);
+    ui->lineEditTarget->setEnabled(false);
 }
 
 void FormPlotData::closeEvent(QCloseEvent *event)
@@ -126,6 +129,38 @@ void FormPlotData::clearData()
     }
 }
 
+auto parseGroupRange = [](const QString &text, int maxGroup) -> QList<int> {
+    QSet<int> tempSet;
+    const QStringList parts = text.split(",", Qt::SkipEmptyParts);
+    for (const QString &part : parts) {
+        QString trimmed = part.trimmed();
+        if (trimmed.contains("-")) {
+            const QStringList range = trimmed.split("-");
+            if (range.size() == 2) {
+                bool ok1 = false, ok2 = false;
+                int start = range[0].toInt(&ok1);
+                int end = range[1].toInt(&ok2);
+                if (ok1 && ok2 && start <= end) {
+                    for (int i = start; i <= end; ++i) {
+                        if (i > 0 && i <= maxGroup)
+                            tempSet.insert(i - 1); // 1-based to 0-based
+                    }
+                }
+            }
+        } else {
+            bool ok = false;
+            int val = trimmed.toInt(&ok);
+            if (ok && val > 0 && val <= maxGroup) {
+                tempSet.insert(val - 1); // 1-based to 0-based
+            }
+        }
+    }
+
+    QList<int> result = tempSet.values();
+    std::sort(result.begin(), result.end());
+    return result;
+};
+
 void FormPlotData::exportAllToCSV()
 {
     QString path = QFileDialog::getSaveFileName(this,
@@ -155,6 +190,18 @@ void FormPlotData::exportAllToCSV()
         return;
     }
 
+    QString targetStr = ui->lineEditTarget->text().trimmed();
+    if (targetStr.isEmpty()) {
+        LOG_WARN("No group specified in target input!");
+        return;
+    }
+
+    QList<int> selectedGroups = parseGroupRange(targetStr, groupCount);
+    if (selectedGroups.isEmpty()) {
+        LOG_WARN("No valid groups parsed from target input!");
+        return;
+    }
+
     int rowCount = m_model->rowCount();
 
     bool exportV14 = ui->cBoxV14->isChecked();
@@ -162,61 +209,53 @@ void FormPlotData::exportAllToCSV()
     bool exportRaw14 = ui->cBoxRaw14->isChecked();
     bool exportRaw24 = ui->cBoxRaw24->isChecked();
 
-    QStringList headers;
-    headers << m_model->headerData(0, Qt::Horizontal).toString();
     QString nameV14 = m_model->headerData(1, Qt::Horizontal).toString();
     QString nameV24 = m_model->headerData(2, Qt::Horizontal).toString();
     QString nameRaw14 = m_model->headerData(3, Qt::Horizontal).toString();
     QString nameRaw24 = m_model->headerData(4, Qt::Horizontal).toString();
-    for (int i = 0; i < groupCount; ++i) {
+
+    QStringList headers;
+    headers << m_model->headerData(0, Qt::Horizontal).toString();
+    for (int groupIndex : selectedGroups) {
         if (exportV14)
-            headers << QString("%1_%2").arg(nameV14).arg(i + 1);
+            headers << QString("%1_%2").arg(nameV14).arg(groupIndex + 1);
         if (exportV24)
-            headers << QString("%1_%2").arg(nameV24).arg(i + 1);
+            headers << QString("%1_%2").arg(nameV24).arg(groupIndex + 1);
         if (exportRaw14)
-            headers << QString("%1_%2").arg(nameRaw14).arg(i + 1);
+            headers << QString("%1_%2").arg(nameRaw14).arg(groupIndex + 1);
         if (exportRaw24)
-            headers << QString("%1_%2").arg(nameRaw24).arg(i + 1);
+            headers << QString("%1_%2").arg(nameRaw24).arg(groupIndex + 1);
     }
     stream << headers.join(",") << "\n";
 
     for (int row = 0; row < rowCount; ++row) {
         QStringList rowData;
         rowData << QString::number(row);
-        for (int g = 0; g < groupCount; ++g) {
-            const auto &v14 = listV14[g];
-            const auto &v24 = listV24[g];
-            const auto &raw14 = listRaw14[g];
-            const auto &raw24 = listRaw24[g];
 
-            if (exportV14) {
-                if (row < v14.size())
-                    rowData << QString::number(v14[row], 'f', 6);
-                else
-                    rowData << "";
-            }
+        for (int groupIndex : selectedGroups) {
+            bool hasV14 = (groupIndex < listV14.size());
+            bool hasV24 = (groupIndex < listV24.size());
+            bool hasRaw14 = (groupIndex < listRaw14.size());
+            bool hasRaw24 = (groupIndex < listRaw24.size());
 
-            if (exportV24) {
-                if (row < v24.size())
-                    rowData << QString::number(v24[row], 'f', 6);
-                else
-                    rowData << "";
-            }
-
-            if (exportRaw14) {
-                if (row < raw14.size())
-                    rowData << QString::number(raw14[row]);
-                else
-                    rowData << "";
-            }
-
-            if (exportRaw24) {
-                if (row < raw24.size())
-                    rowData << QString::number(raw24[row]);
-                else
-                    rowData << "";
-            }
+            if (exportV14)
+                rowData << (hasV14 && row < listV14[groupIndex].size()
+                                ? QString::number(listV14[groupIndex][row], 'f', 6)
+                                : "");
+            if (exportV24)
+                rowData << (hasV24 && row < listV24[groupIndex].size()
+                                ? QString::number(listV24[groupIndex][row], 'f', 6)
+                                : "");
+            if (exportRaw14)
+                rowData << (hasRaw14 && row < listRaw14[groupIndex].size()
+                                ? QString::number(listRaw14[groupIndex][row])
+                                : "");
+            if (exportRaw24)
+                rowData << (hasRaw24 && row < listRaw24[groupIndex].size()
+                                ? QString::number(listRaw24[groupIndex][row])
+                                : "");
         }
+
         stream << rowData.join(",") << "\n";
     }
 
@@ -321,5 +360,14 @@ void FormPlotData::on_lineEditGo_editingFinished()
                     listV24[m_current - 1],
                     listRaw14[m_current - 1],
                     listRaw24[m_current - 1]);
+    }
+}
+
+void FormPlotData::on_checkBoxChooseGroup_checkStateChanged(const Qt::CheckState &state)
+{
+    if (state == Qt::CheckState::Checked) {
+        ui->lineEditTarget->setEnabled(true);
+    } else if (state == Qt::CheckState::Unchecked) {
+        ui->lineEditTarget->setEnabled(false);
     }
 }
