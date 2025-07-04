@@ -8,6 +8,7 @@
 #include <QNetworkRequest>
 #include <QOperatingSystemVersion>
 #include <QProcess>
+#include "datadef.h"
 #include "formtip.h"
 #include "server.h"
 
@@ -230,9 +231,7 @@ bool FormSetting::checkAndDownload(const QString &filename)
 
 void FormSetting::getINI()
 {
-    m_iniUpdate.url = SETTING_CONFIG_GET(CFG_GROUP_SETTING,
-                                  CFG_SETTING_UPDATE_URL,
-                                  "http://192.168.123.14:8000");
+    m_iniUpdate.url = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_URL, SERVER_UPDATE);
     m_iniUpdate.check = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, VAL_DISABLE);
     ui->lineEditURL->setText(m_iniUpdate.url);
     ui->checkBoxCheckUpdates->setChecked(m_iniUpdate.check == VAL_ENABLE ? true : false);
@@ -245,6 +244,11 @@ void FormSetting::getINI()
     ui->checkBoxEnable->setChecked(m_iniServer.enable == VAL_ENABLE ? true : false);
     ui->checkBoxLog->setChecked(m_iniServer.log == VAL_ENABLE ? true : false);
     ui->lineEditPort->setText(m_iniServer.port);
+
+    m_iniCalculate.url = SETTING_CONFIG_GET(CFG_GROUP_SETTING,
+                                            CFG_SETTING_CALCULATE_URL,
+                                            URL_FITTING_SIN);
+    ui->lineEditCalculateURL->setText(m_iniCalculate.url);
 }
 
 void FormSetting::on_checkBoxEnable_clicked()
@@ -257,4 +261,10 @@ void FormSetting::on_checkBoxLog_clicked()
 {
     m_iniServer.log = ui->checkBoxLog->isChecked() ? VAL_ENABLE : VAL_DISABLE;
     SETTING_CONFIG_SET(CFG_GROUP_SERVER, CFG_SERVER_LOG, m_iniServer.log);
+}
+
+void FormSetting::on_lineEditCalculateURL_editingFinished()
+{
+    m_iniCalculate.url = ui->lineEditCalculateURL->text();
+    SETTING_CONFIG_SET(CFG_GROUP_SETTING, CFG_SETTING_CALCULATE_URL, m_iniCalculate.url);
 }

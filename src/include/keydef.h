@@ -28,6 +28,7 @@ const QString CFG_HISTORY_MULT = "mult";
 const QString CFG_MULT_LABEL = "label";
 const QString CFG_GROUP_SETTING = "Setting";
 const QString CFG_SETTING_UPDATE_URL = "update_url";
+const QString CFG_SETTING_CALCULATE_URL = "calculate_url";
 const QString CFG_SETTING_UPDATE_CHECK = "update_check";
 const QString CFG_SETTING_UPDATE_TIP = "update_tip";
 const QString CFG_GROUP_SERVER = "Server";
@@ -52,4 +53,12 @@ const QString CFG_CORRECTION_ALGORITHM = "algorithm";
 const QString CFG_CORRECTION_ROUND = "round";
 const QString FRAME_HEADER = "header";
 const QString FRAME_FOOTER = "footer";
+const QString KEY_X = "x";
+const QString KEY_Y = "y";
+const QString KEY_A = "A";
+const QString KEY_w = "w";
+const QString KEY_xc = "xc";
+const QString KEY_y0 = "y0";
+const QString KEY_IMG_URL = "image_url";
+
 #endif

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.1.22 LANGUAGES CXX)
+project(MySerial VERSION 1.1.23 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -51,6 +51,16 @@ set(PROJECT_SOURCES
         src/form/plot/formplotcorrection.h
         src/form/plot/formplotcorrection.cpp
         src/form/plot/formplotcorrection.ui
+        src/module/httpclient/httpclient.h
+        src/module/httpclient/httpclient.cpp
+        src/form/plot/fitting/ImageViewer/imageviewer.h
+        src/form/plot/fitting/ImageViewer/imageviewer.cpp
+        src/form/plot/fitting/formfittingkb.h
+        src/form/plot/fitting/formfittingkb.cpp
+        src/form/plot/fitting/formfittingkb.ui
+        src/form/plot/fitting/formfittingsin.h
+        src/form/plot/fitting/formfittingsin.cpp
+        src/form/plot/fitting/formfittingsin.ui
         src/form/setting/formsetting.h
         src/form/setting/formsetting.cpp
         src/form/setting/formsetting.ui
@@ -79,6 +89,7 @@ target_include_directories(MySerial PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/common"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/module/server"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/module/httpclient"
 )
 
 # Define target properties for Android with Qt 6 as:

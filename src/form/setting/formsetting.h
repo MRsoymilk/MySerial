@@ -21,6 +21,11 @@ public:
         QString tip;
     };
 
+    struct INI_CALCULATE
+    {
+        QString url;
+    };
+
     struct INI_SERVER
     {
         QString port;
@@ -41,8 +46,8 @@ private slots:
     void on_checkBoxCheckUpdates_checkStateChanged(const Qt::CheckState &state);
     void on_lineEditURL_editingFinished();
     void on_checkBoxEnable_clicked();
-
     void on_checkBoxLog_clicked();
+    void on_lineEditCalculateURL_editingFinished();
 
 public slots:
     void onAutoUpdate();
@@ -57,6 +62,7 @@ private:
     Ui::FormSetting *ui;
     INI_UPDATE m_iniUpdate;
     INI_SERVER m_iniServer;
+    INI_CALCULATE m_iniCalculate;
     FormTip *m_tip = nullptr;
     Server *m_server = nullptr;
 };

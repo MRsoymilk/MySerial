@@ -31,7 +31,7 @@ public slots:
     void onChangeFrameType(int index);
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_btnLoadFile_clicked();
