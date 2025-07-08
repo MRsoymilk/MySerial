@@ -400,6 +400,7 @@ void FormSerial::onReadyRead()
 {
     QByteArray data = m_serial->readAll();
     LOG_INFO("serial recv: {}", data);
+
     QString to_show = data;
     if (m_ini.hex_display) {
         to_show.clear();
@@ -407,53 +408,68 @@ void FormSerial::onReadyRead()
             to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
         }
     }
-
     ui->txtRecv->appendPlainText("[RX] " + to_show);
     m_buffer.append(data);
 
     while (true) {
         int firstHeaderIdx = -1;
         FrameType current_frame;
+
+        // 查找最早出现的 header
         for (const auto &type : m_frameTypes) {
             int idx = m_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
                 firstHeaderIdx = idx;
-                current_frame.name = type.name;
-                current_frame.header = type.header;
-                current_frame.footer = type.footer;
+                current_frame = type;
             }
         }
 
+        // 没有任何帧头
         if (firstHeaderIdx == -1) {
-            if (m_buffer.size() > 1024)
+            if (m_buffer.size() > 10 * 1024) { // 更宽松地限制缓存
+                LOG_WARN("Buffer overflow, clearing");
                 m_buffer.clear();
+            }
             break;
         }
 
-        int endIdx = m_buffer.indexOf(current_frame.footer,
-                                      firstHeaderIdx + current_frame.header.size());
+        // 丢弃帧头前的无效数据
+        if (firstHeaderIdx > 0) {
+            LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
+            m_buffer.remove(0, firstHeaderIdx);
+        }
+
+        // 查找 footer
+        int endIdx = m_buffer.indexOf(current_frame.footer, current_frame.header.size());
         if (endIdx == -1) {
+            // 没有找到帧尾，等待更多数据
             break;
         }
 
-        int frameLen = endIdx + current_frame.footer.size() - firstHeaderIdx;
-        QByteArray tmp_frame = m_buffer.mid(firstHeaderIdx, frameLen);
+        int frameLen = endIdx + current_frame.footer.size();
+        if (m_buffer.size() < frameLen) {
+            // 防御性：数据未完整到达
+            break;
+        }
+
+        QByteArray tmp_frame = m_buffer.mid(0, frameLen);
 
         if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
             || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
-            if (current_frame.name.toStdString() == "curve_24bit") {
+            if (current_frame.name == "curve_24bit") {
                 LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
                 frame.bit24 = tmp_frame;
-            } else if (current_frame.name.toStdString() == "curve_14bit") {
+            } else if (current_frame.name == "curve_14bit") {
                 LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
                 frame.bit14 = tmp_frame;
                 if (!frame.bit24.isEmpty()) {
                     emit recv2Data4k(frame.bit14, frame.bit24);
                     emit recv2Plot4k(frame.bit14, frame.bit24);
+                    frame.bit24.clear(); // 清除以防下一帧干扰
                 }
             }
         } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
-            if (current_frame.name.toStdString() == "curve_24bit") {
+            if (current_frame.name == "curve_24bit") {
                 LOG_INFO("Matched frame type: {}", current_frame.name.toStdString());
                 frame.bit24 = tmp_frame;
                 emit recv2Data4k(frame.bit14, frame.bit24);
@@ -461,7 +477,8 @@ void FormSerial::onReadyRead()
             }
         }
 
-        m_buffer.remove(0, endIdx + current_frame.footer.size());
+        // 移除处理后的帧
+        m_buffer.remove(0, frameLen);
     }
 }
 
