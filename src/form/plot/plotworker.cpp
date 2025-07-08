@@ -89,7 +89,7 @@ void PlotWorker::processCurve14(const QByteArray &data14,
         }
     }
 }
-
+static int debug_count = 0;
 void PlotWorker::processCurve24(const QByteArray &data24,
                                 QVector<double> &v_voltage24,
                                 QVector<qint32> &raw24,
@@ -97,10 +97,18 @@ void PlotWorker::processCurve24(const QByteArray &data24,
                                 double &yMax)
 {
     {
+        // QByteArray payload = data24.mid(5, data24.size() - 7);
+        // if (payload.size() % 3 != 0) {
+        //     LOG_WARN("Invalid data length: {}", payload.size());
+        //     return;
+        // }
         QByteArray payload = data24.mid(5, data24.size() - 7);
-        if (payload.size() % 3 != 0) {
-            LOG_WARN("Invalid data length: {}", payload.size());
-            return;
+        int remainder = payload.size() % 3;
+
+        if (remainder != 0) {
+            int padding = 3 - remainder;
+            LOG_WARN("Invalid data length: {}, padding {} zero byte(s)", payload.size(), padding);
+            payload.append(QByteArray(padding, '\0'));
         }
         QByteArray filteredPayload;
         for (int i = 0; i < payload.size(); i += 3) {
