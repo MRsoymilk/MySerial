@@ -57,16 +57,18 @@ void FormSerial::getINI()
             frame.name = g;
             frame.header = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_HEADER).toUtf8());
             frame.footer = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_FOOTER).toUtf8());
+            frame.length = SETTING_FRAME_GET(g, FRAME_LENGTH).toInt();
             m_frameTypes.push_back(frame);
         }
     } else {
         m_frameTypes = {
             {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
-            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
+            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
         };
         for (const auto &frame : m_frameTypes) {
             SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
             SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
+            SETTING_FRAME_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
         }
     }
     int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
@@ -123,7 +125,7 @@ void FormSerial::onChangeFrameType(int index)
     } else {
         m_frameTypes = {
             {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
-            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
+            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
         };
     }
     m_algorithm = index;
@@ -395,6 +397,29 @@ void FormSerial::on_cBoxPortName_activated(int index)
     ui->cBoxBaudRate->addItems(list_txt_bauds);
 }
 
+void FormSerial::handleFrame(const QString &type, const QByteArray &data)
+{
+    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
+        || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
+        if (type == "curve_24bit") {
+            m_frame.bit24 = data;
+        } else if (type == "curve_14bit") {
+            m_frame.bit14 = data;
+            if (!m_frame.bit24.isEmpty()) {
+                emit recv2Data4k(m_frame.bit14, m_frame.bit24);
+                emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+                m_frame.bit24.clear();
+            }
+        }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+        if (type == "curve_24bit") {
+            m_frame.bit24 = data;
+            emit recv2Data4k(m_frame.bit14, m_frame.bit24);
+            emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+        }
+    }
+}
+
 void FormSerial::onReadyRead()
 {
     QByteArray data = m_serial->readAll();
@@ -439,46 +464,38 @@ void FormSerial::onReadyRead()
             m_buffer.remove(0, firstHeaderIdx);
         }
 
-        // 数据不够一帧，继续等待
-        if (m_buffer.size() < current_frame.length) {
-            break;
-        }
+        if (current_frame.length != 0) {
+            // 长度固定帧
+            if (m_buffer.size() < current_frame.length)
+                break;
 
-        QByteArray frame_candidate = m_buffer.left(current_frame.length);
-
-        // 校验帧尾是否正确
-        if (!frame_candidate.endsWith(current_frame.footer)) {
-            LOG_WARN("Invalid footer for frame starting at 0x{:X}", firstHeaderIdx);
-            // 说明这是伪 header，跳过这个 header 继续查找
-            m_buffer.remove(0, current_frame.header.size());
-            continue;
-        }
-
-        // 匹配帧类型处理
-        LOG_INFO("Valid frame matched: {}", current_frame.name.toStdString());
-
-        if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
-            || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
-            if (current_frame.name == "curve_24bit") {
-                m_frame.bit24 = frame_candidate;
-            } else if (current_frame.name == "curve_14bit") {
-                m_frame.bit14 = frame_candidate;
-                if (!m_frame.bit24.isEmpty()) {
-                    emit recv2Data4k(m_frame.bit14, m_frame.bit24);
-                    emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
-                    m_frame.bit24.clear();
-                }
+            QByteArray frame_candidate = m_buffer.left(current_frame.length);
+            if (!frame_candidate.endsWith(current_frame.footer)) {
+                LOG_WARN("Invalid footer (fixed length), removing header only");
+                m_buffer.remove(0, current_frame.header.size());
+                continue;
             }
-        } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
-            if (current_frame.name == "curve_24bit") {
-                m_frame.bit24 = frame_candidate;
-                emit recv2Data4k(m_frame.bit14, m_frame.bit24);
-                emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
-            }
-        }
 
-        // 删除本帧数据
-        m_buffer.remove(0, current_frame.length);
+            LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
+            handleFrame(current_frame.name, frame_candidate);
+            m_buffer.remove(0, current_frame.length);
+
+        } else {
+            // 长度不固定：查找 footer 位置
+            int footerIdx = m_buffer.indexOf(current_frame.footer, current_frame.header.size());
+            if (footerIdx == -1) {
+                // 没找到帧尾，等待更多数据
+                break;
+            }
+
+            int frame_len = footerIdx + current_frame.footer.size();
+            QByteArray frame_candidate = m_buffer.left(frame_len);
+            LOG_INFO("Variable-length frame matched: {}, size = {}",
+                     current_frame.name.toStdString(),
+                     frame_len);
+            handleFrame(current_frame.name, frame_candidate);
+            m_buffer.remove(0, frame_len);
+        }
     }
 }
 

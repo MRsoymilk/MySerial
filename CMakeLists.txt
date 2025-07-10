@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.1.26 LANGUAGES CXX)
+project(MySerial VERSION 1.2.0 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -83,6 +83,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(MySerial
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    src/form/serial/SerialWorker/serialworker.h src/form/serial/SerialWorker/serialworker.cpp
   )
 
 target_include_directories(MySerial PUBLIC

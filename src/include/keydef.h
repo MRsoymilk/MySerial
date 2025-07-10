@@ -57,6 +57,7 @@ const QString CFG_CORRECTION_ALGORITHM = "algorithm";
 const QString CFG_CORRECTION_ROUND = "round";
 const QString FRAME_HEADER = "header";
 const QString FRAME_FOOTER = "footer";
+const QString FRAME_LENGTH = "length";
 const QString KEY_X = "x";
 const QString KEY_Y = "y";
 const QString KEY_A = "A";
