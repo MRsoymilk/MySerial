@@ -97,10 +97,14 @@ private:
         QString name;
         QByteArray header;
         QByteArray footer;
+        int length;
     };
 
     QList<FrameType> m_frameTypes = {};
     int m_algorithm;
+    FormSerial::FRAME m_frame;
+    long long m_recv_count;
+    void handleFrame(const QString &frameName, const QByteArray &frame_candidate);
 };
 
 #endif // FORMSERIAL_H
