@@ -1104,6 +1104,10 @@ QToolButton:on:pressed {
   background-color: transparent;
 }
 
+QToolButton#refresh {
+  qproperty-icon: url(:/res/icons/refresh_white.png);
+}
+
 QToolButton#zoom {
   qproperty-icon: url(:/res/icons/zoom_white.png);
 }

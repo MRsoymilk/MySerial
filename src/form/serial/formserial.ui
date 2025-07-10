@@ -99,6 +99,13 @@
        </layout>
       </item>
       <item>
+       <widget class="QToolButton" name="tBtnRefresh">
+        <property name="text">
+         <string>refresh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnSerialSwitch">
         <property name="text">
          <string>Open/Close</string>

@@ -61,6 +61,7 @@ private:
     void send(const QString &text);
     void initMultSend();
     void setINI();
+    void handleFrame(const QString &frameName, const QByteArray &frame_candidate);
 
 public slots:
     void sendRaw(const QByteArray &bytes);
@@ -80,6 +81,7 @@ private slots:
     void onAutoSend();
     void on_lineEditCycle_editingFinished();
     void on_tabWidget_currentChanged(int index);
+    void on_tBtnRefresh_clicked();
 
 private:
     Ui::FormSerial *ui;
@@ -104,7 +106,7 @@ private:
     int m_algorithm;
     FormSerial::FRAME m_frame;
     long long m_recv_count;
-    void handleFrame(const QString &frameName, const QByteArray &frame_candidate);
+    QStringList m_lastPortList;
 };
 
 #endif // FORMSERIAL_H

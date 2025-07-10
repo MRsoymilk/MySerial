@@ -207,6 +207,9 @@ void FormSerial::init()
         m_mapSerial.insert(port.portName(), serial);
         port_names.push_back(port.portName());
     }
+
+    ui->tBtnRefresh->setObjectName("refresh");
+
     m_switch = false;
     ui->btnSerialSwitch->setText("To Open");
     ui->cBoxPortName->addItems(port_names);
@@ -234,13 +237,14 @@ void FormSerial::init()
     connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
     ui->txtRecv->setMaximumBlockCount(1000);
     setINI();
+    m_recv_count = 0;
 }
 
 void FormSerial::send(const QString &text)
 {
     LOG_INFO("serial send: {}", text);
     if (!(m_serial && m_serial->isOpen())) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, "warning", "serial not open!");
+        SHOW_AUTO_CLOSE_MSGBOX(this, "warning", tr("serial not open!"));
         LOG_ERROR("Serial not open!");
         return;
     }
@@ -600,5 +604,33 @@ void FormSerial::on_tabWidget_currentChanged(int index)
         SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     } else {
         SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_MULTIPE);
+    }
+}
+
+void FormSerial::on_tBtnRefresh_clicked()
+{
+    QStringList currentPorts;
+    QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
+    for (const auto &port : ports) {
+        currentPorts << port.portName();
+    }
+
+    if (currentPorts != m_lastPortList) {
+        LOG_INFO("Serial ports changed: {}", currentPorts.join(", ").toStdString());
+        m_lastPortList = currentPorts;
+
+        ui->cBoxPortName->clear();
+        ui->cBoxPortName->addItems(currentPorts);
+
+        m_mapSerial.clear();
+        for (const auto &port : ports) {
+            SERIAL serial;
+            serial.SerialNumber = port.serialNumber();
+            serial.Description = port.description();
+            serial.Manufacturer = port.manufacturer();
+            serial.StandardBaudRates = port.standardBaudRates();
+            serial.SystemLocation = port.systemLocation();
+            m_mapSerial.insert(port.portName(), serial);
+        }
     }
 }

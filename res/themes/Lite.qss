@@ -1091,6 +1091,10 @@ TalkingUI > QFrame {
   border-radius: 2px;
 }
 
+QToolButton#refresh {
+  qproperty-icon: url(:/res/icons/refresh.png);
+}
+
 QToolButton#zoom {
     qproperty-icon: url(:/res/icons/zoom.png);
 }

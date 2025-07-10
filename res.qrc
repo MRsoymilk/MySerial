@@ -67,5 +67,7 @@
         <file>res/icons/yes_white.png</file>
         <file>res/icons/zoom_white.png</file>
         <file>res/icons/data-off_white.png</file>
+        <file>res/icons/refresh_white.png</file>
+        <file>res/icons/refresh.png</file>
     </qresource>
 </RCC>
