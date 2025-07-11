@@ -19,6 +19,12 @@ public:
     {
         setMouseTracking(true);
         setRubberBand(QChartView::NoRubberBand); // 默认禁用橡皮筋
+
+        m_axisX = new QValueAxis();
+        m_axisY = new QValueAxis();
+        chart->addAxis(m_axisX, Qt::AlignBottom);
+        chart->addAxis(m_axisY, Qt::AlignLeft);
+
         setChart(chart);
     }
 
@@ -38,6 +44,11 @@ public:
                 for (const QPointF &p : xySeries->points())
                     bounds |= QRectF(p, QSizeF(0, 0));
                 m_initialRange = bounds;
+
+                m_axisX->setRange(bounds.left(), bounds.right());
+                m_axisY->setRange(bounds.top(), bounds.bottom());
+                xySeries->attachAxis(m_axisX);
+                xySeries->attachAxis(m_axisY);
             }
         }
     }
@@ -46,45 +57,34 @@ public:
     {
         m_initialRange = range;
 
-        if (m_chart) {
-            if (auto *axisX = qobject_cast<QValueAxis *>(m_chart->axisX()))
-                axisX->setRange(range.left(), range.right());
-            if (auto *axisY = qobject_cast<QValueAxis *>(m_chart->axisY()))
-                axisY->setRange(range.top(), range.bottom());
+        if (m_axisX && m_axisY) {
+            m_axisX->setRange(range.left(), range.right());
+            m_axisY->setRange(range.top(), range.bottom());
         }
     }
 
     void recordInitialAxisRange()
     {
-        if (!m_chart)
+        if (!m_axisX || !m_axisY)
             return;
 
-        auto *axisX = qobject_cast<QValueAxis *>(m_chart->axisX());
-        auto *axisY = qobject_cast<QValueAxis *>(m_chart->axisY());
-        if (!axisX || !axisY)
-            return;
-
-        m_initialRange = QRectF(axisX->min(),
-                                axisY->min(),
-                                axisX->max() - axisX->min(),
-                                axisY->max() - axisY->min());
+        m_initialRange = QRectF(m_axisX->min(),
+                                m_axisY->min(),
+                                m_axisX->max() - m_axisX->min(),
+                                m_axisY->max() - m_axisY->min());
     }
 
     void backInitialRange()
     {
-        if (!m_initialRange.isValid())
+        if (!m_initialRange.isValid() || !m_axisX || !m_axisY)
             return;
 
-        if (auto *axisX = qobject_cast<QValueAxis *>(m_chart->axisX()))
-            axisX->setRange(m_initialRange.left(), m_initialRange.right());
-        if (auto *axisY = qobject_cast<QValueAxis *>(m_chart->axisY()))
-            axisY->setRange(m_initialRange.top(), m_initialRange.bottom());
+        m_axisX->setRange(m_initialRange.left(), m_initialRange.right());
+        m_axisY->setRange(m_initialRange.top(), m_initialRange.bottom());
     }
 
-    // 开关双击恢复功能
     void setBackEnabled(bool enabled) { m_enableBack = enabled; }
 
-    // 开关橡皮筋框选功能
     void setCropEnabled(bool enabled)
     {
         m_enableCrop = enabled;
@@ -113,7 +113,6 @@ protected:
         qreal x = value.x();
         qreal y = value.y();
 
-        // 吸附最近点
         QPointF closestPoint;
         qreal minDist = std::numeric_limits<qreal>::max();
         for (auto *series : m_chart->series()) {
@@ -129,7 +128,6 @@ protected:
             }
         }
 
-        // 更新十字线
         QPointF top(pos.x(), plotArea.top());
         QPointF bottom(pos.x(), plotArea.bottom());
         QPointF left(plotArea.left(), pos.y());
@@ -138,12 +136,10 @@ protected:
         m_lineV->setLine(QLineF(mapToScene(top.toPoint()), mapToScene(bottom.toPoint())));
         m_lineH->setLine(QLineF(mapToScene(left.toPoint()), mapToScene(right.toPoint())));
 
-        // 更新吸附点圆圈
         QPointF closestScenePos = mapToScene(m_chart->mapToPosition(closestPoint).toPoint());
         m_marker->setRect(closestScenePos.x() - 4, closestScenePos.y() - 4, 8, 8);
         m_marker->show();
 
-        // 更新坐标文本
         QString coordText = QString("X: %1\nY: %2")
                                 .arg(closestPoint.x(), 0, 'f', 3)
                                 .arg(closestPoint.y(), 0, 'f', 3);
@@ -158,14 +154,12 @@ protected:
         if (m_enableBack) {
             backInitialRange();
         }
-
         QChartView::mouseDoubleClickEvent(event);
     }
 
     void mouseReleaseEvent(QMouseEvent *event) override
     {
         if (!m_enableCrop) {
-            // 禁止橡皮筋操作，隐藏并忽略事件
             event->ignore();
             return;
         }
@@ -214,15 +208,16 @@ private:
 
 private:
     QChart *m_chart = nullptr;
+    QValueAxis *m_axisX;
+    QValueAxis *m_axisY;
     QGraphicsLineItem *m_lineV = nullptr;
     QGraphicsLineItem *m_lineH = nullptr;
     QGraphicsSimpleTextItem *m_coordText = nullptr;
     QGraphicsEllipseItem *m_marker = nullptr;
 
-    QRectF m_initialRange; // 初始坐标范围
-
-    bool m_enableBack; // 是否启用双击恢复功能
-    bool m_enableCrop; // 是否启用框选缩放功能
+    QRectF m_initialRange;
+    bool m_enableBack;
+    bool m_enableCrop;
 };
 
 #endif // MYCHARTVIEW_H
