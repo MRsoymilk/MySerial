@@ -148,7 +148,13 @@ void FormPlot::init3d()
 
 void FormPlot::initToolButtons()
 {
-    // ui->tBtnZoom->setIcon(QIcon(":/res/icons/zoom.png"));
+    ui->tBtnCrop->setObjectName("crop");
+    ui->tBtnCrop->setIconSize(QSize(24, 24));
+    ui->tBtnCrop->setCheckable(true);
+    ui->tBtnCrop->setChecked(m_enableCrop);
+    ui->tBtnCrop->setToolTip("crop");
+    ui->tBtnCrop->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnZoom->setObjectName("zoom");
     ui->tBtnZoom->setIconSize(QSize(24, 24));
     ui->tBtnZoom->setCheckable(true);
@@ -156,7 +162,6 @@ void FormPlot::initToolButtons()
     ui->tBtnZoom->setToolTip("Auto Zoom");
     ui->tBtnZoom->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    // ui->tBtnData->setIcon(QIcon(":/res/icons/data.png"));
     ui->tBtnData->setObjectName("data");
     ui->tBtnData->setIconSize(QSize(24, 24));
     ui->tBtnData->setCheckable(true);
@@ -164,7 +169,6 @@ void FormPlot::initToolButtons()
     ui->tBtnData->setToolTip("Data");
     ui->tBtnData->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    // ui->tBtn3D->setIcon(QIcon(":/res/icons/3d.png"));
     ui->tBtn3D->setObjectName("3d");
     ui->tBtn3D->setIconSize(QSize(24, 24));
     ui->tBtn3D->setCheckable(true);
@@ -172,7 +176,6 @@ void FormPlot::initToolButtons()
     ui->tBtn3D->setToolTip("3D");
     ui->tBtn3D->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    // ui->tBtnHistory->setIcon(QIcon(":/res/icons/history.png"));
     ui->tBtnHistory->setObjectName("history");
     ui->tBtnHistory->setIconSize(QSize(24, 24));
     ui->tBtnHistory->setCheckable(true);
@@ -180,7 +183,6 @@ void FormPlot::initToolButtons()
     ui->tBtnHistory->setToolTip("History (ctrl+h)");
     ui->tBtnHistory->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    // ui->tBtnSimulate->setIcon(QIcon(":/res/icons/simulate.png"));
     ui->tBtnSimulate->setObjectName("simulate");
     ui->tBtnSimulate->setIconSize(QSize(24, 24));
     ui->tBtnSimulate->setCheckable(true);
@@ -188,7 +190,6 @@ void FormPlot::initToolButtons()
     ui->tBtnSimulate->setToolTip("Simulate");
     ui->tBtnSimulate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    // ui->tBtnCorrection->setIcon(QIcon(":/res/icons/correction.png"));
     ui->tBtnCorrection->setObjectName("correction");
     ui->tBtnCorrection->setIconSize(QSize(24, 24));
     ui->tBtnCorrection->setCheckable(true);
@@ -196,7 +197,6 @@ void FormPlot::initToolButtons()
     ui->tBtnCorrection->setToolTip("Correction");
     ui->tBtnCorrection->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    // ui->tBtnImgSave->setIcon(QIcon(":/res/icons/img_save.png"));
     ui->tBtnImgSave->setObjectName("img_save");
     ui->tBtnImgSave->setIconSize(QSize(24, 24));
     ui->tBtnImgSave->setToolTip("image save (ctrl+s)");
@@ -345,6 +345,19 @@ void FormPlot::wheelEvent(QWheelEvent *event)
         m_axisY->setRange(m_fixedYMin, m_fixedYMax);
     } else {
         QWidget::wheelEvent(event);
+    }
+}
+
+void FormPlot::on_tBtnCrop_clicked()
+{
+    m_enableCrop = !m_enableCrop;
+    ui->tBtnCrop->setChecked(m_enableCrop);
+    if (m_enableCrop) {
+        m_chartView->setCropEnabled(true);
+        m_chartView->recordInitialAxisRange();
+    } else {
+        m_chartView->setCropEnabled(false);
+        m_chartView->backInitialRange();
     }
 }
 

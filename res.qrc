@@ -69,5 +69,7 @@
         <file>res/icons/data-off_white.png</file>
         <file>res/icons/refresh_white.png</file>
         <file>res/icons/refresh.png</file>
+        <file>res/icons/crop.png</file>
+        <file>res/icons/crop_white.png</file>
     </qresource>
 </RCC>

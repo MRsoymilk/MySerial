@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>629</width>
+    <width>693</width>
     <height>455</height>
    </rect>
   </property>
@@ -32,58 +32,10 @@
    <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>209</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="4">
-    <widget class="QToolButton" name="tBtnSimulate">
-     <property name="text">
-      <string>simulate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QToolButton" name="tBtnCorrection">
-     <property name="text">
-      <string>correction</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="labelAlgorithm">
-       <property name="text">
-        <string>algorithm</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBoxAlgorithm"/>
-     </item>
-    </layout>
-   </item>
    <item row="0" column="5">
     <widget class="QToolButton" name="tBtn3D">
      <property name="text">
       <string>3D</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="7">
-    <widget class="QToolButton" name="tBtnData">
-     <property name="text">
-      <string>data</string>
      </property>
     </widget>
    </item>
@@ -136,10 +88,38 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="8">
-    <widget class="QToolButton" name="tBtnHistory">
+   <item row="0" column="4">
+    <widget class="QToolButton" name="tBtnSimulate">
      <property name="text">
-      <string>history</string>
+      <string>simulate</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="8">
+    <widget class="QToolButton" name="tBtnData">
+     <property name="text">
+      <string>data</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelAlgorithm">
+       <property name="text">
+        <string>algorithm</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxAlgorithm"/>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="3">
+    <widget class="QToolButton" name="tBtnCorrection">
+     <property name="text">
+      <string>correction</string>
      </property>
     </widget>
    </item>
@@ -153,15 +133,42 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="9">
+   <item row="0" column="10">
     <widget class="QToolButton" name="tBtnImgSave">
      <property name="text">
       <string>img_save</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="10">
+   <item row="1" column="0" colspan="11">
     <widget class="QStackedWidget" name="stackedWidget"/>
+   </item>
+   <item row="0" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>209</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="9">
+    <widget class="QToolButton" name="tBtnHistory">
+     <property name="text">
+      <string>history</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="7">
+    <widget class="QToolButton" name="tBtnCrop">
+     <property name="text">
+      <string>crop</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

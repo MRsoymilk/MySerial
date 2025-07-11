@@ -40,6 +40,7 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private slots:
+    void on_tBtnCrop_clicked();
     void on_tBtnZoom_clicked();
     void on_tBtnData_clicked();
     void on_tBtn3D_clicked();
@@ -89,6 +90,7 @@ private:
     QChart *m_chart;
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
+    bool m_enableCrop = false;
     bool m_autoZoom = true;
     bool m_showData = false;
     bool m_show3D = false;

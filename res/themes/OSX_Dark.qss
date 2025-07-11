@@ -1184,4 +1184,8 @@ QToolButton#setting-on {
   qproperty-icon: url(:/res/icons/setting-on.png);
 }
 
+QToolButton#crop {
+  qproperty-icon: url(:/res/icons/crop_white.png);
+}
+
 /*# sourceMappingURL=OSX%20Dark.qss.map */
