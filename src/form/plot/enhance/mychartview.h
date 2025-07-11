@@ -20,11 +20,6 @@ public:
         setMouseTracking(true);
         setRubberBand(QChartView::NoRubberBand); // 默认禁用橡皮筋
 
-        m_axisX = new QValueAxis();
-        m_axisY = new QValueAxis();
-        chart->addAxis(m_axisX, Qt::AlignBottom);
-        chart->addAxis(m_axisY, Qt::AlignLeft);
-
         setChart(chart);
     }
 
@@ -32,6 +27,31 @@ public:
     {
         QChartView::setChart(chart);
         m_chart = chart;
+
+        m_axisX = nullptr;
+        m_axisY = nullptr;
+
+        const auto axes = chart->axes();
+        for (QAbstractAxis *axis : axes) {
+            if (axis->orientation() == Qt::Horizontal) {
+                if (auto *valueAxis = qobject_cast<QValueAxis *>(axis)) {
+                    m_axisX = valueAxis;
+                }
+            } else if (axis->orientation() == Qt::Vertical) {
+                if (auto *valueAxis = qobject_cast<QValueAxis *>(axis)) {
+                    m_axisY = valueAxis;
+                }
+            }
+        }
+
+        if (!m_axisX) {
+            m_axisX = new QValueAxis();
+            chart->addAxis(m_axisX, Qt::AlignBottom);
+        }
+        if (!m_axisY) {
+            m_axisY = new QValueAxis();
+            chart->addAxis(m_axisY, Qt::AlignLeft);
+        }
 
         clearHelpers();
         initHelpers();

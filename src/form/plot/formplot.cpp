@@ -465,3 +465,25 @@ void FormPlot::on_tBtnImgSave_clicked()
         saveChartAsImage(filePath);
     }
 }
+
+void FormPlot::on_spinBoxFrom_valueChanged(int val)
+{
+    int to = ui->spinBoxTo->value();
+    if (to == 0) {
+        to = m_axisX->max();
+    }
+    if (val < to) {
+        m_axisX->setRange(val, to);
+    }
+}
+
+void FormPlot::on_spinBoxTo_valueChanged(int val)
+{
+    int from = ui->spinBoxFrom->value();
+    if (from == 0) {
+        from = m_axisX->min();
+    }
+    if (from < val) {
+        m_axisX->setRange(from, val);
+    }
+}

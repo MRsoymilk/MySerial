@@ -61,6 +61,8 @@ private slots:
     void on_comboBoxAlgorithm_currentIndexChanged(int index);
     void on_tBtnCorrection_clicked();
     void on_tBtnImgSave_clicked();
+    void on_spinBoxFrom_valueChanged(int val);
+    void on_spinBoxTo_valueChanged(int val);
 
 private:
     void init();

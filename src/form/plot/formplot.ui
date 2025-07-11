@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
+    <width>741</width>
     <height>455</height>
    </rect>
   </property>
@@ -32,12 +32,63 @@
    <property name="verticalSpacing">
     <number>0</number>
    </property>
+   <item row="0" column="3">
+    <widget class="QToolButton" name="tBtnCorrection">
+     <property name="text">
+      <string>correction</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="11">
+    <widget class="QToolButton" name="tBtnImgSave">
+     <property name="text">
+      <string>img_save</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <widget class="QToolButton" name="tBtnSimulate">
+     <property name="text">
+      <string>simulate</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6">
+    <widget class="QToolButton" name="tBtnZoom">
+     <property name="text">
+      <string>zoom</string>
+     </property>
+     <property name="icon">
+      <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="5">
     <widget class="QToolButton" name="tBtn3D">
      <property name="text">
       <string>3D</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="9">
+    <widget class="QToolButton" name="tBtnData">
+     <property name="text">
+      <string>data</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>209</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="0" column="2">
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -88,17 +139,13 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="4">
-    <widget class="QToolButton" name="tBtnSimulate">
-     <property name="text">
-      <string>simulate</string>
-     </property>
-    </widget>
+   <item row="1" column="0" colspan="12">
+    <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
-   <item row="0" column="8">
-    <widget class="QToolButton" name="tBtnData">
+   <item row="0" column="10">
+    <widget class="QToolButton" name="tBtnHistory">
      <property name="text">
-      <string>data</string>
+      <string>history</string>
      </property>
     </widget>
    </item>
@@ -116,59 +163,52 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="3">
-    <widget class="QToolButton" name="tBtnCorrection">
-     <property name="text">
-      <string>correction</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="6">
-    <widget class="QToolButton" name="tBtnZoom">
-     <property name="text">
-      <string>zoom</string>
-     </property>
-     <property name="icon">
-      <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="10">
-    <widget class="QToolButton" name="tBtnImgSave">
-     <property name="text">
-      <string>img_save</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="11">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
-   <item row="0" column="0">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>209</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="9">
-    <widget class="QToolButton" name="tBtnHistory">
-     <property name="text">
-      <string>history</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="7">
     <widget class="QToolButton" name="tBtnCrop">
      <property name="text">
       <string>crop</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="8">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="labelFrom">
+         <property name="text">
+          <string>From</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBoxFrom">
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="labelTo">
+         <property name="text">
+          <string>To</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBoxTo">
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
