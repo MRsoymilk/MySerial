@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FormPlayMPU6050</class>
+ <widget class="QWidget" name="FormPlayMPU6050">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>713</width>
+    <height>557</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0" columnstretch="3,2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gLayPlane"/>
+   </item>
+   <item row="0" column="1">
+    <widget class="QTableView" name="tableView"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

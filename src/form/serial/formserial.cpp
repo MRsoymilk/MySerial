@@ -77,6 +77,10 @@ void FormSerial::getINI()
         m_frameTypes = {
             {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
         };
+    } else if (current_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
+        m_frameTypes = {
+            {"MPU6050", "<MPU>", "<END>"},
+        };
     }
 
     initMultSend();
@@ -122,10 +126,15 @@ void FormSerial::onChangeFrameType(int index)
         m_frameTypes = {
             {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
         };
-    } else {
+    } else if (index == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
+               || index == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
         m_frameTypes = {
             {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
             {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
+        };
+    } else if (index == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
+        m_frameTypes = {
+            {"MPU6050", "<MPU>", "<END>"},
         };
     }
     m_algorithm = index;
@@ -421,6 +430,8 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data)
             emit recv2Data4k(m_frame.bit14, m_frame.bit24);
             emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
         }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
+        emit recv2MPU(data);
     }
 }
 

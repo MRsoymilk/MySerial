@@ -71,5 +71,7 @@
         <file>res/icons/refresh.png</file>
         <file>res/icons/crop.png</file>
         <file>res/icons/crop_white.png</file>
+        <file>res/models/airplane.gltf</file>
+        <file>res/models/airplane.bin</file>
     </qresource>
 </RCC>

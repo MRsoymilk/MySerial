@@ -82,7 +82,7 @@ void FormPlot::getINI()
     }
 
     ui->comboBoxAlgorithm->blockSignals(true);
-    ui->comboBoxAlgorithm->addItems({"normal", "max_neg_95", "num_660"});
+    ui->comboBoxAlgorithm->addItems({"normal", "max_neg_95", "num_660", "play_mpu6050"});
     ui->comboBoxAlgorithm->blockSignals(false);
 
     int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();

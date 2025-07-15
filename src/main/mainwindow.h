@@ -8,6 +8,7 @@ class FormPlot;
 class FormData;
 class FormLog;
 class FormSetting;
+class FormPlayMPU6050;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -53,6 +54,7 @@ private:
     FormData *formData;
     FormLog *formLog;
     FormSetting *formSetting;
+    FormPlayMPU6050 *playMPU6050;
 
     int m_currentPageIndex = 0;
     QString m_theme;

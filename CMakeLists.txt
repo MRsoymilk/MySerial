@@ -10,8 +10,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL 3DCore 3DExtras 3DInput 3DRender)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL 3DCore 3DExtras 3DInput 3DRender)
 
 set(PROJECT_SOURCES
         src/main/main.cpp
@@ -67,6 +67,11 @@ set(PROJECT_SOURCES
         src/form/setting/formtip.h
         src/form/setting/formtip.cpp
         src/form/setting/formtip.ui
+        src/form/serial/SerialWorker/serialworker.h
+        src/form/serial/SerialWorker/serialworker.cpp
+        src/form/play/formplaympu6050.h
+        src/form/play/formplaympu6050.cpp
+        src/form/play/formplaympu6050.ui
         src/common/mysetting.h
         src/common/mysetting.cpp
         src/common/mylog.h
@@ -83,7 +88,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(MySerial
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    src/form/serial/SerialWorker/serialworker.h src/form/serial/SerialWorker/serialworker.cpp
   )
 
 target_include_directories(MySerial PUBLIC
@@ -118,6 +122,10 @@ target_link_libraries(MySerial PRIVATE
   Qt${QT_VERSION_MAJOR}::Network
   Qt${QT_VERSION_MAJOR}::OpenGLWidgets
   Qt${QT_VERSION_MAJOR}::OpenGL
+  Qt${QT_VERSION_MAJOR}::3DCore
+  Qt${QT_VERSION_MAJOR}::3DExtras
+  Qt${QT_VERSION_MAJOR}::3DInput
+  Qt${QT_VERSION_MAJOR}::3DRender
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

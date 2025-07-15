@@ -52,6 +52,7 @@ public:
 signals:
     void recv2Plot4k(const QByteArray &data14, const QByteArray &data24);
     void recv2Data4k(const QByteArray &data14, const QByteArray &data24);
+    void recv2MPU(const QByteArray &data);
 
 private:
     void getINI();

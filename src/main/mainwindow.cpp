@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "../form/data/formdata.h"
 #include "../form/log/formlog.h"
+#include "../form/play/formplaympu6050.h"
 #include "../form/plot/formplot.h"
 #include "../form/serial/formserial.h"
 #include "../form/setting/formsetting.h"
@@ -69,7 +70,6 @@ void MainWindow::initStackWidget()
 
     formSerial = new FormSerial(this);
     ui->stackedWidget->addWidget(formSerial);
-    ui->stackedWidget->setCurrentWidget(formSerial);
 
     formData = new FormData(this);
     ui->stackedWidget->addWidget(formData);
@@ -80,6 +80,9 @@ void MainWindow::initStackWidget()
     formSetting = new FormSetting(this);
     ui->stackedWidget->addWidget(formSetting);
 
+    playMPU6050 = new FormPlayMPU6050(this);
+    ui->stackedWidget->addWidget(playMPU6050);
+
     QObject::connect(formSerial, &FormSerial::recv2Plot4k, formPlot, &FormPlot::onDataReceived4k);
     QObject::connect(formSerial, &FormSerial::recv2Data4k, formData, &FormData::onDataReceived4k);
     QObject::connect(formPlot, &FormPlot::sendKB, formSerial, &FormSerial::sendRaw);
@@ -87,6 +90,34 @@ void MainWindow::initStackWidget()
                      &FormPlot::changeFrameType,
                      formSerial,
                      &FormSerial::onChangeFrameType);
+    QObject::connect(formSerial, &FormSerial::recv2MPU, playMPU6050, &FormPlayMPU6050::onRecvMPU);
+
+    ui->stackedWidget->setCurrentWidget(formSerial);
+
+    QShortcut *shortcut_Serial = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_1), this);
+    QShortcut *shortcut_Data = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_2), this);
+    QShortcut *shortcut_Plot = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_3), this);
+    QShortcut *shortcut_Log = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_4), this);
+    QShortcut *shortcut_Setting = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_5), this);
+    QShortcut *shortcut_Play = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_6), this);
+    connect(shortcut_Serial, &QShortcut::activated, this, [this]() {
+        ui->stackedWidget->setCurrentWidget(formSerial);
+    });
+    connect(shortcut_Data, &QShortcut::activated, this, [this]() {
+        ui->stackedWidget->setCurrentWidget(formData);
+    });
+    connect(shortcut_Plot, &QShortcut::activated, this, [this]() {
+        ui->stackedWidget->setCurrentWidget(formPlot);
+    });
+    connect(shortcut_Log, &QShortcut::activated, this, [this]() {
+        ui->stackedWidget->setCurrentWidget(formLog);
+    });
+    connect(shortcut_Setting, &QShortcut::activated, this, [this]() {
+        ui->stackedWidget->setCurrentWidget(formSetting);
+    });
+    connect(shortcut_Play, &QShortcut::activated, this, [this]() {
+        ui->stackedWidget->setCurrentWidget(playMPU6050);
+    });
 }
 
 void MainWindow::initToolbar()
