@@ -51,27 +51,47 @@
         <file>res/themes/icons/toolbar_ext.svg</file>
         <file>res/themes/icons/yes.svg</file>
         <file>res/icons/img_save.png</file>
-        <file>res/icons/3d_white.png</file>
-        <file>res/icons/correction_white.png</file>
-        <file>res/icons/data_white.png</file>
-        <file>res/icons/go-next_white.png</file>
-        <file>res/icons/go-prev_white.png</file>
-        <file>res/icons/history_white.png</file>
-        <file>res/icons/img_save_white.png</file>
-        <file>res/icons/log-off_white.png</file>
-        <file>res/icons/plot-off_white.png</file>
-        <file>res/icons/send-off_white.png</file>
-        <file>res/icons/setting-off_white.png</file>
-        <file>res/icons/simulate_white.png</file>
-        <file>res/icons/usb-off_white.png</file>
-        <file>res/icons/yes_white.png</file>
-        <file>res/icons/zoom_white.png</file>
-        <file>res/icons/data-off_white.png</file>
-        <file>res/icons/refresh_white.png</file>
         <file>res/icons/refresh.png</file>
         <file>res/icons/crop.png</file>
-        <file>res/icons/crop_white.png</file>
         <file>res/models/airplane.gltf</file>
         <file>res/models/airplane.bin</file>
+        <file>res/themes/HelloKitty.qss</file>
+        <file>res/themes/background/HelloKitty.jpg</file>
+        <file>res/icons/pink/3d.png</file>
+        <file>res/icons/pink/correction.png</file>
+        <file>res/icons/pink/crop.png</file>
+        <file>res/icons/pink/data-off.png</file>
+        <file>res/icons/pink/data.png</file>
+        <file>res/icons/pink/go-next.png</file>
+        <file>res/icons/pink/go-prev.png</file>
+        <file>res/icons/pink/history.png</file>
+        <file>res/icons/pink/img_save.png</file>
+        <file>res/icons/pink/log-off.png</file>
+        <file>res/icons/pink/plot-off.png</file>
+        <file>res/icons/pink/refresh.png</file>
+        <file>res/icons/pink/send-off.png</file>
+        <file>res/icons/pink/setting-off.png</file>
+        <file>res/icons/pink/simulate.png</file>
+        <file>res/icons/pink/usb-off.png</file>
+        <file>res/icons/pink/yes.png</file>
+        <file>res/icons/pink/zoom.png</file>
+        <file>res/icons/white/3d.png</file>
+        <file>res/icons/white/correction.png</file>
+        <file>res/icons/white/crop.png</file>
+        <file>res/icons/white/data-off.png</file>
+        <file>res/icons/white/data.png</file>
+        <file>res/icons/white/go-next.png</file>
+        <file>res/icons/white/go-prev.png</file>
+        <file>res/icons/white/history.png</file>
+        <file>res/icons/white/img_save.png</file>
+        <file>res/icons/white/log-off.png</file>
+        <file>res/icons/white/plot-off.png</file>
+        <file>res/icons/white/refresh.png</file>
+        <file>res/icons/white/send-off.png</file>
+        <file>res/icons/white/setting-off.png</file>
+        <file>res/icons/white/simulate.png</file>
+        <file>res/icons/white/usb-off.png</file>
+        <file>res/icons/white/yes.png</file>
+        <file>res/icons/white/zoom.png</file>
     </qresource>
 </RCC>

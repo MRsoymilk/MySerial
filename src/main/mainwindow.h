@@ -27,6 +27,7 @@ public:
     // QWidget interface
 protected:
     void keyPressEvent(QKeyEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private slots:
     void on_btnSerial_clicked();
@@ -58,5 +59,6 @@ private:
 
     int m_currentPageIndex = 0;
     QString m_theme;
+    QPixmap m_background;
 };
 #endif // MAINWINDOW_H

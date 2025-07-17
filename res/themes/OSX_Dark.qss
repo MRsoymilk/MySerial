@@ -1105,63 +1105,63 @@ QToolButton:on:pressed {
 }
 
 QToolButton#refresh {
-  qproperty-icon: url(:/res/icons/refresh_white.png);
+  qproperty-icon: url(:/res/icons/white/refresh.png);
 }
 
 QToolButton#zoom {
-  qproperty-icon: url(:/res/icons/zoom_white.png);
+  qproperty-icon: url(:/res/icons/white/zoom.png);
 }
 
 QToolButton#data {
-  qproperty-icon: url(:/res/icons/data_white.png);
+  qproperty-icon: url(:/res/icons/white/data.png);
 }
 
 QToolButton#3d {
-  qproperty-icon: url(:/res/icons/3d_white.png);
+  qproperty-icon: url(:/res/icons/white/3d.png);
 }
 
 QToolButton#history {
-  qproperty-icon: url(:/res/icons/history_white.png);
+  qproperty-icon: url(:/res/icons/white/history.png);
 }
 
 QToolButton#simulate {
-  qproperty-icon: url(:/res/icons/simulate_white.png);
+  qproperty-icon: url(:/res/icons/white/simulate.png);
 }
 
 QToolButton#correction {
-  qproperty-icon: url(:/res/icons/correction_white.png);
+  qproperty-icon: url(:/res/icons/white/correction.png);
 }
 
 QToolButton#img_save {
-  qproperty-icon: url(:/res/icons/img_save_white.png);
+  qproperty-icon: url(:/res/icons/white/img_save.png);
 }
 
 QToolButton#go-prev {
-  qproperty-icon: url(:/res/icons/go-prev_white.png);
+  qproperty-icon: url(:/res/icons/white/go-prev.png);
 }
 
 QToolButton#go-next {
-  qproperty-icon: url(:/res/icons/go-next_white.png);
+  qproperty-icon: url(:/res/icons/white/go-next.png);
 }
 
 QToolButton#usb-off {
-  qproperty-icon: url(:/res/icons/usb-off_white.png);
+  qproperty-icon: url(:/res/icons/white/usb-off.png);
 }
 
 QToolButton#data-off {
-  qproperty-icon: url(:/res/icons/data-off_white.png);
+  qproperty-icon: url(:/res/icons/white/data-off.png);
 }
 
 QToolButton#log-off {
-  qproperty-icon: url(:/res/icons/log-off_white.png);
+  qproperty-icon: url(:/res/icons/white/log-off.png);
 }
 
 QToolButton#plot-off {
-  qproperty-icon: url(:/res/icons/plot-off_white.png);
+  qproperty-icon: url(:/res/icons/white/plot-off.png);
 }
 
 QToolButton#setting-off {
-  qproperty-icon: url(:/res/icons/setting-off_white.png);
+  qproperty-icon: url(:/res/icons/white/setting-off.png);
 }
 
 QToolButton#usb-on {
@@ -1185,7 +1185,7 @@ QToolButton#setting-on {
 }
 
 QToolButton#crop {
-  qproperty-icon: url(:/res/icons/crop_white.png);
+  qproperty-icon: url(:/res/icons/white/crop.png);
 }
 
 /*# sourceMappingURL=OSX%20Dark.qss.map */

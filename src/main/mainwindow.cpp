@@ -213,6 +213,26 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
+void MainWindow::paintEvent(QPaintEvent *event)
+{
+    QMainWindow::paintEvent(event);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+
+    painter.fillRect(rect(), Qt::transparent);
+
+    if (!m_background.isNull()) {
+        QPixmap scaled = m_background.scaled(this->size(),
+                                             Qt::KeepAspectRatioByExpanding,
+                                             Qt::SmoothTransformation);
+
+        int x = (width() - scaled.width()) / 2;
+        int y = (height() - scaled.height()) / 2;
+        painter.drawPixmap(x, y, scaled);
+    }
+}
+
 void MainWindow::on_btnSetting_clicked()
 {
     ui->stackedWidget->setCurrentWidget(formSetting);
@@ -249,6 +269,9 @@ void MainWindow::setTheme(const QString &theme)
     if (file.open(QFile::ReadOnly | QFile::Text)) {
         QString style = file.readAll();
         qApp->setStyleSheet(style);
+    }
+    if (theme == "HelloKitty") {
+        m_background = QPixmap(":/res/themes/background/HelloKitty.jpg");
     }
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_THEME, theme);
 }

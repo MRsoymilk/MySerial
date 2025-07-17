@@ -112,6 +112,7 @@
     <addaction name="actionDark"/>
     <addaction name="actionOSX_Lite"/>
     <addaction name="actionOSX_Dark"/>
+    <addaction name="actionHelloKitty"/>
    </widget>
    <addaction name="menuLanguage"/>
    <addaction name="menuTheme"/>
@@ -150,6 +151,11 @@
   <action name="actionOSX_Dark">
    <property name="text">
     <string>OSX_Dark</string>
+   </property>
+  </action>
+  <action name="actionHelloKitty">
+   <property name="text">
+    <string>HelloKitty</string>
    </property>
   </action>
  </widget>
