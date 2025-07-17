@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.2.04 LANGUAGES CXX)
+project(MySerial VERSION 1.2.05 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -10,8 +10,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL 3DCore 3DExtras 3DInput 3DRender)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL 3DCore 3DExtras 3DInput 3DRender)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools OpenGLWidgets OpenGL)
 
 set(PROJECT_SOURCES
         src/main/main.cpp
@@ -122,10 +122,6 @@ target_link_libraries(MySerial PRIVATE
   Qt${QT_VERSION_MAJOR}::Network
   Qt${QT_VERSION_MAJOR}::OpenGLWidgets
   Qt${QT_VERSION_MAJOR}::OpenGL
-  Qt${QT_VERSION_MAJOR}::3DCore
-  Qt${QT_VERSION_MAJOR}::3DExtras
-  Qt${QT_VERSION_MAJOR}::3DInput
-  Qt${QT_VERSION_MAJOR}::3DRender
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
