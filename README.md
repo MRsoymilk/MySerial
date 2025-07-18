@@ -53,6 +53,10 @@ OSX Lite
 
 ![theme OSX Lite](README/theme_OSX_Lite.jpg)
 
+HelloKitty
+
+![theme HelloKitty](README/theme_HelloKitty.jpg)
+
 ## Tool
 
 Dependence
