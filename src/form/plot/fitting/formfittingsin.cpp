@@ -89,6 +89,12 @@ bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
 void FormFittingSin::doCorrection(const QVector<double> &v14)
 {
     ui->textBrowserSinLog->append("===== start correction =====");
+
+    if (v14.empty()) {
+        ui->textBrowserSinLog->append("v14 is Empty!");
+        return;
+    }
+
     int closest_index = 0;
     double min_abs_val = std::abs(v14[0]);
     for (int i = 1; i < v14.size(); ++i) {
