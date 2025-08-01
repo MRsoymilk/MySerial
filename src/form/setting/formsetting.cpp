@@ -238,7 +238,7 @@ void FormSetting::getINI()
 
     m_iniUpdate.tip = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
 
-    m_iniServer.enable = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, VAL_ENABLE);
+    m_iniServer.enable = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, VAL_DISABLE);
     m_iniServer.log = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_LOG, VAL_DISABLE);
     m_iniServer.port = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_PORT, "12345");
     ui->checkBoxEnable->setChecked(m_iniServer.enable == VAL_ENABLE ? true : false);
