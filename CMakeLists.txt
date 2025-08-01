@@ -165,3 +165,12 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/version.h
 )
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+if (WIN32)
+    set(APP_ICON_PATH "${CMAKE_CURRENT_SOURCE_DIR}/res/icons/icon.ico")
+
+    set(APP_ICON_RC "${CMAKE_CURRENT_BINARY_DIR}/app_icon.rc")
+    file(WRITE ${APP_ICON_RC} "IDI_ICON1 ICON \"${APP_ICON_PATH}\"\n")
+
+    target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON_RC})
+endif()

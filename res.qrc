@@ -93,5 +93,6 @@
         <file>res/icons/white/usb-off.png</file>
         <file>res/icons/white/yes.png</file>
         <file>res/icons/white/zoom.png</file>
+        <file>res/icons/icon.ico</file>
     </qresource>
 </RCC>
