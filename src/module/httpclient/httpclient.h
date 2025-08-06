@@ -16,6 +16,11 @@ public:
 
     void post(const QUrl &url, const QJsonObject &data);
     void getImage(const QUrl &imageUrl);
+    void downloadBinary(const QString &url,
+                        std::function<void(QByteArray)> onSuccess,
+                        std::function<void(QString)> onError,
+                        std::function<void(qint64, qint64)> onProgress);
+    QJsonObject get_sync(const QString &url);
 
 signals:
     void success(const QJsonDocument &response);

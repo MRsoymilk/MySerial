@@ -65,5 +65,7 @@ const QString KEY_w = "w";
 const QString KEY_xc = "xc";
 const QString KEY_y0 = "y0";
 const QString KEY_IMG_URL = "image_url";
+const QString CFG_GROUP_AUTOUPDATE = "AutoUpdate";
+const QString CFG_AUTOUPDATE_URL = "url";
 
 #endif

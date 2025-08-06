@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.2.07 LANGUAGES CXX)
+project(MySerial VERSION 1.2.08 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -67,6 +67,15 @@ set(PROJECT_SOURCES
         src/form/setting/formtip.h
         src/form/setting/formtip.cpp
         src/form/setting/formtip.ui
+        src/form/setting/AutoUpdate/autoupdate.h
+        src/form/setting/AutoUpdate/autoupdate.cpp
+        src/form/setting/AutoUpdate/autoupdate.ui
+        src/form/setting/Calculate/calculate.h
+        src/form/setting/Calculate/calculate.cpp
+        src/form/setting/Calculate/calculate.ui
+        src/form/setting/ExternalControl/externalcontrol.h
+        src/form/setting/ExternalControl/externalcontrol.cpp
+        src/form/setting/ExternalControl/externalcontrol.ui
         src/form/serial/SerialWorker/serialworker.h
         src/form/serial/SerialWorker/serialworker.cpp
         src/form/play/formplaympu6050.h
