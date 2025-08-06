@@ -1,0 +1,1 @@
+git -C "D:\work\project\my-serial" pull
