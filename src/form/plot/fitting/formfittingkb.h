@@ -22,7 +22,7 @@ public:
     int getRound();
 
 signals:
-    void sendKB(const QByteArray &kb);
+    void sendKB(const QByteArray &bytes);
 
 private:
     void drawKB(const float &k, const float &b);

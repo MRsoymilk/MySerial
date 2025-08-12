@@ -30,6 +30,7 @@ public:
 signals:
     void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);
     void sendKB(const QByteArray &bytes);
+    void sendSin(const QByteArray &bytes);
     void changeFrameType(int index);
     void toHistory(const QList<QPointF> &data14, const QList<QPointF> &data24);
 

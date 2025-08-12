@@ -20,6 +20,7 @@ public:
 signals:
     void windowClose();
     void sendKB(const QByteArray &bytes);
+    void sendSin(const QByteArray &bytes);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

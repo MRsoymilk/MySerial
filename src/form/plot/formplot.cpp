@@ -235,6 +235,7 @@ void FormPlot::init()
             this,
             &FormPlot::plotCorrectionClose);
     connect(m_plotCorrection, &FormPlotCorrection::sendKB, this, &FormPlot::sendKB);
+    connect(m_plotCorrection, &FormPlotCorrection::sendSin, this, &FormPlot::sendSin);
     connect(m_plotSimulate,
             &FormPlotSimulate::simulateDataReady4k,
             m_worker,

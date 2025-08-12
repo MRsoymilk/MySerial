@@ -61,6 +61,7 @@ void FormPlotCorrection::init()
     } else if (txt == "fitting_kb") {
         ui->stackedWidget->setCurrentWidget(m_formKB);
     }
+    connect(m_formSin, &FormFittingSin::sendSin, this, &FormPlotCorrection::sendSin);
 }
 
 void FormPlotCorrection::on_btnStart_clicked()

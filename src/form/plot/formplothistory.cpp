@@ -363,6 +363,15 @@ void FormPlotHistory::clearFitting()
     }
 }
 
+double calcY(double x, double offset, double y0, double A, double xc, double w)
+{
+    double shiftedX = x + offset;
+    return y0 + A * qSin(M_PI * (x - xc) / w);
+}
+
+double g_offset;
+float g_y0, g_A, g_xc, g_w;
+
 void FormPlotHistory::drawFittingSin()
 {
     QString txt_A = ui->lineEdit_A->text();
@@ -385,6 +394,10 @@ void FormPlotHistory::drawFittingSin()
     float y0 = txt_y0.toFloat(&okY0);
     float w = txt_w.toFloat(&okW);
     float xc = txt_xc.toFloat(&okXc);
+    g_y0 = y0;
+    g_A = A;
+    g_xc = xc;
+    g_w = w;
 
     if (!(okA && okY0 && okW && okXc)) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Wrong Params"), tr("Invalid number format."));
@@ -400,17 +413,6 @@ void FormPlotHistory::drawFittingSin()
     if (points.isEmpty())
         return;
 
-    double minAbsY = std::numeric_limits<double>::max();
-    double x0 = 0;
-    for (const QPointF &pt : points) {
-        if (std::abs(pt.y()) < minAbsY) {
-            minAbsY = std::abs(pt.y());
-            x0 = pt.x();
-        }
-    }
-
-    double offset = 1310.0 - x0;
-
     QLineSeries *line = new QLineSeries();
     line->setColor(Qt::red);
     line->setName("Fitting Line");
@@ -420,8 +422,7 @@ void FormPlotHistory::drawFittingSin()
 
     for (const QPointF &pt : points) {
         double x = pt.x();
-        double shiftedX = x + offset;
-        double y = y0 + A * qSin(M_PI * (shiftedX - xc) / w);
+        double y = y0 + A * qSin(M_PI * (x - xc) / w);
         line->append(x, y);
     }
 

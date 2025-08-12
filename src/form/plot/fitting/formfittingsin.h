@@ -20,10 +20,20 @@ private:
         double y0;
     };
 
+    struct ZeroCrossing
+    {
+        double xZero;
+        double yLeft;
+        double yRight;
+    };
+
 public:
     explicit FormFittingSin(QWidget *parent = nullptr);
     ~FormFittingSin();
     void doCorrection(const QVector<double> &v14);
+
+signals:
+    void sendSin(const QByteArray &bytes);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -31,6 +41,9 @@ protected:
 private:
     void init();
     void fillFittingCurveData();
+    FormFittingSin::ZeroCrossing findPositiveToNegativeZeroCrossing();
+    QByteArray packageRawData(const QVector<QPointF> &points);
+    void saveCenteredAroundZeroCrossing(double xZero);
 
 private:
     Ui::FormFittingSin *ui;
