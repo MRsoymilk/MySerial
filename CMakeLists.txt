@@ -18,6 +18,8 @@ set(PROJECT_SOURCES
         src/main/mainwindow.cpp
         src/main/mainwindow.h
         src/main/mainwindow.ui
+        src/ThreadWorker/threadworker.h
+        src/ThreadWorker/threadworker.cpp
         src/module/server/server.h
         src/module/server/server.cpp
         src/form/serial/formserial.h
@@ -32,13 +34,10 @@ set(PROJECT_SOURCES
         src/form/log/formlog.h
         src/form/log/formlog.cpp
         src/form/log/formlog.ui
-        src/form/plot/plot_algorithm.h
         src/form/plot/3d/myglcurvewidget.h
         src/form/plot/3d/myglcurvewidget.cpp
         src/form/plot/enhance/mychartview.h
         src/form/plot/enhance/mychartview.cpp
-        src/form/plot/plotworker.h
-        src/form/plot/plotworker.cpp
         src/form/plot/formplotdata.h
         src/form/plot/formplotdata.cpp
         src/form/plot/formplotdata.ui
@@ -102,6 +101,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 target_include_directories(MySerial PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/common"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/ThreadWorker"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/module/server"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/module/httpclient"
 )

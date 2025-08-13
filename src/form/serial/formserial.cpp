@@ -8,8 +8,8 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QToolButton>
-#include "../plot/plot_algorithm.h"
 #include "funcdef.h"
+#include "plot_algorithm.h"
 
 FormSerial::FormSerial(QWidget *parent)
     : QWidget(parent)

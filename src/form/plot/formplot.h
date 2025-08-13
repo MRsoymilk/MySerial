@@ -12,7 +12,7 @@
 #include "formplotdata.h"
 #include "formplothistory.h"
 #include "formplotsimulate.h"
-#include "plotworker.h"
+#include "threadworker.h"
 
 namespace Ui {
 class FormPlot;
@@ -103,7 +103,7 @@ private:
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
     QThread *m_workerThread;
-    PlotWorker *m_worker;
+    ThreadWorker *m_worker;
     FormPlotData *m_plotData;
     FormPlotHistory *m_plotHistory;
     FormPlotSimulate *m_plotSimulate;

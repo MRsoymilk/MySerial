@@ -1,15 +1,15 @@
-#ifndef PLOTWORKER_H
-#define PLOTWORKER_H
+#ifndef THREADWORKER_H
+#define THREADWORKER_H
 
 #include <QLineSeries>
 #include <QObject>
 
-class PlotWorker : public QObject
+class ThreadWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit PlotWorker(QObject *parent = nullptr);
-    ~PlotWorker();
+    explicit ThreadWorker(QObject *parent = nullptr);
+    ~ThreadWorker();
     void setOffset14(const int &offset);
     void setOffset24(const int &offset);
     void setAlgorithm(int);
@@ -53,4 +53,4 @@ private:
     QLineSeries *m_series;
 };
 
-#endif // PLOTWORKER_H
+#endif // THREADWORKER_H

@@ -1,31 +1,31 @@
-#include "plotworker.h"
+#include "threadworker.h"
 #include <QLineSeries>
 #include <QPointF>
 #include "funcdef.h"
 #include "plot_algorithm.h"
 
-PlotWorker::PlotWorker(QObject *parent)
+ThreadWorker::ThreadWorker(QObject *parent)
     : QObject(parent)
 {}
 
-PlotWorker::~PlotWorker() {}
+ThreadWorker::~ThreadWorker() {}
 
-void PlotWorker::setOffset14(const int &offset)
+void ThreadWorker::setOffset14(const int &offset)
 {
     m_offset14 = offset;
 }
 
-void PlotWorker::setOffset24(const int &offset)
+void ThreadWorker::setOffset24(const int &offset)
 {
     m_offset24 = offset;
 }
 
-void PlotWorker::setAlgorithm(int algorithm)
+void ThreadWorker::setAlgorithm(int algorithm)
 {
     m_algorithm = algorithm;
 }
 
-void PlotWorker::processCurve14(const QByteArray &data14,
+void ThreadWorker::processCurve14(const QByteArray &data14,
                                 QVector<double> &v_voltage14,
                                 QVector<qint32> &raw14,
                                 double &yMin,
@@ -90,7 +90,7 @@ void PlotWorker::processCurve14(const QByteArray &data14,
     }
 }
 static int debug_count = 0;
-void PlotWorker::processCurve24(const QByteArray &data24,
+void ThreadWorker::processCurve24(const QByteArray &data24,
                                 QVector<double> &v_voltage24,
                                 QVector<qint32> &raw24,
                                 double &yMin,
@@ -157,7 +157,7 @@ void PlotWorker::processCurve24(const QByteArray &data24,
     }
 }
 
-void PlotWorker::processData4k(const QByteArray &data14, const QByteArray &data24)
+void ThreadWorker::processData4k(const QByteArray &data14, const QByteArray &data24)
 {
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();

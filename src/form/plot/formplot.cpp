@@ -211,7 +211,7 @@ void FormPlot::init()
 
     // thread worker
     m_workerThread = new QThread(this);
-    m_worker = new PlotWorker();
+    m_worker = new ThreadWorker();
     m_worker->moveToThread(m_workerThread);
 
     m_plotData = new FormPlotData;
@@ -239,16 +239,16 @@ void FormPlot::init()
     connect(m_plotSimulate,
             &FormPlotSimulate::simulateDataReady4k,
             m_worker,
-            &PlotWorker::processData4k);
+            &ThreadWorker::processData4k);
     QObject::connect(this,
                      &FormPlot::changeFrameType,
                      m_plotSimulate,
                      &FormPlotSimulate::onChangeFrameType);
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
-    connect(this, &FormPlot::newDataReceived4k, m_worker, &PlotWorker::processData4k);
-    connect(m_worker, &PlotWorker::dataReady4k, this, &FormPlot::updatePlot4k, Qt::QueuedConnection);
+    connect(this, &FormPlot::newDataReceived4k, m_worker, &ThreadWorker::processData4k);
+    connect(m_worker, &ThreadWorker::dataReady4k, this, &FormPlot::updatePlot4k, Qt::QueuedConnection);
     connect(m_worker,
-            &PlotWorker::pointsReady4k,
+            &ThreadWorker::pointsReady4k,
             m_plotData,
             &FormPlotData::updateTable4k,
             Qt::QueuedConnection);
@@ -397,7 +397,7 @@ void FormPlot::plotCorrectionClose()
     m_showCorrection = false;
     ui->tBtnCorrection->setChecked(false);
     disconnect(m_worker,
-               &PlotWorker::pointsReady4k,
+               &ThreadWorker::pointsReady4k,
                m_plotCorrection,
                &FormPlotCorrection::onEpochCorrection);
 }
@@ -449,7 +449,7 @@ void FormPlot::on_tBtnCorrection_clicked()
     m_plotCorrection->setVisible(m_showCorrection);
     if (m_showCorrection) {
         connect(m_worker,
-                &PlotWorker::pointsReady4k,
+                &ThreadWorker::pointsReady4k,
                 m_plotCorrection,
                 &FormPlotCorrection::onEpochCorrection,
                 Qt::QueuedConnection);
