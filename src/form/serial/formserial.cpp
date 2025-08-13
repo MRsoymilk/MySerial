@@ -62,8 +62,9 @@ void FormSerial::getINI()
         }
     } else {
         m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 0},
             {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
+            {"MPU6050", "<MPU>", "<END>"},
         };
         for (const auto &frame : m_frameTypes) {
             SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
@@ -73,15 +74,6 @@ void FormSerial::getINI()
     }
     int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
     m_algorithm = current_algorithm;
-    if (current_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
-        m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
-        };
-    } else if (current_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
-        m_frameTypes = {
-            {"MPU6050", "<MPU>", "<END>"},
-        };
-    }
 
     initMultSend();
 }
@@ -122,21 +114,6 @@ void FormSerial::sendRaw(const QByteArray &bytes)
 
 void FormSerial::onChangeFrameType(int index)
 {
-    if (index == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
-        m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
-        };
-    } else if (index == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
-               || index == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
-        m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1990},
-            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
-        };
-    } else if (index == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
-        m_frameTypes = {
-            {"MPU6050", "<MPU>", "<END>"},
-        };
-    }
     m_algorithm = index;
 }
 
