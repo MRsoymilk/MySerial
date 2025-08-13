@@ -2,7 +2,7 @@
 #define FORMPLOTHISTORY_H
 
 #include <QWidget>
-#include "enhance/mychartview.h"
+#include "mychartview.h"
 
 namespace Ui {
 class FormPlotHistory;

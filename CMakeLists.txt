@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.2.09 LANGUAGES CXX)
+project(MySerial VERSION 1.3.00 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -36,30 +36,30 @@ set(PROJECT_SOURCES
         src/form/log/formlog.ui
         src/form/plot/3d/myglcurvewidget.h
         src/form/plot/3d/myglcurvewidget.cpp
-        src/form/plot/enhance/mychartview.h
-        src/form/plot/enhance/mychartview.cpp
-        src/form/plot/formplotdata.h
-        src/form/plot/formplotdata.cpp
-        src/form/plot/formplotdata.ui
-        src/form/plot/formplothistory.h
-        src/form/plot/formplothistory.cpp
-        src/form/plot/formplothistory.ui
-        src/form/plot/formplotsimulate.h
-        src/form/plot/formplotsimulate.cpp
-        src/form/plot/formplotsimulate.ui
-        src/form/plot/formplotcorrection.h
-        src/form/plot/formplotcorrection.cpp
-        src/form/plot/formplotcorrection.ui
+        src/enhance/mychartview.h
+        src/enhance/mychartview.cpp
+        src/form/FormPlotData/formplotdata.h
+        src/form/FormPlotData/formplotdata.cpp
+        src/form/FormPlotData/formplotdata.ui
+        src/form/FormPlotHistory/formplothistory.h
+        src/form/FormPlotHistory/formplothistory.cpp
+        src/form/FormPlotHistory/formplothistory.ui
+        src/form/FormPlotSimulate/formplotsimulate.h
+        src/form/FormPlotSimulate/formplotsimulate.cpp
+        src/form/FormPlotSimulate/formplotsimulate.ui
+        src/form/FormPlotCorrection/formplotcorrection.h
+        src/form/FormPlotCorrection/formplotcorrection.cpp
+        src/form/FormPlotCorrection/formplotcorrection.ui
+        src/form/FormPlotCorrection/fitting/formfittingkb.h
+        src/form/FormPlotCorrection/fitting/formfittingkb.cpp
+        src/form/FormPlotCorrection/fitting/formfittingkb.ui
+        src/form/FormPlotCorrection/fitting/formfittingsin.h
+        src/form/FormPlotCorrection/fitting/formfittingsin.cpp
+        src/form/FormPlotCorrection/fitting/formfittingsin.ui
+        src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.h
+        src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp
         src/module/httpclient/httpclient.h
         src/module/httpclient/httpclient.cpp
-        src/form/plot/fitting/ImageViewer/imageviewer.h
-        src/form/plot/fitting/ImageViewer/imageviewer.cpp
-        src/form/plot/fitting/formfittingkb.h
-        src/form/plot/fitting/formfittingkb.cpp
-        src/form/plot/fitting/formfittingkb.ui
-        src/form/plot/fitting/formfittingsin.h
-        src/form/plot/fitting/formfittingsin.cpp
-        src/form/plot/fitting/formfittingsin.ui
         src/form/setting/formsetting.h
         src/form/setting/formsetting.cpp
         src/form/setting/formsetting.ui
@@ -101,6 +101,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 target_include_directories(MySerial PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/common"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/enhance"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/ThreadWorker"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/module/server"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/module/httpclient"

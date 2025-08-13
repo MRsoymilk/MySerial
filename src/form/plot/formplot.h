@@ -7,7 +7,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include "3d/myglcurvewidget.h"
-#include "enhance/mychartview.h"
+#include "mychartview.h"
 
 namespace Ui {
 class FormPlot;
