@@ -3,10 +3,15 @@
 #include "../form/log/formlog.h"
 #include "../form/play/formplaympu6050.h"
 #include "../form/plot/formplot.h"
+#include "../form/plot/formplotcorrection.h"
+#include "../form/plot/formplotdata.h"
+#include "../form/plot/formplothistory.h"
+#include "../form/plot/formplotsimulate.h"
 #include "../form/serial/formserial.h"
 #include "../form/setting/formsetting.h"
 #include "./ui_mainwindow.h"
 #include "funcdef.h"
+#include "threadworker.h"
 #include "version.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -19,6 +24,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    if (m_workerThread) {
+        m_workerThread->quit();
+        m_workerThread->wait();
+        delete m_workerThread;
+    }
     delete ui;
 }
 
@@ -167,6 +177,34 @@ void MainWindow::initToolbar()
     }
 
     ui->btnSerial->click();
+
+    ui->tBtnData->setObjectName("data");
+    ui->tBtnData->setIconSize(QSize(24, 24));
+    ui->tBtnData->setCheckable(true);
+    ui->tBtnData->setChecked(m_showData);
+    ui->tBtnData->setToolTip("Data");
+    ui->tBtnData->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    ui->tBtnHistory->setObjectName("history");
+    ui->tBtnHistory->setIconSize(QSize(24, 24));
+    ui->tBtnHistory->setCheckable(true);
+    ui->tBtnHistory->setChecked(m_showHistory);
+    ui->tBtnHistory->setToolTip("History");
+    ui->tBtnHistory->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    ui->tBtnSimulate->setObjectName("simulate");
+    ui->tBtnSimulate->setIconSize(QSize(24, 24));
+    ui->tBtnSimulate->setCheckable(true);
+    ui->tBtnSimulate->setChecked(m_showSimulate);
+    ui->tBtnSimulate->setToolTip("Simulate");
+    ui->tBtnSimulate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    ui->tBtnCorrection->setObjectName("correction");
+    ui->tBtnCorrection->setIconSize(QSize(24, 24));
+    ui->tBtnCorrection->setCheckable(true);
+    ui->tBtnCorrection->setChecked(m_showCorrection);
+    ui->tBtnCorrection->setToolTip("Correction");
+    ui->tBtnCorrection->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 
 void MainWindow::init()
@@ -176,6 +214,62 @@ void MainWindow::init()
     initToolbar();
     initLanguage();
     initTheme();
+
+    m_plotData = new FormPlotData;
+    m_plotData->hide();
+
+    m_plotHistory = new FormPlotHistory;
+    m_plotHistory->hide();
+
+    m_plotSimulate = new FormPlotSimulate;
+    m_plotSimulate->hide();
+
+    m_plotCorrection = new FormPlotCorrection;
+    m_plotCorrection->hide();
+
+    // thread worker
+    m_workerThread = new QThread(this);
+    m_worker = new ThreadWorker();
+    m_worker->moveToThread(m_workerThread);
+
+    connect(m_plotSimulate,
+            &FormPlotSimulate::simulateDataReady4k,
+            m_worker,
+            &ThreadWorker::processData4k);
+
+    connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
+    connect(formPlot, &FormPlot::newDataReceived4k, m_worker, &ThreadWorker::processData4k);
+
+    connect(m_worker,
+            &ThreadWorker::dataReady4k,
+            formPlot,
+            &FormPlot::updatePlot4k,
+            Qt::QueuedConnection);
+    connect(m_worker,
+            &ThreadWorker::pointsReady4k,
+            m_plotData,
+            &FormPlotData::updateTable4k,
+            Qt::QueuedConnection);
+
+    m_workerThread->start();
+
+    connect(m_plotData, &FormPlotData::windowClose, this, &MainWindow::plotDataClose);
+    connect(m_plotHistory, &FormPlotHistory::windowClose, this, &MainWindow::plotHistoryClose);
+    connect(formPlot, &FormPlot::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv);
+    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &MainWindow::plotSimulateClose);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::windowClose,
+            this,
+            &MainWindow::plotCorrectionClose);
+    connect(formPlot,
+            &FormPlot::changeFrameType,
+            m_plotSimulate,
+            &FormPlotSimulate::onChangeFrameType);
+    connect(formPlot, &FormPlot::changeFrameType, this, [&](int index) {
+        m_worker->setAlgorithm(index);
+    });
+    connect(formPlot, &FormPlot::sendOffset14, this, [&](int val) { m_worker->setOffset14(val); });
+    connect(formPlot, &FormPlot::sendOffset24, this, [&](int val) { m_worker->setOffset24(val); });
 }
 
 void MainWindow::on_btnSerial_clicked()
@@ -245,6 +339,12 @@ void MainWindow::setLanguage(const QString &language)
     if (translator->load(QString(":/res/i18n/%1.qm").arg(language))) {
         qApp->installTranslator(translator);
         ui->retranslateUi(this);
+        if (m_plotHistory) {
+            m_plotHistory->retranslateUI();
+        }
+        if (m_plotData) {
+            m_plotData->retranslateUI();
+        }
         if (formSerial) {
             formSerial->retranslateUI();
         }
@@ -317,5 +417,64 @@ void MainWindow::menuThemeSelect(QAction *selectedTheme)
             act->setChecked(false);
             act->setIcon(QIcon());
         }
+    }
+}
+
+void MainWindow::on_tBtnData_clicked()
+{
+    m_showData = !m_showData;
+    m_plotData->setVisible(m_showData);
+}
+
+void MainWindow::plotDataClose()
+{
+    m_showData = false;
+    ui->tBtnData->setChecked(false);
+}
+
+void MainWindow::plotHistoryClose()
+{
+    m_showHistory = false;
+    ui->tBtnHistory->setChecked(false);
+}
+
+void MainWindow::plotSimulateClose()
+{
+    m_showSimulate = false;
+    ui->tBtnSimulate->setChecked(false);
+}
+
+void MainWindow::plotCorrectionClose()
+{
+    m_showCorrection = false;
+    ui->tBtnCorrection->setChecked(false);
+    disconnect(m_worker,
+               &ThreadWorker::pointsReady4k,
+               m_plotCorrection,
+               &FormPlotCorrection::onEpochCorrection);
+}
+
+void MainWindow::on_tBtnHistory_clicked()
+{
+    m_showHistory = !m_showHistory;
+    m_plotHistory->setVisible(m_showHistory);
+}
+
+void MainWindow::on_tBtnSimulate_clicked()
+{
+    m_showSimulate = !m_showSimulate;
+    m_plotSimulate->setVisible(m_showSimulate);
+}
+
+void MainWindow::on_tBtnCorrection_clicked()
+{
+    m_showCorrection = !m_showCorrection;
+    m_plotCorrection->setVisible(m_showCorrection);
+    if (m_showCorrection) {
+        connect(m_worker,
+                &ThreadWorker::pointsReady4k,
+                m_plotCorrection,
+                &FormPlotCorrection::onEpochCorrection,
+                Qt::QueuedConnection);
     }
 }

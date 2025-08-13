@@ -6,7 +6,6 @@
 #include <QLegendMarker>
 #include <QPainter>
 #include <QShortcut>
-#include <QThread>
 #include <QTimer>
 #include <QWheelEvent>
 #include <QtCharts/QChart>
@@ -42,32 +41,12 @@ FormPlot::FormPlot(QWidget *parent)
 
 FormPlot::~FormPlot()
 {
-    if (m_plotData) {
-        m_plotData->close();
-        delete m_plotData;
-    }
-    if (m_plotHistory) {
-        m_plotHistory->close();
-        delete m_plotHistory;
-    }
-    if (m_plotSimulate) {
-        m_plotSimulate->close();
-        delete m_plotSimulate;
-    }
-    if (m_workerThread) {
-        m_workerThread->quit();
-        m_workerThread->wait();
-        delete m_workerThread;
-    }
     delete ui;
 }
 
 void FormPlot::retranslateUI()
 {
     ui->retranslateUi(this);
-    m_plotData->retranslateUI();
-    m_plotHistory->retranslateUI();
-    m_plotData->retranslateUI();
 }
 
 void FormPlot::getINI()
@@ -162,40 +141,12 @@ void FormPlot::initToolButtons()
     ui->tBtnZoom->setToolTip("Auto Zoom");
     ui->tBtnZoom->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-    ui->tBtnData->setObjectName("data");
-    ui->tBtnData->setIconSize(QSize(24, 24));
-    ui->tBtnData->setCheckable(true);
-    ui->tBtnData->setChecked(m_showData);
-    ui->tBtnData->setToolTip("Data");
-    ui->tBtnData->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
     ui->tBtn3D->setObjectName("3d");
     ui->tBtn3D->setIconSize(QSize(24, 24));
     ui->tBtn3D->setCheckable(true);
     ui->tBtn3D->setChecked(m_show3D);
     ui->tBtn3D->setToolTip("3D");
     ui->tBtn3D->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-    ui->tBtnHistory->setObjectName("history");
-    ui->tBtnHistory->setIconSize(QSize(24, 24));
-    ui->tBtnHistory->setCheckable(true);
-    ui->tBtnHistory->setChecked(m_showHistory);
-    ui->tBtnHistory->setToolTip("History (ctrl+h)");
-    ui->tBtnHistory->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-    ui->tBtnSimulate->setObjectName("simulate");
-    ui->tBtnSimulate->setIconSize(QSize(24, 24));
-    ui->tBtnSimulate->setCheckable(true);
-    ui->tBtnSimulate->setChecked(m_showSimulate);
-    ui->tBtnSimulate->setToolTip("Simulate");
-    ui->tBtnSimulate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-    ui->tBtnCorrection->setObjectName("correction");
-    ui->tBtnCorrection->setIconSize(QSize(24, 24));
-    ui->tBtnCorrection->setCheckable(true);
-    ui->tBtnCorrection->setChecked(m_showCorrection);
-    ui->tBtnCorrection->setToolTip("Correction");
-    ui->tBtnCorrection->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnImgSave->setObjectName("img_save");
     ui->tBtnImgSave->setIconSize(QSize(24, 24));
@@ -209,58 +160,10 @@ void FormPlot::init()
     init3d();
     initToolButtons();
 
-    // thread worker
-    m_workerThread = new QThread(this);
-    m_worker = new ThreadWorker();
-    m_worker->moveToThread(m_workerThread);
-
-    m_plotData = new FormPlotData;
-    m_plotData->hide();
-
-    m_plotHistory = new FormPlotHistory;
-    m_plotHistory->hide();
-
-    m_plotSimulate = new FormPlotSimulate;
-    m_plotSimulate->hide();
-
-    m_plotCorrection = new FormPlotCorrection;
-    m_plotCorrection->hide();
-
-    connect(m_plotData, &FormPlotData::windowClose, this, &FormPlot::plotDataClose);
-    connect(m_plotHistory, &FormPlotHistory::windowClose, this, &FormPlot::plotHistoryClose);
-    connect(this, &FormPlot::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv);
-    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormPlot::plotSimulateClose);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::windowClose,
-            this,
-            &FormPlot::plotCorrectionClose);
-    connect(m_plotCorrection, &FormPlotCorrection::sendKB, this, &FormPlot::sendKB);
-    connect(m_plotCorrection, &FormPlotCorrection::sendSin, this, &FormPlot::sendSin);
-    connect(m_plotSimulate,
-            &FormPlotSimulate::simulateDataReady4k,
-            m_worker,
-            &ThreadWorker::processData4k);
-    QObject::connect(this,
-                     &FormPlot::changeFrameType,
-                     m_plotSimulate,
-                     &FormPlotSimulate::onChangeFrameType);
-    connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
-    connect(this, &FormPlot::newDataReceived4k, m_worker, &ThreadWorker::processData4k);
-    connect(m_worker, &ThreadWorker::dataReady4k, this, &FormPlot::updatePlot4k, Qt::QueuedConnection);
-    connect(m_worker,
-            &ThreadWorker::pointsReady4k,
-            m_plotData,
-            &FormPlotData::updateTable4k,
-            Qt::QueuedConnection);
-
-    m_workerThread->start();
     getINI();
 
     QShortcut *shortcut_ImgSave = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this);
     connect(shortcut_ImgSave, &QShortcut::activated, this, &FormPlot::on_tBtnImgSave_clicked);
-
-    QShortcut *shortcut_History = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_H), this);
-    connect(shortcut_History, &QShortcut::activated, this, &FormPlot::on_tBtnHistory_clicked);
 }
 
 void FormPlot::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
@@ -368,40 +271,6 @@ void FormPlot::on_tBtnZoom_clicked()
     ui->tBtnZoom->setChecked(m_autoZoom);
 }
 
-void FormPlot::on_tBtnData_clicked()
-{
-    m_showData = !m_showData;
-    m_plotData->setVisible(m_showData);
-}
-
-void FormPlot::plotDataClose()
-{
-    m_showData = false;
-    ui->tBtnData->setChecked(false);
-}
-
-void FormPlot::plotHistoryClose()
-{
-    m_showHistory = false;
-    ui->tBtnHistory->setChecked(false);
-}
-
-void FormPlot::plotSimulateClose()
-{
-    m_showSimulate = false;
-    ui->tBtnSimulate->setChecked(false);
-}
-
-void FormPlot::plotCorrectionClose()
-{
-    m_showCorrection = false;
-    ui->tBtnCorrection->setChecked(false);
-    disconnect(m_worker,
-               &ThreadWorker::pointsReady4k,
-               m_plotCorrection,
-               &FormPlotCorrection::onEpochCorrection);
-}
-
 void FormPlot::on_tBtn3D_clicked()
 {
     m_show3D = !m_show3D;
@@ -412,48 +281,22 @@ void FormPlot::on_tBtn3D_clicked()
     }
 }
 
-void FormPlot::on_tBtnHistory_clicked()
-{
-    m_showHistory = !m_showHistory;
-    m_plotHistory->setVisible(m_showHistory);
-}
-
-void FormPlot::on_tBtnSimulate_clicked()
-{
-    m_showSimulate = !m_showSimulate;
-    m_plotSimulate->setVisible(m_showSimulate);
-}
-
 void FormPlot::on_spinBox14Offset_valueChanged(int val)
 {
-    m_worker->setOffset14(val);
+    emit sendOffset14(val);
     setINI();
 }
 
 void FormPlot::on_spinBox24Offset_valueChanged(int val)
 {
-    m_worker->setOffset24(val);
+    emit sendOffset24(val);
     setINI();
 }
 
 void FormPlot::on_comboBoxAlgorithm_currentIndexChanged(int index)
 {
-    m_worker->setAlgorithm(index);
     SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, QString::number(index));
     emit changeFrameType(index);
-}
-
-void FormPlot::on_tBtnCorrection_clicked()
-{
-    m_showCorrection = !m_showCorrection;
-    m_plotCorrection->setVisible(m_showCorrection);
-    if (m_showCorrection) {
-        connect(m_worker,
-                &ThreadWorker::pointsReady4k,
-                m_plotCorrection,
-                &FormPlotCorrection::onEpochCorrection,
-                Qt::QueuedConnection);
-    }
 }
 
 void FormPlot::on_tBtnImgSave_clicked()

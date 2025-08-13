@@ -67,6 +67,34 @@
        </spacer>
       </item>
       <item>
+       <widget class="QToolButton" name="tBtnCorrection">
+        <property name="text">
+         <string>Correction</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="tBtnSimulate">
+        <property name="text">
+         <string>Simulate</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="tBtnHistory">
+        <property name="text">
+         <string>History</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="tBtnData">
+        <property name="text">
+         <string>Data</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QToolButton" name="btnLog">
         <property name="text">
          <string>Log</string>

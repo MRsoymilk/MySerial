@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>741</width>
+    <width>843</width>
     <height>455</height>
    </rect>
   </property>
@@ -32,48 +32,13 @@
    <property name="verticalSpacing">
     <number>0</number>
    </property>
+   <item row="1" column="0" colspan="8">
+    <widget class="QStackedWidget" name="stackedWidget"/>
+   </item>
    <item row="0" column="3">
-    <widget class="QToolButton" name="tBtnCorrection">
-     <property name="text">
-      <string>correction</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="11">
-    <widget class="QToolButton" name="tBtnImgSave">
-     <property name="text">
-      <string>img_save</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="QToolButton" name="tBtnSimulate">
-     <property name="text">
-      <string>simulate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="6">
-    <widget class="QToolButton" name="tBtnZoom">
-     <property name="text">
-      <string>zoom</string>
-     </property>
-     <property name="icon">
-      <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="5">
     <widget class="QToolButton" name="tBtn3D">
      <property name="text">
       <string>3D</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="9">
-    <widget class="QToolButton" name="tBtnData">
-     <property name="text">
-      <string>data</string>
      </property>
     </widget>
    </item>
@@ -89,6 +54,20 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="5">
+    <widget class="QToolButton" name="tBtnCrop">
+     <property name="text">
+      <string>crop</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="7">
+    <widget class="QToolButton" name="tBtnImgSave">
+     <property name="text">
+      <string>img_save</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="2">
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -139,16 +118,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="12">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
-   <item row="0" column="10">
-    <widget class="QToolButton" name="tBtnHistory">
-     <property name="text">
-      <string>history</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -163,28 +132,27 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="7">
-    <widget class="QToolButton" name="tBtnCrop">
+   <item row="0" column="4">
+    <widget class="QToolButton" name="tBtnZoom">
      <property name="text">
-      <string>crop</string>
+      <string>zoom</string>
+     </property>
+     <property name="icon">
+      <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
      </property>
     </widget>
    </item>
-   <item row="0" column="8">
+   <item row="0" column="6">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLabel" name="labelFrom">
+        <widget class="QLabel" name="label">
          <property name="text">
-          <string>From</string>
+          <string>x axis</string>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="spinBoxFrom">
-         <property name="maximum">
-          <number>9999</number>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -193,9 +161,16 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
+        <widget class="QSpinBox" name="spinBoxFrom">
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="labelTo">
          <property name="text">
-          <string>To</string>
+          <string>-</string>
          </property>
         </widget>
        </item>

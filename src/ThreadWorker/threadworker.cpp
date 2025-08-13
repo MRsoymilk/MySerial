@@ -6,7 +6,11 @@
 
 ThreadWorker::ThreadWorker(QObject *parent)
     : QObject(parent)
-{}
+{
+    m_offset14 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, "0").toInt();
+    m_offset24 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, "0").toInt();
+    m_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
+}
 
 ThreadWorker::~ThreadWorker() {}
 
