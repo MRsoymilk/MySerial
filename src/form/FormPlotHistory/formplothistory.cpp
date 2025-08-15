@@ -18,12 +18,6 @@ FormPlotHistory::FormPlotHistory(QWidget *parent)
 
 FormPlotHistory::~FormPlotHistory()
 {
-    if (m_chartView14) {
-        delete m_chartView14;
-    }
-    if (m_chartView24) {
-        delete m_chartView24;
-    }
     delete ui;
 }
 
@@ -34,46 +28,40 @@ void FormPlotHistory::retranslateUI()
 
 void FormPlotHistory::init()
 {
-    m_chartView14 = new MyChartView(new QChart(), this);
-    m_chartView24 = new MyChartView(new QChart(), this);
     m_chartMix = new MyChartView(new QChart(), this);
-
-    m_chartView14->setRenderHint(QPainter::Antialiasing);
-    m_chartView24->setRenderHint(QPainter::Antialiasing);
     m_chartMix->setRenderHint(QPainter::Antialiasing);
 
-    ui->stackedWidget->insertWidget(0, m_chartView14);
-    ui->stackedWidget->insertWidget(1, m_chartView24);
-    ui->stackedWidget->insertWidget(2, m_chartMix);
+    m_widgetMix = new QWidget(this);
+    QVBoxLayout *vLayMix = new QVBoxLayout(m_widgetMix);
+    vLayMix->addWidget(m_chartMix);
+    vLayMix->setContentsMargins(0, 0, 0, 0);
+    m_widgetMix->setLayout(vLayMix);
+    ui->stackedWidget->insertWidget(0, m_widgetMix);
 
     m_chartView14Split = new MyChartView(new QChart(), this);
     m_chartView24Split = new MyChartView(new QChart(), this);
     m_chartView14Split->setRenderHint(QPainter::Antialiasing);
     m_chartView24Split->setRenderHint(QPainter::Antialiasing);
 
-    m_charSplit = new QWidget(this);
-    QVBoxLayout *layout = new QVBoxLayout(m_charSplit);
-    layout->addWidget(m_chartView14Split);
-    layout->addWidget(m_chartView24Split);
-    layout->setStretch(0, 1);
-    layout->setStretch(1, 1);
-    layout->setContentsMargins(0, 0, 0, 0);
-    m_charSplit->setLayout(layout);
-    ui->stackedWidget->insertWidget(3, m_charSplit);
+    m_widgetSplit = new QWidget(this);
+    QVBoxLayout *vLaySplit = new QVBoxLayout(m_widgetSplit);
+    vLaySplit->addWidget(m_chartView14Split);
+    vLaySplit->addWidget(m_chartView24Split);
+    vLaySplit->setStretch(0, 1);
+    vLaySplit->setStretch(1, 1);
+    vLaySplit->setContentsMargins(0, 0, 0, 0);
+    m_widgetSplit->setLayout(vLaySplit);
+    ui->stackedWidget->insertWidget(1, m_widgetSplit);
     ui->stackedWidget->setCurrentIndex(0);
 
     ui->radioButtonMix->setChecked(true);
 
-    // ui->tBtnPrev14->setIcon(QIcon(":/res/icons/go-prev.png"));
     ui->tBtnPrev14->setObjectName("go-prev");
     ui->tBtnPrev14->setToolTip("prev");
-    // ui->tBtnNext14->setIcon(QIcon(":/res/icons/go-next.png"));
     ui->tBtnNext14->setObjectName("go-next");
     ui->tBtnNext14->setToolTip("next");
-    // ui->tBtnPrev24->setIcon(QIcon(":/res/icons/go-prev.png"));
     ui->tBtnPrev24->setObjectName("go-prev");
     ui->tBtnPrev24->setToolTip("prev");
-    // ui->tBtnNext24->setIcon(QIcon(":/res/icons/go-next.png"));
     ui->tBtnNext24->setObjectName("go-next");
     ui->tBtnNext24->setToolTip("next");
 
@@ -143,7 +131,7 @@ void FormPlotHistory::on_tBtnPrev24_clicked()
 void FormPlotHistory::updatePlot14()
 {
     if (m_index_14 >= m_p14.size() || m_p14.empty()) {
-        QChart *chart = m_chartView14->chart();
+        QChart *chart = m_chartView14Split->chart();
         for (QAbstractSeries *series : chart->series()) {
             chart->removeSeries(series);
             delete series;
@@ -158,7 +146,7 @@ void FormPlotHistory::updatePlot14()
 void FormPlotHistory::updatePlot24()
 {
     if (m_index_24 >= m_p24.size() || m_p24.empty()) {
-        QChart *chart = m_chartView24->chart();
+        QChart *chart = m_chartView24Split->chart();
         for (QAbstractSeries *series : chart->series()) {
             chart->removeSeries(series);
             delete series;
@@ -218,46 +206,8 @@ void FormPlotHistory::updatePlot(int index)
         chart->setTitle(tr("curve_mix"));
 
         m_chartMix->setChart(chart);
-        ui->stackedWidget->setCurrentWidget(m_chartMix);
-        ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
-        ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
+        ui->stackedWidget->setCurrentWidget(m_widgetMix);
     } else {
-        if (index == INDEX_14) {
-            QChart *chart = new QChart();
-            QLineSeries *series = new QLineSeries();
-            series->setColor(Qt::magenta);
-            series->append(m_p14[m_index_14]);
-            series->setName("curve14");
-
-            chart->addSeries(series);
-            chart->createDefaultAxes();
-            setXAxisInteger(chart);
-            chart->setTitle(tr("curve_14bit"));
-
-            m_chartView14->setChart(chart);
-            if (!isSplit) {
-                ui->stackedWidget->setCurrentWidget(m_chartView14);
-            }
-            ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
-        } else if (index == INDEX_24) {
-            QChart *chart = new QChart();
-            QLineSeries *series = new QLineSeries();
-
-            series->append(m_p24[m_index_24]);
-            series->setColor(Qt::blue);
-            series->setName("curve24");
-
-            chart->addSeries(series);
-            chart->createDefaultAxes();
-            setXAxisInteger(chart);
-            chart->setTitle(tr("curve_24bit"));
-
-            m_chartView24->setChart(chart);
-            if (!isSplit) {
-                ui->stackedWidget->setCurrentWidget(m_chartView24);
-            }
-            ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
-        }
         if (isSplit) {
             QChart *chart = new QChart();
             QLineSeries *series = new QLineSeries();
@@ -277,7 +227,7 @@ void FormPlotHistory::updatePlot(int index)
             chart->addSeries(series);
             chart->createDefaultAxes();
             setXAxisInteger(chart);
-            ui->stackedWidget->setCurrentIndex(3);
+            ui->stackedWidget->setCurrentWidget(m_widgetSplit);
         }
     }
     if (m_fitting) {
@@ -285,6 +235,8 @@ void FormPlotHistory::updatePlot(int index)
         clearFitting();
         drawFitting();
     }
+    ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
+    ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
 }
 
 void FormPlotHistory::closeEvent(QCloseEvent *event)
@@ -346,8 +298,6 @@ void FormPlotHistory::getFittingChart()
         m_chart = m_chartMix->chart();
     } else if (ui->radioButtonSplit->isChecked()) {
         m_chart = m_chartView14Split->chart();
-    } else {
-        m_chart = m_chartView14->chart();
     }
 }
 
