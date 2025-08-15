@@ -28,22 +28,21 @@ void FormPlotHistory::retranslateUI()
 
 void FormPlotHistory::init()
 {
-    m_chartMix = new MyChartView(new QChart(), this);
-    m_chartMix->setRenderHint(QPainter::Antialiasing);
-
     m_widgetMix = new QWidget(this);
+    m_chartMix = new MyChartView(new QChart(), m_widgetMix);
+    m_chartMix->setRenderHint(QPainter::Antialiasing);
     QVBoxLayout *vLayMix = new QVBoxLayout(m_widgetMix);
     vLayMix->addWidget(m_chartMix);
+    vLayMix->setStretch(0, 1);
     vLayMix->setContentsMargins(0, 0, 0, 0);
     m_widgetMix->setLayout(vLayMix);
     ui->stackedWidget->insertWidget(0, m_widgetMix);
 
-    m_chartView14Split = new MyChartView(new QChart(), this);
-    m_chartView24Split = new MyChartView(new QChart(), this);
+    m_widgetSplit = new QWidget(this);
+    m_chartView14Split = new MyChartView(new QChart(), m_widgetSplit);
+    m_chartView24Split = new MyChartView(new QChart(), m_widgetSplit);
     m_chartView14Split->setRenderHint(QPainter::Antialiasing);
     m_chartView24Split->setRenderHint(QPainter::Antialiasing);
-
-    m_widgetSplit = new QWidget(this);
     QVBoxLayout *vLaySplit = new QVBoxLayout(m_widgetSplit);
     vLaySplit->addWidget(m_chartView14Split);
     vLaySplit->addWidget(m_chartView24Split);
@@ -198,14 +197,12 @@ void FormPlotHistory::updatePlot(int index)
         series14->setColor(Qt::magenta);
         series14->setName("curve14");
 
+        chart->setTitle(tr("curve_mix"));
+        m_chartMix->setChart(chart);
         chart->addSeries(series24);
         chart->addSeries(series14);
-
         chart->createDefaultAxes();
         setXAxisInteger(chart);
-        chart->setTitle(tr("curve_mix"));
-
-        m_chartMix->setChart(chart);
         ui->stackedWidget->setCurrentWidget(m_widgetMix);
     } else {
         if (isSplit) {
