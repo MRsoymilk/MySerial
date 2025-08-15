@@ -18,21 +18,25 @@ public:
         , m_enableCrop(false)
     {
         setMouseTracking(true);
-        setRubberBand(QChartView::NoRubberBand); // 默认禁用橡皮筋
+        setRubberBand(QChartView::NoRubberBand);
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
         setChart(chart);
     }
 
     void setChart(QChart *chart)
     {
+        // 清理旧的 helpers
+        clearHelpers();
+
         QChartView::setChart(chart);
         m_chart = chart;
 
         m_axisX = nullptr;
         m_axisY = nullptr;
 
-        const auto axes = chart->axes();
-        for (QAbstractAxis *axis : axes) {
+        // 找已有的 axis
+        for (auto *axis : chart->axes()) {
             if (axis->orientation() == Qt::Horizontal) {
                 if (auto *valueAxis = qobject_cast<QValueAxis *>(axis)) {
                     m_axisX = valueAxis;
@@ -53,10 +57,20 @@ public:
             chart->addAxis(m_axisY, Qt::AlignLeft);
         }
 
-        clearHelpers();
+        // attach axis 到所有 series，但避免重复 attach
+        for (auto *series : chart->series()) {
+            if (auto *xySeries = qobject_cast<QXYSeries *>(series)) {
+                auto attached = xySeries->attachedAxes();
+                if (!attached.contains(m_axisX))
+                    xySeries->attachAxis(m_axisX);
+                if (!attached.contains(m_axisY))
+                    xySeries->attachAxis(m_axisY);
+            }
+        }
+
         initHelpers();
 
-        // 保存初始坐标轴范围（依据第一个序列所有点范围）
+        // 设置初始坐标轴范围
         if (!m_chart->series().isEmpty()) {
             auto *xySeries = qobject_cast<QXYSeries *>(m_chart->series().first());
             if (xySeries) {
@@ -67,8 +81,6 @@ public:
 
                 m_axisX->setRange(bounds.left(), bounds.right());
                 m_axisY->setRange(bounds.top(), bounds.bottom());
-                xySeries->attachAxis(m_axisX);
-                xySeries->attachAxis(m_axisY);
             }
         }
     }
@@ -76,7 +88,6 @@ public:
     void setInitialAxisRange(const QRectF &range)
     {
         m_initialRange = range;
-
         if (m_axisX && m_axisY) {
             m_axisX->setRange(range.left(), range.right());
             m_axisY->setRange(range.top(), range.bottom());
@@ -85,22 +96,20 @@ public:
 
     void recordInitialAxisRange()
     {
-        if (!m_axisX || !m_axisY)
-            return;
-
-        m_initialRange = QRectF(m_axisX->min(),
-                                m_axisY->min(),
-                                m_axisX->max() - m_axisX->min(),
-                                m_axisY->max() - m_axisY->min());
+        if (m_axisX && m_axisY) {
+            m_initialRange = QRectF(m_axisX->min(),
+                                    m_axisY->min(),
+                                    m_axisX->max() - m_axisX->min(),
+                                    m_axisY->max() - m_axisY->min());
+        }
     }
 
     void backInitialRange()
     {
-        if (!m_initialRange.isValid() || !m_axisX || !m_axisY)
-            return;
-
-        m_axisX->setRange(m_initialRange.left(), m_initialRange.right());
-        m_axisY->setRange(m_initialRange.top(), m_initialRange.bottom());
+        if (m_initialRange.isValid() && m_axisX && m_axisY) {
+            m_axisX->setRange(m_initialRange.left(), m_initialRange.right());
+            m_axisY->setRange(m_initialRange.top(), m_initialRange.bottom());
+        }
     }
 
     void setBackEnabled(bool enabled) { m_enableBack = enabled; }
@@ -133,21 +142,22 @@ protected:
         qreal x = value.x();
         qreal y = value.y();
 
+        // 找最近点
         QPointF closestPoint;
         qreal minDist = std::numeric_limits<qreal>::max();
         for (auto *series : m_chart->series()) {
-            auto *xySeries = qobject_cast<QXYSeries *>(series);
-            if (!xySeries)
-                continue;
-            for (const QPointF &p : xySeries->points()) {
-                qreal dist = std::hypot(p.x() - x, p.y() - y);
-                if (dist < minDist) {
-                    minDist = dist;
-                    closestPoint = p;
+            if (auto *xySeries = qobject_cast<QXYSeries *>(series)) {
+                for (const QPointF &p : xySeries->points()) {
+                    qreal dist = std::hypot(p.x() - x, p.y() - y);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closestPoint = p;
+                    }
                 }
             }
         }
 
+        // 更新十字线
         QPointF top(pos.x(), plotArea.top());
         QPointF bottom(pos.x(), plotArea.bottom());
         QPointF left(plotArea.left(), pos.y());
@@ -156,15 +166,22 @@ protected:
         m_lineV->setLine(QLineF(mapToScene(top.toPoint()), mapToScene(bottom.toPoint())));
         m_lineH->setLine(QLineF(mapToScene(left.toPoint()), mapToScene(right.toPoint())));
 
+        // 标记最近点
         QPointF closestScenePos = mapToScene(m_chart->mapToPosition(closestPoint).toPoint());
         m_marker->setRect(closestScenePos.x() - 4, closestScenePos.y() - 4, 8, 8);
         m_marker->show();
 
+        // 坐标文字
         QString coordText = QString("X: %1\nY: %2")
                                 .arg(closestPoint.x(), 0, 'f', 3)
                                 .arg(closestPoint.y(), 0, 'f', 3);
         m_coordText->setText(coordText);
-        m_coordText->setPos(closestScenePos + QPointF(10, -30));
+
+        QPointF textPos = closestScenePos + QPointF(10, -30);
+        QRectF sceneRect = scene()->sceneRect();
+        if (!sceneRect.contains(textPos))
+            textPos = closestScenePos + QPointF(-60, -30); // 避免超出边界
+        m_coordText->setPos(textPos);
 
         QChartView::mouseMoveEvent(event);
     }
@@ -177,14 +194,7 @@ protected:
         QChartView::mouseDoubleClickEvent(event);
     }
 
-    void mouseReleaseEvent(QMouseEvent *event) override
-    {
-        if (!m_enableCrop) {
-            event->ignore();
-            return;
-        }
-        QChartView::mouseReleaseEvent(event);
-    }
+    void mouseReleaseEvent(QMouseEvent *event) override { QChartView::mouseReleaseEvent(event); }
 
 private:
     void initHelpers()
@@ -194,9 +204,12 @@ private:
 
         m_lineV = m_chart->scene()->addLine(QLineF(), QPen(Qt::DashLine));
         m_lineH = m_chart->scene()->addLine(QLineF(), QPen(Qt::DashLine));
+        m_lineV->hide();
+        m_lineH->hide();
 
         m_coordText = new QGraphicsSimpleTextItem(m_chart);
         m_coordText->setZValue(11);
+        m_coordText->hide();
 
         m_marker = m_chart->scene()->addEllipse(QRectF(0, 0, 8, 8), QPen(Qt::red), QBrush(Qt::red));
         m_marker->setZValue(10);
@@ -228,8 +241,9 @@ private:
 
 private:
     QChart *m_chart = nullptr;
-    QValueAxis *m_axisX;
-    QValueAxis *m_axisY;
+    QValueAxis *m_axisX = nullptr;
+    QValueAxis *m_axisY = nullptr;
+
     QGraphicsLineItem *m_lineV = nullptr;
     QGraphicsLineItem *m_lineH = nullptr;
     QGraphicsSimpleTextItem *m_coordText = nullptr;
