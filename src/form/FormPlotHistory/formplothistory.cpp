@@ -572,9 +572,9 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
 
 void FormPlotHistory::on_tBtnFittingSin_clicked()
 {
+    getFittingChart();
     m_fitting = !m_fitting;
     ui->tBtnFittingSin->setChecked(m_fitting);
-    getFittingChart();
     if (m_fitting) {
         clearFitting();
         drawFitting();
