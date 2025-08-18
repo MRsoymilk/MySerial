@@ -242,6 +242,7 @@ void FormSerial::send(const QString &text)
 
     QByteArray data;
     QString to_show;
+    QString flag = "";
     if (m_ini.send_format == VAL_SERIAL_SEND_HEX) {
         QString cleaned = text;
         cleaned.remove(QRegularExpression("[^0-9A-Fa-f\\s]"));
@@ -264,8 +265,8 @@ void FormSerial::send(const QString &text)
                 LOG_WARN("illegal hex: {}", byteStr);
             }
         }
-        LOG_INFO("send (hex): {}", data);
-        to_show = data;
+
+        flag = "send (hex)";
     } else if (m_ini.send_format == VAL_SERIAL_SEND_HEX_TRANSLATE) {
         QByteArray byteArray = text.toUtf8();
 
@@ -274,21 +275,27 @@ void FormSerial::send(const QString &text)
             hexString.append(
                 QString("%1 ").arg((unsigned char) byteArray[i], 2, 16, QChar('0')).toUpper());
         }
-        LOG_INFO("send (hex translate): {}", hexString);
         data = byteArray;
-        to_show = hexString;
+        flag = "send (hex translate)";
     } else {
         data = text.toUtf8();
-        LOG_INFO("send (normal): {}", data);
-        to_show = data;
+        flag = "send (normal)";
     }
     auto res = m_serial->write(data);
     if (res == -1) {
         LOG_WARN("Write failed: {}", m_serial->errorString());
     }
-    if (m_ini.show_send) {
-        ui->txtRecv->appendPlainText("[TX] " + to_show);
+    QStringList hexList;
+    for (char byte : data) {
+        hexList << QString("%1")
+                       .arg(static_cast<unsigned char>(byte), 2, 16, QLatin1Char('0'))
+                       .toUpper();
     }
+    to_show = hexList.join(" ");
+    if (m_ini.show_send) {
+        ui->txtRecv->appendPlainText(QString("[TX] %1:\n%2").arg(TIMESTAMP_0()).arg(to_show));
+    }
+    LOG_INFO("{}: {}", flag, to_show);
 }
 
 void FormSerial::on_btnSend_clicked()
