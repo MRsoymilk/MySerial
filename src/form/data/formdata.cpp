@@ -73,9 +73,13 @@ void FormData::showContextMenu(const QPoint &pos)
     connect(clearAction, &QAction::triggered, this, &FormData::clearData);
     contextMenu.addAction(clearAction);
 
-    QAction *exportAction = new QAction(tr("Export to CSV"), this);
+    QAction *exportAction = new QAction(tr("Export Selected to CSV"), this);
     connect(exportAction, &QAction::triggered, this, &FormData::exportToCSV);
     contextMenu.addAction(exportAction);
+
+    QAction *exportAllAction = new QAction(tr("Export All to CSV"), this);
+    connect(exportAllAction, &QAction::triggered, this, &FormData::exportAllToCSV);
+    contextMenu.addAction(exportAllAction);
 
     contextMenu.exec(ui->table->viewport()->mapToGlobal(pos));
 }
@@ -96,6 +100,40 @@ void FormData::clearData()
     if (m_model->rowCount() > 0) {
         m_model->removeRows(0, m_model->rowCount());
     }
+}
+
+void FormData::exportAllToCSV()
+{
+    QString path = QFileDialog::getSaveFileName(this,
+                                                tr("Save All to CSV"),
+                                                "",
+                                                tr("CSV Files (*.csv)"));
+    if (path.isEmpty()) {
+        LOG_WARN("csv path is empty!", path);
+        return;
+    }
+    if (!path.endsWith(".csv", Qt::CaseInsensitive)) {
+        path.append(".csv");
+    }
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly)) {
+        LOG_WARN("Could not open file {} for writing!", path);
+        return;
+    }
+
+    QTextStream stream(&file);
+    stream << "timestamp,data,size\n";
+    LOG_INFO("save all data!");
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        QString timestamp = m_model->item(row, 0)->text();
+        QString data = m_model->item(row, 1)->text();
+        QString size = m_model->item(row, 2)->text();
+
+        stream << timestamp << "," << data << "," << size << "\n";
+    }
+
+    file.close();
+    LOG_INFO("Data exported to {}", path);
 }
 
 void FormData::exportToCSV()

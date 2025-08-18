@@ -22,6 +22,7 @@ public slots:
 
 private slots:
     void exportToCSV();
+    void exportAllToCSV();
     void clearData();
     void on_lineEditDataLimit_editingFinished();
 
