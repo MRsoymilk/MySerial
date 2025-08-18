@@ -106,7 +106,7 @@ void FormData::exportAllToCSV()
 {
     QString path = QFileDialog::getSaveFileName(this,
                                                 tr("Save All to CSV"),
-                                                "",
+                                                "data_all.csv",
                                                 tr("CSV Files (*.csv)"));
     if (path.isEmpty()) {
         LOG_WARN("csv path is empty!", path);
@@ -123,7 +123,27 @@ void FormData::exportAllToCSV()
 
     QTextStream stream(&file);
     stream << "timestamp,data,size\n";
-    LOG_INFO("save all data!");
+    exportAll(stream);
+
+    file.close();
+    LOG_INFO("Data exported to {}", path);
+}
+
+void FormData::exportSeleced(const QModelIndexList &selectedRows, QTextStream &stream)
+{
+    foreach (const QModelIndex &index, selectedRows) {
+        int row = index.row();
+
+        QString timestamp = m_model->item(row, 0)->text();
+        QString data = m_model->item(row, 1)->text();
+        QString size = m_model->item(row, 2)->text();
+
+        stream << timestamp << "," << data << "," << size << "\n";
+    }
+}
+
+void FormData::exportAll(QTextStream &stream)
+{
     for (int row = 0; row < m_model->rowCount(); ++row) {
         QString timestamp = m_model->item(row, 0)->text();
         QString data = m_model->item(row, 1)->text();
@@ -131,14 +151,14 @@ void FormData::exportAllToCSV()
 
         stream << timestamp << "," << data << "," << size << "\n";
     }
-
-    file.close();
-    LOG_INFO("Data exported to {}", path);
 }
 
 void FormData::exportToCSV()
 {
-    QString path = QFileDialog::getSaveFileName(this, tr("Save CSV"), "", tr("CSV Files (*.csv)"));
+    QString path = QFileDialog::getSaveFileName(this,
+                                                tr("Save CSV"),
+                                                "data.csv",
+                                                tr("CSV Files (*.csv)"));
     if (path.isEmpty()) {
         LOG_WARN("csv path is empty!", path);
         return;
@@ -158,24 +178,10 @@ void FormData::exportToCSV()
     QModelIndexList selectedRows = ui->table->selectionModel()->selectedRows();
     if (selectedRows.isEmpty()) {
         LOG_INFO("save all data!");
-        for (int row = 0; row < m_model->rowCount(); ++row) {
-            QString timestamp = m_model->item(row, 0)->text();
-            QString data = m_model->item(row, 1)->text();
-            QString size = m_model->item(row, 2)->text();
-
-            stream << timestamp << "," << data << "," << size << "\n";
-        }
+        exportAll(stream);
     } else {
         LOG_INFO("save selected data!");
-        foreach (const QModelIndex &index, selectedRows) {
-            int row = index.row();
-
-            QString timestamp = m_model->item(row, 0)->text();
-            QString data = m_model->item(row, 1)->text();
-            QString size = m_model->item(row, 2)->text();
-
-            stream << timestamp << "," << data << "," << size << "\n";
-        }
+        exportSeleced(selectedRows, stream);
     }
 
     file.close();

@@ -31,6 +31,8 @@ private:
     void showContextMenu(const QPoint &pos);
     void getINI();
     void setINI();
+    void exportSeleced(const QModelIndexList &selectedRows, QTextStream &stream);
+    void exportAll(QTextStream &stream);
 
 private:
     Ui::FormData *ui;
