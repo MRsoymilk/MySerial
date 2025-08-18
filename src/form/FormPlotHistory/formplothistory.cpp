@@ -557,7 +557,7 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
                                                                    : QList<QPointF>();
 
         for (int i = 0; i < size; ++i) {
-            QString indexStr = QString::number(i);
+            QString indexStr = (i < list24.size()) ? QString::number(list24[i].x()) : "";
             QString y14Str = (i < list14.size()) ? QString::number(list14[i].y()) : "";
             QString y24Str = (i < list24.size()) ? QString::number(list24[i].y()) : "";
             out << indexStr << "," << y14Str << "," << y24Str << "\n";

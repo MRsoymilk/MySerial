@@ -164,6 +164,13 @@
       </widget>
      </item>
      <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Orientation::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QCheckBox" name="checkBoxAll">
        <property name="text">
         <string>all</string>
@@ -174,6 +181,13 @@
       <widget class="QToolButton" name="toolButtonDumpData">
        <property name="text">
         <string>dump data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Vertical</enum>
        </property>
       </widget>
      </item>
@@ -276,6 +290,13 @@
         </layout>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Orientation::Vertical</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QRadioButton" name="radioButtonSplit">
