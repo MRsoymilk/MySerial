@@ -92,6 +92,10 @@ void FormPlotData::init()
 
     ui->checkBoxChooseGroup->setCheckState(Qt::CheckState::Unchecked);
     ui->lineEditTarget->setEnabled(false);
+    ui->cBoxRaw14->setChecked(true);
+    ui->cBoxRaw24->setChecked(true);
+    ui->cBoxV14->setChecked(true);
+    ui->cBoxV24->setChecked(true);
 }
 
 void FormPlotData::closeEvent(QCloseEvent *event)
@@ -190,7 +194,12 @@ void FormPlotData::exportAllToCSV()
         return;
     }
 
-    QString targetStr = ui->lineEditTarget->text().trimmed();
+    QString targetStr;
+    if (ui->checkBoxChooseGroup->isChecked()) {
+        targetStr = ui->lineEditTarget->text().trimmed();
+    } else {
+        targetStr = QString("1-%2").arg(groupCount);
+    }
     if (targetStr.isEmpty()) {
         LOG_WARN("No group specified in target input!");
         return;
