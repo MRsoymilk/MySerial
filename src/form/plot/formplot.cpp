@@ -154,6 +154,7 @@ void FormPlot::initToolButtons()
     ui->tBtnImgSave->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnOffset->setCheckable(true);
+    ui->tBtnStep->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -228,36 +229,34 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                             const double &yMin,
                             const double &yMax)
 {
+    int offset = 0;
     if (ui->tBtnOffset->isChecked()) {
-        QList<QPointF> offsetData14 = data14;
-        QList<QPointF> offsetData24 = data24;
-        int offset = ui->spinBoxOffset->value();
-        for (int i = 0; i < data14.size(); ++i) {
-            offsetData14[i].setX(offset + i);
-            offsetData14[i].setY(data14[i].y());
-        }
-        for (int i = 0; i < data24.size(); ++i) {
-            offsetData24[i].setX(offset + i);
-            offsetData24[i].setY(data24[i].y());
-        }
-        emit toHistory(offsetData14, offsetData24);
-        updatePlot2d(offsetData14,
-                     offsetData24,
-                     offset,
-                     offset + std::max(data14.size(), data24.size()),
-                     yMin,
-                     yMax);
-        updatePlot3d(offsetData14,
-                     offsetData24,
-                     offset,
-                     offset + std::max(data14.size(), data24.size()),
-                     yMin,
-                     yMax);
-    } else {
-        emit toHistory(data14, data24);
-        updatePlot2d(data14, data24, xMin, xMax, yMin, yMax);
-        updatePlot3d(data14, data24, xMin, xMax, yMin, yMax);
+        offset = ui->spinBoxOffset->value();
     }
+
+    QList<QPointF> offsetData14 = data14;
+    QList<QPointF> offsetData24 = data24;
+    for (int i = 0; i < data14.size(); ++i) {
+        offsetData14[i].setX(offset + i * m_step);
+        offsetData14[i].setY(data14[i].y());
+    }
+    for (int i = 0; i < data24.size(); ++i) {
+        offsetData24[i].setX(offset + i * m_step);
+        offsetData24[i].setY(data24[i].y());
+    }
+    emit toHistory(offsetData14, offsetData24);
+    updatePlot2d(offsetData14,
+                 offsetData24,
+                 offset,
+                 offset + std::max(data14.size(), data24.size()) * m_step,
+                 yMin,
+                 yMax);
+    updatePlot3d(offsetData14,
+                 offsetData24,
+                 offset,
+                 offset + std::max(data14.size(), data24.size()) * m_step,
+                 yMin,
+                 yMax);
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -358,5 +357,21 @@ void FormPlot::on_spinBoxTo_valueChanged(int val)
     }
     if (from < val) {
         m_axisX->setRange(from, val);
+    }
+}
+
+void FormPlot::on_dSpinBoxStep_valueChanged(double val)
+{
+    if (ui->tBtnStep->isChecked()) {
+        m_step = val;
+    }
+}
+
+void FormPlot::on_tBtnStep_clicked()
+{
+    if (ui->tBtnStep->isChecked()) {
+        m_step = ui->dSpinBoxStep->value();
+    } else {
+        m_step = 1;
     }
 }

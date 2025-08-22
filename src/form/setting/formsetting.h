@@ -7,6 +7,7 @@ class Server;
 class AutoUpdate;
 class Calculate;
 class ExternalControl;
+class FrameSetting;
 
 namespace Ui {
 class FormSetting;
@@ -29,6 +30,7 @@ private:
     AutoUpdate *m_autoUpdate;
     Calculate *m_calculate;
     ExternalControl *m_externalControl;
+    FrameSetting *m_frameSetting;
 };
 
 #endif // FORMSETTING_H

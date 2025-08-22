@@ -55,6 +55,10 @@ private slots:
     void on_spinBoxFrom_valueChanged(int val);
     void on_spinBoxTo_valueChanged(int val);
 
+    void on_dSpinBoxStep_valueChanged(double arg1);
+
+    void on_tBtnStep_clicked();
+
 private:
     void init();
     void init2d();
@@ -90,6 +94,7 @@ private:
 
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
+    double m_step = 1;
 
     MyChartView *m_chartView = nullptr;
     MyGLCurveWidget *m_glWidget = nullptr;

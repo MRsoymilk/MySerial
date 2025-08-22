@@ -11,6 +11,7 @@
 #include "AutoUpdate/autoupdate.h"
 #include "Calculate/calculate.h"
 #include "ExternalControl/externalcontrol.h"
+#include "FrameSetting/framesetting.h"
 
 FormSetting::FormSetting(QWidget *parent)
     : QWidget(parent)
@@ -36,7 +37,9 @@ void FormSetting::init()
     m_autoUpdate = new AutoUpdate;
     m_calculate = new Calculate;
     m_externalControl = new ExternalControl;
+    m_frameSetting = new FrameSetting;
     ui->vLay->addWidget(m_autoUpdate);
+    ui->vLay->addWidget(m_frameSetting);
     ui->vLay->addWidget(m_calculate);
     ui->vLay->addWidget(m_externalControl);
 }

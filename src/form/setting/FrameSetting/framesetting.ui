@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FrameSetting</class>
+ <widget class="QWidget" name="FrameSetting">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>749</width>
+    <height>289</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>FrameSetting</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox14bit">
+     <property name="title">
+      <string>frame 14bit</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelHead14bit">
+        <property name="text">
+         <string>head</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditFoot14bit"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelLength14bit">
+        <property name="text">
+         <string>length</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEditLength14bit"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditHead14bit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelFoot14bit">
+        <property name="text">
+         <string>foot</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QToolButton" name="tBtnCalculate14bit">
+        <property name="text">
+         <string>calculate</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox24bit">
+     <property name="title">
+      <string>frame 24bit</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelLength24bit">
+        <property name="text">
+         <string>length</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEditFoot24bit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelFoot24bit">
+        <property name="text">
+         <string>foot</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEditHead24bit"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="lineEditLength24bit"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelHead24bit">
+        <property name="text">
+         <string>head</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QToolButton" name="tBtnCalculate24bit">
+        <property name="text">
+         <string>calculate</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="btnUpdate">
+     <property name="text">
+      <string>update</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
