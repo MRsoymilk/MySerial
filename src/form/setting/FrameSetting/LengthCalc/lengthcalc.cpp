@@ -23,9 +23,10 @@ void LengthCalc::on_btnCalculate_clicked()
 {
     int data_size = ui->lineEditDataSize->text().toInt();
     m_length = data_size * 3 + m_head.length() + m_foot.length();
+    ui->lineEditLength->setText(QString::number(m_length));
 }
 
-int LengthCalc::getLength()
+QString LengthCalc::getLength()
 {
-    return m_length;
+    return ui->lineEditLength->text();
 }

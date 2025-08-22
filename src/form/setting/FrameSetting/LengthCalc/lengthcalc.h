@@ -15,7 +15,7 @@ public:
     explicit LengthCalc(QWidget *parent = nullptr);
     ~LengthCalc();
     void setFrame(const QString &head, const QString &foot);
-    int getLength();
+    QString getLength();
 
 private slots:
     void on_btnCalculate_clicked();

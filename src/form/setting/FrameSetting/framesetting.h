@@ -21,6 +21,9 @@ private slots:
     void on_btnUpdate_clicked();
 
 private:
+    void init();
+
+private:
     Ui::FrameSetting *ui;
 };
 

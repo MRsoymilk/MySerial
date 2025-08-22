@@ -54,9 +54,7 @@ private slots:
     void on_tBtnImgSave_clicked();
     void on_spinBoxFrom_valueChanged(int val);
     void on_spinBoxTo_valueChanged(int val);
-
     void on_dSpinBoxStep_valueChanged(double arg1);
-
     void on_tBtnStep_clicked();
 
 private:
