@@ -92,9 +92,8 @@ void FormFittingSelf::on_btnCalculate_clicked()
 
 void FormFittingSelf::on_tBtnToHex_clicked()
 {
-    if (m_values.isEmpty()) {
-        on_btnCalculate_clicked();
-    }
+    on_btnCalculate_clicked();
+
     QStringList hexList;
     for (int v : m_values) {
         QString hex = QString("%1").arg(v & 0xFFFF, 4, 16, QChar('0')).toUpper();
@@ -110,9 +109,7 @@ void FormFittingSelf::on_tBtnToHex_clicked()
 
 void FormFittingSelf::on_tBtnToIntArray_clicked()
 {
-    if (m_values.isEmpty()) {
-        on_btnCalculate_clicked();
-    }
+    on_btnCalculate_clicked();
 
     QStringList intList;
     for (int v : m_values) {
@@ -127,9 +124,7 @@ void FormFittingSelf::on_tBtnToIntArray_clicked()
 
 void FormFittingSelf::on_tBtnToPlot_clicked()
 {
-    if (m_values.isEmpty()) {
-        on_btnCalculate_clicked();
-    }
+    on_btnCalculate_clicked();
 
     QLineSeries *series = new QLineSeries();
     for (int i = 0; i < m_values.size(); ++i) {
