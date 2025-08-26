@@ -5,6 +5,7 @@
 
 class FormFittingKB;
 class FormFittingSin;
+class FormFittingSelf;
 
 namespace Ui {
 class FormPlotCorrection;
@@ -40,6 +41,7 @@ private:
     Ui::FormPlotCorrection *ui;
     FormFittingKB *m_formKB;
     FormFittingSin *m_formSin;
+    FormFittingSelf *m_formSelf;
     bool m_start;
 };
 

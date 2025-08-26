@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.03 LANGUAGES CXX)
+project(MySerial VERSION 1.3.04 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -58,6 +58,9 @@ set(PROJECT_SOURCES
         src/form/FormPlotCorrection/fitting/formfittingsin.ui
         src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.h
         src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp
+        src/form/FormPlotCorrection/fitting/formfittingself.h
+        src/form/FormPlotCorrection/fitting/formfittingself.cpp
+        src/form/FormPlotCorrection/fitting/formfittingself.ui
         src/module/httpclient/httpclient.h
         src/module/httpclient/httpclient.cpp
         src/form/setting/formsetting.h

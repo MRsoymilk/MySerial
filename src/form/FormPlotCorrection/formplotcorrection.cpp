@@ -3,6 +3,7 @@
 #include "ui_formplotcorrection.h"
 
 #include "fitting/formfittingkb.h"
+#include "fitting/formfittingself.h"
 #include "fitting/formfittingsin.h"
 
 FormPlotCorrection::FormPlotCorrection(QWidget *parent)
@@ -47,19 +48,23 @@ void FormPlotCorrection::init()
     m_start = false;
     m_formKB = new FormFittingKB;
     m_formSin = new FormFittingSin;
+    m_formSelf = new FormFittingSelf;
+
     ui->stackedWidget->addWidget(m_formKB);
     ui->stackedWidget->addWidget(m_formSin);
+    ui->stackedWidget->addWidget(m_formSelf);
 
-    QStringList algorithms = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION,
-                                                CFG_CORRECTION_ALGORITHM,
-                                                "fitting_sin,fitting_kb")
-                                 .split(",");
+    QStringList algorithms;
+    algorithms << "fitting_self" << "fitting_sin" << "fitting_kb";
     ui->comboBoxAlgorithm->addItems(algorithms);
+
     QString txt = ui->comboBoxAlgorithm->currentText();
     if (txt == "fitting_sin") {
         ui->stackedWidget->setCurrentWidget(m_formSin);
     } else if (txt == "fitting_kb") {
         ui->stackedWidget->setCurrentWidget(m_formKB);
+    } else if (txt == "fitting_self") {
+        ui->stackedWidget->setCurrentWidget(m_formSelf);
     }
     connect(m_formSin, &FormFittingSin::sendSin, this, &FormPlotCorrection::sendSin);
 }
@@ -76,5 +81,7 @@ void FormPlotCorrection::on_comboBoxAlgorithm_currentTextChanged(const QString &
         ui->stackedWidget->setCurrentWidget(m_formKB);
     } else if (algorithm == "fitting_sin") {
         ui->stackedWidget->setCurrentWidget(m_formSin);
+    } else if (algorithm == "fitting_self") {
+        ui->stackedWidget->setCurrentWidget(m_formSelf);
     }
 }

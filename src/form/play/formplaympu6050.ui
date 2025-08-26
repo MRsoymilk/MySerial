@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>MPU6050</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" rowstretch="0" columnstretch="3,2">
    <item row="0" column="0">
