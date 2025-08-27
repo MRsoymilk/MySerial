@@ -13,7 +13,20 @@
   <property name="windowTitle">
    <string>FittingSin</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" columnstretch="1,1">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelFormulaCalculate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>formula calculate</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <layout class="QFormLayout" name="formLayoutParams">
      <item row="0" column="0">
@@ -58,20 +71,20 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="labelFormulaCalculate">
+   <item row="0" column="0" rowspan="2">
+    <widget class="QLabel" name="labelFormula">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="text">
-      <string>formula calculate</string>
+      <string>formula</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QGroupBox" name="groupBoxSinInfo">
      <property name="title">
       <string>Info</string>
@@ -98,30 +111,17 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="2">
-    <widget class="QLabel" name="labelFormula">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>formula</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1" rowspan="5">
+   <item row="0" column="1" rowspan="6">
     <widget class="QWidget" name="widgetPlotSin" native="true">
      <layout class="QGridLayout" name="gLayPlot">
       <item row="0" column="0">
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
-        <widget class="QWidget" name="tabPlot">
+        <widget class="QWidget" name="tabPlotSin">
          <attribute name="title">
-          <string>Plot</string>
+          <string>PlotSin</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_2">
           <property name="leftMargin">
@@ -145,6 +145,153 @@
              <string>PlotSin</string>
             </property>
            </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabPlotPeak">
+         <attribute name="title">
+          <string>PlotPeak</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_4" rowstretch="1,0,0,0,0">
+          <item row="2" column="0">
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="title">
+             <string>point2</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_7">
+             <item row="1" column="0">
+              <widget class="QLabel" name="labelX2">
+               <property name="text">
+                <string>x</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QSpinBox" name="spinBoxX2Real">
+               <property name="maximum">
+                <number>9999</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxX2">
+               <property name="minimum">
+                <double>-9999.989999999999782</double>
+               </property>
+               <property name="maximum">
+                <double>9999.989999999999782</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="labelX2_map">
+               <property name="text">
+                <string>-&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="labelX2Plot">
+               <property name="text">
+                <string>plot</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="labelX2Real">
+               <property name="text">
+                <string>real</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QGroupBox" name="groupBox_1">
+            <property name="title">
+             <string>point1</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="1" column="2">
+              <widget class="QLabel" name="labelX1_map">
+               <property name="text">
+                <string>-&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="labelX1">
+               <property name="text">
+                <string>x</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxX1">
+               <property name="minimum">
+                <double>-9999.989999999999782</double>
+               </property>
+               <property name="maximum">
+                <double>9999.989999999999782</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QSpinBox" name="spinBoxX1Real">
+               <property name="maximum">
+                <number>9999</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="labelX1Plot">
+               <property name="text">
+                <string>plot</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="labelX1Real">
+               <property name="text">
+                <string>real</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="btnAdjust">
+            <property name="text">
+             <string>Adjust</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelPlotPeak">
+            <property name="text">
+             <string>PlotPeak</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QPushButton" name="btnGenerateThreshold">
+              <property name="text">
+               <string>generate threshold</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxStart">
+              <property name="maximum">
+               <double>9999.989999999999782</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -178,8 +325,32 @@
      </layout>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="btnUpdate">
+     <property name="text">
+      <string>update</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_A</tabstop>
+  <tabstop>lineEdit_y0</tabstop>
+  <tabstop>lineEdit_xc</tabstop>
+  <tabstop>lineEdit_w</tabstop>
+  <tabstop>btnUpdate</tabstop>
+  <tabstop>textBrowserSinLog</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>doubleSpinBoxX1</tabstop>
+  <tabstop>spinBoxX1Real</tabstop>
+  <tabstop>doubleSpinBoxX2</tabstop>
+  <tabstop>spinBoxX2Real</tabstop>
+  <tabstop>btnAdjust</tabstop>
+  <tabstop>btnGenerateThreshold</tabstop>
+  <tabstop>doubleSpinBoxStart</tabstop>
+  <tabstop>tableViewFittingCurveData</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

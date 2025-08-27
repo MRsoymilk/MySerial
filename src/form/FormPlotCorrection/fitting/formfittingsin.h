@@ -11,7 +11,7 @@ class FormFittingSin;
 class FormFittingSin : public QWidget
 {
     Q_OBJECT
-private:
+public:
     struct SIN
     {
         double A;
@@ -30,7 +30,7 @@ private:
 public:
     explicit FormFittingSin(QWidget *parent = nullptr);
     ~FormFittingSin();
-    void doCorrection(const QVector<double> &v14);
+    void doCorrection(const QVector<double> &v14, const QVector<double> &v24);
 
 signals:
     void sendSin(const QByteArray &bytes);
@@ -38,18 +38,27 @@ signals:
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
+private slots:
+    void on_btnAdjust_clicked();
+    void on_btnUpdate_clicked();
+    void showContextMenu(const QPoint &pos);
+    void exportAllToCSV();
+    void on_btnGenerateThreshold_clicked();
+
 private:
     void init();
     void fillFittingCurveData();
-    FormFittingSin::ZeroCrossing findPositiveToNegativeZeroCrossing();
     QByteArray packageRawData(const QVector<QPointF> &points);
-    void saveCenteredAroundZeroCrossing(double xZero);
+    void fillFixedFittingCurveData(const double &start);
+    void packageRawData();
 
 private:
     Ui::FormFittingSin *ui;
-    QPixmap m_pixmap;
+    QPixmap m_pixSin;
+    QPixmap m_pixPeak;
     QStandardItemModel *m_model;
-    SIN m_sin;
+    SIN m_sin, m_sin_fixed;
+    QVector<qint32> m_threshold_table;
 };
 
 #endif // FORMFITTINGSIN_H

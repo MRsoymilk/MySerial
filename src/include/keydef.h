@@ -29,6 +29,7 @@ const QString CFG_MULT_LABEL = "label";
 const QString CFG_GROUP_SETTING = "Setting";
 const QString CFG_SETTING_UPDATE_URL = "update_url";
 const QString CFG_SETTING_CALCULATE_URL = "calculate_url";
+const QString CFG_SETTING_FIND_PEAK_URL = "find_peak_url";
 const QString CFG_SETTING_UPDATE_CHECK = "update_check";
 const QString CFG_SETTING_UPDATE_TIP = "update_tip";
 const QString CFG_GROUP_SERVER = "Server";

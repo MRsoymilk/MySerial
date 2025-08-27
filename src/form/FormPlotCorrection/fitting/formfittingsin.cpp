@@ -1,7 +1,14 @@
 #include "formfittingsin.h"
 #include <QFile>
+#include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QMenu>
+#include <QPair>
+#include <QtMath>
+#include <iostream>
+#include <optional>
+
 #include <QMouseEvent>
 #include <QtMath>
 #include "ImageViewer/imageviewer.h"
@@ -12,6 +19,7 @@
 
 ImageViewer *imageViewer = nullptr;
 QString m_urlCalculate;
+QString m_urlFindPeak;
 FormFittingSin::FormFittingSin(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::FormFittingSin)
@@ -20,6 +28,7 @@ FormFittingSin::FormFittingSin(QWidget *parent)
     init();
 
     ui->labelPlotSin->installEventFilter(this);
+    ui->labelPlotPeak->installEventFilter(this);
 }
 
 FormFittingSin::~FormFittingSin()
@@ -31,8 +40,11 @@ void FormFittingSin::init()
 {
     ui->labelFormula->setText("y = y<sub>0</sub> + A &middot; sin(&pi; (x - x<sub>c</sub>) / w)");
     ui->labelFormula->setTextFormat(Qt::RichText);
+    ui->labelFormula->setTextInteractionFlags(Qt::TextInteractionFlag::TextSelectableByMouse);
     ui->labelPlotSin->setToolTip(tr("Double click to zoom."));
     ui->labelPlotSin->setScaledContents(true);
+    ui->labelPlotPeak->setToolTip(tr("Double click to zoom."));
+    ui->labelPlotPeak->setScaledContents(true);
 
     m_model = new QStandardItemModel(this);
     m_model->setColumnCount(3);
@@ -42,34 +54,113 @@ void FormFittingSin::init()
     ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(
         QHeaderView::ResizeToContents);
     ui->tableViewFittingCurveData->setModel(m_model);
+    ui->tableViewFittingCurveData->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableViewFittingCurveData,
+            &QWidget::customContextMenuRequested,
+            this,
+            &FormFittingSin::showContextMenu);
 
     m_urlCalculate = SETTING_CONFIG_GET(CFG_GROUP_SETTING,
                                         CFG_SETTING_CALCULATE_URL,
                                         URL_FITTING_SIN);
+    m_urlFindPeak = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIND_PEAK_URL, URL_FIND_PEAK);
+    m_sin_fixed = {0, 0, 0, 0};
 }
 
-FormFittingSin::ZeroCrossing FormFittingSin::findPositiveToNegativeZeroCrossing()
+void FormFittingSin::showContextMenu(const QPoint &pos)
 {
-    int startX = qRound(m_sin.xc);
-    int periodLength = qRound(2 * m_sin.w);
-    int endX = startX + periodLength;
+    QMenu contextMenu(tr("Context Menu"), this);
 
-    double prevY = m_sin.y0 + m_sin.A * qSin(M_PI * (startX - m_sin.xc) / m_sin.w);
-    for (int x = startX + 1; x <= endX; ++x) {
-        double currY = m_sin.y0 + m_sin.A * qSin(M_PI * (x - m_sin.xc) / m_sin.w);
+    QAction *exportAllAction = new QAction(tr("Export All to CSV"), this);
+    connect(exportAllAction, &QAction::triggered, this, &FormFittingSin::exportAllToCSV);
+    contextMenu.addAction(exportAllAction);
 
-        if (prevY > 0 && currY < 0) {
-            // 线性插值估计零点x坐标
-            double slope = currY - prevY;
-            double xZero = x - 1 + (-prevY) / slope; // (x-1)是prev点的x
+    contextMenu.exec(ui->tableViewFittingCurveData->viewport()->mapToGlobal(pos));
+}
 
-            return {xZero, prevY, currY};
-        }
-        prevY = currY;
+void FormFittingSin::exportAllToCSV()
+{
+    QString path = QFileDialog::getSaveFileName(this,
+                                                tr("Export All Data to CSV"),
+                                                "data_all.csv",
+                                                tr("CSV Files (*.csv)"));
+    if (path.isEmpty()) {
+        LOG_WARN("CSV path is empty!");
+        return;
+    }
+    if (!path.endsWith(".csv", Qt::CaseInsensitive)) {
+        path.append(".csv");
     }
 
-    // 找不到返回一个标记值，比如-1
-    return {-1, 0, 0};
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        LOG_WARN("Could not open file {} for writing!", path);
+        return;
+    }
+
+    QTextStream out(&file);
+
+    // --- 写入表头 ---
+    QStringList headers;
+    for (int col = 0; col < m_model->columnCount(); ++col) {
+        headers << m_model->headerData(col, Qt::Horizontal).toString();
+    }
+    out << headers.join(",") << "\n";
+
+    // --- 写入每行数据 ---
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        QStringList rowData;
+        for (int col = 0; col < m_model->columnCount(); ++col) {
+            QModelIndex idx = m_model->index(row, col);
+            rowData << m_model->data(idx).toString();
+        }
+        out << rowData.join(",") << "\n";
+    }
+
+    file.close();
+    LOG_INFO("Exported all data to CSV: {}", path.toStdString());
+}
+
+void FormFittingSin::packageRawData()
+{
+    QByteArray byteArray;
+
+    // 包头
+    const QByteArray header = QByteArray::fromHex("DD3C043542");
+    byteArray.append(header);
+
+    for (const qint32 val : m_threshold_table) {
+        // 转成2字节（short），注意大小端顺序，这里假设低字节在前（小端）
+        quint16 raw16 = static_cast<quint16>(val & 0xFFFF);
+
+        char lowByte = raw16 & 0xFF;
+        char highByte = (raw16 >> 8) & 0xFF;
+
+        byteArray.append(lowByte);
+        byteArray.append(highByte);
+    }
+
+    // 包尾
+    const QByteArray tail = QByteArray::fromHex("CDFF");
+    byteArray.append(tail);
+    // send file
+    QFile file("threshold.hex");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, tr("Error"), tr("Cannot open file for writing"));
+        return;
+    }
+
+    QByteArray hexData = byteArray.toHex().toUpper();
+
+    qint64 bytesWritten = file.write(hexData);
+    file.close();
+
+    if (bytesWritten != hexData.size()) {
+        QMessageBox::warning(this, tr("Error"), tr("Failed to write complete data"));
+    } else {
+        QMessageBox::information(this, tr("Success"), tr("File saved successfully"));
+    }
+    emit sendSin(byteArray);
 }
 
 QByteArray FormFittingSin::packageRawData(const QVector<QPointF> &points)
@@ -99,40 +190,23 @@ QByteArray FormFittingSin::packageRawData(const QVector<QPointF> &points)
     return byteArray;
 }
 
-void FormFittingSin::saveCenteredAroundZeroCrossing(double xZero)
+void FormFittingSin::fillFixedFittingCurveData(const double &start)
 {
-    if (xZero < 0) {
-        ui->textBrowserSinLog->append("Invalid zero crossing point.");
-        return;
-    }
-
-    const int totalPoints = 535;
-    const int halfPoints = totalPoints / 2; // 267
-    const double step = 1.5;
-
-    double startX = xZero - halfPoints * step;
-    double endX = xZero + halfPoints * step;
-
-    QVector<QPointF> points;
-    points.reserve(totalPoints);
-
-    for (int i = 0; i < totalPoints; ++i) {
-        double x = startX + i * step;
-        double y = m_sin.y0 + m_sin.A * qSin(M_PI * (x - m_sin.xc) / m_sin.w);
-        points.append(QPointF(x, y));
-    }
-
-    emit sendSin(packageRawData(points));
-
-    QFile file("zero_crossing_centered.csv");
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream out(&file);
-        out << "x,y,raw\n";
-        for (const QPointF &pt : points) {
-            qint32 raw = qRound(pt.y() / 3.3 * (1 << 13));
-            out << pt.x() << "," << pt.y() << "," << raw << "\n";
-        }
-        file.close();
+    m_threshold_table.clear();
+    m_model->removeRows(0, m_model->rowCount());
+    int length = 535;
+    double step = 1.5;
+    for (int i = 0; i < length; ++i) {
+        double x = i * step + start;
+        double y = m_sin_fixed.y0
+                   + m_sin_fixed.A * qSin(M_PI * (x - m_sin_fixed.xc) / m_sin_fixed.w);
+        qint32 signedRaw = qRound(y / 3.3 * (1 << 13));
+        QList<QStandardItem *> rowItems;
+        rowItems << new QStandardItem(QString::number(x, 'f', 2));
+        rowItems << new QStandardItem(QString::number(y, 'f', 6));
+        rowItems << new QStandardItem(QString::number(signedRaw));
+        m_threshold_table.push_back(signedRaw);
+        m_model->appendRow(rowItems);
     }
 }
 
@@ -148,7 +222,7 @@ void FormFittingSin::fillFittingCurveData()
     int xClosest = startX;
     double yClosest = 0;
 
-    for (int x = startX; x <= endX; ++x) {
+    for (double x = startX; x < endX; x += 1) {
         double y = m_sin.y0 + m_sin.A * qSin(M_PI * (x - m_sin.xc) / m_sin.w);
 
         // 更新最小值
@@ -161,7 +235,7 @@ void FormFittingSin::fillFittingCurveData()
         qint32 signedRaw = qRound(y / 3.3 * (1 << 13));
 
         QList<QStandardItem *> rowItems;
-        rowItems << new QStandardItem(QString::number(x));
+        rowItems << new QStandardItem(QString::number(x, 'f', 2));
         rowItems << new QStandardItem(QString::number(y, 'f', 6));
         rowItems << new QStandardItem(QString::number(signedRaw));
 
@@ -170,14 +244,12 @@ void FormFittingSin::fillFittingCurveData()
 
     ui->textBrowserSinLog->append(
         QString("Closest point to x-axis: x = %1, y = %2").arg(xClosest).arg(yClosest));
-    auto val = findPositiveToNegativeZeroCrossing();
-    saveCenteredAroundZeroCrossing(val.xZero);
 }
 
 bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
 {
     if (obj == ui->labelPlotSin && event->type() == QEvent::MouseButtonDblClick) {
-        if (!m_pixmap.isNull()) {
+        if (!m_pixSin.isNull()) {
             if (!imageViewer) {
                 imageViewer = new ImageViewer(this);
                 imageViewer->setAttribute(Qt::WA_DeleteOnClose);
@@ -185,7 +257,21 @@ bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
             }
             ImageViewer *viewer = new ImageViewer(this);
             viewer->setAttribute(Qt::WA_DeleteOnClose);
-            viewer->setImage(m_pixmap);
+            viewer->setImage(m_pixSin);
+            viewer->show();
+        }
+        return true;
+    }
+    if (obj == ui->labelPlotPeak && event->type() == QEvent::MouseButtonDblClick) {
+        if (!m_pixPeak.isNull()) {
+            if (!imageViewer) {
+                imageViewer = new ImageViewer(this);
+                imageViewer->setAttribute(Qt::WA_DeleteOnClose);
+                imageViewer = nullptr;
+            }
+            ImageViewer *viewer = new ImageViewer(this);
+            viewer->setAttribute(Qt::WA_DeleteOnClose);
+            viewer->setImage(m_pixPeak);
             viewer->show();
         }
         return true;
@@ -193,23 +279,13 @@ bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
-void FormFittingSin::doCorrection(const QVector<double> &v14)
+void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<double> &v24)
 {
     ui->textBrowserSinLog->append("===== start correction =====");
 
     if (v14.empty()) {
         ui->textBrowserSinLog->append("v14 is Empty!");
         return;
-    }
-
-    int closest_index = 0;
-    double min_abs_val = std::abs(v14[0]);
-    for (int i = 1; i < v14.size(); ++i) {
-        double abs_val = std::abs(v14[i]);
-        if (abs_val < min_abs_val) {
-            min_abs_val = abs_val;
-            closest_index = i;
-        }
     }
 
     QJsonArray x_arr;
@@ -219,19 +295,22 @@ void FormFittingSin::doCorrection(const QVector<double> &v14)
         y_arr.append(v14[i]);
     }
 
-    QJsonObject obj;
-    obj[KEY_X] = x_arr;
-    obj[KEY_Y] = y_arr;
+    QJsonObject objCalculate;
+    objCalculate[KEY_X] = x_arr;
+    objCalculate[KEY_Y] = y_arr;
 
-    QUrl url(m_urlCalculate);
-    HttpClient *client = new HttpClient(this);
-    connect(client, &HttpClient::success, this, [=](const QJsonDocument &resp) {
+    QUrl urlCalculate(m_urlCalculate);
+    HttpClient *clientCalculate = new HttpClient(this);
+    connect(clientCalculate, &HttpClient::success, this, [=](const QJsonDocument &resp) {
         QJsonObject result = resp.object();
 
         m_sin.A = result[KEY_A].toDouble();
         m_sin.w = result[KEY_w].toDouble();
         m_sin.xc = result[KEY_xc].toDouble();
         m_sin.y0 = result[KEY_y0].toDouble();
+        double loss_rss = result["loss_rss"].toDouble();
+        double loss_mse = result["loss_mse"].toDouble();
+        ui->textBrowserSinLog->append(QString("Loss: lss: %1, mse: %2").arg(loss_rss).arg(loss_mse));
         QString imageUrl = result[KEY_IMG_URL].toString();
 
         ui->lineEdit_A->setText(QString::number(m_sin.A));
@@ -249,10 +328,10 @@ void FormFittingSin::doCorrection(const QVector<double> &v14)
         LOG_INFO(msg);
         ui->labelFormula->setTextFormat(Qt::RichText);
         fillFittingCurveData();
-        client->getImage(QUrl(imageUrl));
+        clientCalculate->getImage(QUrl(imageUrl));
     });
 
-    connect(client, &HttpClient::imageLoaded, this, [=](const QPixmap &pixmap) {
+    connect(clientCalculate, &HttpClient::imageLoaded, this, [=](const QPixmap &pixmap) {
         QString msg = QString("Fitting Sin recv img size: (%1, %2)")
                           .arg(pixmap.size().width())
                           .arg(pixmap.size().height());
@@ -265,20 +344,181 @@ void FormFittingSin::doCorrection(const QVector<double> &v14)
             LOG_WARN(msg);
             return;
         }
-        m_pixmap = pixmap;
-        ui->labelPlotSin->setPixmap(m_pixmap);
+        m_pixSin = pixmap;
+        ui->labelPlotSin->setPixmap(m_pixSin);
     });
 
-    connect(client, &HttpClient::imageFailed, this, [=](const QString &err) {
+    connect(clientCalculate, &HttpClient::imageFailed, this, [=](const QString &err) {
         QString msg = "pic load failed: " + err;
         ui->textBrowserSinLog->append(msg);
         LOG_WARN(msg);
     });
-    connect(client, &HttpClient::failure, this, [&](const QString &err) {
+
+    connect(clientCalculate, &HttpClient::failure, this, [&](const QString &err) {
         QString msg = "fitting failed: " + err;
         ui->textBrowserSinLog->append(msg);
         LOG_WARN(msg);
     });
 
-    client->post(url, obj);
+    clientCalculate->post(urlCalculate, objCalculate);
+
+    QUrl urlFindPeak(m_urlFindPeak);
+    HttpClient *clientFindPeak = new HttpClient(this);
+    connect(clientFindPeak, &HttpClient::success, this, [=](const QJsonDocument &resp) {
+        QJsonObject result = resp.object();
+        QJsonArray arr = result["peaks"].toArray();
+        for (auto x : arr) {
+            auto obj = x.toObject();
+            qDebug() << obj;
+        }
+        for (int i = 0; i < arr.size(); ++i) {
+            auto obj = arr[i].toObject();
+            double x = obj["x"].toDouble();
+            double y = obj["y"].toDouble();
+            if (i == 0) {
+                ui->doubleSpinBoxX1->setValue(x);
+            }
+            if (i == 1) {
+                ui->doubleSpinBoxX2->setValue(x);
+            }
+            ui->textBrowserSinLog->append(QString("peak: (%1, %2)").arg(x).arg(y));
+        }
+
+        QString url = result["image_url"].toString();
+        clientFindPeak->getImage(QUrl(url));
+    });
+    connect(clientFindPeak, &HttpClient::imageLoaded, this, [=](const QPixmap &pixmap) {
+        QString msg = QString("Find Peak recv img size: (%1, %2)")
+                          .arg(pixmap.size().width())
+                          .arg(pixmap.size().height());
+        ui->textBrowserSinLog->append(msg);
+        LOG_INFO(msg);
+
+        if (pixmap.isNull()) {
+            QString msg = "pic is empty!";
+            ui->textBrowserSinLog->append(msg);
+            LOG_WARN(msg);
+            return;
+        }
+        m_pixPeak = pixmap;
+        ui->labelPlotPeak->setPixmap(m_pixPeak);
+    });
+    connect(clientFindPeak, &HttpClient::imageFailed, this, [=](const QString &err) {
+        QString msg = "pic load failed: " + err;
+        ui->textBrowserSinLog->append(msg);
+        LOG_WARN(msg);
+    });
+    connect(clientFindPeak, &HttpClient::failure, this, [&](const QString &err) {
+        QString msg = "fitting failed: " + err;
+        ui->textBrowserSinLog->append(msg);
+        LOG_WARN(msg);
+    });
+    QJsonObject objFindPeak;
+    QJsonArray peak_x_arr;
+    QJsonArray peak_y_arr;
+    for (int i = 0; i < v24.size(); ++i) {
+        peak_x_arr.append(i);
+        peak_y_arr.append(v24[i]);
+    }
+    objFindPeak[KEY_X] = peak_x_arr;
+    objFindPeak[KEY_Y] = peak_y_arr;
+    clientFindPeak->post(urlFindPeak, objFindPeak);
+}
+
+std::optional<QPair<double, double>> solveSinParams(
+    double x1, double y1, double x2, double y2, double A, double y0)
+{
+    if (A == 0.0) {
+        std::cerr << "错误：A不能为零。" << std::endl;
+        return std::nullopt;
+    }
+
+    double Y1 = (y1 - y0) / A;
+    double Y2 = (y2 - y0) / A;
+
+    // 检查是否超出 [-1,1]
+    if (Y1 < -1.0 || Y1 > 1.0 || Y2 < -1.0 || Y2 > 1.0) {
+        std::cerr << "错误：y1 或 y2 超出振幅范围 [-A+A0, A+y0]，无实数解。" << std::endl;
+        return std::nullopt;
+    }
+
+    double theta1 = qAsin(Y1);
+    double theta2 = qAsin(Y2);
+
+    double numerator = M_PI * (x1 - x2);
+    double denominator = theta1 - theta2;
+
+    if (denominator == 0) {
+        if (numerator == 0) {
+            std::cerr << "警告：存在无数解，需要更多信息。" << std::endl;
+        } else {
+            std::cerr << "错误：无法求解 w，因为分母为零。" << std::endl;
+        }
+        return std::nullopt;
+    }
+
+    double w = numerator / denominator;
+    double xc = x1 - w * theta1 / M_PI;
+
+    return QPair<double, double>(xc, w);
+}
+
+std::optional<QPair<double, double>> solveSinParams_hard(
+    double x1, double y1, double x2, double y2, double A, double y0)
+{
+    double t = qAsin((y2 - y0) / A) / qAsin((y1 - y0) / A);
+    double xc = (x2 - t * x1) / (1 - t);
+    double w = (x1 - xc) * M_PI / qAsin((y1 - y0) / A);
+    return QPair<double, double>(xc, w);
+}
+
+void FormFittingSin::on_btnAdjust_clicked()
+{
+    // 获取界面输入的两点
+    double lambda1 = ui->spinBoxX1Real->value();
+    double lambda2 = ui->spinBoxX2Real->value();
+    double point1 = ui->doubleSpinBoxX1->value();
+    double point2 = ui->doubleSpinBoxX2->value();
+    double y1 = m_sin.y0 + m_sin.A * qSin(M_PI * (point1 - m_sin.xc) / m_sin.w);
+    double y2 = m_sin.y0 + m_sin.A * qSin(M_PI * (point2 - m_sin.xc) / m_sin.w);
+
+    // 获取拟合曲线当前的 A 和 y0
+    double A = m_sin.A;
+    double y0 = m_sin.y0;
+    auto res = solveSinParams_hard(lambda1, y1, lambda2, y2, A, y0);
+
+    auto xc = res->first;
+    auto w = res->second;
+    QString msg = QString("adjust finish: y = %1 * sin(pi * (x - %2) / %3) + %4")
+                      .arg(A)
+                      .arg(xc)
+                      .arg(w)
+                      .arg(y0);
+    m_sin_fixed.A = A;
+    m_sin_fixed.w = w;
+    m_sin_fixed.xc = xc;
+    m_sin_fixed.y0 = y0;
+    ui->textBrowserSinLog->append(msg);
+    fillFixedFittingCurveData(lambda1);
+    packageRawData();
+}
+
+void FormFittingSin::on_btnUpdate_clicked()
+{
+    m_sin.A = ui->lineEdit_A->text().toDouble();
+    m_sin.w = ui->lineEdit_w->text().toDouble();
+    m_sin.xc = ui->lineEdit_xc->text().toDouble();
+    m_sin.y0 = ui->lineEdit_y0->text().toDouble();
+    ui->labelFormula->setText(QString("y = %1 + %2 &middot; sin(&pi; (x - %4) / %3)")
+                                  .arg(m_sin.y0)
+                                  .arg(m_sin.A)
+                                  .arg(m_sin.w)
+                                  .arg(m_sin.xc));
+}
+
+void FormFittingSin::on_btnGenerateThreshold_clicked()
+{
+    double start = ui->doubleSpinBoxStart->value();
+    fillFixedFittingCurveData(start);
+    packageRawData();
 }

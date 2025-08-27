@@ -32,10 +32,12 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
             m_formKB->doCorrection(v14, v24);
             if (m_formKB->getRound() <= 0) {
                 m_start = false;
+                ui->btnStart->setStyleSheet("");
             }
         } else if (ui->stackedWidget->currentWidget() == m_formSin) {
-            m_formSin->doCorrection(v14);
+            m_formSin->doCorrection(v14, v24);
             m_start = false;
+            ui->btnStart->setStyleSheet("");
         }
     } else {
         ui->btnStart->setStyleSheet("");
@@ -55,7 +57,7 @@ void FormPlotCorrection::init()
     ui->stackedWidget->addWidget(m_formSelf);
 
     QStringList algorithms;
-    algorithms << "fitting_self" << "fitting_sin" << "fitting_kb";
+    algorithms << "fitting_sin" << "fitting_self" << "fitting_kb";
     ui->comboBoxAlgorithm->addItems(algorithms);
 
     QString txt = ui->comboBoxAlgorithm->currentText();
