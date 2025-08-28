@@ -175,6 +175,7 @@
   <tabstop>lineEditHead</tabstop>
   <tabstop>lineEditFoot</tabstop>
   <tabstop>btnCalculate</tabstop>
+  <tabstop>tBtnToPlot</tabstop>
   <tabstop>tBtnToHex</tabstop>
   <tabstop>tBtnToIntArray</tabstop>
  </tabstops>

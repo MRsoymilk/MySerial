@@ -65,6 +65,8 @@ void FormFittingSin::init()
                                         URL_FITTING_SIN);
     m_urlFindPeak = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIND_PEAK_URL, URL_FIND_PEAK);
     m_sin_fixed = {0, 0, 0, 0};
+    ui->doubleSpinBoxStep->setValue(1.5);
+    ui->spinBoxNum->setValue(535);
 }
 
 void FormFittingSin::showContextMenu(const QPoint &pos)
@@ -194,8 +196,8 @@ void FormFittingSin::fillFixedFittingCurveData(const double &start)
 {
     m_threshold_table.clear();
     m_model->removeRows(0, m_model->rowCount());
-    int length = 535;
-    double step = 1.5;
+    int length = ui->spinBoxNum->value();
+    double step = ui->doubleSpinBoxStep->value();
     for (int i = 0; i < length; ++i) {
         double x = i * step + start;
         double y = m_sin_fixed.y0
