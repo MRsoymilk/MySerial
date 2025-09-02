@@ -324,7 +324,9 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
         m_sin.y0 = result[KEY_y0].toDouble();
         double loss_rss = result["loss_rss"].toDouble();
         double loss_mse = result["loss_mse"].toDouble();
-        ui->textBrowserSinLog->append(QString("Loss: lss: %1, mse: %2").arg(loss_rss).arg(loss_mse));
+        double r2 = result["r2"].toDouble();
+        ui->textBrowserSinLog->append(
+            QString("Loss: rss: %1, mse: %2, r2: %3").arg(loss_rss).arg(loss_mse).arg(r2));
         QString imageUrl = result[KEY_IMG_URL].toString();
 
         ui->lineEdit_A->setText(QString::number(m_sin.A));
