@@ -6,11 +6,11 @@
 #include <QMenu>
 #include <QPair>
 #include <QtMath>
-#include <iostream>
 #include <optional>
 
 #include <QMouseEvent>
 #include <QtMath>
+#include "CalculateKB/calculatekb.h"
 #include "ImageViewer/imageviewer.h"
 #include "datadef.h"
 #include "funcdef.h"
@@ -38,7 +38,9 @@ FormFittingSin::~FormFittingSin()
 
 void FormFittingSin::init()
 {
-    ui->labelFormula->setText("y = y<sub>0</sub> + A &middot; sin(&pi; (x - x<sub>c</sub>) / w)");
+    ui->labelFormula->setText("y = (k<sub>1</sub> &middot; T + b<sub>1</sub>) / 8.5 * "
+                              "[y<sub>0</sub> + A &middot; sin(&pi; (x - "
+                              "x<sub>c</sub>) / w)] + k<sub>2</sub> &middot; T + b<sub>2</sub>");
     ui->labelFormula->setTextFormat(Qt::RichText);
     ui->labelFormula->setTextInteractionFlags(Qt::TextInteractionFlag::TextSelectableByMouse);
     ui->labelPlotSin->setToolTip(tr("Double click to zoom."));
@@ -60,11 +62,9 @@ void FormFittingSin::init()
             this,
             &FormFittingSin::showContextMenu);
 
-    m_urlCalculate = SETTING_CONFIG_GET(CFG_GROUP_SETTING,
-                                        CFG_SETTING_CALCULATE_URL,
-                                        URL_FITTING_SIN);
+    m_urlCalculate = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIT_SIN_URL, URL_FITTING_SIN);
     m_urlFindPeak = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIND_PEAK_URL, URL_FIND_PEAK);
-    m_sin_fixed = {0, 0, 0, 0};
+    m_sin_fixed = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     ui->doubleSpinBoxStep->setValue(1.5);
     ui->spinBoxNum->setValue(535);
 }
@@ -200,8 +200,10 @@ void FormFittingSin::fillFixedFittingCurveData(const double &start)
     double step = ui->doubleSpinBoxStep->value();
     for (int i = 0; i < length; ++i) {
         double x = i * step + start;
-        double y = m_sin_fixed.y0
-                   + m_sin_fixed.A * qSin(M_PI * (x - m_sin_fixed.xc) / m_sin_fixed.w);
+        double y = m_k
+                       * (m_sin_fixed.y0
+                          + m_sin_fixed.A * qSin(M_PI * (x - m_sin_fixed.xc) / m_sin_fixed.w))
+                   + m_b;
         qint32 signedRaw = qRound(y / 3.3 * (1 << 13));
         QList<QStandardItem *> rowItems;
         rowItems << new QStandardItem(QString::number(x, 'f', 2));
@@ -290,6 +292,14 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
         return;
     }
 
+    m_v14 = v14;
+
+    double k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
+    double b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
+
+    m_k = k;
+    m_b = b;
+
     QJsonArray x_arr;
     QJsonArray y_arr;
     for (int i = 0; i < v14.size(); ++i) {
@@ -297,13 +307,15 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
         y_arr.append(v14[i]);
     }
 
-    QJsonObject objCalculate;
-    objCalculate[KEY_X] = x_arr;
-    objCalculate[KEY_Y] = y_arr;
+    QJsonObject objFitSin;
+    objFitSin[KEY_X] = x_arr;
+    objFitSin[KEY_Y] = y_arr;
+    objFitSin["k"] = k;
+    objFitSin["b"] = b;
 
-    QUrl urlCalculate(m_urlCalculate);
-    HttpClient *clientCalculate = new HttpClient(this);
-    connect(clientCalculate, &HttpClient::success, this, [=](const QJsonDocument &resp) {
+    QUrl urlFitSin(m_urlCalculate);
+    HttpClient *clientFitSin = new HttpClient(this);
+    connect(clientFitSin, &HttpClient::success, this, [=](const QJsonDocument &resp) {
         QJsonObject result = resp.object();
 
         m_sin.A = result[KEY_A].toDouble();
@@ -319,21 +331,15 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
         ui->lineEdit_w->setText(QString::number(m_sin.w));
         ui->lineEdit_xc->setText(QString::number(m_sin.xc));
         ui->lineEdit_y0->setText(QString::number(m_sin.y0));
-        ui->labelFormula->setText(QString("y = %1 + %2 &middot; sin(&pi; (x - %4) / %3)")
-                                      .arg(m_sin.y0)
-                                      .arg(m_sin.A)
-                                      .arg(m_sin.w)
-                                      .arg(m_sin.xc));
         QString msg = QString("response: %1")
                           .arg(QString(QJsonDocument(resp).toJson(QJsonDocument::Compact)));
         ui->textBrowserSinLog->append(msg);
         LOG_INFO(msg);
-        ui->labelFormula->setTextFormat(Qt::RichText);
         fillFittingCurveData();
-        clientCalculate->getImage(QUrl(imageUrl));
+        clientFitSin->getImage(QUrl(imageUrl));
     });
 
-    connect(clientCalculate, &HttpClient::imageLoaded, this, [=](const QPixmap &pixmap) {
+    connect(clientFitSin, &HttpClient::imageLoaded, this, [=](const QPixmap &pixmap) {
         QString msg = QString("Fitting Sin recv img size: (%1, %2)")
                           .arg(pixmap.size().width())
                           .arg(pixmap.size().height());
@@ -350,19 +356,19 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
         ui->labelPlotSin->setPixmap(m_pixSin);
     });
 
-    connect(clientCalculate, &HttpClient::imageFailed, this, [=](const QString &err) {
+    connect(clientFitSin, &HttpClient::imageFailed, this, [=](const QString &err) {
         QString msg = "pic load failed: " + err;
         ui->textBrowserSinLog->append(msg);
         LOG_WARN(msg);
     });
 
-    connect(clientCalculate, &HttpClient::failure, this, [&](const QString &err) {
+    connect(clientFitSin, &HttpClient::failure, this, [&](const QString &err) {
         QString msg = "fitting failed: " + err;
         ui->textBrowserSinLog->append(msg);
         LOG_WARN(msg);
     });
 
-    clientCalculate->post(urlCalculate, objCalculate);
+    clientFitSin->post(urlFitSin, objFitSin);
 
     QUrl urlFindPeak(m_urlFindPeak);
     HttpClient *clientFindPeak = new HttpClient(this);
@@ -427,47 +433,12 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
     clientFindPeak->post(urlFindPeak, objFindPeak);
 }
 
-std::optional<QPair<double, double>> solveSinParams(
+std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
     double x1, double y1, double x2, double y2, double A, double y0)
 {
-    if (A == 0.0) {
-        std::cerr << "错误：A不能为零。" << std::endl;
-        return std::nullopt;
-    }
+    y1 = (y1 - m_b) / m_k;
+    y2 = (y2 - m_b) / m_k;
 
-    double Y1 = (y1 - y0) / A;
-    double Y2 = (y2 - y0) / A;
-
-    // 检查是否超出 [-1,1]
-    if (Y1 < -1.0 || Y1 > 1.0 || Y2 < -1.0 || Y2 > 1.0) {
-        std::cerr << "错误：y1 或 y2 超出振幅范围 [-A+A0, A+y0]，无实数解。" << std::endl;
-        return std::nullopt;
-    }
-
-    double theta1 = qAsin(Y1);
-    double theta2 = qAsin(Y2);
-
-    double numerator = M_PI * (x1 - x2);
-    double denominator = theta1 - theta2;
-
-    if (denominator == 0) {
-        if (numerator == 0) {
-            std::cerr << "警告：存在无数解，需要更多信息。" << std::endl;
-        } else {
-            std::cerr << "错误：无法求解 w，因为分母为零。" << std::endl;
-        }
-        return std::nullopt;
-    }
-
-    double w = numerator / denominator;
-    double xc = x1 - w * theta1 / M_PI;
-
-    return QPair<double, double>(xc, w);
-}
-
-std::optional<QPair<double, double>> solveSinParams_hard(
-    double x1, double y1, double x2, double y2, double A, double y0)
-{
     double t = qAsin((y2 - y0) / A) / qAsin((y1 - y0) / A);
     double xc = (x2 - t * x1) / (1 - t);
     double w = (x1 - xc) * M_PI / qAsin((y1 - y0) / A);
@@ -481,8 +452,8 @@ void FormFittingSin::on_btnAdjust_clicked()
     double lambda2 = ui->spinBoxX2Real->value();
     double point1 = ui->doubleSpinBoxX1->value();
     double point2 = ui->doubleSpinBoxX2->value();
-    double y1 = m_sin.y0 + m_sin.A * qSin(M_PI * (point1 - m_sin.xc) / m_sin.w);
-    double y2 = m_sin.y0 + m_sin.A * qSin(M_PI * (point2 - m_sin.xc) / m_sin.w);
+    double y1 = m_v14[point1];
+    double y2 = m_v14[point2];
 
     // 获取拟合曲线当前的 A 和 y0
     double A = m_sin.A;
@@ -491,11 +462,13 @@ void FormFittingSin::on_btnAdjust_clicked()
 
     auto xc = res->first;
     auto w = res->second;
-    QString msg = QString("adjust finish: y = %1 * sin(pi * (x - %2) / %3) + %4")
+    QString msg = QString("adjust finish: y = %5 * [%1 * sin(pi * (x - %2) / %3) + %4] + %6")
                       .arg(A)
                       .arg(xc)
                       .arg(w)
-                      .arg(y0);
+                      .arg(y0)
+                      .arg(m_k)
+                      .arg(m_b);
     m_sin_fixed.A = A;
     m_sin_fixed.w = w;
     m_sin_fixed.xc = xc;
@@ -511,11 +484,13 @@ void FormFittingSin::on_btnUpdate_clicked()
     m_sin.w = ui->lineEdit_w->text().toDouble();
     m_sin.xc = ui->lineEdit_xc->text().toDouble();
     m_sin.y0 = ui->lineEdit_y0->text().toDouble();
-    ui->labelFormula->setText(QString("y = %1 + %2 &middot; sin(&pi; (x - %4) / %3)")
-                                  .arg(m_sin.y0)
-                                  .arg(m_sin.A)
-                                  .arg(m_sin.w)
-                                  .arg(m_sin.xc));
+
+    m_sin.k1 = ui->lineEdit_k1->text().toDouble();
+    m_sin.k2 = ui->lineEdit_k2->text().toDouble();
+    m_sin.b1 = ui->lineEdit_b1->text().toDouble();
+    m_sin.b2 = ui->lineEdit_b2->text().toDouble();
+
+    m_sin.T = ui->lineEdit_T->text().toDouble();
 }
 
 void FormFittingSin::on_btnGenerateThreshold_clicked()
@@ -523,4 +498,49 @@ void FormFittingSin::on_btnGenerateThreshold_clicked()
     double start = ui->doubleSpinBoxStart->value();
     fillFixedFittingCurveData(start);
     packageRawData();
+}
+
+void FormFittingSin::on_btnCalculate_k1b1_k2b2_clicked()
+{
+    CalculateKB cal;
+    cal.exec();
+    QJsonObject result = cal.getResult();
+
+    QJsonObject objSlope = result["slope_fit"].toObject();
+    QJsonObject objIntercept = result["intercept_fit"].toObject();
+    {
+        double k = objSlope["k"].toDouble();
+        double b = objSlope["b"].toDouble();
+        double mse = objSlope["mse"].toDouble();
+        double mae = objSlope["mae"].toDouble();
+        double r2 = objSlope["r2"].toDouble();
+        ui->lineEdit_k1->setText(QString::number(k));
+        ui->lineEdit_b1->setText(QString::number(b));
+        ui->textBrowserSinLog->append(QString("slope: y = %1 * T + %2").arg(k).arg(b));
+        ui->textBrowserSinLog->append(
+            QString("loss: mse: %1, mae: %2, r2: %3").arg(mse).arg(mae).arg(r2));
+        m_sin.k1 = k;
+        m_sin.b1 = b;
+    }
+    {
+        double k = objIntercept["k"].toDouble();
+        double b = objIntercept["b"].toDouble();
+        double mse = objIntercept["mse"].toDouble();
+        double mae = objIntercept["mae"].toDouble();
+        double r2 = objIntercept["r2"].toDouble();
+        ui->lineEdit_k2->setText(QString::number(k));
+        ui->lineEdit_b2->setText(QString::number(b));
+        ui->textBrowserSinLog->append(QString("intercept: y = %1 * T + %2").arg(k).arg(b));
+        ui->textBrowserSinLog->append(
+            QString("loss: mse: %1, mae: %2, r2: %3").arg(mse).arg(mae).arg(r2));
+        m_sin.k2 = k;
+        m_sin.b2 = b;
+    }
+}
+
+void FormFittingSin::on_btnGetTemperature_clicked()
+{
+    QString val = QString::number(ui->doubleSpinBoxTemperature->value());
+    ui->lineEdit_T->setText(val);
+    ui->lineEdit_T_->setText(val);
 }

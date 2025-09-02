@@ -14,77 +14,7 @@
    <string>FittingSin</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,0">
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelFormulaCalculate">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>formula calculate</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <layout class="QFormLayout" name="formLayoutParams">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_A">
-       <property name="text">
-        <string>A</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit_A"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_y0">
-       <property name="text">
-        <string>y0</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_y0"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_xc">
-       <property name="text">
-        <string>xc</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="lineEdit_xc"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_w">
-       <property name="text">
-        <string>w</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="lineEdit_w"/>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="0" rowspan="2">
-    <widget class="QLabel" name="labelFormula">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>formula</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QGroupBox" name="groupBoxSinInfo">
      <property name="title">
       <string>Info</string>
@@ -111,9 +41,242 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" rowspan="6">
+   <item row="2" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_8">
+     <item row="1" column="8">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="7">
+      <widget class="QLabel" name="label_y0">
+       <property name="text">
+        <string>y0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="19">
+      <widget class="QLabel" name="label_T_">
+       <property name="text">
+        <string>T</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="9">
+      <widget class="QLineEdit" name="lineEdit_A"/>
+     </item>
+     <item row="1" column="7">
+      <widget class="QLineEdit" name="lineEdit_y0"/>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLineEdit" name="lineEdit_T"/>
+     </item>
+     <item row="1" column="10">
+      <widget class="QLabel" name="label_15">
+       <property name="text">
+        <string>* sin(pi * (x - </string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="11">
+      <widget class="QLineEdit" name="lineEdit_xc"/>
+     </item>
+     <item row="1" column="4">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_k1"/>
+     </item>
+     <item row="1" column="16">
+      <widget class="QLabel" name="label_17">
+       <property name="text">
+        <string>)] + </string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="21">
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>b2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="19">
+      <widget class="QLineEdit" name="lineEdit_T_"/>
+     </item>
+     <item row="1" column="6">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>) / ±8.5 * [</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="9">
+      <widget class="QLabel" name="label_A">
+       <property name="text">
+        <string>A</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>k1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="13" colspan="3">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>w</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QLabel" name="label_b1">
+       <property name="text">
+        <string>b1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="12">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>) / </string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>y = (</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_T">
+       <property name="text">
+        <string>T</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="21">
+      <widget class="QLineEdit" name="lineEdit_b2"/>
+     </item>
+     <item row="0" column="11">
+      <widget class="QLabel" name="label_xc">
+       <property name="text">
+        <string>xc</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="17">
+      <widget class="QLineEdit" name="lineEdit_k2"/>
+     </item>
+     <item row="1" column="5">
+      <widget class="QLineEdit" name="lineEdit_b1"/>
+     </item>
+     <item row="1" column="18">
+      <widget class="QLabel" name="label_18">
+       <property name="text">
+        <string>*</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="13" colspan="3">
+      <widget class="QLineEdit" name="lineEdit_w"/>
+     </item>
+     <item row="0" column="17">
+      <widget class="QLabel" name="label_k2">
+       <property name="text">
+        <string>k2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="20">
+      <widget class="QLabel" name="label_19">
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>*</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="6">
+      <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>/ 1000</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="17" colspan="5">
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>/ 1000</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="btnUpdate">
+     <property name="text">
+      <string>update</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" rowspan="4">
     <widget class="QWidget" name="widgetPlotSin" native="true">
      <layout class="QGridLayout" name="gLayPlot">
+      <item row="4" column="0">
+       <layout class="QHBoxLayout" name="hLayGetTemperature">
+        <item>
+         <widget class="QPushButton" name="btnGetTemperature">
+          <property name="text">
+           <string>get temperature T</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperature">
+          <property name="minimum">
+           <double>-99.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="btnCalculate_k1b1_k2b2">
+        <property name="text">
+         <string>calculate k1, b1, k2, b2</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
@@ -360,20 +523,40 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="btnUpdate">
+   <item row="5" column="0">
+    <widget class="QLabel" name="labelFormulaCalculate">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>update</string>
+      <string>formula calculate</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="2" colspan="2">
+    <widget class="QLabel" name="labelFormula">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>formula</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>lineEdit_A</tabstop>
-  <tabstop>lineEdit_y0</tabstop>
-  <tabstop>lineEdit_xc</tabstop>
-  <tabstop>lineEdit_w</tabstop>
   <tabstop>btnUpdate</tabstop>
   <tabstop>textBrowserSinLog</tabstop>
   <tabstop>tabWidget</tabstop>

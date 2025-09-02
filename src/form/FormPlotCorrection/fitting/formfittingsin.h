@@ -18,13 +18,11 @@ public:
         double w;
         double xc;
         double y0;
-    };
-
-    struct ZeroCrossing
-    {
-        double xZero;
-        double yLeft;
-        double yRight;
+        double T;
+        double k1;
+        double b1;
+        double k2;
+        double b2;
     };
 
 public:
@@ -45,12 +43,17 @@ private slots:
     void exportAllToCSV();
     void on_btnGenerateThreshold_clicked();
 
+    void on_btnCalculate_k1b1_k2b2_clicked();
+    void on_btnGetTemperature_clicked();
+
 private:
     void init();
     void fillFittingCurveData();
     QByteArray packageRawData(const QVector<QPointF> &points);
     void fillFixedFittingCurveData(const double &start);
     void packageRawData();
+    std::optional<QPair<double, double> > solveSinParams_hard(
+        double x1, double y1, double x2, double y2, double A, double y0);
 
 private:
     Ui::FormFittingSin *ui;
@@ -59,6 +62,9 @@ private:
     QStandardItemModel *m_model;
     SIN m_sin, m_sin_fixed;
     QVector<qint32> m_threshold_table;
+    QVector<double> m_v14;
+    double m_k;
+    double m_b;
 };
 
 #endif // FORMFITTINGSIN_H
