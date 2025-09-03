@@ -22,7 +22,7 @@ void LengthCalc::setFrame(const QString &head, const QString &foot)
 void LengthCalc::on_btnCalculate_clicked()
 {
     int data_size = ui->lineEditDataSize->text().toInt();
-    m_length = data_size * 3 + m_head.length() + m_foot.length();
+    m_length = data_size * 3 + m_head.length() / 2 + m_foot.length() / 2;
     ui->lineEditLength->setText(QString::number(m_length));
 }
 
