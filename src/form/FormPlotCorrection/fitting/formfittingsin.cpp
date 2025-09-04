@@ -464,6 +464,8 @@ void FormFittingSin::on_btnAdjust_clicked()
 
     auto xc = res->first;
     auto w = res->second;
+    ui->lineEdit_xc->setText(QString::number(xc));
+    ui->lineEdit_w->setText(QString::number(w));
     QString msg = QString("adjust finish: y = %5 * [%1 * sin(pi * (x - %2) / %3) + %4] + %6")
                       .arg(A)
                       .arg(xc)
