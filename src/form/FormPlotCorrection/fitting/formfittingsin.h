@@ -42,11 +42,10 @@ private slots:
     void showContextMenu(const QPoint &pos);
     void exportAllToCSV();
     void on_btnGenerateThreshold_clicked();
-
     void on_btnCalculate_k1b1_k2b2_clicked();
     void on_btnGetTemperature_clicked();
-
     void on_btnSendFormula_clicked();
+    void on_btnSendR_kb_clicked();
 
 private:
     void init();
@@ -56,7 +55,7 @@ private:
     void packageRawData(bool isSend = false);
     std::optional<QPair<double, double> > solveSinParams_hard(
         double x1, double y1, double x2, double y2, double A, double y0);
-    void sendFormula();
+    QByteArray buildFrame();
 
 private:
     Ui::FormFittingSin *ui;

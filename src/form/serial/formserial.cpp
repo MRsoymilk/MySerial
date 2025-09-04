@@ -240,6 +240,13 @@ void FormSerial::send(const QString &text)
         return;
     }
 
+    // Production Instructions
+    if (text == "DD3C000330CDFF") {
+        emit isProduction(true);
+    } else {
+        emit isProduction(false);
+    }
+
     QByteArray data;
     QString to_show;
     QString flag = "";

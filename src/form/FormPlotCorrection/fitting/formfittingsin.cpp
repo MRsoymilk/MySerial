@@ -454,15 +454,10 @@ std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
     return QPair<double, double>(xc, w);
 }
 
-struct SinParam
-{
-    double k1, b1, y0, A, xc, w, k2, b2;
-} m_sin;
-
-QByteArray buildFrame(const SinParam &m_sin)
+QByteArray FormFittingSin::buildFrame()
 {
     QByteArray byteArray;
-    const QByteArray header = QByteArray::fromHex("DD3C043542");
+    const QByteArray header = QByteArray::fromHex("DD3C002349");
     const QByteArray tail = QByteArray::fromHex("CDFF");
 
     auto appendScaled = [&](QByteArray &arr, double value) {
@@ -478,31 +473,15 @@ QByteArray buildFrame(const SinParam &m_sin)
     byteArray.append(header);
     appendScaled(byteArray, m_sin.k1);
     appendScaled(byteArray, m_sin.b1);
-    appendScaled(byteArray, m_sin.y0);
-    appendScaled(byteArray, m_sin.A);
-    appendScaled(byteArray, m_sin.xc);
-    appendScaled(byteArray, m_sin.w);
+    appendScaled(byteArray, m_sin_fixed.y0);
+    appendScaled(byteArray, m_sin_fixed.A);
+    appendScaled(byteArray, m_sin_fixed.xc);
+    appendScaled(byteArray, m_sin_fixed.w);
     appendScaled(byteArray, m_sin.k2);
     appendScaled(byteArray, m_sin.b2);
     byteArray.append(tail);
 
     return byteArray;
-}
-
-void FormFittingSin::sendFormula()
-{
-    SinParam params;
-    params.k1 = m_sin.k1;
-    params.b1 = m_sin.b1;
-    params.y0 = m_sin.y0;
-    params.A = m_sin.A;
-    params.xc = m_sin.xc;
-    params.w = m_sin.w;
-    params.k2 = m_sin.k2;
-    params.b2 = m_sin.b2;
-    auto frame = buildFrame(params);
-    LOG_INFO("send formula: {}", FORMAT_HEX(frame));
-    emit sendSin(frame);
 }
 
 void FormFittingSin::on_btnAdjust_clicked()
@@ -610,5 +589,36 @@ void FormFittingSin::on_btnGetTemperature_clicked()
 
 void FormFittingSin::on_btnSendFormula_clicked()
 {
-    sendFormula();
+    auto frame = buildFrame();
+    LOG_INFO("send formula: {}", FORMAT_HEX(frame));
+    LOG_INFO("k1 {}", m_sin.k1);
+    LOG_INFO("b1 {}", m_sin.b1);
+    LOG_INFO("y0 {}", m_sin_fixed.y0);
+    LOG_INFO("A {}", m_sin_fixed.A);
+    LOG_INFO("xc {}", m_sin_fixed.xc);
+    LOG_INFO("w {}", m_sin_fixed.w);
+    LOG_INFO("k2 {}", m_sin.k2);
+    LOG_INFO("b2 {}", m_sin.b2);
+    emit sendSin(frame);
+}
+
+void FormFittingSin::on_btnSendR_kb_clicked()
+{
+    double k = ui->doubleSpinBoxR_k->value();
+    double b = ui->doubleSpinBoxR_b->value();
+    QByteArray byteArray;
+    const QByteArray header = QByteArray::fromHex("DD3C000746");
+    const QByteArray tail = QByteArray::fromHex("CDFF");
+    int32_t s_k = static_cast<int32_t>(std::round(k * 1000.0));
+    int32_t s_b = static_cast<int32_t>(std::round(b * 10.0));
+    byteArray.append(header);
+    byteArray.append((s_k >> 8) & 0xFF);
+    byteArray.append((s_k >> 0) & 0xFF);
+    byteArray.append((s_b >> 8) & 0xFF);
+    byteArray.append((s_b >> 0) & 0xFF);
+    byteArray.append(tail);
+    LOG_INFO("send R = kx +b: {}", FORMAT_HEX(byteArray));
+    LOG_INFO("k: {}", k);
+    LOG_INFO("b: {}", b);
+    emit sendSin(byteArray);
 }
