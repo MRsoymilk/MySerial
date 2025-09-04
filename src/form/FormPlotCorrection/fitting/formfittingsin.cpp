@@ -545,4 +545,5 @@ void FormFittingSin::on_btnGetTemperature_clicked()
     QString val = QString::number(ui->doubleSpinBoxTemperature->value());
     ui->lineEdit_T->setText(val);
     ui->lineEdit_T_->setText(val);
+    m_sin.T = ui->doubleSpinBoxTemperature->value();
 }
