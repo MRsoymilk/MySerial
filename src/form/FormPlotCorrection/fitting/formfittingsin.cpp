@@ -290,17 +290,9 @@ bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
-void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<double> &v24)
+void FormFittingSin::startFitting()
 {
-    ui->textBrowserSinLog->append("===== start correction =====");
-
-    if (v14.empty()) {
-        ui->textBrowserSinLog->append("v14 is Empty!");
-        return;
-    }
-
-    m_v14 = v14;
-
+    ui->textBrowserSinLog->append("start fitting");
     double k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
     double b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
 
@@ -309,9 +301,9 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
 
     QJsonArray x_arr;
     QJsonArray y_arr;
-    for (int i = 0; i < v14.size(); ++i) {
+    for (int i = 0; i < m_v14.size(); ++i) {
         x_arr.append(i);
-        y_arr.append(v14[i]);
+        y_arr.append(m_v14[i]);
     }
 
     QJsonObject objFitSin;
@@ -433,13 +425,35 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
     QJsonObject objFindPeak;
     QJsonArray peak_x_arr;
     QJsonArray peak_y_arr;
-    for (int i = 0; i < v24.size(); ++i) {
+    for (int i = 0; i < m_v24.size(); ++i) {
         peak_x_arr.append(i);
-        peak_y_arr.append(v24[i]);
+        peak_y_arr.append(m_v24[i]);
     }
     objFindPeak[KEY_X] = peak_x_arr;
     objFindPeak[KEY_Y] = peak_y_arr;
     clientFindPeak->post(urlFindPeak, objFindPeak);
+}
+
+void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<double> &v24)
+{
+    ui->textBrowserSinLog->append("===== start correction =====");
+
+    if (v14.empty()) {
+        ui->textBrowserSinLog->append("v14 is Empty!");
+        return;
+    }
+
+    m_v14 = v14;
+    m_v24 = v24;
+    ui->textBrowserSinLog->append("waiting temperature...");
+}
+
+void FormFittingSin::setTemperature(double temperature)
+{
+    m_sin.T = temperature;
+    ui->lineEdit_T->setText(QString::number(temperature));
+    ui->lineEdit_T_->setText(QString::number(temperature));
+    startFitting();
 }
 
 std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
@@ -579,7 +593,7 @@ void FormFittingSin::on_btnCalculate_k1b1_k2b2_clicked()
     }
 }
 
-void FormFittingSin::on_btnGetTemperature_clicked()
+void FormFittingSin::on_btnSetTemperature_clicked()
 {
     QString val = QString::number(ui->doubleSpinBoxTemperature->value());
     ui->lineEdit_T->setText(val);

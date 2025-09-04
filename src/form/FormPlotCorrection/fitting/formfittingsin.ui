@@ -544,9 +544,9 @@ color: black;</string>
       <item row="5" column="0">
        <layout class="QHBoxLayout" name="hLayGetTemperature">
         <item>
-         <widget class="QPushButton" name="btnGetTemperature">
+         <widget class="QPushButton" name="btnSetTemperature">
           <property name="text">
-           <string>get temperature T</string>
+           <string>set temperature T</string>
           </property>
          </widget>
         </item>

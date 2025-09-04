@@ -241,10 +241,10 @@ void FormSerial::send(const QString &text)
     }
 
     // Production Instructions
-    if (text == "DD3C000330CDFF") {
-        emit isProduction(true);
+    if (text == "DD3C000340CDFF") {
+        m_toPeek = true;
     } else {
-        emit isProduction(false);
+        m_toPeek = true;
     }
 
     QByteArray data;
@@ -413,6 +413,9 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data)
                 emit recv2Data4k(m_frame.bit14, m_frame.bit24);
                 emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
                 m_frame.bit24.clear();
+                if (m_toPeek) {
+                    m_waitting_byte = true;
+                }
             }
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
@@ -420,6 +423,9 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data)
             m_frame.bit24 = data;
             emit recv2Data4k(m_frame.bit14, m_frame.bit24);
             emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+            if (m_toPeek) {
+                m_waitting_byte = true;
+            }
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
         emit recv2MPU(data);
@@ -441,6 +447,22 @@ void FormSerial::onReadyRead()
     }
     ui->txtRecv->appendPlainText("[RX] " + to_show);
     m_buffer.append(data);
+
+    if (m_waitting_byte) {
+        if (m_buffer.size() < 2) {
+            return;
+        }
+
+        QByteArray tempBytes = m_buffer.left(2);
+        qint16 tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
+        double temperature = tempRaw / 1000.0;
+
+        LOG_INFO("Temperature: {} °C", temperature);
+        recvTemperature(temperature);
+
+        m_buffer.remove(0, 2);
+        m_waitting_byte = false;
+    }
 
     while (true) {
         int firstHeaderIdx = -1;
@@ -485,7 +507,6 @@ void FormSerial::onReadyRead()
             LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
             handleFrame(current_frame.name, frame_candidate);
             m_buffer.remove(0, current_frame.length);
-
         } else {
             // 长度不固定：查找 footer 位置
             int footerIdx = m_buffer.indexOf(current_frame.footer, current_frame.header.size());

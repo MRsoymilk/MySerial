@@ -28,6 +28,7 @@ protected:
 
 public slots:
     void onEpochCorrection(const QVector<double> &v14, const QVector<double> &v24);
+    void onTemperature(double temperature);
 
 private slots:
     void on_btnStart_clicked();

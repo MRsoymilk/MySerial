@@ -53,7 +53,7 @@ signals:
     void recv2Plot4k(const QByteArray &data14, const QByteArray &data24);
     void recv2Data4k(const QByteArray &data14, const QByteArray &data24);
     void recv2MPU(const QByteArray &data);
-    void isProduction(bool isDo);
+    void recvTemperature(double temperature);
 
 private:
     void getINI();
@@ -109,6 +109,9 @@ private:
     FormSerial::FRAME m_frame;
     long long m_recv_count;
     QStringList m_lastPortList;
+
+    bool m_toPeek = false;
+    bool m_waitting_byte = false;
 };
 
 #endif // FORMSERIAL_H

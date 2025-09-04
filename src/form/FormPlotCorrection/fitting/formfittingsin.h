@@ -29,6 +29,7 @@ public:
     explicit FormFittingSin(QWidget *parent = nullptr);
     ~FormFittingSin();
     void doCorrection(const QVector<double> &v14, const QVector<double> &v24);
+    void setTemperature(double temperature);
 
 signals:
     void sendSin(const QByteArray &bytes);
@@ -43,7 +44,7 @@ private slots:
     void exportAllToCSV();
     void on_btnGenerateThreshold_clicked();
     void on_btnCalculate_k1b1_k2b2_clicked();
-    void on_btnGetTemperature_clicked();
+    void on_btnSetTemperature_clicked();
     void on_btnSendFormula_clicked();
     void on_btnSendR_kb_clicked();
 
@@ -56,6 +57,7 @@ private:
     std::optional<QPair<double, double> > solveSinParams_hard(
         double x1, double y1, double x2, double y2, double A, double y0);
     QByteArray buildFrame();
+    void startFitting();
 
 private:
     Ui::FormFittingSin *ui;
@@ -65,6 +67,7 @@ private:
     SIN m_sin, m_sin_fixed;
     QVector<qint32> m_threshold_table;
     QVector<double> m_v14;
+    QVector<double> m_v24;
     double m_k;
     double m_b;
 };
