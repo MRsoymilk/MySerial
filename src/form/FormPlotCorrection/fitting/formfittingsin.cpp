@@ -9,6 +9,7 @@
 #include <optional>
 
 #include <QMouseEvent>
+#include <QtCore>
 #include <QtMath>
 #include "CalculateKB/calculatekb.h"
 #include "ImageViewer/imageviewer.h"
@@ -16,6 +17,8 @@
 #include "funcdef.h"
 #include "httpclient.h"
 #include "ui_formfittingsin.h"
+#include <cmath>
+#include <cstdint>
 
 ImageViewer *imageViewer = nullptr;
 QString m_urlCalculate;
@@ -38,9 +41,10 @@ FormFittingSin::~FormFittingSin()
 
 void FormFittingSin::init()
 {
-    ui->labelFormula->setText("y = (k<sub>1</sub> &middot; T + b<sub>1</sub>) / 8.5 * "
-                              "[y<sub>0</sub> + A &middot; sin(&pi; (x - "
-                              "x<sub>c</sub>) / w)] + k<sub>2</sub> &middot; T + b<sub>2</sub>");
+    ui->labelFormula->setText(
+        "y = (k<sub>1</sub> &middot; T + b<sub>1</sub>) / 8.5 / 1000 * "
+        "[y<sub>0</sub> + A &middot; sin(&pi; (x - "
+        "x<sub>c</sub>) / w)] + (k<sub>2</sub> &middot; T + b<sub>2</sub>) / 1000");
     ui->labelFormula->setTextFormat(Qt::RichText);
     ui->labelFormula->setTextInteractionFlags(Qt::TextInteractionFlag::TextSelectableByMouse);
     ui->labelPlotSin->setToolTip(tr("Double click to zoom."));
@@ -123,7 +127,7 @@ void FormFittingSin::exportAllToCSV()
     LOG_INFO("Exported all data to CSV: {}", path.toStdString());
 }
 
-void FormFittingSin::packageRawData()
+void FormFittingSin::packageRawData(bool isSend)
 {
     QByteArray byteArray;
 
@@ -162,7 +166,10 @@ void FormFittingSin::packageRawData()
     } else {
         QMessageBox::information(this, tr("Success"), tr("File saved successfully"));
     }
-    emit sendSin(byteArray);
+
+    if (isSend) {
+        emit sendSin(byteArray);
+    }
 }
 
 QByteArray FormFittingSin::packageRawData(const QVector<QPointF> &points)
@@ -447,6 +454,57 @@ std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
     return QPair<double, double>(xc, w);
 }
 
+struct SinParam
+{
+    double k1, b1, y0, A, xc, w, k2, b2;
+} m_sin;
+
+QByteArray buildFrame(const SinParam &m_sin)
+{
+    QByteArray byteArray;
+    const QByteArray header = QByteArray::fromHex("DD3C043542");
+    const QByteArray tail = QByteArray::fromHex("CDFF");
+
+    auto appendScaled = [&](QByteArray &arr, double value) {
+        // 保留3位小数，然后乘1000
+        int32_t scaled = static_cast<int32_t>(std::round(value * 1000.0));
+        // 转大端序
+        arr.append(static_cast<char>((scaled >> 24) & 0xFF));
+        arr.append(static_cast<char>((scaled >> 16) & 0xFF));
+        arr.append(static_cast<char>((scaled >> 8) & 0xFF));
+        arr.append(static_cast<char>((scaled >> 0) & 0xFF));
+    };
+
+    byteArray.append(header);
+    appendScaled(byteArray, m_sin.k1);
+    appendScaled(byteArray, m_sin.b1);
+    appendScaled(byteArray, m_sin.y0);
+    appendScaled(byteArray, m_sin.A);
+    appendScaled(byteArray, m_sin.xc);
+    appendScaled(byteArray, m_sin.w);
+    appendScaled(byteArray, m_sin.k2);
+    appendScaled(byteArray, m_sin.b2);
+    byteArray.append(tail);
+
+    return byteArray;
+}
+
+void FormFittingSin::sendFormula()
+{
+    SinParam params;
+    params.k1 = m_sin.k1;
+    params.b1 = m_sin.b1;
+    params.y0 = m_sin.y0;
+    params.A = m_sin.A;
+    params.xc = m_sin.xc;
+    params.w = m_sin.w;
+    params.k2 = m_sin.k2;
+    params.b2 = m_sin.b2;
+    auto frame = buildFrame(params);
+    LOG_INFO("send formula: {}", FORMAT_HEX(frame));
+    emit sendSin(frame);
+}
+
 void FormFittingSin::on_btnAdjust_clicked()
 {
     // 获取界面输入的两点
@@ -548,4 +606,9 @@ void FormFittingSin::on_btnGetTemperature_clicked()
     ui->lineEdit_T->setText(val);
     ui->lineEdit_T_->setText(val);
     m_sin.T = ui->doubleSpinBoxTemperature->value();
+}
+
+void FormFittingSin::on_btnSendFormula_clicked()
+{
+    sendFormula();
 }

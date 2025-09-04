@@ -22,9 +22,9 @@
     ([](const QByteArray &d) { \
         QStringList hexList; \
         for (uchar byte : d) { \
-            hexList << QString("0x%1").arg(byte, 2, 16, QLatin1Char('0')).toUpper(); \
+            hexList << QString("%1").arg(byte, 2, 16, QLatin1Char('0')).toUpper(); \
         } \
-        return hexList.join(" "); \
+        return hexList.join(""); \
     })(data)
 
 #include "../common/mysetting.h"

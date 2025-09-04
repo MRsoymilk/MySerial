@@ -46,14 +46,17 @@ private slots:
     void on_btnCalculate_k1b1_k2b2_clicked();
     void on_btnGetTemperature_clicked();
 
+    void on_btnSendFormula_clicked();
+
 private:
     void init();
     void fillFittingCurveData();
     QByteArray packageRawData(const QVector<QPointF> &points);
     void fillFixedFittingCurveData(const double &start);
-    void packageRawData();
+    void packageRawData(bool isSend = false);
     std::optional<QPair<double, double> > solveSinParams_hard(
         double x1, double y1, double x2, double y2, double A, double y0);
+    void sendFormula();
 
 private:
     Ui::FormFittingSin *ui;
