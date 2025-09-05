@@ -70,6 +70,7 @@ private:
     QVector<double> m_v24;
     double m_k;
     double m_b;
+    bool m_data_ready = false;
 };
 
 #endif // FORMFITTINGSIN_H

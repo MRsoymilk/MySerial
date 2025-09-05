@@ -51,7 +51,9 @@ public:
 
 signals:
     void recv2Plot4k(const QByteArray &data14, const QByteArray &data24);
-    void recv2Data4k(const QByteArray &data14, const QByteArray &data24);
+    void recv2Data4k(const QByteArray &data14,
+                     const QByteArray &data24,
+                     const QByteArray &temperature = "");
     void recv2MPU(const QByteArray &data);
     void recvTemperature(double temperature);
 

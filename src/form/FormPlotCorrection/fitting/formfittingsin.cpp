@@ -292,6 +292,10 @@ bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
 
 void FormFittingSin::startFitting()
 {
+    if (!m_data_ready) {
+        return;
+    }
+    m_data_ready = false;
     ui->textBrowserSinLog->append("start fitting");
     double k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
     double b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
@@ -446,6 +450,8 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
     m_v14 = v14;
     m_v24 = v24;
     ui->textBrowserSinLog->append("waiting temperature...");
+    m_data_ready = true;
+    startFitting();
 }
 
 void FormFittingSin::setTemperature(double temperature)

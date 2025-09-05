@@ -18,7 +18,9 @@ public:
     void retranslateUI();
 
 public slots:
-    void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
+    void onDataReceived4k(const QByteArray &data14,
+                          const QByteArray &data24,
+                          const QByteArray &temperature = "");
 
 private slots:
     void exportToCSV();

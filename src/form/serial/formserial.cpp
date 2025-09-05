@@ -410,21 +410,23 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data)
         } else if (type == "curve_14bit") {
             m_frame.bit14 = data;
             if (!m_frame.bit24.isEmpty()) {
-                emit recv2Data4k(m_frame.bit14, m_frame.bit24);
-                emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
-                m_frame.bit24.clear();
                 if (m_toPeek) {
                     m_waitting_byte = true;
+                } else {
+                    emit recv2Data4k(m_frame.bit14, m_frame.bit24);
+                    emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+                    m_frame.bit24.clear();
                 }
             }
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
         if (type == "curve_24bit") {
             m_frame.bit24 = data;
-            emit recv2Data4k(m_frame.bit14, m_frame.bit24);
-            emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
             if (m_toPeek) {
                 m_waitting_byte = true;
+            } else {
+                emit recv2Data4k(m_frame.bit14, m_frame.bit24);
+                emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
             }
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
@@ -458,7 +460,11 @@ void FormSerial::onReadyRead()
         double temperature = tempRaw / 1000.0;
 
         LOG_INFO("Temperature: {} °C", temperature);
+
+        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
+        emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
         recvTemperature(temperature);
+        m_frame.bit24.clear();
 
         m_buffer.remove(0, 2);
         m_waitting_byte = false;
