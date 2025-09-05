@@ -71,6 +71,9 @@ void FormFittingSin::init()
     m_sin_fixed = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     ui->doubleSpinBoxStep->setValue(1.5);
     ui->spinBoxNum->setValue(535);
+
+    ui->tBtnAddStep1->setCheckable(true);
+    ui->tBtnAddStep2->setCheckable(true);
 }
 
 void FormFittingSin::showContextMenu(const QPoint &pos)
@@ -641,4 +644,66 @@ void FormFittingSin::on_btnSendR_kb_clicked()
     LOG_INFO("k: {}", k);
     LOG_INFO("b: {}", b);
     emit sendSin(byteArray);
+}
+
+void FormFittingSin::on_btnSendSegmentFormula_clicked()
+{
+    if (ui->tBtnAddStep1->isChecked() && ui->tBtnAddStep2->isChecked()) {
+        QByteArray byteArray;
+        const QByteArray header = QByteArray::fromHex("DD3C002351");
+        const QByteArray tail = QByteArray::fromHex("CDFF");
+
+        auto appendScaled = [&](QByteArray &arr, double value) {
+            // 保留3位小数，然后乘1000
+            int32_t scaled = static_cast<int32_t>(std::round(value * 1000.0));
+            // 转大端序
+            arr.append(static_cast<char>((scaled >> 24) & 0xFF));
+            arr.append(static_cast<char>((scaled >> 16) & 0xFF));
+            arr.append(static_cast<char>((scaled >> 8) & 0xFF));
+            arr.append(static_cast<char>((scaled >> 0) & 0xFF));
+        };
+
+        byteArray.append(header);
+        appendScaled(byteArray, m_sin.k1);
+        appendScaled(byteArray, m_sin.b1);
+        appendScaled(byteArray, m_step_1.y0);
+        appendScaled(byteArray, m_step_1.A);
+        appendScaled(byteArray, m_step_1.xc);
+        appendScaled(byteArray, m_step_1.w);
+        appendScaled(byteArray, m_sin.k2);
+        appendScaled(byteArray, m_sin.b2);
+        appendScaled(byteArray, m_step_2.y0);
+        appendScaled(byteArray, m_step_2.A);
+        appendScaled(byteArray, m_step_2.xc);
+        appendScaled(byteArray, m_step_2.w);
+        byteArray.append(tail);
+
+        LOG_INFO("send segment formula: {}", FORMAT_HEX(byteArray));
+        LOG_INFO("k1 {}", m_sin.k1);
+        LOG_INFO("b1 {}", m_sin.b1);
+        LOG_INFO("y0_1 {}", m_step_1.y0);
+        LOG_INFO("A_1 {}", m_step_1.A);
+        LOG_INFO("xc_1 {}", m_step_1.xc);
+        LOG_INFO("w_1 {}", m_step_1.w);
+        LOG_INFO("k2 {}", m_sin.k2);
+        LOG_INFO("b2 {}", m_sin.b2);
+        LOG_INFO("y0_2 {}", m_step_2.y0);
+        LOG_INFO("A_2 {}", m_step_2.A);
+        LOG_INFO("xc_2 {}", m_step_2.xc);
+        LOG_INFO("w_2 {}", m_step_2.w);
+
+        emit sendSin(byteArray);
+    } else {
+        QMessageBox::warning(this, tr("Error"), tr("Please finish step 1 and step 2!"));
+    }
+}
+
+void FormFittingSin::on_tBtnAddStep1_clicked()
+{
+    m_step_1 = m_sin_fixed;
+}
+
+void FormFittingSin::on_tBtnAddStep2_clicked()
+{
+    m_step_2 = m_sin_fixed;
 }

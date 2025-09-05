@@ -48,6 +48,11 @@ private slots:
     void on_btnSendFormula_clicked();
     void on_btnSendR_kb_clicked();
 
+    void on_btnSendSegmentFormula_clicked();
+
+    void on_tBtnAddStep1_clicked();
+    void on_tBtnAddStep2_clicked();
+
 private:
     void init();
     void fillFittingCurveData();
@@ -71,6 +76,7 @@ private:
     double m_k;
     double m_b;
     bool m_data_ready = false;
+    SIN m_step_1, m_step_2;
 };
 
 #endif // FORMFITTINGSIN_H
