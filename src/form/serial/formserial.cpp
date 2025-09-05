@@ -243,8 +243,10 @@ void FormSerial::send(const QString &text)
     // Production Instructions
     if (text == "DD3C000340CDFF") {
         m_toPeek = true;
+        m_waitting_byte = false;
     } else {
-        m_toPeek = true;
+        m_toPeek = false;
+        m_waitting_byte = false;
     }
 
     QByteArray data;
@@ -360,6 +362,9 @@ void FormSerial::openSerial()
 
     if (!m_serial->open(QIODevice::ReadWrite)) {
         LOG_WARN("Failed to open serial port: {}", m_serial->errorString());
+        QMessageBox::warning(this,
+                             "Warning",
+                             QString("Failed to open serial port: %1").arg(m_serial->errorString()));
         delete m_serial;
         m_serial = nullptr;
         m_switch = false;
@@ -401,17 +406,38 @@ void FormSerial::on_cBoxPortName_activated(int index)
     ui->cBoxBaudRate->addItems(list_txt_bauds);
 }
 
-void FormSerial::handleFrame(const QString &type, const QByteArray &data)
+void FormSerial::handleFrame(const QString &type, const QByteArray &data, const QByteArray &temp)
 {
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
         || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
         if (type == "curve_24bit") {
             m_frame.bit24 = data;
+            if (m_toPeek) {
+                m_waitting_byte = true;
+            }
         } else if (type == "curve_14bit") {
             m_frame.bit14 = data;
             if (!m_frame.bit24.isEmpty()) {
                 if (m_toPeek) {
-                    m_waitting_byte = true;
+                    if (m_waitting_byte) {
+                        if (m_buffer.size() < 2) {
+                            return;
+                        }
+
+                        QByteArray tempBytes = temp;
+                        if (tempBytes.isEmpty()) {
+                            return;
+                        }
+                        qint16 tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
+                        double temperature = tempRaw / 1000.0;
+
+                        LOG_INFO("Temperature: {} °C", temperature);
+
+                        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
+                        emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+                        emit recvTemperature(temperature);
+                        m_frame.bit24.clear();
+                    }
                 } else {
                     emit recv2Data4k(m_frame.bit14, m_frame.bit24);
                     emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
@@ -422,12 +448,8 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data)
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
         if (type == "curve_24bit") {
             m_frame.bit24 = data;
-            if (m_toPeek) {
-                m_waitting_byte = true;
-            } else {
-                emit recv2Data4k(m_frame.bit14, m_frame.bit24);
-                emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
-            }
+            emit recv2Data4k(m_frame.bit14, m_frame.bit24);
+            emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
         emit recv2MPU(data);
@@ -449,26 +471,6 @@ void FormSerial::onReadyRead()
     }
     ui->txtRecv->appendPlainText("[RX] " + to_show);
     m_buffer.append(data);
-
-    if (m_waitting_byte) {
-        if (m_buffer.size() < 2) {
-            return;
-        }
-
-        QByteArray tempBytes = m_buffer.left(2);
-        qint16 tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
-        double temperature = tempRaw / 1000.0;
-
-        LOG_INFO("Temperature: {} °C", temperature);
-
-        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
-        emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
-        recvTemperature(temperature);
-        m_frame.bit24.clear();
-
-        m_buffer.remove(0, 2);
-        m_waitting_byte = false;
-    }
 
     while (true) {
         int firstHeaderIdx = -1;
@@ -522,11 +524,19 @@ void FormSerial::onReadyRead()
             }
 
             int frame_len = footerIdx + current_frame.footer.size();
-            QByteArray frame_candidate = m_buffer.left(frame_len);
+            QByteArray frame_candidate;
+            frame_candidate = m_buffer.left(frame_len);
+
             LOG_INFO("Variable-length frame matched: {}, size = {}",
                      current_frame.name.toStdString(),
                      frame_len);
-            handleFrame(current_frame.name, frame_candidate);
+            if (m_waitting_byte) {
+                QByteArray temp = m_buffer.mid(frame_len, 2);
+                handleFrame(current_frame.name, frame_candidate, temp);
+            } else {
+                handleFrame(current_frame.name, frame_candidate);
+            }
+
             m_buffer.remove(0, frame_len);
         }
     }

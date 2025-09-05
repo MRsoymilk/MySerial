@@ -65,7 +65,9 @@ private:
     void send(const QString &text);
     void initMultSend();
     void setINI();
-    void handleFrame(const QString &frameName, const QByteArray &frame_candidate);
+    void handleFrame(const QString &frameName,
+                     const QByteArray &frame_candidate,
+                     const QByteArray &temp = "");
 
 public slots:
     void sendRaw(const QByteArray &bytes);

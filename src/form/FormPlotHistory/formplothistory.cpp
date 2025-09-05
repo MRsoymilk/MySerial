@@ -261,6 +261,13 @@ void FormPlotHistory::onHistoryRecv(const QList<QPointF> &data14, const QList<QP
     }
 }
 
+void FormPlotHistory::onTemperature(double temperature)
+{
+    if (this->isVisible()) {
+        ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
+    }
+}
+
 void FormPlotHistory::on_lineEdit14Go_editingFinished()
 {
     int val = ui->lineEdit14Go->text().toInt();

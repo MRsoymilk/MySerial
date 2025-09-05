@@ -265,6 +265,10 @@ void MainWindow::init()
             &FormSerial::recvTemperature,
             m_plotCorrection,
             &FormPlotCorrection::onTemperature);
+    connect(formSerial,
+            &FormSerial::recvTemperature,
+            m_plotHistory,
+            &FormPlotHistory::onTemperature);
     connect(formPlot,
             &FormPlot::changeFrameType,
             m_plotSimulate,

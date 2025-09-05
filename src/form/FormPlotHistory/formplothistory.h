@@ -28,6 +28,7 @@ protected:
 
 public slots:
     void onHistoryRecv(const QList<QPointF> &data14, const QList<QPointF> &data24);
+    void onTemperature(double temperature);
 
 private slots:
     void on_tBtnNext14_clicked();
