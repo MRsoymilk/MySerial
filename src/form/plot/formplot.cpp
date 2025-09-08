@@ -98,6 +98,8 @@ void FormPlot::init2d()
     m_scatter->attachAxis(m_axisY);
     m_series24->setColor(Qt::blue);
     m_series14->setColor(Qt::magenta);
+    m_scatter->setColor(Qt::red);
+    m_scatter->setName("Series24 Peaks");
 
     m_axisX->setTitleText("Time (s)");
     m_axisX->setRange(0, 0.2);
@@ -199,6 +201,13 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data14,
                             const double &yMin,
                             const double &yMax)
 {
+    static bool flip = false;
+    flip = !flip;
+    if (flip) {
+        ui->labelUpdateSign->setStyleSheet("background-color: green; color: white;");
+    } else {
+        ui->labelUpdateSign->setStyleSheet("background-color: blue; color: white;");
+    }
     m_series14->replace(data14);
     m_series14->setName("curve14_bit");
     m_series24->replace(data24);
