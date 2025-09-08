@@ -214,6 +214,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QToolButton" name="tBtnPause">
+       <property name="text">
+        <string>pause</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

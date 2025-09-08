@@ -97,5 +97,8 @@
         <file>res/icons/pink/peaks.png</file>
         <file>res/icons/white/peaks.png</file>
         <file>res/icons/peaks.png</file>
+        <file>res/icons/pink/pause.png</file>
+        <file>res/icons/white/pause.png</file>
+        <file>res/icons/pause.png</file>
     </qresource>
 </RCC>

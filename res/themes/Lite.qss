@@ -1179,4 +1179,8 @@ QToolButton#find_peak {
   qproperty-icon: url(:/res/icons/peaks.png);
 }
 
+QToolButton#pause {
+  qproperty-icon: url(:/res/icons/pause.png);
+}
+
 /*# sourceMappingURL=Lite.qss.map */

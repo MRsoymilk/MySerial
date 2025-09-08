@@ -162,9 +162,15 @@ void FormPlot::initToolButtons()
     ui->tBtnFindPeak->setToolTip("find peaks");
     ui->tBtnFindPeak->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnPause->setObjectName("pause");
+    ui->tBtnPause->setIconSize(QSize(24, 24));
+    ui->tBtnPause->setToolTip("pause");
+    ui->tBtnPause->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);
+    ui->tBtnPause->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -181,7 +187,9 @@ void FormPlot::init()
 
 void FormPlot::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
 {
-    emit newDataReceived4k(data14, data24);
+    if (m_pause) {
+        emit newDataReceived4k(data14, data24);
+    }
 }
 
 void FormPlot::updatePlot2d(const QList<QPointF> &data14,
@@ -239,6 +247,9 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                             const double &yMin,
                             const double &yMax)
 {
+    if (m_pause) {
+        return;
+    }
     int offset = 0;
     if (ui->tBtnOffset->isChecked()) {
         offset = ui->spinBoxOffset->value();
@@ -490,4 +501,10 @@ void FormPlot::on_tBtnFindPeak_clicked()
         m_peakLabels.clear();
         m_chart->update();
     }
+}
+
+void FormPlot::on_tBtnPause_clicked()
+{
+    m_pause = !m_pause;
+    ui->tBtnPause->setChecked(m_pause);
 }

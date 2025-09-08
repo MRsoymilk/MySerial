@@ -57,6 +57,7 @@ private slots:
     void on_dSpinBoxStep_valueChanged(double arg1);
     void on_tBtnStep_clicked();
     void on_tBtnFindPeak_clicked();
+    void on_tBtnPause_clicked();
 
 private:
     void init();
@@ -101,6 +102,8 @@ private:
 
     bool m_findPeak = false;
     QVector<QGraphicsSimpleTextItem *> m_peakLabels;
+
+    bool m_pause = false;
 };
 
 #endif // FORMPLOT_H
