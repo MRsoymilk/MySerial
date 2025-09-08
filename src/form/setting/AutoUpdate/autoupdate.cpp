@@ -38,6 +38,8 @@ void AutoUpdate::showEvent(QShowEvent *event)
 QJsonObject AutoUpdate::checkUpdate()
 {
     m_url = SETTING_CONFIG_GET(CFG_GROUP_AUTOUPDATE, CFG_AUTOUPDATE_URL, SERVER_UPDATE);
+    ui->labelUpdateHistory->setText(
+        QString("update history: <a href='%1/update.txt'>%1/update.txt</a>").arg(m_url));
     QString url_json = QString("%1/%2").arg(m_url).arg("update.json");
     m_objUpdate = m_http->get_sync(url_json);
     return m_objUpdate;
@@ -48,6 +50,9 @@ void AutoUpdate::init()
     m_iniUpdate.url = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_URL, SERVER_UPDATE);
     m_iniUpdate.check = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_CHECK, VAL_DISABLE);
     ui->lineEditURL->setText(m_iniUpdate.url);
+    ui->labelUpdateHistory->setTextFormat(Qt::RichText);
+    ui->labelUpdateHistory->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    ui->labelUpdateHistory->setOpenExternalLinks(true);
     ui->checkBoxUpdateCheck->setChecked(m_iniUpdate.check == VAL_ENABLE ? true : false);
 
     m_iniUpdate.tip = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_UPDATE_TIP, VAL_DISABLE);
