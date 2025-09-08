@@ -16,6 +16,7 @@ public:
         QStringList head;
         QStringList tail;
         QString file;
+        QString option_correction;
     };
 
 public:
@@ -25,6 +26,7 @@ public:
 
 signals:
     void windowClose();
+    void simulateOption(bool enable);
     void simulateDataReady4k(const QByteArray &data14, const QByteArray &data24);
 
 public slots:
@@ -36,6 +38,7 @@ protected:
 private slots:
     void on_btnLoadFile_clicked();
     void on_toolButtonRe_clicked();
+    void on_checkBoxCorrection_clicked();
 
 private:
     void init();

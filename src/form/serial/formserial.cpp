@@ -117,6 +117,14 @@ void FormSerial::onChangeFrameType(int index)
     m_algorithm = index;
 }
 
+void FormSerial::onSimulateOption(bool isEnable)
+{
+    if (isEnable) {
+        m_toPeek = true;
+        m_waitting_byte = false;
+    }
+}
+
 void FormSerial::initMultSend()
 {
     QStringList cmds;

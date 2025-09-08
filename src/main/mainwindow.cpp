@@ -236,6 +236,10 @@ void MainWindow::init()
             &FormPlotSimulate::simulateDataReady4k,
             m_worker,
             &ThreadWorker::processData4k);
+    connect(m_plotSimulate,
+            &FormPlotSimulate::simulateOption,
+            formSerial,
+            &FormSerial::onSimulateOption);
 
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(formPlot, &FormPlot::newDataReceived4k, m_worker, &ThreadWorker::processData4k);

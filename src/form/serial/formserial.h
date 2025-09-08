@@ -72,6 +72,7 @@ private:
 public slots:
     void sendRaw(const QByteArray &bytes);
     void onChangeFrameType(int index);
+    void onSimulateOption(bool isEnable);
 
 private slots:
     void on_btnRecvSave_clicked();

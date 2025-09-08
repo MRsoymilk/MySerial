@@ -32,9 +32,15 @@ void FormPlotSimulate::getINI()
     m_ini.file = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);
     m_ini.head = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_HEAD).split(",");
     m_ini.tail = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_TAIL).split(",");
+    m_ini.option_correction = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE,
+                                                 CFG_SIMULATE_OPTION_CORRECTION,
+                                                 VAL_DISABLE);
     ui->lineEditHead->setText(m_ini.head.join(","));
     ui->lineEditTail->setText(m_ini.tail.join(","));
     ui->lineEditPath->setText(m_ini.file);
+    if (m_ini.option_correction == VAL_ENABLE) {
+        ui->checkBoxCorrection->setChecked(true);
+    }
     m_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
 }
 
@@ -43,6 +49,7 @@ void FormPlotSimulate::setINI()
     SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_HEAD, m_ini.head.join(","));
     SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_TAIL, m_ini.tail.join(","));
     SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE, m_ini.file);
+    SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_OPTION_CORRECTION, m_ini.option_correction);
 }
 
 void FormPlotSimulate::init()
@@ -61,6 +68,7 @@ void FormPlotSimulate::on_btnLoadFile_clicked()
     m_ini.head = ui->lineEditHead->text().split(",", Qt::SkipEmptyParts);
     m_ini.tail = ui->lineEditTail->text().split(",", Qt::SkipEmptyParts);
     m_ini.file = filePath;
+    m_ini.option_correction = ui->checkBoxCorrection->isChecked() ? VAL_ENABLE : VAL_DISABLE;
     simulate4k();
     setINI();
 }
@@ -76,12 +84,19 @@ void FormPlotSimulate::on_toolButtonRe_clicked()
     m_ini.head = ui->lineEditHead->text().split(",", Qt::SkipEmptyParts);
     m_ini.tail = ui->lineEditTail->text().split(",", Qt::SkipEmptyParts);
     m_ini.file = ui->lineEditPath->text();
+    m_ini.option_correction = ui->checkBoxCorrection->isChecked() ? VAL_ENABLE : VAL_DISABLE;
     simulate4k();
     setINI();
 }
 
 void FormPlotSimulate::simulate4k()
 {
+    if (m_ini.option_correction == VAL_ENABLE) {
+        emit simulateOption(true);
+    } else {
+        emit simulateOption(false);
+    }
+
     QFile file(m_ini.file);
     QString data;
 
@@ -196,4 +211,9 @@ void FormPlotSimulate::simulate4k()
 
         buffer.remove(0, endIdx + footer.size());
     }
+}
+
+void FormPlotSimulate::on_checkBoxCorrection_clicked()
+{
+    m_ini.option_correction = ui->checkBoxCorrection->isChecked() ? VAL_ENABLE : VAL_DISABLE;
 }

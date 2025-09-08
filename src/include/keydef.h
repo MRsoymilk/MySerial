@@ -41,6 +41,7 @@ const QString CFG_GROUP_SIMULATE = "Simulate";
 const QString CFG_SIMULATE_HEAD = "head";
 const QString CFG_SIMULATE_TAIL = "tail";
 const QString CFG_SIMULATE_FILE = "file";
+const QString CFG_SIMULATE_OPTION_CORRECTION = "option_correction";
 const QString CFG_GROUP_PLOT = "Plot";
 const QString CFG_PLOT_OFFSET14 = "offset14";
 const QString CFG_PLOT_OFFSET24 = "offset24";
