@@ -77,6 +77,8 @@ private:
     double m_b;
     bool m_data_ready = false;
     SIN m_step_1, m_step_2;
+    QString m_urlCalculate;
+    QString m_urlFindPeak;
 };
 
 #endif // FORMFITTINGSIN_H

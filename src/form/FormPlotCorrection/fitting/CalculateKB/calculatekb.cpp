@@ -11,8 +11,6 @@
 #include "funcdef.h"
 #include "httpclient.h"
 
-QString m_urlFitKB;
-
 CalculateKB::CalculateKB(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::CalculateKB)
@@ -216,8 +214,10 @@ void CalculateKB::on_textEditInput_textChanged()
 
     // 打印测试
     for (int i = 0; i < slopes.size(); ++i) {
-        qDebug() << "temperature = " << temperature[i] << ", slope =" << slopes[i]
-                 << ", intercept =" << intercepts[i];
+        LOG_INFO("temperature = {}, slope = {}, intercept = {}",
+                 temperature[i],
+                 slopes[i],
+                 intercepts[i]);
     }
 
     for (int row = 0; row < temperature.size(); ++row) {

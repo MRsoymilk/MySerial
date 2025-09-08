@@ -21,8 +21,7 @@
 #include <cstdint>
 
 ImageViewer *imageViewer = nullptr;
-QString m_urlCalculate;
-QString m_urlFindPeak;
+
 FormFittingSin::FormFittingSin(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::FormFittingSin)

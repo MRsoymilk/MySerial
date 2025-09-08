@@ -33,6 +33,7 @@ private:
     Ui::CalculateKB *ui;
     QStandardItemModel *m_model;
     QJsonObject m_result;
+    QString m_urlFitKB;
 };
 
 #endif // CALCULATEKB_H
