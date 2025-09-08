@@ -117,6 +117,7 @@ private:
 
     bool m_toPeek = false;
     bool m_waitting_byte = false;
+    bool m_need_after = false;
 };
 
 #endif // FORMSERIAL_H

@@ -206,6 +206,19 @@ void FormPlotHistory::updatePlot(int index)
         ui->stackedWidget->setCurrentWidget(m_widgetMix);
     } else {
         if (isSplit) {
+            if (index == INDEX_14) {
+                if (m_index_14 < m_p24.size()) {
+                    m_index_24 = m_index_14;
+                } else {
+                    return;
+                }
+            } else if (index == INDEX_24) {
+                if (m_index_24 < m_p14.size()) {
+                    m_index_14 = m_index_24;
+                } else {
+                    return;
+                }
+            }
             QChart *chart = new QChart();
             QLineSeries *series = new QLineSeries();
             if (index == INDEX_14) {

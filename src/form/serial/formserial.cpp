@@ -423,6 +423,7 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
             if (m_toPeek) {
                 m_waitting_byte = true;
             }
+            m_need_after = false;
         } else if (type == "curve_14bit") {
             m_frame.bit14 = data;
             if (!m_frame.bit24.isEmpty()) {
@@ -434,6 +435,7 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
 
                         QByteArray tempBytes = temp;
                         if (tempBytes.isEmpty()) {
+                            m_need_after = true;
                             return;
                         }
                         qint16 tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
@@ -479,6 +481,23 @@ void FormSerial::onReadyRead()
     }
     ui->txtRecv->appendPlainText("[RX] " + to_show);
     m_buffer.append(data);
+
+    if (m_need_after) {
+        QByteArray tempBytes = m_buffer.left(2);
+        if (tempBytes.size() < 2) {
+            return;
+        }
+        qint16 tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
+        double temperature = tempRaw / 1000.0;
+
+        LOG_INFO("Temperature: {} °C", temperature);
+
+        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
+        emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+        emit recvTemperature(temperature);
+        m_frame.bit24.clear();
+        m_need_after = false;
+    }
 
     while (true) {
         int firstHeaderIdx = -1;
