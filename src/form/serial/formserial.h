@@ -5,6 +5,8 @@
 #include <QSerialPort>
 #include <QWidget>
 
+class LineSend;
+
 namespace Ui {
 class FormSerial;
 }
@@ -68,6 +70,7 @@ private:
     void handleFrame(const QString &frameName,
                      const QByteArray &frame_candidate,
                      const QByteArray &temp = "");
+    void loadPage(int page);
 
 public slots:
     void sendRaw(const QByteArray &bytes);
@@ -89,6 +92,11 @@ private slots:
     void on_lineEditCycle_editingFinished();
     void on_tabWidget_currentChanged(int index);
     void on_tBtnRefresh_clicked();
+
+    void on_tBtnNext_clicked();
+    void on_tBtnPrev_clicked();
+
+    void on_lineEditPageName_editingFinished();
 
 private:
     Ui::FormSerial *ui;
@@ -118,6 +126,10 @@ private:
     bool m_toPeek = false;
     bool m_waitting_byte = false;
     bool m_need_after = false;
+
+    QVector<LineSend *> m_lineSends;
+    int m_pageSize = 5;
+    int m_currentPage = 0;
 };
 
 #endif // FORMSERIAL_H

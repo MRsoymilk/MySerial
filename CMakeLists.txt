@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.08 LANGUAGES CXX)
+project(MySerial VERSION 1.3.09 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -25,6 +25,9 @@ set(PROJECT_SOURCES
         src/form/serial/formserial.h
         src/form/serial/formserial.cpp
         src/form/serial/formserial.ui
+        src/form/serial/LineSend/linesend.h
+        src/form/serial/LineSend/linesend.cpp
+        src/form/serial/LineSend/linesend.ui
         src/form/plot/formplot.h
         src/form/plot/formplot.cpp
         src/form/plot/formplot.ui

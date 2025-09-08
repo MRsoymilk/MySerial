@@ -8,6 +8,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QToolButton>
+#include "LineSend/linesend.h"
 #include "funcdef.h"
 #include "plot_algorithm.h"
 
@@ -127,57 +128,45 @@ void FormSerial::onSimulateOption(bool isEnable)
 
 void FormSerial::initMultSend()
 {
-    QStringList cmds;
-    for (int i = 0; i < 5; ++i) {
-        cmds.push_back(
-            SETTING_CONFIG_GET(CFG_GROUP_HISTROY, QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i)));
-    }
-    for (int i = 0; i < 5; ++i) {
-        QString lineEditName = QString("lineEdit_cmd_%1").arg(i);
-        QLineEdit *lineEdit = findChild<QLineEdit *>(lineEditName);
-        if (lineEdit) {
-            lineEdit->setText(cmds.at(i));
-            connect(lineEdit, &QLineEdit::editingFinished, this, [this, lineEdit, i, &cmds]() {
-                SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
-                                   QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i),
-                                   lineEdit->text());
-            });
-        }
+    int total = 30;
+    m_lineSends.reserve(total);
+    for (int i = 0; i < total; ++i) {
+        auto lineSend = new LineSend(i, ui->vLayMultipe->widget());
+        lineSend->setBtn(QString::number(i));
+
+        QString cmd = SETTING_CONFIG_GET(CFG_GROUP_HISTROY,
+                                         QString("%1_%2").arg(CFG_HISTORY_MULT).arg(i));
+        lineSend->setCmd(cmd);
+
+        QString label = SETTING_CONFIG_GET(CFG_GROUP_HISTROY,
+                                           QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
+                                           QString("cmd_%1").arg(i));
+        lineSend->setLabel(label);
+
+        connect(lineSend, &LineSend::cmdSendClicked, this, [this](int index, const QString &cmd) {
+            if (!cmd.isEmpty()) {
+                send(cmd);
+            }
+        });
+
+        connect(lineSend, &LineSend::cmdEdited, this, [this](int index, const QString &cmd) {
+            SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
+                               QString("%1_%2").arg(CFG_HISTORY_MULT).arg(index),
+                               cmd);
+        });
+
+        connect(lineSend, &LineSend::labelEdited, this, [this](int index, const QString &label) {
+            SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
+                               QString("%1_%2").arg(CFG_MULT_LABEL).arg(index),
+                               label);
+        });
+
+        m_lineSends.append(lineSend);
     }
 
-    QStringList labels;
-    for (int i = 0; i < 5; ++i) {
-        labels.push_back(SETTING_CONFIG_GET(CFG_GROUP_HISTROY,
-                                            QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
-                                            QString("cmd_%1").arg(i)));
-    }
+    loadPage(0);
 
-    for (int i = 0; i < 5; ++i) {
-        QString lineEditName = QString("lineEdit_label_%1").arg(i);
-        QLineEdit *lineEdit = findChild<QLineEdit *>(lineEditName);
-        if (lineEdit) {
-            lineEdit->setPlaceholderText(labels.at(i));
-            connect(lineEdit, &QLineEdit::editingFinished, this, [this, lineEdit, i]() {
-                SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
-                                   QString("%1_%2").arg(CFG_MULT_LABEL).arg(i),
-                                   lineEdit->text());
-            });
-        }
-    }
-
-    for (int i = 0; i < 5; ++i) {
-        QString tBtnName = QString("tBtn_%1").arg(i);
-        QToolButton *tBtn = findChild<QToolButton *>(tBtnName);
-        if (tBtn) {
-            connect(tBtn, &QToolButton::clicked, this, [this, tBtn, i]() {
-                QLineEdit *lineEdit = findChild<QLineEdit *>(QString("lineEdit_cmd_%1").arg(i));
-                QString text = lineEdit->text().trimmed();
-                if (!text.isEmpty()) {
-                    send(text);
-                }
-            });
-        }
-    }
+    ui->labelPage->setText("1 / 6");
 }
 
 void FormSerial::init()
@@ -467,6 +456,29 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
     }
 }
 
+void FormSerial::loadPage(int page)
+{
+    m_currentPage = page;
+
+    auto *layout = ui->vLayMultipe;
+    QLayoutItem *item;
+    while ((item = layout->takeAt(0)) != nullptr) {
+        if (QWidget *w = item->widget())
+            w->setParent(nullptr);
+        delete item;
+    }
+
+    int start = page * m_pageSize;
+    int end = qMin(start + m_pageSize, m_lineSends.size());
+    for (int i = start; i < end; ++i) {
+        layout->addWidget(m_lineSends.at(i));
+    }
+
+    ui->lineEditPageName->setText(SETTING_CONFIG_GET(CFG_GROUP_HISTROY,
+                                                     QString("%1_%2").arg(CFG_MULT_PAGE).arg(page),
+                                                     QString("page_%1").arg(page)));
+}
+
 void FormSerial::onReadyRead()
 {
     QByteArray data = m_serial->readAll();
@@ -705,4 +717,34 @@ void FormSerial::on_tBtnRefresh_clicked()
             m_mapSerial.insert(port.portName(), serial);
         }
     }
+}
+
+void FormSerial::on_tBtnNext_clicked()
+{
+    if (m_currentPage + 1 < 6) {
+        ++m_currentPage;
+    } else {
+        m_currentPage = 5;
+    }
+    loadPage(m_currentPage);
+    ui->labelPage->setText(QString("%1 / %2").arg(m_currentPage + 1).arg(6));
+}
+
+void FormSerial::on_tBtnPrev_clicked()
+{
+    if (m_currentPage - 1 >= 0) {
+        --m_currentPage;
+    } else {
+        m_currentPage = 0;
+    }
+    loadPage(m_currentPage);
+    int maxPage = m_lineSends.size() / m_pageSize;
+    ui->labelPage->setText(QString("%1 / %2").arg(m_currentPage + 1).arg(6));
+}
+
+void FormSerial::on_lineEditPageName_editingFinished()
+{
+    SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
+                       QString("%1_%2").arg(CFG_MULT_PAGE).arg(m_currentPage),
+                       ui->lineEditPageName->text());
 }

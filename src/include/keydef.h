@@ -26,6 +26,7 @@ const QString CFG_GROUP_HISTROY = "History";
 const QString CFG_HISTORY_SINGLE_SEND = "single_send";
 const QString CFG_HISTORY_MULT = "mult";
 const QString CFG_MULT_LABEL = "label";
+const QString CFG_MULT_PAGE = "page";
 const QString CFG_GROUP_SETTING = "Setting";
 const QString CFG_SETTING_UPDATE_URL = "update_url";
 const QString CFG_SETTING_FIT_SIN_URL = "fit_sin_url";
