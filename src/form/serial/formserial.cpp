@@ -678,6 +678,11 @@ void FormSerial::on_tBtnRefresh_clicked()
 {
     QStringList currentPorts;
     QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
+
+    if (ports.isEmpty()) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, "warning", tr("No ports available!"));
+    }
+
     for (const auto &port : ports) {
         currentPorts << port.portName();
     }
