@@ -56,6 +56,7 @@ private slots:
     void on_spinBoxTo_valueChanged(int val);
     void on_dSpinBoxStep_valueChanged(double arg1);
     void on_tBtnStep_clicked();
+    void on_tBtnFindPeak_clicked();
 
 private:
     void init();
@@ -82,6 +83,7 @@ private:
     Ui::FormPlot *ui;
     QLineSeries *m_series24;
     QLineSeries *m_series14;
+    QScatterSeries *m_scatter;
     QChart *m_chart;
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
@@ -96,6 +98,9 @@ private:
 
     MyChartView *m_chartView = nullptr;
     MyGLCurveWidget *m_glWidget = nullptr;
+
+    bool m_findPeak = false;
+    QVector<QGraphicsSimpleTextItem *> m_peakLabels;
 };
 
 #endif // FORMPLOT_H

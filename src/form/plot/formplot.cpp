@@ -80,18 +80,22 @@ void FormPlot::init2d()
 {
     m_series24 = new QLineSeries();
     m_series14 = new QLineSeries();
+    m_scatter = new QScatterSeries();
     m_chart = new QChart();
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
 
     m_chart->addSeries(m_series24);
     m_chart->addSeries(m_series14);
+    m_chart->addSeries(m_scatter);
     m_chart->addAxis(m_axisX, Qt::AlignBottom);
     m_chart->addAxis(m_axisY, Qt::AlignLeft);
     m_series24->attachAxis(m_axisX);
     m_series24->attachAxis(m_axisY);
     m_series14->attachAxis(m_axisX);
     m_series14->attachAxis(m_axisY);
+    m_scatter->attachAxis(m_axisX);
+    m_scatter->attachAxis(m_axisY);
     m_series24->setColor(Qt::blue);
     m_series14->setColor(Qt::magenta);
 
@@ -153,8 +157,14 @@ void FormPlot::initToolButtons()
     ui->tBtnImgSave->setToolTip("image save (ctrl+s)");
     ui->tBtnImgSave->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnFindPeak->setObjectName("find_peak");
+    ui->tBtnFindPeak->setIconSize(QSize(24, 24));
+    ui->tBtnFindPeak->setToolTip("find peaks");
+    ui->tBtnFindPeak->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
+    ui->tBtnFindPeak->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -373,5 +383,111 @@ void FormPlot::on_tBtnStep_clicked()
         m_step = ui->dSpinBoxStep->value();
     } else {
         m_step = 1;
+    }
+}
+
+void FormPlot::on_tBtnFindPeak_clicked()
+{
+    m_findPeak = !m_findPeak;
+    ui->tBtnFindPeak->setChecked(m_findPeak);
+
+    if (m_findPeak) {
+        if (!m_series24 || m_series24->count() < 5) {
+            return;
+        }
+
+        auto findPeaksRobust = [](QLineSeries *series,
+                                  int window,
+                                  double thresholdFactor,
+                                  double minDist) {
+            QVector<QPointF> peaks;
+            int n = series->count();
+
+            QVector<double> values;
+            values.reserve(n);
+            for (int i = 0; i < n; i++)
+                values.append(series->at(i).y());
+
+            double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
+            double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
+            double stdev = std::sqrt(sq_sum / n - mean * mean);
+            double threshold = mean + thresholdFactor * stdev;
+
+            double lastPeakX = -1e9;
+            for (int i = window; i < n - window; i++) {
+                double yCurr = series->at(i).y();
+                if (yCurr < threshold)
+                    continue;
+
+                bool isPeak = true;
+                for (int j = i - window; j <= i + window; j++) {
+                    if (series->at(j).y() > yCurr) {
+                        isPeak = false;
+                        break;
+                    }
+                }
+
+                if (isPeak) {
+                    double xCurr = series->at(i).x();
+                    if (xCurr - lastPeakX >= minDist) {
+                        peaks.append(series->at(i));
+                        lastPeakX = xCurr;
+                    }
+                }
+            }
+            return peaks;
+        };
+
+        QVector<QPointF> peaks24 = findPeaksRobust(m_series24, 3, 1.0, 5.0);
+
+        if (m_scatter) {
+            m_chart->removeSeries(m_scatter);
+            delete m_scatter;
+            m_scatter = nullptr;
+        }
+        for (auto label : m_peakLabels) {
+            m_chartView->scene()->removeItem(label);
+            delete label;
+        }
+        m_peakLabels.clear();
+
+        if (!peaks24.isEmpty()) {
+            m_scatter = new QScatterSeries();
+            m_scatter->setName("Series24 Peaks");
+            m_scatter->setMarkerShape(QScatterSeries::MarkerShapeCircle);
+            m_scatter->setMarkerSize(10.0);
+            m_scatter->setColor(Qt::red);
+
+            for (const auto &pt : peaks24) {
+                m_scatter->append(pt);
+
+                QString text = QString("(%1, %2)").arg(pt.x(), 0, 'f', 2).arg(pt.y(), 0, 'f', 2);
+                QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(text);
+                label->setBrush(Qt::red);
+                label->setFont(QFont("Arial", 10, QFont::Bold));
+                label->setPos(m_chart->mapToPosition(pt) + QPointF(5, -15));
+                m_chartView->scene()->addItem(label);
+                m_peakLabels.append(label);
+            }
+
+            m_chart->addSeries(m_scatter);
+            m_scatter->attachAxis(m_axisX);
+            m_scatter->attachAxis(m_axisY);
+        }
+
+        m_chart->update();
+
+    } else {
+        if (m_scatter) {
+            m_chart->removeSeries(m_scatter);
+            delete m_scatter;
+            m_scatter = nullptr;
+        }
+        for (auto label : m_peakLabels) {
+            m_chartView->scene()->removeItem(label);
+            delete label;
+        }
+        m_peakLabels.clear();
+        m_chart->update();
     }
 }

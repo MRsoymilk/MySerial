@@ -1188,4 +1188,8 @@ QToolButton#crop {
   qproperty-icon: url(:/res/icons/white/crop.png);
 }
 
+QToolButton#find_peak {
+  qproperty-icon: url(:/res/icons/white/peaks.png);
+}
+
 /*# sourceMappingURL=OSX%20Dark.qss.map */

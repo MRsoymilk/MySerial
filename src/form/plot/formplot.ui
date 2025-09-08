@@ -7,38 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>843</width>
-    <height>455</height>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Plot</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
-   <property name="horizontalSpacing">
-    <number>6</number>
-   </property>
-   <property name="verticalSpacing">
-    <number>0</number>
-   </property>
-   <item row="0" column="5">
-    <widget class="QToolButton" name="tBtnCrop">
-     <property name="text">
-      <string>crop</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <spacer name="horizontalSpacer">
      <property name="orientation">
@@ -51,6 +26,20 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="labelAlgorithm">
+       <property name="text">
+        <string>algorithm</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBoxAlgorithm"/>
+     </item>
+    </layout>
    </item>
    <item row="0" column="2">
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -101,7 +90,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="6">
+   <item row="0" column="3">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -144,34 +133,25 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="10">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
-   <item row="0" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+   <item row="0" column="4">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="QLabel" name="labelAlgorithm">
+      <widget class="QToolButton" name="tBtnOffset">
        <property name="text">
-        <string>algorithm</string>
+        <string>offset</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBoxAlgorithm"/>
+      <widget class="QSpinBox" name="spinBoxOffset">
+       <property name="maximum">
+        <number>999</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="0" column="4">
-    <widget class="QToolButton" name="tBtnZoom">
-     <property name="text">
-      <string>zoom</string>
-     </property>
-     <property name="icon">
-      <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="8">
+   <item row="0" column="5">
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
       <widget class="QToolButton" name="tBtnStep">
@@ -191,37 +171,50 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="7">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item row="1" column="0" colspan="6">
+    <widget class="QStackedWidget" name="stackedWidget"/>
+   </item>
+   <item row="2" column="0" colspan="6">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QToolButton" name="tBtnOffset">
+      <widget class="QToolButton" name="tBtn3D">
        <property name="text">
-        <string>offset</string>
+        <string>3D</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinBoxOffset">
-       <property name="maximum">
-        <number>999</number>
+      <widget class="QToolButton" name="tBtnZoom">
+       <property name="text">
+        <string>zoom</string>
+       </property>
+       <property name="icon">
+        <iconset theme="QIcon::ThemeIcon::ZoomFitBest"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnCrop">
+       <property name="text">
+        <string>crop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnFindPeak">
+       <property name="text">
+        <string>peak</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnImgSave">
+       <property name="text">
+        <string>img_save</string>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="0" column="3">
-    <widget class="QToolButton" name="tBtn3D">
-     <property name="text">
-      <string>3D</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="9">
-    <widget class="QToolButton" name="tBtnImgSave">
-     <property name="text">
-      <string>img_save</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

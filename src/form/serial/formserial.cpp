@@ -188,6 +188,7 @@ void FormSerial::init()
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
         LOG_WARN("No available serial port found!");
+        SHOW_AUTO_CLOSE_MSGBOX(this, "warning", tr("No available serial port found!"));
         return;
     }
     QStringList port_names;

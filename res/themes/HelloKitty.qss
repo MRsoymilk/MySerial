@@ -1178,3 +1178,7 @@ QToolButton#setting-on {
 QToolButton#crop {
   qproperty-icon: url(:/res/icons/pink/crop.png);
 }
+
+QToolButton#find_peak {
+  qproperty-icon: url(:/res/icons/pink/peaks.png);
+}

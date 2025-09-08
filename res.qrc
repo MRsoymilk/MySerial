@@ -94,5 +94,8 @@
         <file>res/icons/white/yes.png</file>
         <file>res/icons/white/zoom.png</file>
         <file>res/icons/icon.ico</file>
+        <file>res/icons/pink/peaks.png</file>
+        <file>res/icons/white/peaks.png</file>
+        <file>res/icons/peaks.png</file>
     </qresource>
 </RCC>
