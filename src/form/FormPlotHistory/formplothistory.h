@@ -27,7 +27,9 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 public slots:
-    void onHistoryRecv(const QList<QPointF> &data14, const QList<QPointF> &data24);
+    void onHistoryRecv(const QList<QPointF> &data14,
+                       const QList<QPointF> &data24,
+                       const double &temperature);
     void onTemperature(double temperature);
 
 private slots:
@@ -56,6 +58,7 @@ private:
 private:
     Ui::FormPlotHistory *ui;
     QList<QList<QPointF>> m_p14, m_p24;
+    QList<double> m_temperature;
     int m_index_14, m_index_24;
     MyChartView *m_chartView14Split = nullptr;
     MyChartView *m_chartView24Split = nullptr;

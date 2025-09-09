@@ -185,6 +185,7 @@ void FormPlotHistory::updatePlot(int index)
                 return;
             }
         }
+        ui->labelTemperature->setText(QString("%1 ℃").arg(m_temperature.at(m_index_24)));
         QChart *chart = new QChart();
 
         QLineSeries *series24 = new QLineSeries();
@@ -253,6 +254,7 @@ void FormPlotHistory::closeEvent(QCloseEvent *event)
 {
     m_p14.clear();
     m_p24.clear();
+    m_temperature.clear();
     updatePlot14();
     updatePlot24();
 
@@ -260,17 +262,21 @@ void FormPlotHistory::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
-void FormPlotHistory::onHistoryRecv(const QList<QPointF> &data14, const QList<QPointF> &data24)
+void FormPlotHistory::onHistoryRecv(const QList<QPointF> &data14,
+                                    const QList<QPointF> &data24,
+                                    const double &temperature)
 {
     if (this->isVisible()) {
         m_p14.append(data14);
         m_p24.append(data24);
+        m_temperature.append(temperature);
         m_index_14 = m_p14.size() - 1;
         m_index_24 = m_p24.size() - 1;
         ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
         ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
         updatePlot14();
         updatePlot24();
+        ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
     }
 }
 

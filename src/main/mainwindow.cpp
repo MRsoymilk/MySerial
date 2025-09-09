@@ -269,6 +269,14 @@ void MainWindow::init()
             &FormSerial::recvTemperature,
             m_plotCorrection,
             &FormPlotCorrection::onTemperature);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::enableCorrectionCurve,
+            m_worker,
+            &ThreadWorker::onEnableCorrection);
+    connect(m_worker,
+            &ThreadWorker::showCorrectionCurve,
+            m_plotCorrection,
+            &FormPlotCorrection::onShowCorrectionCurve);
     connect(formSerial,
             &FormSerial::recvTemperature,
             m_plotHistory,

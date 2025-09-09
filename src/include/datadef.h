@@ -8,4 +8,5 @@ const QString SERVER_CALCULATE = "http://192.168.123.233:5000";
 const QString URL_FITTING_SIN = QString("%1/%2").arg(SERVER_CALCULATE).arg("fit_sin");
 const QString URL_FITTING_KB = QString("%1/%2").arg(SERVER_CALCULATE).arg("fit_kb");
 const QString URL_FIND_PEAK = QString("%1/%2").arg(SERVER_CALCULATE).arg("find_peak");
+
 #endif

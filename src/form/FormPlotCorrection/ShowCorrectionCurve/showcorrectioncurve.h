@@ -1,0 +1,43 @@
+#ifndef SHOWCORRECTIONCURVE_H
+#define SHOWCORRECTIONCURVE_H
+
+#include <QWidget>
+#include <QtCharts/QChart>
+#include <QtCharts/QChartView>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QValueAxis>
+#include "mychartview.h"
+
+namespace Ui {
+class ShowCorrectionCurve;
+}
+
+class ShowCorrectionCurve : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit ShowCorrectionCurve(QWidget *parent = nullptr);
+    ~ShowCorrectionCurve();
+
+public:
+    void updatePlot(const QList<QPointF> &data,
+                    const double &xMin,
+                    const double &xMax,
+                    const double &yMin,
+                    const double &yMax,
+                    const double &temperature);
+
+private:
+    void init();
+
+private:
+    Ui::ShowCorrectionCurve *ui;
+    MyChartView *m_chartView = nullptr;
+    QChart *m_chart;
+    QValueAxis *m_axisX;
+    QValueAxis *m_axisY;
+    QLineSeries *m_line;
+};
+
+#endif // SHOWCORRECTIONCURVE_H

@@ -187,10 +187,12 @@ void FormPlot::init()
     connect(shortcut_ImgSave, &QShortcut::activated, this, &FormPlot::on_tBtnImgSave_clicked);
 }
 
-void FormPlot::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
+void FormPlot::onDataReceived4k(const QByteArray &data14,
+                                const QByteArray &data24,
+                                const double &temperature)
 {
     if (!m_pause) {
-        emit newDataReceived4k(data14, data24);
+        emit newDataReceived4k(data14, data24, temperature);
     }
 }
 
@@ -254,7 +256,8 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                             const double &xMin,
                             const double &xMax,
                             const double &yMin,
-                            const double &yMax)
+                            const double &yMax,
+                            const double &temperature)
 {
     if (m_pause) {
         return;
@@ -274,7 +277,8 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
         offsetData24[i].setX(offset + i * m_step);
         offsetData24[i].setY(data24[i].y());
     }
-    emit toHistory(offsetData14, offsetData24);
+    emit toHistory(offsetData14, offsetData24, temperature);
+    ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
     updatePlot2d(offsetData14,
                  offsetData24,
                  offset,

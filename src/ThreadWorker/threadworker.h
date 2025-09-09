@@ -15,7 +15,10 @@ public:
     void setAlgorithm(int);
 
 public slots:
-    void processData4k(const QByteArray &data14, const QByteArray &data24);
+    void processData4k(const QByteArray &data14,
+                       const QByteArray &data24,
+                       const double &temperature);
+    void onEnableCorrection(bool enable, const QJsonObject &params);
 
 signals:
     void pointsReady4k(const QVector<double> &v14,
@@ -27,7 +30,14 @@ signals:
                      const double &xMin,
                      const double &xMax,
                      const double &yMin,
-                     const double &yMax);
+                     const double &yMax,
+                     const double &temperature = 0.0);
+    void showCorrectionCurve(const QList<QPointF> &data,
+                             const double &xMin,
+                             const double &xMax,
+                             const double &yMin,
+                             const double &yMax,
+                             const double &temperature);
 
 private:
     void processCurve14(const QByteArray &data14,
@@ -51,6 +61,14 @@ private:
     int m_algorithm = 0;
     int m_index_algorithm_neg_max95 = 0;
     QLineSeries *m_series;
+    bool m_correction_enable = false;
+    double m_correction_offset = 900;
+    double m_correction_step = 1.5;
+    double m_correction_num = 535;
+    struct CORRECTION_SIN
+    {
+        double k1, b1, k2, b2, y0, A, xc, w;
+    } m_correction_sin;
 };
 
 #endif // THREADWORKER_H

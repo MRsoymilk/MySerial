@@ -52,7 +52,9 @@ public:
     void retranslateUI();
 
 signals:
-    void recv2Plot4k(const QByteArray &data14, const QByteArray &data24);
+    void recv2Plot4k(const QByteArray &data14,
+                     const QByteArray &data24,
+                     const double &temperature = 0.0);
     void recv2Data4k(const QByteArray &data14,
                      const QByteArray &data24,
                      const QByteArray &temperature = "");

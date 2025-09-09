@@ -30,7 +30,7 @@ public:
     ~FormFittingSin();
     void doCorrection(const QVector<double> &v14, const QVector<double> &v24);
     void setTemperature(double temperature);
-
+    QJsonObject getParams();
 signals:
     void sendSin(const QByteArray &bytes);
 
@@ -55,7 +55,6 @@ private slots:
 
 private:
     void init();
-    void fillFittingCurveData();
     QByteArray packageRawData(const QVector<QPointF> &points);
     void fillFixedFittingCurveData(const double &start);
     void packageRawData(bool isSend = false);

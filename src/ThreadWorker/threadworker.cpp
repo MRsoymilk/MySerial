@@ -161,7 +161,9 @@ void ThreadWorker::processCurve24(const QByteArray &data24,
     }
 }
 
-void ThreadWorker::processData4k(const QByteArray &data14, const QByteArray &data24)
+void ThreadWorker::processData4k(const QByteArray &data14,
+                                 const QByteArray &data24,
+                                 const double &temperature)
 {
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();
@@ -219,6 +221,76 @@ void ThreadWorker::processData4k(const QByteArray &data14, const QByteArray &dat
         xMax = numPoints;
     }
 
+    if (m_correction_enable) {
+        QList<QPointF> out_correction;
+        // generate threshold
+        QVector<qint32> threshold;
+        for (int j = 0; j < m_correction_num; ++j) {
+            double x = j * m_correction_step + m_correction_offset;
+            double v1 = (m_correction_sin.k1 * temperature + m_correction_sin.b1) / 8.5 / 1000;
+            double v2 = m_correction_sin.y0
+                        + m_correction_sin.A
+                              * std::sin(3.14159 * (x - m_correction_sin.xc) / m_correction_sin.w);
+            double v3 = (m_correction_sin.k2 * temperature + m_correction_sin.b2) / 1000;
+            double y = v1 * v2 + v3;
+            threshold.push_back(qRound(y / 3.3 * (1 << 13)));
+        }
+
+        double x_max_correction = m_correction_offset;
+        double y_min_correction = std::numeric_limits<double>::max();
+        double y_max_correction = std::numeric_limits<double>::lowest();
+
+        // 遍历 raw14，找到最接近的阈值点
+        for (int i = 0; i < raw14.size(); ++i) {
+            int best_j = -1;
+            int min_diff = std::numeric_limits<int>::max();
+            for (int j = 0; j < threshold.size(); ++j) {
+                int diff = std::abs(raw14[i] - threshold[j]);
+                if (diff < min_diff) {
+                    min_diff = diff;
+                    best_j = j;
+                }
+            }
+
+            if (best_j >= 0) {
+                double x = m_correction_offset + best_j * m_correction_step;
+                if (x > raw24.size()) {
+                    break;
+                }
+                double y = raw24[i];
+                out_correction.push_back(QPointF(x, y));
+
+                x_max_correction = std::max(x_max_correction, x);
+                y_min_correction = std::min(y, y_min_correction);
+                y_max_correction = std::max(y, y_max_correction);
+            }
+        }
+
+        emit showCorrectionCurve(out_correction,
+                                 m_correction_offset,
+                                 x_max_correction,
+                                 y_min_correction,
+                                 y_max_correction,
+                                 temperature);
+    }
+
     emit pointsReady4k(v_voltage14, v_voltage24, raw14, raw24);
-    emit dataReady4k(out14, out24, xMin, xMax, yMin, yMax);
+    emit dataReady4k(out14, out24, xMin, xMax, yMin, yMax, temperature);
+}
+
+void ThreadWorker::onEnableCorrection(bool enable, const QJsonObject &params)
+{
+    m_correction_enable = enable;
+    if (enable) {
+        m_correction_offset = params["offset"].toDouble();
+        m_correction_step = params["step"].toDouble();
+        m_correction_sin.k1 = params["k1"].toDouble();
+        m_correction_sin.b1 = params["b1"].toDouble();
+        m_correction_sin.y0 = params["y0"].toDouble();
+        m_correction_sin.A = params["A"].toDouble();
+        m_correction_sin.xc = params["xc"].toDouble();
+        m_correction_sin.w = params["w"].toDouble();
+        m_correction_sin.k2 = params["k2"].toDouble();
+        m_correction_sin.b2 = params["b2"].toDouble();
+    }
 }

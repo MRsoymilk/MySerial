@@ -91,11 +91,14 @@ void FormPlotSimulate::on_toolButtonRe_clicked()
 
 void FormPlotSimulate::simulate4k()
 {
+    bool option = false;
+    bool wait_delete = false;
     if (m_ini.option_correction == VAL_ENABLE) {
-        emit simulateOption(true);
+        option = true;
     } else {
-        emit simulateOption(false);
+        option = false;
     }
+    emit simulateOption(option);
 
     QFile file(m_ini.file);
     QString data;
@@ -199,7 +202,15 @@ void FormPlotSimulate::simulate4k()
             } else if (matchedType == "curve_14bit") {
                 frame.bit14 = tmp_frame;
                 if (!frame.bit24.isEmpty()) {
-                    emit simulateDataReady4k(frame.bit14, frame.bit24);
+                    if (option) {
+                        QByteArray tempBytes = buffer.mid(endIdx + footer.size(), 2);
+                        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
+                        double temperature = tempRaw / 1000.0;
+                        emit simulateDataReady4k(frame.bit14, frame.bit24, temperature);
+                        wait_delete = true;
+                    } else {
+                        emit simulateDataReady4k(frame.bit14, frame.bit24);
+                    }
                 }
             }
         } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
@@ -208,8 +219,12 @@ void FormPlotSimulate::simulate4k()
                 emit simulateDataReady4k(frame.bit14, frame.bit24);
             }
         }
-
-        buffer.remove(0, endIdx + footer.size());
+        if (wait_delete) {
+            buffer.remove(0, endIdx + footer.size() + 2);
+            wait_delete = false;
+        } else {
+            buffer.remove(0, endIdx + footer.size());
+        }
     }
 }
 

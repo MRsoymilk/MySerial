@@ -22,6 +22,13 @@ signals:
     void windowClose();
     void sendKB(const QByteArray &bytes);
     void sendSin(const QByteArray &bytes);
+    void enableCorrectionCurve(bool enable, const QJsonObject &params);
+    void onShowCorrectionCurve(const QList<QPointF> &data,
+                               const double &xMin,
+                               const double &xMax,
+                               const double &yMin,
+                               const double &yMax,
+                               const double &temperature);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -33,6 +40,7 @@ public slots:
 private slots:
     void on_btnStart_clicked();
     void on_comboBoxAlgorithm_currentTextChanged(const QString &arg1);
+    void on_tBtnShowCorrectionCurve_clicked();
 
 private:
     void init();
@@ -44,6 +52,7 @@ private:
     FormFittingSin *m_formSin;
     FormFittingSelf *m_formSelf;
     bool m_start;
+    bool m_show = false;
 };
 
 #endif // FORMPLOTCORRECTION_H

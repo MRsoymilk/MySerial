@@ -419,22 +419,18 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
             if (!m_frame.bit24.isEmpty()) {
                 if (m_toPeek) {
                     if (m_waitting_byte) {
-                        if (m_buffer.size() < 2) {
-                            return;
-                        }
-
                         QByteArray tempBytes = temp;
-                        if (tempBytes.isEmpty()) {
+                        if (tempBytes.isEmpty() || tempBytes.size() < 2) {
                             m_need_after = true;
                             return;
                         }
-                        qint16 tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
+                        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
                         double temperature = tempRaw / 1000.0;
 
                         LOG_INFO("Temperature: {} °C", temperature);
 
                         emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
-                        emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+                        emit recv2Plot4k(m_frame.bit14, m_frame.bit24, temperature);
                         emit recvTemperature(temperature);
                         m_frame.bit24.clear();
                     }
@@ -500,13 +496,13 @@ void FormSerial::onReadyRead()
         if (tempBytes.size() < 2) {
             return;
         }
-        qint16 tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
+        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
         double temperature = tempRaw / 1000.0;
 
         LOG_INFO("Temperature: {} °C", temperature);
 
         emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
-        emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+        emit recv2Plot4k(m_frame.bit14, m_frame.bit24, temperature);
         emit recvTemperature(temperature);
         m_frame.bit24.clear();
         m_need_after = false;

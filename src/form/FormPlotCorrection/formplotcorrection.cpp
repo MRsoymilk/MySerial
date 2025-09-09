@@ -2,6 +2,7 @@
 #include "funcdef.h"
 #include "ui_formplotcorrection.h"
 
+#include "ShowCorrectionCurve/showcorrectioncurve.h"
 #include "fitting/formfittingkb.h"
 #include "fitting/formfittingself.h"
 #include "fitting/formfittingsin.h"
@@ -74,6 +75,7 @@ void FormPlotCorrection::init()
         ui->stackedWidget->setCurrentWidget(m_formSelf);
     }
     connect(m_formSin, &FormFittingSin::sendSin, this, &FormPlotCorrection::sendSin);
+    ui->tBtnShowCorrectionCurve->setCheckable(true);
 }
 
 void FormPlotCorrection::on_btnStart_clicked()
@@ -90,5 +92,29 @@ void FormPlotCorrection::on_comboBoxAlgorithm_currentTextChanged(const QString &
         ui->stackedWidget->setCurrentWidget(m_formSin);
     } else if (algorithm == "fitting_self") {
         ui->stackedWidget->setCurrentWidget(m_formSelf);
+    }
+}
+
+void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
+{
+    m_show = !m_show;
+    ui->tBtnShowCorrectionCurve->setChecked(m_show);
+    if (m_show) {
+        QString txt = ui->comboBoxAlgorithm->currentText();
+        if (txt == "fitting_sin") {
+            QJsonObject params = m_formSin->getParams();
+
+            emit enableCorrectionCurve(true, params);
+            ShowCorrectionCurve *sinShow = new ShowCorrectionCurve;
+            connect(this,
+                    &FormPlotCorrection::onShowCorrectionCurve,
+                    sinShow,
+                    &ShowCorrectionCurve::updatePlot);
+            sinShow->show();
+        } else {
+            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Warning"), "only support fitting_sin");
+        }
+    } else {
+        emit enableCorrectionCurve(false, {});
     }
 }

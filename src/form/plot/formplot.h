@@ -23,22 +23,29 @@ public:
     void retranslateUI();
 
 signals:
-    void newDataReceived4k(const QByteArray &data14, const QByteArray &data24);
+    void newDataReceived4k(const QByteArray &data14,
+                           const QByteArray &data24,
+                           const double &temperature);
     void sendKB(const QByteArray &bytes);
     void sendSin(const QByteArray &bytes);
     void sendOffset14(int val);
     void sendOffset24(int val);
     void changeFrameType(int index);
-    void toHistory(const QList<QPointF> &data14, const QList<QPointF> &data24);
+    void toHistory(const QList<QPointF> &data14,
+                   const QList<QPointF> &data24,
+                   const double &temperature = 0.0);
 
 public slots:
-    void onDataReceived4k(const QByteArray &data14, const QByteArray &data24);
+    void onDataReceived4k(const QByteArray &data14,
+                          const QByteArray &data24,
+                          const double &temperature);
     void updatePlot4k(const QList<QPointF> &data14,
                       const QList<QPointF> &data24,
                       const double &xMin,
                       const double &xMax,
                       const double &yMin,
-                      const double &yMax);
+                      const double &yMax,
+                      const double &temperature);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;

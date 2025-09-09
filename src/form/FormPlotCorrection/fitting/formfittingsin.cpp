@@ -154,7 +154,7 @@ void FormFittingSin::packageRawData(bool isSend)
     // send file
     QFile file("threshold.hex");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("Error"), tr("Cannot open file for writing"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Cannot open file for writing"));
         return;
     }
 
@@ -164,9 +164,9 @@ void FormFittingSin::packageRawData(bool isSend)
     file.close();
 
     if (bytesWritten != hexData.size()) {
-        QMessageBox::warning(this, tr("Error"), tr("Failed to write complete data"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Failed to write complete data"));
     } else {
-        QMessageBox::information(this, tr("Success"), tr("File saved successfully"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Success"), tr("File saved successfully"));
     }
 
     if (isSend) {
@@ -204,6 +204,8 @@ QByteArray FormFittingSin::packageRawData(const QVector<QPointF> &points)
 void FormFittingSin::fillFixedFittingCurveData(const double &start)
 {
     m_threshold_table.clear();
+    m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
+    m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
     m_model->removeRows(0, m_model->rowCount());
     int length = ui->spinBoxNum->value();
     double step = ui->doubleSpinBoxStep->value();
@@ -221,42 +223,6 @@ void FormFittingSin::fillFixedFittingCurveData(const double &start)
         m_threshold_table.push_back(signedRaw);
         m_model->appendRow(rowItems);
     }
-}
-
-void FormFittingSin::fillFittingCurveData()
-{
-    m_model->removeRows(0, m_model->rowCount());
-
-    int startX = qRound(m_sin.xc);
-    int periodLength = qRound(2 * m_sin.w);
-    int endX = startX + periodLength;
-
-    double minAbsY = std::numeric_limits<double>::max();
-    int xClosest = startX;
-    double yClosest = 0;
-
-    for (double x = startX; x < endX; x += 1) {
-        double y = m_sin.y0 + m_sin.A * qSin(M_PI * (x - m_sin.xc) / m_sin.w);
-
-        // 更新最小值
-        if (std::abs(y) < minAbsY) {
-            minAbsY = std::abs(y);
-            xClosest = x;
-            yClosest = y;
-        }
-
-        qint32 signedRaw = qRound(y / 3.3 * (1 << 13));
-
-        QList<QStandardItem *> rowItems;
-        rowItems << new QStandardItem(QString::number(x, 'f', 2));
-        rowItems << new QStandardItem(QString::number(y, 'f', 6));
-        rowItems << new QStandardItem(QString::number(signedRaw));
-
-        m_model->appendRow(rowItems);
-    }
-
-    ui->textBrowserSinLog->append(
-        QString("Closest point to x-axis: x = %1, y = %2").arg(xClosest).arg(yClosest));
 }
 
 bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
@@ -339,10 +305,9 @@ void FormFittingSin::startFitting()
         ui->lineEdit_xc->setText(QString::number(m_sin.xc));
         ui->lineEdit_y0->setText(QString::number(m_sin.y0));
         QString msg = QString("response: %1")
-                          .arg(QString(QJsonDocument(resp).toJson(QJsonDocument::Compact)));
+                          .arg(QString(QJsonDocument(resp).toJson(QJsonDocument::Indented)));
         ui->textBrowserSinLog->append(msg);
         LOG_INFO(msg);
-        fillFittingCurveData();
         clientFitSin->getImage(QUrl(imageUrl));
     });
 
@@ -464,6 +429,22 @@ void FormFittingSin::setTemperature(double temperature)
     startFitting();
 }
 
+QJsonObject FormFittingSin::getParams()
+{
+    QJsonObject params;
+    params.insert("offset", 900.0);
+    params.insert("step", 1.5);
+    params.insert("k1", m_sin.k1);
+    params.insert("b1", m_sin.b1);
+    params.insert("y0", m_sin_fixed.y0);
+    params.insert("A", m_sin_fixed.A);
+    params.insert("xc", m_sin_fixed.xc);
+    params.insert("w", m_sin_fixed.w);
+    params.insert("k2", m_sin.k2);
+    params.insert("b2", m_sin.b2);
+    return params;
+}
+
 std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
     double x1, double y1, double x2, double y2, double A, double y0)
 {
@@ -554,6 +535,9 @@ void FormFittingSin::on_btnUpdate_clicked()
     m_sin.b2 = ui->lineEdit_b2->text().toDouble();
 
     m_sin.T = ui->lineEdit_T->text().toDouble();
+
+    m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
+    m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
 }
 
 void FormFittingSin::on_btnGenerateThreshold_clicked()
@@ -607,6 +591,8 @@ void FormFittingSin::on_btnSetTemperature_clicked()
     ui->lineEdit_T->setText(val);
     ui->lineEdit_T_->setText(val);
     m_sin.T = ui->doubleSpinBoxTemperature->value();
+    m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
+    m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
 }
 
 void FormFittingSin::on_btnSendFormula_clicked()
@@ -693,7 +679,7 @@ void FormFittingSin::on_btnSendSegmentFormula_clicked()
 
         emit sendSin(byteArray);
     } else {
-        QMessageBox::warning(this, tr("Error"), tr("Please finish step 1 and step 2!"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Please finish step 1 and step 2!"));
     }
 }
 
