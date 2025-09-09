@@ -189,7 +189,7 @@ void FormPlot::init()
 
 void FormPlot::onDataReceived4k(const QByteArray &data14, const QByteArray &data24)
 {
-    if (m_pause) {
+    if (!m_pause) {
         emit newDataReceived4k(data14, data24);
     }
 }
