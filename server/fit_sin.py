@@ -11,9 +11,9 @@ import uuid
 app = Flask(__name__, static_folder='static')
 os.makedirs("static", exist_ok=True)
 
-# 拟合函数
-def sine_func(x, y0, A, xc, w, k, b):
-    return k * (y0 + A * np.sin(np.pi * (x - xc) / w)) + b
+# # 拟合函数
+# def sine_func(x, y0, A, xc, w, k, b):
+#     return k * (y0 + A * np.sin(np.pi * (x - xc) / w)) + b
 
 @app.route('/find_peak', methods=['POST'])
 def find_peak():
@@ -62,8 +62,6 @@ def find_peak():
     except Exception as e:
         print(f"error: {str(e)}")
         return jsonify({"error": str(e)}), 500
-
-
 @app.route('/fit_sin', methods=['POST'])
 def fit():
     try:
@@ -72,31 +70,34 @@ def fit():
         y_data = np.array(data['y'], dtype=float)
         k = float(data['k'])
         b = float(data['b'])
+        print("k: ", k)
+        print("b: ", b)
 
-        # 初始猜测
-        y0_init = np.mean(y_data)
+        # 初始猜测 (顺序必须和函数参数一致: A, xc, w, y0)
         A_init = (np.max(y_data) - np.min(y_data)) / 2
-        xc_init = x_data[np.argmax(y_data)]
+        xc_init = 0
         w_init = (np.max(x_data) - np.min(x_data)) / 2
-        p0 = [y0_init, A_init, xc_init, w_init]
+        y0_init = np.mean(y_data)
+        guess = [A_init, xc_init, w_init, y0_init]
+
+        # 定义正弦函数，k 和 b 固定
+        def sin_func(x, A, xc, w, y0):
+            v_sin = A * np.sin(np.pi * (x - xc) / w) + y0
+            return k * v_sin + b
 
         # 拟合参数
-        params, _ = curve_fit(
-            lambda x, y0, A, xc, w: sine_func(x, y0, A, xc, w, k, b),
-            x_data, y_data, p0=p0
-        )
-        y0, A, xc, w = params
+        params, _ = curve_fit(sin_func, x_data, y_data, p0=guess)
+        A, xc, w, y0 = params
 
         # 拟合曲线数据
         x_fit = np.linspace(np.min(x_data), np.max(x_data), 500)
-        y_fit = sine_func(x_fit, y0, A, xc, w, k, b)
+        y_fit = sin_func(x_fit, A, xc, w, y0)
 
         # 生成唯一图像名
         uuid_tick = uuid.uuid4().hex
         filename = f"fit_{uuid_tick}.png"
         filepath = os.path.join('static', filename)
 
-        # 绘图（对象式接口）
         fig, ax = plt.subplots(figsize=(19.2 / 2, 10.8 / 2), dpi=100, facecolor='white')
         ax.plot(x_data, y_data, 'o', label='Data', color='blue')
         ax.plot(x_fit, y_fit, '-', label='Fitted Curve', color='red')
@@ -109,14 +110,13 @@ def fit():
         plt.close(fig)
 
         # --- 计算 loss ---
-        y_pred = sine_func(x_data, y0, A, xc, w, k, b)           # 拟合值对应原始 x_data
-        residuals = y_data - y_pred                  # 残差
-        mse = float(np.mean(residuals**2))           # 均方误差
-        rss = float(np.sum(residuals**2))            # 残差平方和
+        y_pred = sin_func(x_data, A, xc, w, y0)
+        residuals = y_data - y_pred
+        mse = float(np.mean(residuals**2))
+        rss = float(np.sum(residuals**2))
         tss = float(np.sum((y_data - np.mean(y_data))**2))
         r2 = 1 - rss / tss if tss != 0 else 0.0
 
-        # 构造返回 JSON
         image_url = f"{request.host_url.rstrip('/')}/static/{filename}?t={uuid_tick}"
         return jsonify({
             "y0": float(y0),
@@ -131,6 +131,9 @@ def fit():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
 
 def linear_fit_metrics(x, y):
     # 拟合
