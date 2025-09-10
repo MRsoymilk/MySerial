@@ -45,7 +45,8 @@ public slots:
                       const double &xMax,
                       const double &yMin,
                       const double &yMax,
-                      const double &temperature);
+                      const double &temperature,
+                      bool record = false);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;

@@ -489,6 +489,12 @@ QByteArray FormFittingSin::buildFrame()
 
 void FormFittingSin::on_btnAdjust_clicked()
 {
+    if (ui->spinBoxX1Real->value() == ui->spinBoxX2Real->value()) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("points can not be same!"));
+    }
+    if (ui->doubleSpinBoxX1->value() == ui->doubleSpinBoxX2->value()) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("points can not be same!"));
+    }
     // 获取界面输入的两点
     double lambda1 = ui->spinBoxX1Real->value();
     double lambda2 = ui->spinBoxX2Real->value();

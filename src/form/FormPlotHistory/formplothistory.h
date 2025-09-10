@@ -22,6 +22,14 @@ public:
 
 signals:
     void windowClose();
+    void sendToPlot(const QList<QPointF> &data14,
+                    const QList<QPointF> &data24,
+                    const double &xMin,
+                    const double &xMax,
+                    const double &yMin,
+                    const double &yMax,
+                    const double &temperature,
+                    bool record = false);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -45,6 +53,8 @@ private slots:
     void on_toolButtonDumpData_clicked();
     void on_tBtnFittingSin_clicked();
     void on_tBtnFittingKB_clicked();
+
+    void on_tBtnToPlot_clicked();
 
 private:
     void updatePlot14();

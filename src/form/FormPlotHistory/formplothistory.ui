@@ -145,6 +145,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="tBtnToPlot">
+       <property name="text">
+        <string>To Plot</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="toolButtonDumpPlot">
        <property name="text">
         <string>dump plot</string>

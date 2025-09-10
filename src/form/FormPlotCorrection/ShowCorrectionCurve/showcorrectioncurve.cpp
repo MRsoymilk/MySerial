@@ -25,6 +25,15 @@ void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
     m_line->replace(data);
     m_axisX->setRange(xMin, xMax);
     m_axisY->setRange(yMin, yMax);
+    m_data.push_back(data);
+    m_current_page = m_data.size() - 1;
+    ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
+}
+
+void ShowCorrectionCurve::closeEvent(QCloseEvent *event)
+{
+    m_data.clear();
+    m_current_page = 0;
 }
 
 void ShowCorrectionCurve::init()
@@ -47,4 +56,26 @@ void ShowCorrectionCurve::init()
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->stackedWidget->addWidget(m_chartView);
     ui->stackedWidget->setCurrentWidget(m_chartView);
+
+    m_current_page = 0;
+}
+
+void ShowCorrectionCurve::on_tBtnPrev_clicked()
+{
+    if (m_current_page <= 0) {
+        return; // 已经是第一页
+    }
+    --m_current_page;
+    m_line->replace(m_data[m_current_page]);
+    ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
+}
+
+void ShowCorrectionCurve::on_tBtnNext_clicked()
+{
+    if (m_current_page >= m_data.size() - 1) {
+        return; // 已经是最后一页
+    }
+    ++m_current_page;
+    m_line->replace(m_data[m_current_page]);
+    ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
 }

@@ -244,6 +244,7 @@ void MainWindow::init()
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(formPlot, &FormPlot::newDataReceived4k, m_worker, &ThreadWorker::processData4k);
 
+    connect(m_plotHistory, &FormPlotHistory::sendToPlot, formPlot, &FormPlot::updatePlot4k);
     connect(m_worker,
             &ThreadWorker::dataReady4k,
             formPlot,

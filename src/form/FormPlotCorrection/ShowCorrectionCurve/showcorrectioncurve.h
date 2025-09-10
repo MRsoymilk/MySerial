@@ -28,6 +28,13 @@ public:
                     const double &yMax,
                     const double &temperature);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
+private slots:
+    void on_tBtnPrev_clicked();
+    void on_tBtnNext_clicked();
+
 private:
     void init();
 
@@ -38,6 +45,8 @@ private:
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
     QLineSeries *m_line;
+    QList<QList<QPointF>> m_data;
+    int m_current_page;
 };
 
 #endif // SHOWCORRECTIONCURVE_H

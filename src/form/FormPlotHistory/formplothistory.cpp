@@ -622,3 +622,44 @@ void FormPlotHistory::on_tBtnFittingKB_clicked()
         clearFitting();
     }
 }
+
+void FormPlotHistory::on_tBtnToPlot_clicked()
+{
+    getFittingChart();
+    QList<QPointF> data14;
+    QList<QPointF> data24;
+    double temperature = 0;
+    if (m_index_14 < m_p14.size()) {
+        data14 = m_p14[m_index_14];
+    }
+    if (m_index_24 < m_p24.size()) {
+        data24 = m_p24[m_index_24];
+    }
+    if (m_index_24 < m_temperature.size()) {
+        temperature = m_temperature[m_index_24];
+    }
+
+    QValueAxis *axisX = nullptr;
+    QValueAxis *axisY = nullptr;
+    auto axesX = m_chart->axes(Qt::Horizontal);
+    if (!axesX.isEmpty()) {
+        axisX = qobject_cast<QValueAxis *>(axesX.first());
+    }
+
+    auto axesY = m_chart->axes(Qt::Vertical);
+    if (!axesY.isEmpty()) {
+        axisY = qobject_cast<QValueAxis *>(axesY.first());
+    }
+
+    if (!axisX || !axisY) {
+        qWarning() << "No valid axes found!";
+        return;
+    }
+
+    double xMin = axisX->min();
+    double xMax = axisX->max();
+    double yMin = axisY->min();
+    double yMax = axisY->max();
+
+    emit sendToPlot(data14, data24, xMin, xMax, yMin, yMax, temperature, false);
+}

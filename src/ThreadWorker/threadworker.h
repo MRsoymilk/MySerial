@@ -31,7 +31,8 @@ signals:
                      const double &xMax,
                      const double &yMin,
                      const double &yMax,
-                     const double &temperature = 0.0);
+                     const double &temperature = 0.0,
+                     bool record = true);
     void showCorrectionCurve(const QList<QPointF> &data,
                              const double &xMin,
                              const double &xMax,
