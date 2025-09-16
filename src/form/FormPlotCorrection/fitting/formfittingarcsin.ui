@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FormFittingArcSin</class>
+ <widget class="QWidget" name="FormFittingArcSin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1050</width>
+    <height>724</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,1">
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="groupBoxProcess">
+     <property name="title">
+      <string>Process</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0">
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tabStandard">
+         <attribute name="title">
+          <string>Standard</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="6" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Orientation::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QToolButton" name="tBtnAdd">
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="tBtnDelete">
+              <property name="text">
+               <string>Delete</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btnSendR">
+            <property name="text">
+             <string>1. send R = kT + b</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_R_k">
+              <property name="text">
+               <string>k</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_R_b">
+              <property name="text">
+               <string>b</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxR_k"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxR_b"/>
+            </item>
+           </layout>
+          </item>
+          <item row="7" column="0">
+           <widget class="QPushButton" name="btnFittingArcSin">
+            <property name="text">
+             <string>3. fitting ArcSin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QTableView" name="tableViewPoints"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="btnCalculate_k1b1k2b2">
+            <property name="text">
+             <string>2. calculate k1, b1, k2, b2</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabAdjust">
+         <attribute name="title">
+          <string>Adjust</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="hLaySetTemperature">
+            <item>
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureT"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnSetTemperatureT">
+              <property name="text">
+               <string>set temperature T</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QVBoxLayout" name="vLayFormula">
+            <item>
+             <widget class="QLineEdit" name="lineEditFormula"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnUpdateFormula">
+              <property name="text">
+               <string>update formula</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="hLayGenerateThreshold">
+            <item>
+             <layout class="QFormLayout" name="formLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="labelNum">
+                <property name="text">
+                 <string>num</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="spinBoxNum">
+                <property name="maximum">
+                 <number>9999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="labelStart">
+                <property name="text">
+                 <string>from</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QDoubleSpinBox" name="doubleSpinBoxStart">
+                <property name="maximum">
+                 <double>9999.989999999999782</double>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="labelStep">
+                <property name="text">
+                 <string>step</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QDoubleSpinBox" name="doubleSpinBoxStep"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnGenerateThreshold">
+              <property name="text">
+               <string>generate threshold</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabFittingCurveData">
+         <attribute name="title">
+          <string>FittingCurveData</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QTableView" name="tableViewFittingCurveData"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBoxFormula">
+     <property name="title">
+      <string>Formula</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="4" column="0">
+       <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0" rowminimumheight="0,0,0,0" columnminimumwidth="0,0,0,0,0,0,0,0,0,0,0,0,0,0">
+        <item row="1" column="4" rowspan="2">
+         <widget class="QLabel" name="label_27">
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2" rowspan="2">
+         <widget class="QLabel" name="label_26">
+          <property name="text">
+           <string>*</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="6" rowspan="2">
+         <widget class="QLabel" name="label_28">
+          <property name="text">
+           <string>) / 8.5</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="11">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>T</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3" rowspan="2">
+         <widget class="QLineEdit" name="lineEdit_T"/>
+        </item>
+        <item row="0" column="5">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>b1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="7" rowspan="2">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string> * y_lambda + </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="label_k1">
+          <property name="text">
+           <string>k1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="11" rowspan="2">
+         <widget class="QLineEdit" name="lineEdit_T_"/>
+        </item>
+        <item row="1" column="10" rowspan="2">
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>*</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5" rowspan="2">
+         <widget class="QLineEdit" name="lineEdit_b1"/>
+        </item>
+        <item row="1" column="12" rowspan="2">
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" rowspan="2">
+         <widget class="QLineEdit" name="lineEdit_k1"/>
+        </item>
+        <item row="1" column="8" rowspan="2" colspan="2">
+         <widget class="QLineEdit" name="lineEdit_k2"/>
+        </item>
+        <item row="1" column="13" rowspan="2">
+         <widget class="QLineEdit" name="lineEdit_b2"/>
+        </item>
+        <item row="0" column="8" colspan="2">
+         <widget class="QLabel" name="label_k2">
+          <property name="text">
+           <string>k2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>T</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" rowspan="2">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>y = (</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="13">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>b2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="6">
+         <widget class="QLabel" name="label_29">
+          <property name="text">
+           <string>/ 1000</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="8" colspan="6">
+         <widget class="QLabel" name="label_div_1000_2">
+          <property name="text">
+           <string>/ 1000</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelFormula_y">
+        <property name="text">
+         <string>Formula y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="2" column="6">
+         <widget class="QLineEdit" name="lineEdit_alpha"/>
+        </item>
+        <item row="0" column="2" rowspan="5">
+         <widget class="QLabel" name="label_arcsin">
+          <property name="text">
+           <string>* (arcsin(</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" rowspan="5">
+         <widget class="QLineEdit" name="lineEdit_k_lambda"/>
+        </item>
+        <item row="3" column="6">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>/ 2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="5" rowspan="3">
+         <widget class="QLabel" name="label_cos">
+          <property name="text">
+           <string>*cos(</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="7" rowspan="3">
+         <widget class="QLabel" name="label_25">
+          <property name="text">
+           <string>)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="10" rowspan="5">
+         <widget class="QLabel" name="label_24">
+          <property name="text">
+           <string>) + </string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="4" rowspan="3">
+         <widget class="QLineEdit" name="lineEdit_d"/>
+        </item>
+        <item row="0" column="11" rowspan="5">
+         <widget class="QLineEdit" name="lineEdit_b_lambda"/>
+        </item>
+        <item row="2" column="3" rowspan="3">
+         <widget class="QLabel" name="label_num_2">
+          <property name="text">
+           <string> 2 *</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="8" rowspan="5">
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>) -</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" rowspan="5">
+         <widget class="QLabel" name="label_y_lambda">
+          <property name="text">
+           <string>y_lambda = </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3" rowspan="2" colspan="5">
+         <widget class="QLabel" name="label_div_in_arcsin">
+          <property name="text">
+           <string>λ /</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="9">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>/ 2</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="9" rowspan="3">
+         <widget class="QLineEdit" name="lineEdit_alpha_"/>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelFormula_y_lambda">
+        <property name="text">
+         <string>Formula y_lambda</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QRadioButton" name="radioButtonLeft">
+          <property name="text">
+           <string>left</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonRight">
+          <property name="text">
+           <string>right</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBoxLog">
+     <property name="title">
+      <string>Log</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="0" column="0">
+       <widget class="QTextEdit" name="textEditLog"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QPushButton" name="btnSendFormula">
+     <property name="text">
+      <string>Send Formula</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

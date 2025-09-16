@@ -6,6 +6,7 @@
 class FormFittingKB;
 class FormFittingSin;
 class FormFittingSelf;
+class FormFittingArcSin;
 
 namespace Ui {
 class FormPlotCorrection;
@@ -51,6 +52,7 @@ private:
     FormFittingKB *m_formKB;
     FormFittingSin *m_formSin;
     FormFittingSelf *m_formSelf;
+    FormFittingArcSin *m_formArcSin;
     bool m_start;
     bool m_show = false;
 };

@@ -68,7 +68,7 @@ private:
     double m_correction_num = 535;
     struct CORRECTION_SIN
     {
-        double k1, b1, k2, b2, y0, A, xc, w;
+        double k1, b1, k2, b2, y0, A, xc, w, T;
     } m_correction_sin;
 };
 

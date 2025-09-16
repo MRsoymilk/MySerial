@@ -123,6 +123,10 @@ public:
 protected:
     void mouseMoveEvent(QMouseEvent *event) override
     {
+        if (isDraggingLine()) {
+            QChartView::mouseMoveEvent(event);
+            return;
+        }
         QPointF pos = event->pos();
         QPointF value = m_chart->mapToValue(pos);
 
@@ -241,6 +245,7 @@ private:
             m_marker = nullptr;
         }
     }
+    bool isDraggingLine() const;
 
 private:
     QChart *m_chart = nullptr;

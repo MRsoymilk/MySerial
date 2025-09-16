@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.11 LANGUAGES CXX)
+project(MySerial VERSION 1.3.12 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
         src/main/mainwindow.ui
         src/ThreadWorker/threadworker.h
         src/ThreadWorker/threadworker.cpp
+        src/ThreadWorker/MethodThreshold/methodthreshold.h
+        src/ThreadWorker/MethodThreshold/methodthreshold.cpp
         src/module/server/server.h
         src/module/server/server.cpp
         src/form/serial/formserial.h
@@ -39,8 +41,10 @@ set(PROJECT_SOURCES
         src/form/log/formlog.ui
         src/form/plot/3d/myglcurvewidget.h
         src/form/plot/3d/myglcurvewidget.cpp
-        src/enhance/mychartview.h
-        src/enhance/mychartview.cpp
+        src/enhance/DraggableLine/draggableline.h
+        src/enhance/DraggableLine/draggableline.cpp
+        src/enhance/MyChartView/mychartview.h
+        src/enhance/MyChartView/mychartview.cpp
         src/form/FormPlotData/formplotdata.h
         src/form/FormPlotData/formplotdata.cpp
         src/form/FormPlotData/formplotdata.ui
@@ -70,6 +74,9 @@ set(PROJECT_SOURCES
         src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.h
         src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp
         src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.ui
+        src/form/FormPlotCorrection/fitting/formfittingarcsin.h
+        src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp
+        src/form/FormPlotCorrection/fitting/formfittingarcsin.ui
         src/module/httpclient/httpclient.h
         src/module/httpclient/httpclient.cpp
         src/form/setting/formsetting.h

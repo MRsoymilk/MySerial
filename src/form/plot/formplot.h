@@ -7,7 +7,9 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include "3d/myglcurvewidget.h"
-#include "mychartview.h"
+#include "MyChartView/mychartview.h"
+
+class DraggableLine;
 
 namespace Ui {
 class FormPlot;
@@ -66,6 +68,8 @@ private slots:
     void on_tBtnStep_clicked();
     void on_tBtnFindPeak_clicked();
     void on_tBtnPause_clicked();
+    void on_tBtnMeasureX_clicked();
+    void on_tBtnMeasureY_clicked();
 
 private:
     void init();
@@ -112,6 +116,14 @@ private:
     QVector<QGraphicsSimpleTextItem *> m_peakLabels;
 
     bool m_pause = false;
+
+private:
+    DraggableLine *m_measureLineX1 = nullptr;
+    DraggableLine *m_measureLineX2 = nullptr;
+    DraggableLine *m_measureLineY1 = nullptr;
+    DraggableLine *m_measureLineY2 = nullptr;
+    QGraphicsSimpleTextItem *m_measureLabelX = nullptr;
+    QGraphicsSimpleTextItem *m_measureLabelY = nullptr;
 };
 
 #endif // FORMPLOT_H

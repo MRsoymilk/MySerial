@@ -30,6 +30,7 @@ const QString CFG_MULT_PAGE = "page";
 const QString CFG_GROUP_SETTING = "Setting";
 const QString CFG_SETTING_UPDATE_URL = "update_url";
 const QString CFG_SETTING_FIT_SIN_URL = "fit_sin_url";
+const QString CFG_SETTING_FIT_ARCSIN_URL = "fit_arcsin_url";
 const QString CFG_SETTING_FIT_KB_URL = "fit_kb_url";
 const QString CFG_SETTING_FIND_PEAK_URL = "find_peak_url";
 const QString CFG_SETTING_UPDATE_CHECK = "update_check";

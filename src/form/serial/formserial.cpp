@@ -239,7 +239,7 @@ void FormSerial::send(const QString &text)
     }
 
     // Production Instructions
-    if (text == "DD3C000340CDFF") {
+    if (m_acceptTemperature) {
         m_toPeek = true;
         m_waitting_byte = false;
     } else {
@@ -659,6 +659,7 @@ void FormSerial::onAutoSend()
             send(msg);
         }
     } else {
+        return;
         for (int i = 0; i <= 4; ++i) {
             QString msg = findChild<QLineEdit *>(QString("lineEdit_cmd_%1").arg(i))->text();
             if (!msg.isEmpty()) {
@@ -743,4 +744,9 @@ void FormSerial::on_lineEditPageName_editingFinished()
     SETTING_CONFIG_SET(CFG_GROUP_HISTROY,
                        QString("%1_%2").arg(CFG_MULT_PAGE).arg(m_currentPage),
                        ui->lineEditPageName->text());
+}
+
+void FormSerial::on_checkBoxAcceptTemperature_clicked()
+{
+    m_acceptTemperature = ui->checkBoxAcceptTemperature->isChecked();
 }

@@ -34,6 +34,8 @@ void ShowCorrectionCurve::closeEvent(QCloseEvent *event)
 {
     m_data.clear();
     m_current_page = 0;
+    emit windowClose();
+    QWidget::closeEvent(event);
 }
 
 void ShowCorrectionCurve::init()

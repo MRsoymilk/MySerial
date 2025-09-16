@@ -31,6 +31,7 @@ public:
     void doCorrection(const QVector<double> &v14, const QVector<double> &v24);
     void setTemperature(double temperature);
     QJsonObject getParams();
+    void updateParams();
 signals:
     void sendSin(const QByteArray &bytes);
 
@@ -68,7 +69,7 @@ private:
     QPixmap m_pixSin;
     QPixmap m_pixPeak;
     QStandardItemModel *m_model;
-    SIN m_sin, m_sin_fixed;
+    SIN m_sin;
     QVector<qint32> m_threshold_table;
     QVector<double> m_v14;
     QVector<double> m_v24;

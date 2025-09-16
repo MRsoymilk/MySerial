@@ -67,7 +67,7 @@ void FormFittingSin::init()
 
     m_urlCalculate = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIT_SIN_URL, URL_FITTING_SIN);
     m_urlFindPeak = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIND_PEAK_URL, URL_FIND_PEAK);
-    m_sin_fixed = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    m_sin = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     ui->doubleSpinBoxStep->setValue(1.5);
     ui->spinBoxNum->setValue(535);
 
@@ -211,10 +211,7 @@ void FormFittingSin::fillFixedFittingCurveData(const double &start)
     double step = ui->doubleSpinBoxStep->value();
     for (int i = 0; i < length; ++i) {
         double x = i * step + start;
-        double y = m_k
-                       * (m_sin_fixed.y0
-                          + m_sin_fixed.A * qSin(M_PI * (x - m_sin_fixed.xc) / m_sin_fixed.w))
-                   + m_b;
+        double y = m_k * (m_sin.y0 + m_sin.A * qSin(M_PI * (x - m_sin.xc) / m_sin.w)) + m_b;
         qint32 signedRaw = qRound(y / 3.3 * (1 << 13));
         QList<QStandardItem *> rowItems;
         rowItems << new QStandardItem(QString::number(x, 'f', 2));
@@ -436,13 +433,19 @@ QJsonObject FormFittingSin::getParams()
     params.insert("step", 1.5);
     params.insert("k1", m_sin.k1);
     params.insert("b1", m_sin.b1);
-    params.insert("y0", m_sin_fixed.y0);
-    params.insert("A", m_sin_fixed.A);
-    params.insert("xc", m_sin_fixed.xc);
-    params.insert("w", m_sin_fixed.w);
+    params.insert("y0", m_sin.y0);
+    params.insert("A", m_sin.A);
+    params.insert("xc", m_sin.xc);
+    params.insert("w", m_sin.w);
     params.insert("k2", m_sin.k2);
     params.insert("b2", m_sin.b2);
+    params.insert("T", m_sin.T);
     return params;
+}
+
+void FormFittingSin::updateParams()
+{
+    on_btnUpdate_clicked();
 }
 
 std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
@@ -476,10 +479,10 @@ QByteArray FormFittingSin::buildFrame()
     byteArray.append(header);
     appendScaled(byteArray, m_sin.k1);
     appendScaled(byteArray, m_sin.b1);
-    appendScaled(byteArray, m_sin_fixed.y0);
-    appendScaled(byteArray, m_sin_fixed.A);
-    appendScaled(byteArray, m_sin_fixed.xc);
-    appendScaled(byteArray, m_sin_fixed.w);
+    appendScaled(byteArray, m_sin.y0);
+    appendScaled(byteArray, m_sin.A);
+    appendScaled(byteArray, m_sin.xc);
+    appendScaled(byteArray, m_sin.w);
     appendScaled(byteArray, m_sin.k2);
     appendScaled(byteArray, m_sin.b2);
     byteArray.append(tail);
@@ -519,10 +522,10 @@ void FormFittingSin::on_btnAdjust_clicked()
                       .arg(y0)
                       .arg(m_k)
                       .arg(m_b);
-    m_sin_fixed.A = A;
-    m_sin_fixed.w = w;
-    m_sin_fixed.xc = xc;
-    m_sin_fixed.y0 = y0;
+    m_sin.A = A;
+    m_sin.w = w;
+    m_sin.xc = xc;
+    m_sin.y0 = y0;
     ui->textBrowserSinLog->append(msg);
     fillFixedFittingCurveData(lambda1);
     packageRawData();
@@ -530,20 +533,77 @@ void FormFittingSin::on_btnAdjust_clicked()
 
 void FormFittingSin::on_btnUpdate_clicked()
 {
-    m_sin.A = ui->lineEdit_A->text().toDouble();
-    m_sin.w = ui->lineEdit_w->text().toDouble();
-    m_sin.xc = ui->lineEdit_xc->text().toDouble();
-    m_sin.y0 = ui->lineEdit_y0->text().toDouble();
+    QString params = ui->lineEditParameter->text();
+    if (!params.isEmpty()) {
+        QByteArray byteArray = QByteArray::fromHex(params.toUtf8());
 
-    m_sin.k1 = ui->lineEdit_k1->text().toDouble();
-    m_sin.k2 = ui->lineEdit_k2->text().toDouble();
-    m_sin.b1 = ui->lineEdit_b1->text().toDouble();
-    m_sin.b2 = ui->lineEdit_b2->text().toDouble();
+        // 校验头尾
+        if (byteArray.size() < 2 + 8 * 4 + 2) { // header(5) + 8*4 + tail(2)
+            qWarning() << "参数长度不正确";
+            return;
+        }
 
-    m_sin.T = ui->lineEdit_T->text().toDouble();
+        int idx = 5; // 跳过 header "DD3C002349"
 
-    m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
-    m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
+        auto readDouble = [&](const QByteArray &arr, int &pos) -> double {
+            if (pos + 4 > arr.size())
+                return 0.0;
+            int32_t val = (static_cast<uint8_t>(arr[pos]) << 24)
+                          | (static_cast<uint8_t>(arr[pos + 1]) << 16)
+                          | (static_cast<uint8_t>(arr[pos + 2]) << 8)
+                          | (static_cast<uint8_t>(arr[pos + 3]));
+            pos += 4;
+            return static_cast<double>(val) / 1000.0;
+        };
+
+        m_sin.k1 = readDouble(byteArray, idx);
+        m_sin.b1 = readDouble(byteArray, idx);
+        m_sin.y0 = readDouble(byteArray, idx);
+        m_sin.A = readDouble(byteArray, idx);
+        m_sin.xc = readDouble(byteArray, idx);
+        m_sin.w = readDouble(byteArray, idx);
+        m_sin.k2 = readDouble(byteArray, idx);
+        m_sin.b2 = readDouble(byteArray, idx);
+
+        m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
+        m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
+
+        LOG_INFO("generate params from {} to k1: {}, b1: {}, y0: {}, A: {}, xc: {}, w: {}, k2: {}, "
+                 "b2: {}",
+                 params,
+                 m_sin.k1,
+                 m_sin.b1,
+                 m_sin.y0,
+                 m_sin.A,
+                 m_sin.xc,
+                 m_sin.w,
+                 m_sin.k2,
+                 m_sin.b2);
+
+        ui->lineEdit_k1->setText(QString::number(m_sin.k1));
+        ui->lineEdit_b1->setText(QString::number(m_sin.b1));
+        ui->lineEdit_y0->setText(QString::number(m_sin.y0));
+        ui->lineEdit_A->setText(QString::number(m_sin.A));
+        ui->lineEdit_xc->setText(QString::number(m_sin.xc));
+        ui->lineEdit_w->setText(QString::number(m_sin.w));
+        ui->lineEdit_k2->setText(QString::number(m_sin.k2));
+        ui->lineEdit_b2->setText(QString::number(m_sin.b2));
+    } else {
+        m_sin.A = ui->lineEdit_A->text().toDouble();
+        m_sin.w = ui->lineEdit_w->text().toDouble();
+        m_sin.xc = ui->lineEdit_xc->text().toDouble();
+        m_sin.y0 = ui->lineEdit_y0->text().toDouble();
+
+        m_sin.k1 = ui->lineEdit_k1->text().toDouble();
+        m_sin.k2 = ui->lineEdit_k2->text().toDouble();
+        m_sin.b1 = ui->lineEdit_b1->text().toDouble();
+        m_sin.b2 = ui->lineEdit_b2->text().toDouble();
+
+        m_sin.T = ui->lineEdit_T->text().toDouble();
+
+        m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
+        m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
+    }
 }
 
 void FormFittingSin::on_btnGenerateThreshold_clicked()
@@ -607,10 +667,10 @@ void FormFittingSin::on_btnSendFormula_clicked()
     LOG_INFO("send formula: {}", FORMAT_HEX(frame));
     LOG_INFO("k1 {}", m_sin.k1);
     LOG_INFO("b1 {}", m_sin.b1);
-    LOG_INFO("y0 {}", m_sin_fixed.y0);
-    LOG_INFO("A {}", m_sin_fixed.A);
-    LOG_INFO("xc {}", m_sin_fixed.xc);
-    LOG_INFO("w {}", m_sin_fixed.w);
+    LOG_INFO("y0 {}", m_sin.y0);
+    LOG_INFO("A {}", m_sin.A);
+    LOG_INFO("xc {}", m_sin.xc);
+    LOG_INFO("w {}", m_sin.w);
     LOG_INFO("k2 {}", m_sin.k2);
     LOG_INFO("b2 {}", m_sin.b2);
     emit sendSin(frame);
@@ -691,10 +751,10 @@ void FormFittingSin::on_btnSendSegmentFormula_clicked()
 
 void FormFittingSin::on_tBtnAddStep1_clicked()
 {
-    m_step_1 = m_sin_fixed;
+    m_step_1 = m_sin;
 }
 
 void FormFittingSin::on_tBtnAddStep2_clicked()
 {
-    m_step_2 = m_sin_fixed;
+    m_step_2 = m_sin;
 }

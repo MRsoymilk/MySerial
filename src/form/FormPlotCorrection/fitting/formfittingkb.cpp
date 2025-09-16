@@ -9,17 +9,24 @@ FormFittingKB::FormFittingKB(QWidget *parent)
     , ui(new Ui::FormFittingKB)
 {
     ui->setupUi(this);
-
-    m_current_round = 0;
-    m_start = false;
-    int round = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_ROUND, "8").toInt();
-    ui->spinBoxRound->setValue(round);
-    m_round = round;
+    init();
 }
 
 FormFittingKB::~FormFittingKB()
 {
     delete ui;
+}
+
+void FormFittingKB::init()
+{
+    ui->labelFormula->setText(
+        "y = (k<sub>1</sub> &middot; T + b<sub>1</sub>) / 8.5 / 1000 * "
+        "[K &middot; x + B] + (k<sub>2</sub> &middot; T + b<sub>2</sub>) / 1000");
+    m_current_round = 0;
+    m_start = false;
+    // int round = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_ROUND, "8").toInt();
+    // ui->spinBoxRound->setValue(round);
+    // m_round = round;
 }
 
 int FormFittingKB::getRound()
@@ -275,7 +282,7 @@ void FormFittingKB::doCorrection(const QVector<double> &v14, const QVector<doubl
 {
     QString status = QString("===== %1/%2 =====").arg(++m_current_round).arg(m_round);
     LOG_INFO("status: {}", status);
-    ui->labelStatus->setText(status);
+    // ui->labelStatus->setText(status);
     ui->textEditKbLog->append(status);
     bool bSend = false;
     if (m_current_round >= m_round) {
@@ -341,8 +348,8 @@ void FormFittingKB::doCorrection(const QVector<double> &v14, const QVector<doubl
     float avg_b = 0.0;
     fittingKB(avg_k, avg_b);
     drawKB(avg_k, avg_b);
-    ui->labelValK->setText(QString("%1").arg(avg_k));
-    ui->labelValB->setText(QString("%1").arg(avg_b));
+    // ui->labelValK->setText(QString("%1").arg(avg_k));
+    // ui->labelValB->setText(QString("%1").arg(avg_b));
 
     if (bSend) {
         file_idx = 0;
@@ -354,10 +361,4 @@ void FormFittingKB::doCorrection(const QVector<double> &v14, const QVector<doubl
         ui->textEditKbLog->append(msg);
         LOG_INFO(msg);
     }
-}
-
-void FormFittingKB::on_spinBoxRound_valueChanged(int val)
-{
-    m_round = val;
-    SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_ROUND, QString::number(val));
 }

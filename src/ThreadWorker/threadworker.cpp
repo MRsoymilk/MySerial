@@ -223,46 +223,106 @@ void ThreadWorker::processData4k(const QByteArray &data14,
 
     if (m_correction_enable) {
         QList<QPointF> out_correction;
-        // generate threshold
+
+        // 生成阈值表
         QVector<qint32> threshold;
         for (int j = 0; j < m_correction_num; ++j) {
             double x = j * m_correction_step + m_correction_offset;
-            double v1 = (m_correction_sin.k1 * temperature + m_correction_sin.b1) / 8.5 / 1000;
+            double v1 = (m_correction_sin.k1 * m_correction_sin.T + m_correction_sin.b1) / 8.5
+                        / 1000;
             double v2 = m_correction_sin.y0
                         + m_correction_sin.A
                               * std::sin(3.14159 * (x - m_correction_sin.xc) / m_correction_sin.w);
-            double v3 = (m_correction_sin.k2 * temperature + m_correction_sin.b2) / 1000;
+            double v3 = (m_correction_sin.k2 * m_correction_sin.T + m_correction_sin.b2) / 1000;
             double y = v1 * v2 + v3;
             threshold.push_back(qRound(y / 3.3 * (1 << 13)));
+        }
+
+        // int idx_max = 0;
+        // int idx_min = 0;
+        // int raw_max = INT_MIN;
+        // int raw_min = INT_MAX;
+        // for (int i = 0; i < raw14.size(); ++i) {
+        //     if (raw_max < raw14[i]) {
+        //         raw_max = raw14[i];
+        //         idx_max = i;
+        //     }
+        //     if (raw_min > raw14[i]) {
+        //         raw_min = raw14[i];
+        //         idx_min = i;
+        //     }
+        // }
+
+        // double x_max_correction = m_correction_offset;
+        // double y_min_correction = std::numeric_limits<double>::max();
+        // double y_max_correction = std::numeric_limits<double>::lowest();
+
+        // int distance = INT_MAX;
+        // int idx_threshold = 0;
+        // for (int i = idx_max; i <= (idx_min - 1) && idx_threshold < 535; ++i) {
+        //     if ((threshold[idx_threshold] < raw14[i])
+        //         && (threshold[idx_threshold] >= raw14[i + 1])) {
+        //         double x = m_correction_offset + idx_threshold * m_correction_step;
+        //         if (i > raw24.size()) {
+        //             break;
+        //         }
+        //         double y = raw24[i];
+        //         out_correction.push_back(QPointF(x, y));
+        //         x_max_correction = std::max(x_max_correction, x);
+        //         y_min_correction = std::min(y, y_min_correction);
+        //         y_max_correction = std::max(y, y_max_correction);
+        //         idx_threshold++;
+        //     }
+        // }
+
+        // emit showCorrectionCurve(out_correction,
+        //                          m_correction_offset,
+        //                          x_max_correction,
+        //                          y_min_correction,
+        //                          y_max_correction,
+        //                          temperature);
+        int idx_max = 0;
+        int raw_max = INT_MIN;
+        for (int i = 0; i < raw14.size(); ++i) {
+            if (raw_max < raw14[i]) {
+                raw_max = raw14[i];
+                idx_max = i;
+            }
         }
 
         double x_max_correction = m_correction_offset;
         double y_min_correction = std::numeric_limits<double>::max();
         double y_max_correction = std::numeric_limits<double>::lowest();
 
-        // 遍历 raw14，找到最接近的阈值点
-        for (int i = 0; i < raw14.size(); ++i) {
-            int best_j = -1;
-            int min_diff = std::numeric_limits<int>::max();
-            for (int j = 0; j < threshold.size(); ++j) {
-                int diff = std::abs(raw14[i] - threshold[j]);
-                if (diff < min_diff) {
-                    min_diff = diff;
-                    best_j = j;
+        int start_idx = idx_max; // 从 raw14 最大值位置开始
+        for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
+            int best_idx = -1;
+            int best_diff = INT_MAX;
+
+            // 只在剩余的 raw14 中寻找最近点
+            for (int j = start_idx; j < raw14.size(); ++j) {
+                int diff = std::abs(raw14[j] - threshold[idx_threshold]);
+                if (diff < best_diff) {
+                    best_diff = diff;
+                    best_idx = j;
+                }
+                // 一旦 raw14[j] 小于 threshold[idx_threshold] 且差值开始变大，可以提前跳出
+                if (raw14[j] < threshold[idx_threshold] && diff > best_diff) {
+                    break;
                 }
             }
 
-            if (best_j >= 0) {
-                double x = m_correction_offset + best_j * m_correction_step;
-                if (x > raw24.size()) {
-                    break;
-                }
-                double y = raw24[i];
+            if (best_idx >= 0 && best_idx < raw24.size()) {
+                double x = m_correction_offset + idx_threshold * m_correction_step;
+                double y = raw24[best_idx];
                 out_correction.push_back(QPointF(x, y));
 
                 x_max_correction = std::max(x_max_correction, x);
-                y_min_correction = std::min(y, y_min_correction);
-                y_max_correction = std::max(y, y_max_correction);
+                y_min_correction = std::min(y_min_correction, y);
+                y_max_correction = std::max(y_max_correction, y);
+
+                // 下一次匹配从这里开始，保证顺序不回退
+                start_idx = best_idx;
             }
         }
 
@@ -274,6 +334,124 @@ void ThreadWorker::processData4k(const QByteArray &data14,
                                  temperature);
     }
 
+    //     if (m_correction_enable) {
+    //         QList<QPointF> out_correction;
+    //         QVector<qint32> threshold;
+
+    //         for (int j = 0; j < m_correction_num; ++j) {
+    //             double x = j * m_correction_step + m_correction_offset;
+    //             double v1 = (m_correction_sin.k1 * temperature + m_correction_sin.b1) / 8.5 / 1000;
+    //             double v2 = m_correction_sin.y0
+    //                         + m_correction_sin.A
+    //                               * std::sin(3.14159 * (x - m_correction_sin.xc) / m_correction_sin.w);
+    //             double v3 = (m_correction_sin.k2 * temperature + m_correction_sin.b2) / 1000;
+    //             double y = v1 * v2 + v3;
+    //             threshold.push_back(qRound(y / 3.3 * (1 << 13))); // 转换为与 raw14 相同的 14 位 ADC 值
+    //         }
+
+    //         double x_max_correction = m_correction_offset;
+    //         double y_min_correction = std::numeric_limits<double>::max();
+    //         double y_max_correction = std::numeric_limits<double>::lowest();
+
+    //         const int SEND_POINT_NUM = 535; // 目标点数
+    //         int select_count = 0;           // 已选点计数
+    //         int raw14_index = 0;            // 当前 raw14 索引
+    //         int judge_ok = 0;               // 是否找到起始点
+
+    //         for (int i = 0; i < SEND_POINT_NUM && raw14_index < raw14.size(); ++i) {
+    //             if (judge_ok == 0) { // 寻找第一个点
+    //                 while (raw14_index < raw14.size()) {
+    //                     qint32 bit14 = raw14[raw14_index];
+    //                     qint32 consin_wave_val = threshold[i];
+
+    //                     // 第一个点条件：bit14 < consin_wave_val
+    //                     if (bit14 < consin_wave_val) {
+    //                         if (raw14_index == 0) {
+    //                             // 第一个点未找到，返回空点集
+    //                             emit showCorrectionCurve({},
+    //                                                      m_correction_offset,
+    //                                                      m_correction_offset,
+    //                                                      0,
+    //                                                      0,
+    //                                                      temperature);
+    //                             goto remain;
+    //                         }
+    //                         double x = m_correction_offset + i * m_correction_step;
+    //                         double y = raw24[raw14_index]; // 直接使用 raw24 的原始值
+    //                         out_correction.push_back(QPointF(x, y));
+    //                         x_max_correction = std::max(x_max_correction, x);
+    //                         y_min_correction = std::min(y, y_min_correction);
+    //                         y_max_correction = std::max(y, y_max_correction);
+    //                         select_count++;
+    //                         judge_ok = 1;
+    //                         raw14_index++;
+    //                         break;
+    //                     } else {
+    //                         raw14_index++;
+    //                         if (raw14_index >= raw14.size()) {
+    //                             // 未找到起始点
+    //                             emit showCorrectionCurve({},
+    //                                                      m_correction_offset,
+    //                                                      m_correction_offset,
+    //                                                      0,
+    //                                                      0,
+    //                                                      temperature);
+    //                             goto remain;
+    //                         }
+    //                     }
+    //                 }
+    //             } else { // 寻找后续点
+    //                 while (raw14_index < raw14.size()) {
+    //                     qint32 bit14 = raw14[raw14_index];
+    //                     qint32 consin_wave_val = threshold[i];
+
+    //                     if (bit14 < consin_wave_val) {
+    //                         double x = m_correction_offset + i * m_correction_step;
+    //                         double y = raw24[raw14_index]; // 直接使用 raw24 的原始值
+    //                         out_correction.push_back(QPointF(x, y));
+    //                         x_max_correction = std::max(x_max_correction, x);
+    //                         y_min_correction = std::min(y, y_min_correction);
+    //                         y_max_correction = std::max(y, y_max_correction);
+    //                         select_count++;
+    //                         raw14_index++;
+    //                         break;
+    //                     } else {
+    //                         raw14_index++;
+    //                         if (raw14_index >= raw14.size()) {
+    //                             // 未找到足够点
+    //                             emit showCorrectionCurve(out_correction,
+    //                                                      m_correction_offset,
+    //                                                      x_max_correction,
+    //                                                      y_min_correction,
+    //                                                      y_max_correction,
+    //                                                      temperature);
+    //                             goto remain;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+
+    //             // 成功收集 535 个点
+    //             if (select_count == SEND_POINT_NUM) {
+    //                 emit showCorrectionCurve(out_correction,
+    //                                          m_correction_offset,
+    //                                          x_max_correction,
+    //                                          y_min_correction,
+    //                                          y_max_correction,
+    //                                          temperature);
+    //                 goto remain;
+    //             }
+    //         }
+
+    //         // 未收集到 535 个点，返回部分结果
+    //         emit showCorrectionCurve(out_correction,
+    //                                  m_correction_offset,
+    //                                  x_max_correction,
+    //                                  y_min_correction,
+    //                                  y_max_correction,
+    //                                  temperature);
+    //     }
+    // remain:
     emit pointsReady4k(v_voltage14, v_voltage24, raw14, raw24);
     emit dataReady4k(out14, out24, xMin, xMax, yMin, yMax, temperature);
 }
@@ -292,5 +470,6 @@ void ThreadWorker::onEnableCorrection(bool enable, const QJsonObject &params)
         m_correction_sin.w = params["w"].toDouble();
         m_correction_sin.k2 = params["k2"].toDouble();
         m_correction_sin.b2 = params["b2"].toDouble();
+        m_correction_sin.T = params["T"].toDouble();
     }
 }

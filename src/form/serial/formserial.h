@@ -94,11 +94,10 @@ private slots:
     void on_lineEditCycle_editingFinished();
     void on_tabWidget_currentChanged(int index);
     void on_tBtnRefresh_clicked();
-
     void on_tBtnNext_clicked();
     void on_tBtnPrev_clicked();
-
     void on_lineEditPageName_editingFinished();
+    void on_checkBoxAcceptTemperature_clicked();
 
 private:
     Ui::FormSerial *ui;
@@ -132,6 +131,7 @@ private:
     QVector<LineSend *> m_lineSends;
     int m_pageSize = 5;
     int m_currentPage = 0;
+    bool m_acceptTemperature = false;
 };
 
 #endif // FORMSERIAL_H

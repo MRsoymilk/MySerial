@@ -3,6 +3,7 @@
 #include "ui_formplotcorrection.h"
 
 #include "ShowCorrectionCurve/showcorrectioncurve.h"
+#include "fitting/formfittingarcsin.h"
 #include "fitting/formfittingkb.h"
 #include "fitting/formfittingself.h"
 #include "fitting/formfittingsin.h"
@@ -57,17 +58,21 @@ void FormPlotCorrection::init()
     m_formKB = new FormFittingKB;
     m_formSin = new FormFittingSin;
     m_formSelf = new FormFittingSelf;
+    m_formArcSin = new FormFittingArcSin;
 
     ui->stackedWidget->addWidget(m_formKB);
     ui->stackedWidget->addWidget(m_formSin);
     ui->stackedWidget->addWidget(m_formSelf);
+    ui->stackedWidget->addWidget(m_formArcSin);
 
     QStringList algorithms;
-    algorithms << "fitting_sin" << "fitting_self" << "fitting_kb";
+    algorithms << "fitting_arcsin" << "fitting_sin" << "fitting_self" << "fitting_kb";
     ui->comboBoxAlgorithm->addItems(algorithms);
 
     QString txt = ui->comboBoxAlgorithm->currentText();
-    if (txt == "fitting_sin") {
+    if (txt == "fitting_arcsin") {
+        ui->stackedWidget->setCurrentWidget(m_formArcSin);
+    } else if (txt == "fitting_sin") {
         ui->stackedWidget->setCurrentWidget(m_formSin);
     } else if (txt == "fitting_kb") {
         ui->stackedWidget->setCurrentWidget(m_formKB);
@@ -75,6 +80,7 @@ void FormPlotCorrection::init()
         ui->stackedWidget->setCurrentWidget(m_formSelf);
     }
     connect(m_formSin, &FormFittingSin::sendSin, this, &FormPlotCorrection::sendSin);
+    connect(m_formArcSin, &FormFittingArcSin::sendSin, this, &FormPlotCorrection::sendSin);
     ui->tBtnShowCorrectionCurve->setCheckable(true);
 }
 
@@ -92,6 +98,8 @@ void FormPlotCorrection::on_comboBoxAlgorithm_currentTextChanged(const QString &
         ui->stackedWidget->setCurrentWidget(m_formSin);
     } else if (algorithm == "fitting_self") {
         ui->stackedWidget->setCurrentWidget(m_formSelf);
+    } else if (algorithm == "fitting_arcsin") {
+        ui->stackedWidget->setCurrentWidget(m_formArcSin);
     }
 }
 
@@ -102,6 +110,7 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
     if (m_show) {
         QString txt = ui->comboBoxAlgorithm->currentText();
         if (txt == "fitting_sin") {
+            m_formSin->updateParams();
             QJsonObject params = m_formSin->getParams();
 
             emit enableCorrectionCurve(true, params);
@@ -110,6 +119,10 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
                     &FormPlotCorrection::onShowCorrectionCurve,
                     sinShow,
                     &ShowCorrectionCurve::updatePlot);
+            connect(sinShow, &ShowCorrectionCurve::windowClose, this, [&]() {
+                m_show = false;
+                ui->tBtnShowCorrectionCurve->setChecked(false);
+            });
             sinShow->show();
         } else {
             SHOW_AUTO_CLOSE_MSGBOX(this, tr("Warning"), "only support fitting_sin");

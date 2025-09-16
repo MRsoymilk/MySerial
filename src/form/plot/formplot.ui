@@ -208,6 +208,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="tBtnMeasureX">
+       <property name="text">
+        <string>measure x</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnMeasureY">
+       <property name="text">
+        <string>measure y</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="tBtnZoom">
        <property name="text">
         <string>zoom</string>

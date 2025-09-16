@@ -37,10 +37,10 @@ private:
                   const QVector<double> &v24);
     void fittingKB(float &avg_k, float &avg_b);
     void findV14_MaxMinIdx(const QVector<double> &v14, int &idx_min, int &idx_max);
+    void init();
 
 public slots:
     void doCorrection(const QVector<double> &v14, const QVector<double> &v24);
-    void on_spinBoxRound_valueChanged(int val);
 
 private:
     Ui::FormFittingKB *ui;

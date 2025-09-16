@@ -6,7 +6,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
-#include "mychartview.h"
+#include "MyChartView/mychartview.h"
 
 namespace Ui {
 class ShowCorrectionCurve;
@@ -27,6 +27,9 @@ public:
                     const double &yMin,
                     const double &yMax,
                     const double &temperature);
+
+signals:
+    void windowClose();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
