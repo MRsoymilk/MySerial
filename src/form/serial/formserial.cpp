@@ -402,6 +402,9 @@ void FormSerial::on_cBoxPortName_activated(int index)
         list_txt_bauds << QString::number(rate);
     }
     ui->cBoxBaudRate->addItems(list_txt_bauds);
+    if (!m_ini.baud_rate.isEmpty() && list_txt_bauds.contains(m_ini.baud_rate)) {
+        ui->cBoxBaudRate->setCurrentText(m_ini.baud_rate);
+    }
 }
 
 void FormSerial::handleFrame(const QString &type, const QByteArray &data, const QByteArray &temp)
