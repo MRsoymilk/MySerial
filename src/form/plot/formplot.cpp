@@ -298,6 +298,8 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                  offset + std::max(data14.size(), data24.size()) * m_step,
                  yMin,
                  yMax);
+
+    findPeak();
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -417,11 +419,8 @@ void FormPlot::on_tBtnStep_clicked()
     }
 }
 
-void FormPlot::on_tBtnFindPeak_clicked()
+void FormPlot::findPeak()
 {
-    m_findPeak = !m_findPeak;
-    ui->tBtnFindPeak->setChecked(m_findPeak);
-
     if (m_findPeak) {
         if (!m_series24 || m_series24->count() < 5) {
             return;
@@ -521,6 +520,14 @@ void FormPlot::on_tBtnFindPeak_clicked()
         m_peakLabels.clear();
         m_chart->update();
     }
+}
+
+void FormPlot::on_tBtnFindPeak_clicked()
+{
+    m_findPeak = !m_findPeak;
+    ui->tBtnFindPeak->setChecked(m_findPeak);
+
+    findPeak();
 }
 
 void FormPlot::on_tBtnPause_clicked()

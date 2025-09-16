@@ -91,6 +91,7 @@ private:
                       const double &yMin,
                       const double &yMax);
     void saveChartAsImage(const QString &filePath);
+    void findPeak();
 
 private:
     Ui::FormPlot *ui;
