@@ -51,6 +51,11 @@ void FormFittingArcSin::init()
     m_urlFitArcSin = SETTING_CONFIG_GET(CFG_GROUP_SETTING,
                                         CFG_SETTING_FIT_ARCSIN_URL,
                                         URL_FITTING_ARCSIN);
+    ui->labelFormula_y_lambda->setTextFormat(Qt::RichText);
+    ui->labelFormula_y_lambda->setText(
+        "y_lambda = arcsin(&lambda; / (2 &middot; d &middot; cos(&alpha; / 2))) - &alpha;/2");
+    ui->labelFormula_y->setTextFormat(Qt::RichText);
+    ui->labelFormula_y->setText("y = k &middot; y<sub>&lambda;</sub> + b");
 }
 void FormFittingArcSin::showContextMenu(const QPoint &pos)
 {
