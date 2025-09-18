@@ -16,6 +16,11 @@ ExternalControl::~ExternalControl()
     delete ui;
 }
 
+void ExternalControl::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void ExternalControl::init()
 {
     m_iniServer.enable = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, VAL_DISABLE);

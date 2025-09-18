@@ -20,6 +20,7 @@ public:
     explicit Calculate(QWidget *parent = nullptr);
     ~Calculate();
     void init();
+    void retranslateUI();
 
 private slots:
     void on_lineEditCalculateURL_editingFinished();

@@ -16,6 +16,11 @@ FrameSetting::~FrameSetting()
     delete ui;
 }
 
+void FrameSetting::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FrameSetting::on_tBtnCalculate24bit_clicked()
 {
     LengthCalc length;

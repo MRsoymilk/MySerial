@@ -60,6 +60,11 @@ void AutoUpdate::init()
     m_http = new HttpClient;
 }
 
+void AutoUpdate::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void AutoUpdate::on_btnCheck_clicked()
 {
     ui->progressBar->setVisible(true);

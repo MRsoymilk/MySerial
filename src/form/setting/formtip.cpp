@@ -16,6 +16,11 @@ FormTip::~FormTip()
     delete ui;
 }
 
+void FormTip::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormTip::onFetchUpdates(const QString &url)
 {
     QNetworkAccessManager manager;

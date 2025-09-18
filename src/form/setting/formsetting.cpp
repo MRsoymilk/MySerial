@@ -30,6 +30,18 @@ FormSetting::~FormSetting()
 void FormSetting::retranslateUI()
 {
     ui->retranslateUi(this);
+    if (m_autoUpdate) {
+        m_autoUpdate->retranslateUI();
+    }
+    if (m_calculate) {
+        m_calculate->retranslateUI();
+    }
+    if (m_externalControl) {
+        m_externalControl->retranslateUI();
+    }
+    if (m_frameSetting) {
+        m_frameSetting->retranslateUI();
+    }
 }
 
 void FormSetting::init()

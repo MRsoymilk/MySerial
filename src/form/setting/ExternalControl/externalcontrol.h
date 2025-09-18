@@ -22,6 +22,7 @@ public:
 public:
     explicit ExternalControl(QWidget *parent = nullptr);
     ~ExternalControl();
+    void retranslateUI();
 
 private slots:
     void on_checkBoxEnable_clicked();

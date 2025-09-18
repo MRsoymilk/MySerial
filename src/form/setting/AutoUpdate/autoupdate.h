@@ -25,6 +25,7 @@ public:
     explicit AutoUpdate(QWidget *parent = nullptr);
     ~AutoUpdate();
     void init();
+    void retranslateUI();
 
 protected:
     void showEvent(QShowEvent *event) override;

@@ -24,6 +24,11 @@ void Calculate::init()
     ui->lineEditCalculateURL->setText(m_iniCalculate.url);
 }
 
+void Calculate::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void Calculate::on_lineEditCalculateURL_editingFinished()
 {
     m_iniCalculate.url = ui->lineEditCalculateURL->text();

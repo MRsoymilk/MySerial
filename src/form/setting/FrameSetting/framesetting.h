@@ -14,6 +14,7 @@ class FrameSetting : public QWidget
 public:
     explicit FrameSetting(QWidget *parent = nullptr);
     ~FrameSetting();
+    void retranslateUI();
 
 private slots:
     void on_tBtnCalculate24bit_clicked();

@@ -271,6 +271,11 @@ void MainWindow::init()
             &FormPlotCorrection::windowClose,
             this,
             &MainWindow::plotCorrectionClose);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::useLoadedThreshold,
+            m_worker,
+            &ThreadWorker::onUseLoadedThreshold,
+            Qt::QueuedConnection);
     connect(formSerial,
             &FormSerial::recvTemperature,
             m_plotCorrection,
@@ -278,7 +283,8 @@ void MainWindow::init()
     connect(m_plotCorrection,
             &FormPlotCorrection::enableCorrectionCurve,
             m_worker,
-            &ThreadWorker::onEnableCorrection);
+            &ThreadWorker::onEnableCorrection,
+            Qt::QueuedConnection);
     connect(m_worker,
             &ThreadWorker::showCorrectionCurve,
             m_plotCorrection,
@@ -365,6 +371,12 @@ void MainWindow::setLanguage(const QString &language)
     if (translator->load(QString(":/res/i18n/%1.qm").arg(language))) {
         qApp->installTranslator(translator);
         ui->retranslateUi(this);
+        if (m_plotCorrection) {
+            m_plotCorrection->retranslateUI();
+        }
+        if (m_plotSimulate) {
+            m_plotSimulate->retranslateUI();
+        }
         if (m_plotHistory) {
             m_plotHistory->retranslateUI();
         }

@@ -6,129 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>840</width>
+    <width>859</width>
     <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>PlotHistory</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0" columnstretch="1,9">
-   <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="9,9">
-     <item>
-      <layout class="QVBoxLayout" name="vLay14">
-       <item>
-        <layout class="QHBoxLayout" name="hLay14">
-         <item>
-          <widget class="QLabel" name="label14">
-           <property name="text">
-            <string>curve 14bit</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnPrev14">
-           <property name="text">
-            <string>prev</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnNext14">
-           <property name="text">
-            <string>next</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="hLay14Status">
-         <item>
-          <widget class="QLabel" name="labelStatus14">
-           <property name="text">
-            <string>status</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="hLay14StatusGo">
-           <item>
-            <widget class="QLabel" name="label14Go">
-             <property name="text">
-              <string>go:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit14Go"/>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="vLay24">
-       <item>
-        <layout class="QHBoxLayout" name="hLay24">
-         <item>
-          <widget class="QLabel" name="label24">
-           <property name="text">
-            <string>curve 24bit</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnPrev24">
-           <property name="text">
-            <string>prev</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnNext24">
-           <property name="text">
-            <string>next</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="hLay24Status">
-         <item>
-          <widget class="QLabel" name="labelStatus24">
-           <property name="text">
-            <string>status</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="hLay24StatusGo">
-           <item>
-            <widget class="QLabel" name="label24Go">
-             <property name="text">
-              <string>go:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit24Go"/>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="1">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0,0" columnstretch="1,9">
    <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="hLayOpt">
      <item>
@@ -143,41 +28,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QToolButton" name="tBtnToPlot">
-       <property name="text">
-        <string>To Plot</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="toolButtonDumpPlot">
-       <property name="text">
-        <string>dump plot</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line">
-       <property name="orientation">
-        <enum>Qt::Orientation::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="checkBoxAll">
-       <property name="text">
-        <string>all</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="toolButtonDumpData">
-       <property name="text">
-        <string>dump data</string>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="Line" name="line_2">
@@ -309,7 +159,122 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="0" column="1">
+    <widget class="QStackedWidget" name="stackedWidget"/>
+   </item>
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="9,9">
+     <item>
+      <layout class="QVBoxLayout" name="vLay14">
+       <item>
+        <layout class="QHBoxLayout" name="hLay14">
+         <item>
+          <widget class="QLabel" name="label14">
+           <property name="text">
+            <string>curve 14bit</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnPrev14">
+           <property name="text">
+            <string>prev</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnNext14">
+           <property name="text">
+            <string>next</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="hLay14Status">
+         <item>
+          <widget class="QLabel" name="labelStatus14">
+           <property name="text">
+            <string>status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="hLay14StatusGo">
+           <item>
+            <widget class="QLabel" name="label14Go">
+             <property name="text">
+              <string>go:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit14Go"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="vLay24">
+       <item>
+        <layout class="QHBoxLayout" name="hLay24">
+         <item>
+          <widget class="QLabel" name="label24">
+           <property name="text">
+            <string>curve 24bit</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnPrev24">
+           <property name="text">
+            <string>prev</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnNext24">
+           <property name="text">
+            <string>next</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="hLay24Status">
+         <item>
+          <widget class="QLabel" name="labelStatus24">
+           <property name="text">
+            <string>status</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="hLay24StatusGo">
+           <item>
+            <widget class="QLabel" name="label24Go">
+             <property name="text">
+              <string>go:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit24Go"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="labelTemperature">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -321,6 +286,58 @@
       <string>Temperature</string>
      </property>
     </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QToolButton" name="tBtnToPlot">
+       <property name="text">
+        <string>To Plot</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Orientation::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonDumpPlot">
+       <property name="text">
+        <string>dump plot</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxAll">
+       <property name="text">
+        <string>all</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonDumpData">
+       <property name="text">
+        <string>dump data</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

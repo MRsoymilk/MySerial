@@ -16,6 +16,7 @@ public:
     ~LengthCalc();
     void setFrame(const QString &head, const QString &foot);
     QString getLength();
+    void retranslateUI();
 
 private slots:
     void on_btnCalculate_clicked();

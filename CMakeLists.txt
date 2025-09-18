@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.12 LANGUAGES CXX)
+project(MySerial VERSION 1.3.13 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -57,6 +57,9 @@ set(PROJECT_SOURCES
         src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.h
         src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp
         src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui
+        src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.h
+        src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.cpp
+        src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.ui
         src/form/FormPlotCorrection/formplotcorrection.h
         src/form/FormPlotCorrection/formplotcorrection.cpp
         src/form/FormPlotCorrection/formplotcorrection.ui
