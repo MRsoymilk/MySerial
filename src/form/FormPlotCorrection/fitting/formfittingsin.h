@@ -32,6 +32,8 @@ public:
     void setTemperature(double temperature);
     QJsonObject getParams();
     void updateParams();
+    void retranslateUI();
+
 signals:
     void sendSin(const QByteArray &bytes);
 

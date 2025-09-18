@@ -21,6 +21,23 @@ FormPlotCorrection::~FormPlotCorrection()
     delete ui;
 }
 
+void FormPlotCorrection::retranslateUI()
+{
+    ui->retranslateUi(this);
+    if (m_formKB) {
+        m_formKB->retranslateUI();
+    }
+    if (m_formSin) {
+        m_formSin->retranslateUI();
+    }
+    if (m_formSelf) {
+        m_formSelf->retranslateUI();
+    }
+    if (m_formArcSin) {
+        m_formArcSin->retranslateUI();
+    }
+}
+
 void FormPlotCorrection::closeEvent(QCloseEvent *event)
 {
     emit windowClose();
@@ -124,8 +141,30 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
                 ui->tBtnShowCorrectionCurve->setChecked(false);
             });
             sinShow->show();
+        } else if (txt == "fitting_arcsin") {
+            m_formArcSin->updateParams();
+            QJsonObject params = m_formArcSin->getParams();
+
+            emit enableCorrectionCurve(true, params);
+            ShowCorrectionCurve *arcSinShow = new ShowCorrectionCurve;
+            connect(this,
+                    &FormPlotCorrection::onShowCorrectionCurve,
+                    arcSinShow,
+                    &ShowCorrectionCurve::updatePlot);
+            connect(arcSinShow, &ShowCorrectionCurve::windowClose, this, [&]() {
+                m_show = false;
+                ui->tBtnShowCorrectionCurve->setChecked(false);
+            });
+            connect(arcSinShow,
+                    &ShowCorrectionCurve::useLoadedThreshold,
+                    this,
+                    &FormPlotCorrection::useLoadedThreshold);
+            arcSinShow->show();
+
         } else {
-            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Warning"), "only support fitting_sin");
+            SHOW_AUTO_CLOSE_MSGBOX(this,
+                                   tr("Warning"),
+                                   tr("only support fitting_sin or fitting_arcsin"));
         }
     } else {
         emit enableCorrectionCurve(false, {});

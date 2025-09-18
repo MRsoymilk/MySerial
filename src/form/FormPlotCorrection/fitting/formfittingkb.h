@@ -20,6 +20,7 @@ public:
     explicit FormFittingKB(QWidget *parent = nullptr);
     ~FormFittingKB();
     int getRound();
+    void retranslateUI();
 
 signals:
     void sendKB(const QByteArray &bytes);

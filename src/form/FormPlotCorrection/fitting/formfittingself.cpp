@@ -20,6 +20,11 @@ FormFittingSelf::~FormFittingSelf()
     delete ui;
 }
 
+void FormFittingSelf::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormFittingSelf::init()
 {
     ui->spinBoxCountStep1->setValue(267);

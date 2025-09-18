@@ -222,93 +222,166 @@ void ThreadWorker::processData4k(const QByteArray &data14,
     }
 
     if (m_correction_enable) {
-        QList<QPointF> out_correction;
-
         // 生成阈值表
         QVector<qint32> threshold;
-        for (int j = 0; j < m_correction_num; ++j) {
-            double x = j * m_correction_step + m_correction_offset;
-            double v1 = (m_correction_sin.k1 * m_correction_sin.T + m_correction_sin.b1) / 8.5
-                        / 1000;
-            double v2 = m_correction_sin.y0
-                        + m_correction_sin.A
-                              * std::sin(3.14159 * (x - m_correction_sin.xc) / m_correction_sin.w);
-            double v3 = (m_correction_sin.k2 * m_correction_sin.T + m_correction_sin.b2) / 1000;
-            double y = v1 * v2 + v3;
-            threshold.push_back(qRound(y / 3.3 * (1 << 13)));
+        if (m_use_loaded_threshold) {
+            threshold = generateThreshold(temperature);
+        } else {
+            threshold = m_threshold;
         }
-
-        int idx_max = 0;
-        int raw_max = INT_MIN;
-        for (int i = 0; i < raw14.size(); ++i) {
-            if (raw_max < raw14[i]) {
-                raw_max = raw14[i];
-                idx_max = i;
-            }
-        }
-
-        double x_max_correction = m_correction_offset;
-        double y_min_correction = std::numeric_limits<double>::max();
-        double y_max_correction = std::numeric_limits<double>::lowest();
-
-        int start_idx = idx_max; // 从 raw14 最大值位置开始
-        for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
-            int best_idx = -1;
-            int best_diff = INT_MAX;
-
-            // 只在剩余的 raw14 中寻找最近点
-            for (int j = start_idx; j < raw14.size(); ++j) {
-                int diff = std::abs(raw14[j] - threshold[idx_threshold]);
-                if (diff < best_diff) {
-                    best_diff = diff;
-                    best_idx = j;
-                }
-                // 一旦 raw14[j] 小于 threshold[idx_threshold] 且差值开始变大，可以提前跳出
-                if (raw14[j] < threshold[idx_threshold] && diff > best_diff) {
-                    break;
-                }
-            }
-
-            if (best_idx >= 0 && best_idx < raw24.size()) {
-                double x = m_correction_offset + idx_threshold * m_correction_step;
-                double y = raw24[best_idx];
-                out_correction.push_back(QPointF(x, y));
-
-                x_max_correction = std::max(x_max_correction, x);
-                y_min_correction = std::min(y_min_correction, y);
-                y_max_correction = std::max(y_max_correction, y);
-
-                // 下一次匹配从这里开始，保证顺序不回退
-                start_idx = best_idx;
-            }
-        }
-
-        emit showCorrectionCurve(out_correction,
-                                 m_correction_offset,
-                                 x_max_correction,
-                                 y_min_correction,
-                                 y_max_correction,
-                                 temperature);
+        applyThreshold(threshold, raw14, raw24, temperature);
     }
 
     emit pointsReady4k(v_voltage14, v_voltage24, raw14, raw24);
     emit dataReady4k(out14, out24, xMin, xMax, yMin, yMax, temperature);
 }
 
+QVector<qint32> ThreadWorker::generateThreshold(const double &temperature)
+{
+    QVector<qint32> threshold;
+    double T = temperature;
+    if (m_formula == "sin") {
+        if (qAbs(temperature) < 1e-9) {
+            T = m_correction_sin.T;
+        }
+        for (int j = 0; j < m_correction_num; ++j) {
+            double x = j * m_correction_step + m_correction_offset;
+            double v1 = (m_correction_sin.k1 * T + m_correction_sin.b1) / 8.5 / 1000;
+            double v2 = m_correction_sin.y0
+                        + m_correction_sin.A
+                              * std::sin(3.14159 * (x - m_correction_sin.xc) / m_correction_sin.w);
+            double v3 = (m_correction_sin.k2 * T + m_correction_sin.b2) / 1000;
+            double y = v1 * v2 + v3;
+            threshold.push_back(qRound(y / 3.3 * (1 << 13)));
+        }
+    } else if (m_formula == "arcsin") {
+        if (qAbs(temperature) < 1e-9) {
+            T = m_correction_arcsin.T;
+        }
+        for (int j = 0; j < m_correction_num; ++j) {
+            double x = j * m_correction_step + m_correction_offset;
+            double y_lambda = 0.0;
+            if (x <= 1310) {
+                y_lambda = m_correction_arcsin.l_k
+                               * (qAsin(x / 1000.0
+                                        / (2 * m_correction_arcsin.l_d
+                                           * qCos(M_PI / 180.0 * m_correction_arcsin.l_alpha / 2)))
+                                  - m_correction_arcsin.l_alpha / 2)
+                           + m_correction_arcsin.l_b;
+            } else {
+                y_lambda = m_correction_arcsin.r_k
+                               * (qAsin(x / 1000.0
+                                        / (2 * m_correction_arcsin.r_d
+                                           * qCos(M_PI / 180.0 * m_correction_arcsin.r_alpha / 2)))
+                                  - m_correction_arcsin.r_alpha / 2)
+                           + m_correction_arcsin.r_b;
+            }
+
+            double y = (m_correction_arcsin.k1 * T + m_correction_arcsin.b1) / 8.5 / 1000 * y_lambda
+                       + (m_correction_arcsin.k2 * T + m_correction_arcsin.b2) / 1000;
+            threshold.push_back(qRound(y));
+        }
+    }
+    return threshold;
+}
+
+void ThreadWorker::applyThreshold(const QVector<qint32> &threshold,
+                                  const QVector<qint32> &raw14,
+                                  const QVector<qint32> &raw24,
+                                  const double &temperature)
+{
+    QList<QPointF> out_correction;
+    int idx_max = 0;
+    int raw_max = INT_MIN;
+    for (int i = 0; i < raw14.size(); ++i) {
+        if (raw_max < raw14[i]) {
+            raw_max = raw14[i];
+            idx_max = i;
+        }
+    }
+
+    double x_max_correction = m_correction_offset;
+    double y_min_correction = std::numeric_limits<double>::max();
+    double y_max_correction = std::numeric_limits<double>::lowest();
+
+    int start_idx = idx_max; // 从 raw14 最大值位置开始
+    for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
+        int best_idx = -1;
+        int best_diff = INT_MAX;
+
+        // 只在剩余的 raw14 中寻找最近点
+        for (int j = start_idx; j < raw14.size(); ++j) {
+            int diff = std::abs(raw14[j] - threshold[idx_threshold]);
+            if (diff < best_diff) {
+                best_diff = diff;
+                best_idx = j;
+            }
+            // 一旦 raw14[j] 小于 threshold[idx_threshold] 且差值开始变大，可以提前跳出
+            if (raw14[j] < threshold[idx_threshold] && diff > best_diff) {
+                break;
+            }
+        }
+
+        if (best_idx >= 0 && best_idx < raw24.size()) {
+            double x = m_correction_offset + idx_threshold * m_correction_step;
+            double y = raw24[best_idx];
+            out_correction.push_back(QPointF(x, y));
+
+            x_max_correction = std::max(x_max_correction, x);
+            y_min_correction = std::min(y_min_correction, y);
+            y_max_correction = std::max(y_max_correction, y);
+
+            // 下一次匹配从这里开始，保证顺序不回退
+            start_idx = best_idx;
+        }
+    }
+
+    emit showCorrectionCurve(out_correction,
+                             m_correction_offset,
+                             x_max_correction,
+                             y_min_correction,
+                             y_max_correction,
+                             temperature);
+}
+
 void ThreadWorker::onEnableCorrection(bool enable, const QJsonObject &params)
 {
     m_correction_enable = enable;
     if (enable) {
+        QString formula = params["formula"].toString();
+        m_formula = formula;
+        if (formula == "sin") {
+            m_correction_sin.k1 = params["k1"].toDouble();
+            m_correction_sin.b1 = params["b1"].toDouble();
+            m_correction_sin.y0 = params["y0"].toDouble();
+            m_correction_sin.A = params["A"].toDouble();
+            m_correction_sin.xc = params["xc"].toDouble();
+            m_correction_sin.w = params["w"].toDouble();
+            m_correction_sin.k2 = params["k2"].toDouble();
+            m_correction_sin.b2 = params["b2"].toDouble();
+            m_correction_sin.T = params["T"].toDouble();
+        } else if (formula == "arcsin") {
+            m_correction_arcsin.k1 = params["k1"].toDouble();
+            m_correction_arcsin.b1 = params["b1"].toDouble();
+            m_correction_arcsin.k2 = params["k2"].toDouble();
+            m_correction_arcsin.b2 = params["b2"].toDouble();
+            m_correction_arcsin.l_k = params["l_k"].toDouble();
+            m_correction_arcsin.l_b = params["l_b"].toDouble();
+            m_correction_arcsin.l_d = params["l_d"].toDouble();
+            m_correction_arcsin.l_alpha = params["l_alpha"].toDouble();
+            m_correction_arcsin.r_k = params["r_k"].toDouble();
+            m_correction_arcsin.r_b = params["r_b"].toDouble();
+            m_correction_arcsin.r_d = params["r_d"].toDouble();
+            m_correction_arcsin.r_alpha = params["r_alpha"].toDouble();
+            m_correction_arcsin.T = params["T"].toDouble();
+        }
         m_correction_offset = params["offset"].toDouble();
         m_correction_step = params["step"].toDouble();
-        m_correction_sin.k1 = params["k1"].toDouble();
-        m_correction_sin.b1 = params["b1"].toDouble();
-        m_correction_sin.y0 = params["y0"].toDouble();
-        m_correction_sin.A = params["A"].toDouble();
-        m_correction_sin.xc = params["xc"].toDouble();
-        m_correction_sin.w = params["w"].toDouble();
-        m_correction_sin.k2 = params["k2"].toDouble();
-        m_correction_sin.b2 = params["b2"].toDouble();
-        m_correction_sin.T = params["T"].toDouble();
     }
+}
+
+void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<int> threshold)
+{
+    m_use_loaded_threshold = isUse;
+    m_threshold = threshold;
 }

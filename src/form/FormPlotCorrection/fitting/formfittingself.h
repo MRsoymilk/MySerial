@@ -14,6 +14,7 @@ class FormFittingSelf : public QWidget
 public:
     explicit FormFittingSelf(QWidget *parent = nullptr);
     ~FormFittingSelf();
+    void retranslateUI();
 
 private slots:
     void on_btnCalculate_clicked();

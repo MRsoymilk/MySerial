@@ -22,12 +22,43 @@ FormFittingArcSin::~FormFittingArcSin()
     delete ui;
 }
 
+void FormFittingArcSin::updateParams()
+{
+    on_btnUpdateFormula_clicked();
+}
+
+QJsonObject FormFittingArcSin::getParams()
+{
+    QJsonObject params;
+    params.insert("formula", "arcsin");
+    params.insert("offset", 900.0);
+    params.insert("step", 1.5);
+    params.insert("k1", m_formula_y.k1);
+    params.insert("b1", m_formula_y.b1);
+    params.insert("l_k", m_formula_lambda_l.k);
+    params.insert("l_b", m_formula_lambda_l.b);
+    params.insert("l_d", m_formula_lambda_l.d);
+    params.insert("l_alpha", m_formula_lambda_l.alpha);
+    params.insert("r_k", m_formula_lambda_r.k);
+    params.insert("r_b", m_formula_lambda_r.b);
+    params.insert("r_d", m_formula_lambda_r.d);
+    params.insert("r_alpha", m_formula_lambda_r.alpha);
+    params.insert("k2", m_formula_y.k2);
+    params.insert("b2", m_formula_y.b2);
+    return params;
+}
+
+void FormFittingArcSin::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormFittingArcSin::init()
 {
     m_modelThreshold = new QStandardItemModel(this);
     m_modelThreshold->setColumnCount(2);
-    m_modelThreshold->setHeaderData(0, Qt::Horizontal, "index");
-    m_modelThreshold->setHeaderData(1, Qt::Horizontal, "fitting curve Raw(14bit)");
+    m_modelThreshold->setHeaderData(0, Qt::Horizontal, tr("index"));
+    m_modelThreshold->setHeaderData(1, Qt::Horizontal, tr("fitting curve Raw(14bit)"));
     ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(
         QHeaderView::ResizeToContents);
     ui->tableViewFittingCurveData->setModel(m_modelThreshold);
@@ -39,8 +70,8 @@ void FormFittingArcSin::init()
 
     m_modelPoints = new QStandardItemModel(this);
     m_modelPoints->setColumnCount(2);
-    m_modelPoints->setHeaderData(0, Qt::Horizontal, "lambda");
-    m_modelPoints->setHeaderData(1, Qt::Horizontal, "14bit(raw)");
+    m_modelPoints->setHeaderData(0, Qt::Horizontal, tr("lambda"));
+    m_modelPoints->setHeaderData(1, Qt::Horizontal, tr("14bit(raw)"));
     ui->tableViewPoints->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableViewPoints->setModel(m_modelPoints);
 
@@ -61,18 +92,18 @@ void FormFittingArcSin::showContextMenu(const QPoint &pos)
 {
     QMenu contextMenu(tr("Context Menu"), this);
 
-    QAction *exportAllAction = new QAction(tr("Export All to CSV"), this);
-    connect(exportAllAction, &QAction::triggered, this, &FormFittingArcSin::exportAllToCSV);
+    QAction *exportAllAction = new QAction(tr("Export Threshold to CSV"), this);
+    connect(exportAllAction, &QAction::triggered, this, &FormFittingArcSin::exportThresholdToCSV);
     contextMenu.addAction(exportAllAction);
 
     contextMenu.exec(ui->tableViewFittingCurveData->viewport()->mapToGlobal(pos));
 }
 
-void FormFittingArcSin::exportAllToCSV()
+void FormFittingArcSin::exportThresholdToCSV()
 {
     QString path = QFileDialog::getSaveFileName(this,
-                                                tr("Export All Data to CSV"),
-                                                "data_all.csv",
+                                                tr("Export Threshold Data to CSV"),
+                                                "data_threshold.csv",
                                                 tr("CSV Files (*.csv)"));
     if (path.isEmpty()) {
         LOG_WARN("CSV path is empty!");

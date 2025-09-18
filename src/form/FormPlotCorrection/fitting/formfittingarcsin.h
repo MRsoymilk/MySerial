@@ -15,6 +15,9 @@ class FormFittingArcSin : public QWidget
 public:
     explicit FormFittingArcSin(QWidget *parent = nullptr);
     ~FormFittingArcSin();
+    void updateParams();
+    QJsonObject getParams();
+    void retranslateUI();
 
 signals:
     void sendSin(const QByteArray &bytes);
@@ -36,7 +39,7 @@ private slots:
 private:
     void init();
     void showContextMenu(const QPoint &pos);
-    void exportAllToCSV();
+    void exportThresholdToCSV();
     double calculate(const double &idx);
     void updateFormulaLambda();
 

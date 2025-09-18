@@ -18,6 +18,7 @@ class FormPlotCorrection : public QWidget
 public:
     explicit FormPlotCorrection(QWidget *parent = nullptr);
     ~FormPlotCorrection();
+    void retranslateUI();
 
 signals:
     void windowClose();
@@ -30,6 +31,7 @@ signals:
                                const double &yMin,
                                const double &yMax,
                                const double &temperature);
+    void useLoadedThreshold(bool isUse, QVector<int> v);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

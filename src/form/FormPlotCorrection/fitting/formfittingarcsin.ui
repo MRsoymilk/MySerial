@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>FittingArcsin</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_5" columnstretch="1,1">
    <item row="1" column="1">
@@ -596,6 +596,41 @@ color: balck;</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>radioButtonLeft</tabstop>
+  <tabstop>radioButtonRight</tabstop>
+  <tabstop>lineEdit_k_lambda</tabstop>
+  <tabstop>lineEdit_d</tabstop>
+  <tabstop>lineEdit_alpha</tabstop>
+  <tabstop>lineEdit_alpha_</tabstop>
+  <tabstop>lineEdit_b_lambda</tabstop>
+  <tabstop>lineEdit_k1</tabstop>
+  <tabstop>lineEdit_T</tabstop>
+  <tabstop>lineEdit_b1</tabstop>
+  <tabstop>lineEdit_k2</tabstop>
+  <tabstop>lineEdit_T_</tabstop>
+  <tabstop>lineEdit_b2</tabstop>
+  <tabstop>textEditLog</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>doubleSpinBoxR_k</tabstop>
+  <tabstop>doubleSpinBoxR_b</tabstop>
+  <tabstop>btnSendR</tabstop>
+  <tabstop>btnCalculate_k1b1k2b2</tabstop>
+  <tabstop>tableViewPoints</tabstop>
+  <tabstop>tBtnAdd</tabstop>
+  <tabstop>tBtnDelete</tabstop>
+  <tabstop>btnFittingArcSin</tabstop>
+  <tabstop>doubleSpinBoxTemperatureT</tabstop>
+  <tabstop>btnSetTemperatureT</tabstop>
+  <tabstop>lineEditFormula</tabstop>
+  <tabstop>btnUpdateFormula</tabstop>
+  <tabstop>spinBoxNum</tabstop>
+  <tabstop>doubleSpinBoxStart</tabstop>
+  <tabstop>doubleSpinBoxStep</tabstop>
+  <tabstop>btnGenerateThreshold</tabstop>
+  <tabstop>tableViewFittingCurveData</tabstop>
+  <tabstop>btnSendFormula</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

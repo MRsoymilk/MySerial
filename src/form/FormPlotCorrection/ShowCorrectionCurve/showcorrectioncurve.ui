@@ -14,49 +14,137 @@
    <string>ShowCorrectionCurve</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="labelTemperature">
-     <property name="text">
-      <string>Temperature</string>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="tabPosition">
+      <enum>QTabWidget::TabPosition::East</enum>
      </property>
+     <property name="tabShape">
+      <enum>QTabWidget::TabShape::Rounded</enum>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <property name="elideMode">
+      <enum>Qt::TextElideMode::ElideLeft</enum>
+     </property>
+     <property name="tabBarAutoHide">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="tabCurve">
+      <attribute name="title">
+       <string>Curve</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelTemperature">
+         <property name="text">
+          <string>Temperature</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QStackedWidget" name="stackedWidget"/>
+       </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QToolButton" name="tBtnPrev">
+           <property name="text">
+            <string>prev</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelPage">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>page</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnNext">
+           <property name="text">
+            <string>next</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabThreshold">
+      <attribute name="title">
+       <string>Threshold</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0" columnstretch="1,1">
+       <item row="0" column="0">
+        <widget class="QTableView" name="tableView"/>
+       </item>
+       <item row="0" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="labelOffset">
+           <property name="text">
+            <string>offset</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="doubleSpinBoxOffset">
+           <property name="maximum">
+            <double>9999.989999999999782</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelStep">
+           <property name="text">
+            <string>step</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="doubleSpinBoxStep"/>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="hLayTools">
+         <item>
+          <widget class="QToolButton" name="tBtnLoadData">
+           <property name="text">
+            <string>load data</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QToolButton" name="tBtnPrev">
-       <property name="text">
-        <string>prev</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelPage">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>page</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="tBtnNext">
-       <property name="text">
-        <string>next</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>

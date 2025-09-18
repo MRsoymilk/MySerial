@@ -34,6 +34,11 @@ int FormFittingKB::getRound()
     return m_round;
 }
 
+void FormFittingKB::retranslateUI()
+{
+    ui->retranslateUi(this);
+}
+
 void FormFittingKB::drawKB(const float &k, const float &b)
 {
     QLineSeries *series = new QLineSeries();

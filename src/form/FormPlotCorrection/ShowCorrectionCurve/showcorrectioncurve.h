@@ -19,6 +19,7 @@ class ShowCorrectionCurve : public QWidget
 public:
     explicit ShowCorrectionCurve(QWidget *parent = nullptr);
     ~ShowCorrectionCurve();
+    void retranslateUI();
 
 public:
     void updatePlot(const QList<QPointF> &data,
@@ -30,6 +31,7 @@ public:
 
 signals:
     void windowClose();
+    void useLoadedThreshold(bool isUse, QVector<int> v);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -37,9 +39,13 @@ protected:
 private slots:
     void on_tBtnPrev_clicked();
     void on_tBtnNext_clicked();
+    void on_tBtnLoadData_clicked();
+    void on_doubleSpinBoxOffset_valueChanged(double offset);
+    void on_doubleSpinBoxStep_valueChanged(double step);
 
 private:
     void init();
+    void updateIndex();
 
 private:
     Ui::ShowCorrectionCurve *ui;
@@ -50,6 +56,8 @@ private:
     QLineSeries *m_line;
     QList<QList<QPointF>> m_data;
     int m_current_page;
+    QStandardItemModel *m_model;
+    bool m_load_data;
 };
 
 #endif // SHOWCORRECTIONCURVE_H

@@ -19,6 +19,7 @@ public slots:
                        const QByteArray &data24,
                        const double &temperature);
     void onEnableCorrection(bool enable, const QJsonObject &params);
+    void onUseLoadedThreshold(bool isUse, QVector<int> threshold);
 
 signals:
     void pointsReady4k(const QVector<double> &v14,
@@ -52,6 +53,11 @@ private:
                         QVector<qint32> &raw24,
                         double &yMin,
                         double &yMax);
+    QVector<qint32> generateThreshold(const double &temperature);
+    void applyThreshold(const QVector<qint32> &threshold,
+                        const QVector<qint32> &raw14,
+                        const QVector<qint32> &raw24,
+                        const double &temperature);
 
 private:
     double m_time = 0.0;
@@ -66,10 +72,20 @@ private:
     double m_correction_offset = 900;
     double m_correction_step = 1.5;
     double m_correction_num = 535;
+    QString m_formula;
     struct CORRECTION_SIN
     {
         double k1, b1, k2, b2, y0, A, xc, w, T;
     } m_correction_sin;
+    struct CORRECTION_ARCSIN
+    {
+        double k1, b1, k2, b2;
+        double l_k, l_b, l_d, l_alpha;
+        double r_k, r_b, r_d, r_alpha;
+        double T;
+    } m_correction_arcsin;
+    QVector<int> m_threshold;
+    bool m_use_loaded_threshold = false;
 };
 
 #endif // THREADWORKER_H
