@@ -463,42 +463,42 @@
         <translation>Send Formula</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="55"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="60"/>
         <source>index</source>
         <translation>index</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="56"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="61"/>
         <source>fitting curve Raw(14bit)</source>
         <translation>fitting curve Raw(14bit)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="68"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="73"/>
         <source>lambda</source>
         <translation>lambda</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="69"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="74"/>
         <source>14bit(raw)</source>
         <translation>14bit(raw)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="88"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="93"/>
         <source>Context Menu</source>
         <translation>Context Menu</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="90"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="95"/>
         <source>Export Threshold to CSV</source>
         <translation>Export Threshold to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="105"/>
         <source>Export Threshold Data to CSV</source>
         <translation>Export Threshold Data to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="102"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="107"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV Files (*.csv)</translation>
     </message>
@@ -642,9 +642,19 @@
         <translation>Foot</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="30"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="35"/>
         <source>generate file fitting_self.csv</source>
         <translation>generate file fitting_self.csv</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="142"/>
+        <source>line</source>
+        <translation>line</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="152"/>
+        <source>fitting line display</source>
+        <translation>fitting line display</translation>
     </message>
 </context>
 <context>
@@ -914,9 +924,9 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="157"/>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="167"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="497"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="500"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="749"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="502"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="505"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="754"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -941,13 +951,13 @@
         <translation>File saved successfully</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="497"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="500"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="502"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="505"/>
         <source>points can not be same!</source>
         <translation>points can not be same!</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="749"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="754"/>
         <source>Please finish step 1 and step 2!</source>
         <translation>Please finish step 1 and step 2!</translation>
     </message>
@@ -1012,6 +1022,7 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="237"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="149"/>
         <source>crop</source>
         <translation>crop</translation>
     </message>
@@ -1027,6 +1038,7 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="258"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="178"/>
         <source>pause</source>
         <translation>pause</translation>
     </message>
@@ -1046,6 +1058,7 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="206"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="163"/>
         <source>3D</source>
         <translation>3D</translation>
     </message>
@@ -1072,6 +1085,52 @@
         <source>history</source>
         <translation type="vanished">history</translation>
     </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="108"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="492"/>
+        <source>Series24 Peaks</source>
+        <translation>Series24 Peaks</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="110"/>
+        <source>Time (s)</source>
+        <translation>Time (s)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="112"/>
+        <source>Voltage (V)</source>
+        <translation>Voltage (V)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="126"/>
+        <source>Live ADC Waveform</source>
+        <translation>Live ADC Waveform</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="156"/>
+        <source>Auto Zoom</source>
+        <translation>Auto Zoom</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="168"/>
+        <source>image save (ctrl+s)</source>
+        <translation>image save (ctrl+s)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="173"/>
+        <source>find peaks</source>
+        <translation>find peaks</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="223"/>
+        <source>curve14_bit</source>
+        <translation>curve14_bit</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="225"/>
+        <source>curve24_bit</source>
+        <translation>curve24_bit</translation>
+    </message>
 </context>
 <context>
     <name>FormPlotCorrection</name>
@@ -1096,12 +1155,12 @@
         <translation>show correction curve</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="149"/>
+        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="166"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="150"/>
+        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="167"/>
         <source>only support fitting_sin or fitting_arcsin</source>
         <translation>only support fitting_sin or fitting_arcsin</translation>
     </message>
@@ -1184,6 +1243,18 @@
         <translation>Export All Data to CSV</translation>
     </message>
     <message>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="273"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="312"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="334"/>
+        <source>Export</source>
+        <translation>Export</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="312"/>
+        <source>No data columns selected for export.</source>
+        <translation>No data columns selected for export.</translation>
+    </message>
+    <message>
         <source>Export to CSV</source>
         <translation type="vanished">Export to CSV</translation>
     </message>
@@ -1214,18 +1285,24 @@
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="181"/>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="235"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="59"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="63"/>
         <source>prev</source>
         <translation>prev</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="188"/>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="242"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="61"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="65"/>
         <source>next</source>
         <translation>next</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="199"/>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="253"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="138"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="153"/>
         <source>status</source>
         <translation>status</translation>
     </message>
@@ -1328,6 +1405,18 @@
     <message>
         <source>split</source>
         <translation type="vanished">split</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="194"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="234"/>
+        <source>curve24</source>
+        <translation>curve24</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="199"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="228"/>
+        <source>curve14</source>
+        <translation>curve14</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="201"/>
@@ -1471,6 +1560,37 @@
         <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="44"/>
         <source>tail</source>
         <translation>tail</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="62"/>
+        <source>choose file</source>
+        <translation>choose file</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="120"/>
+        <source>Error Read CSV</source>
+        <translation>Error Read CSV</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="120"/>
+        <source>no data column found!</source>
+        <translation>no data column found!</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="184"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="191"/>
+        <source>Simulate</source>
+        <translation>Simulate</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="184"/>
+        <source>no header found!</source>
+        <translation>no header found!</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="191"/>
+        <source>simulate finish</source>
+        <translation>simulate finish</translation>
     </message>
 </context>
 <context>
@@ -1642,14 +1762,47 @@
         <translation>Enhancement</translation>
     </message>
     <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="107"/>
+        <source>Error</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="107"/>
+        <source>Serial not open!</source>
+        <translation>Serial not open!</translation>
+    </message>
+    <message>
         <location filename="../../src/form/serial/formserial.cpp" line="180"/>
         <source>No available serial port found!</source>
         <translation>No available serial port found!</translation>
     </message>
     <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="180"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="231"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="695"/>
+        <source>warning</source>
+        <translation>warning</translation>
+    </message>
+    <message>
         <location filename="../../src/form/serial/formserial.cpp" line="231"/>
         <source>serial not open!</source>
         <translation>serial not open!</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="635"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="647"/>
+        <source>Warning</source>
+        <translation>Warning</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="635"/>
+        <source>Please open serial port!</source>
+        <translation>Please open serial port!</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="647"/>
+        <source>Please set valid time(ms)!</source>
+        <translation>Please set valid time(ms)!</translation>
     </message>
     <message>
         <location filename="../../src/form/serial/formserial.cpp" line="695"/>
@@ -1753,6 +1906,14 @@
     </message>
 </context>
 <context>
+    <name>ImageViewer</name>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp" line="11"/>
+        <source>image viewer</source>
+        <translation>image viewer</translation>
+    </message>
+</context>
+<context>
     <name>LengthCalc</name>
     <message>
         <location filename="../../src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui" line="14"/>
@@ -1808,6 +1969,7 @@
     <message>
         <location filename="../../src/main/mainwindow.ui" line="45"/>
         <location filename="../../src/main/mainwindow.ui" line="93"/>
+        <location filename="../../src/main/mainwindow.cpp" line="185"/>
         <source>Data</source>
         <translation>Data</translation>
     </message>
@@ -1818,16 +1980,19 @@
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="72"/>
+        <location filename="../../src/main/mainwindow.cpp" line="206"/>
         <source>Correction</source>
         <translation>Correction</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="79"/>
+        <location filename="../../src/main/mainwindow.cpp" line="199"/>
         <source>Simulate</source>
         <translation>Simulate</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="86"/>
+        <location filename="../../src/main/mainwindow.cpp" line="192"/>
         <source>History</source>
         <translation>History</translation>
     </message>
@@ -1895,7 +2060,12 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/main/main.cpp" line="17"/>
+        <location filename="../../src/main/main.cpp" line="18"/>
+        <source>Warning</source>
+        <translation>Warning</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/main.cpp" line="19"/>
         <source>Application is already running!</source>
         <translation>Application is already running!</translation>
     </message>
@@ -1951,6 +2121,21 @@
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="139"/>
         <source>load data</source>
         <translation>load data</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="60"/>
+        <source>wavelength</source>
+        <translation>wavelength</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="61"/>
+        <source>intensity</source>
+        <translation>intensity</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="62"/>
+        <source>correction curve</source>
+        <translation>correction curve</translation>
     </message>
 </context>
 </TS>

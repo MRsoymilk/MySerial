@@ -463,42 +463,42 @@
         <translation>發送公式</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="55"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="60"/>
         <source>index</source>
         <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="56"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="61"/>
         <source>fitting curve Raw(14bit)</source>
         <translation>擬合曲線原始數據(14bit)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="68"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="73"/>
         <source>lambda</source>
         <translation>波長</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="69"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="74"/>
         <source>14bit(raw)</source>
         <translation>14bit(raw)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="88"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="93"/>
         <source>Context Menu</source>
         <translation>上下文菜單</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="90"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="95"/>
         <source>Export Threshold to CSV</source>
         <translation>導出閾值到CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="105"/>
         <source>Export Threshold Data to CSV</source>
         <translation>導出閾值數據到CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="102"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="107"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
@@ -642,9 +642,19 @@
         <translation>包尾</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="30"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="35"/>
         <source>generate file fitting_self.csv</source>
         <translation>生成文件fitting_self.csv</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="142"/>
+        <source>line</source>
+        <translation>直線</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="152"/>
+        <source>fitting line display</source>
+        <translation>擬合線顯示</translation>
     </message>
 </context>
 <context>
@@ -914,9 +924,9 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="157"/>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="167"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="497"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="500"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="749"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="502"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="505"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="754"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
@@ -941,13 +951,13 @@
         <translation>文件成功保存</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="497"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="500"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="502"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="505"/>
         <source>points can not be same!</source>
         <translation>點位不能相同！</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="749"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="754"/>
         <source>Please finish step 1 and step 2!</source>
         <translation>請完成步驟1和步驟2！</translation>
     </message>
@@ -1012,6 +1022,7 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="237"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="149"/>
         <source>crop</source>
         <translation>裁剪</translation>
     </message>
@@ -1027,6 +1038,7 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="258"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="178"/>
         <source>pause</source>
         <translation>暫停</translation>
     </message>
@@ -1046,6 +1058,7 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="206"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="163"/>
         <source>3D</source>
         <translation>3D</translation>
     </message>
@@ -1072,6 +1085,52 @@
         <source>history</source>
         <translation type="vanished">歷史</translation>
     </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="108"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="492"/>
+        <source>Series24 Peaks</source>
+        <translation>24bit曲線峯</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="110"/>
+        <source>Time (s)</source>
+        <translation>時間（秒）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="112"/>
+        <source>Voltage (V)</source>
+        <translation>電壓（V）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="126"/>
+        <source>Live ADC Waveform</source>
+        <translation>實時 ADC 波形</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="156"/>
+        <source>Auto Zoom</source>
+        <translation>自動縮放</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="168"/>
+        <source>image save (ctrl+s)</source>
+        <translation>圖像保存（ctrl+s）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="173"/>
+        <source>find peaks</source>
+        <translation>找峯值</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="223"/>
+        <source>curve14_bit</source>
+        <translation>14bit曲線</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="225"/>
+        <source>curve24_bit</source>
+        <translation>24bit曲線</translation>
+    </message>
 </context>
 <context>
     <name>FormPlotCorrection</name>
@@ -1096,12 +1155,12 @@
         <translation>顯示校正曲線</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="149"/>
+        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="166"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="150"/>
+        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="167"/>
         <source>only support fitting_sin or fitting_arcsin</source>
         <translation>僅支持 fitting_sin 或 fitting_arcsin</translation>
     </message>
@@ -1184,6 +1243,18 @@
         <translation>導出所有數據到CSV</translation>
     </message>
     <message>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="273"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="312"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="334"/>
+        <source>Export</source>
+        <translation>導出</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="312"/>
+        <source>No data columns selected for export.</source>
+        <translation>未選擇要導出的數據列。</translation>
+    </message>
+    <message>
         <source>Export to CSV</source>
         <translation type="vanished">導出CSV</translation>
     </message>
@@ -1214,18 +1285,24 @@
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="181"/>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="235"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="59"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="63"/>
         <source>prev</source>
         <translation>前一項</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="188"/>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="242"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="61"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="65"/>
         <source>next</source>
         <translation>後一項</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="199"/>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="253"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="138"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="153"/>
         <source>status</source>
         <translation>狀態</translation>
     </message>
@@ -1328,6 +1405,18 @@
     <message>
         <source>split</source>
         <translation type="vanished">分隔</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="194"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="234"/>
+        <source>curve24</source>
+        <translation>24bit曲線</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="199"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="228"/>
+        <source>curve14</source>
+        <translation>14bit曲線</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="201"/>
@@ -1471,6 +1560,37 @@
         <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="44"/>
         <source>tail</source>
         <translation>包尾</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="62"/>
+        <source>choose file</source>
+        <translation>選擇文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="120"/>
+        <source>Error Read CSV</source>
+        <translation>讀取CSV時出錯</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="120"/>
+        <source>no data column found!</source>
+        <translation>未找到數據列！</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="184"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="191"/>
+        <source>Simulate</source>
+        <translation>模擬</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="184"/>
+        <source>no header found!</source>
+        <translation>未找到包頭！</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="191"/>
+        <source>simulate finish</source>
+        <translation>模擬完成</translation>
     </message>
 </context>
 <context>
@@ -1622,14 +1742,47 @@
         <translation>增強</translation>
     </message>
     <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="107"/>
+        <source>Error</source>
+        <translation>錯誤</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="107"/>
+        <source>Serial not open!</source>
+        <translation>串口未打開！</translation>
+    </message>
+    <message>
         <location filename="../../src/form/serial/formserial.cpp" line="180"/>
         <source>No available serial port found!</source>
         <translation>未找到可用的串行端口！</translation>
     </message>
     <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="180"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="231"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="695"/>
+        <source>warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
         <location filename="../../src/form/serial/formserial.cpp" line="231"/>
         <source>serial not open!</source>
         <translation>串口未打開！</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="635"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="647"/>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="635"/>
+        <source>Please open serial port!</source>
+        <translation>請打開串口！</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/formserial.cpp" line="647"/>
+        <source>Please set valid time(ms)!</source>
+        <translation>請設置有效時間（毫秒）！</translation>
     </message>
     <message>
         <location filename="../../src/form/serial/formserial.cpp" line="695"/>
@@ -1733,6 +1886,14 @@
     </message>
 </context>
 <context>
+    <name>ImageViewer</name>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp" line="11"/>
+        <source>image viewer</source>
+        <translation>圖像查看</translation>
+    </message>
+</context>
+<context>
     <name>LengthCalc</name>
     <message>
         <location filename="../../src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui" line="14"/>
@@ -1788,6 +1949,7 @@
     <message>
         <location filename="../../src/main/mainwindow.ui" line="45"/>
         <location filename="../../src/main/mainwindow.ui" line="93"/>
+        <location filename="../../src/main/mainwindow.cpp" line="185"/>
         <source>Data</source>
         <translation>數據</translation>
     </message>
@@ -1798,16 +1960,19 @@
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="72"/>
+        <location filename="../../src/main/mainwindow.cpp" line="206"/>
         <source>Correction</source>
         <translation>校正</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="79"/>
+        <location filename="../../src/main/mainwindow.cpp" line="199"/>
         <source>Simulate</source>
         <translation>模擬</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="86"/>
+        <location filename="../../src/main/mainwindow.cpp" line="192"/>
         <source>History</source>
         <translation>歷史</translation>
     </message>
@@ -1875,7 +2040,12 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/main/main.cpp" line="17"/>
+        <location filename="../../src/main/main.cpp" line="18"/>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/main.cpp" line="19"/>
         <source>Application is already running!</source>
         <translation>程序已經在運行！</translation>
     </message>
@@ -1931,6 +2101,21 @@
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="139"/>
         <source>load data</source>
         <translation>加載數據</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="60"/>
+        <source>wavelength</source>
+        <translation>波長</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="61"/>
+        <source>intensity</source>
+        <translation>強度</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="62"/>
+        <source>correction curve</source>
+        <translation>校正曲線</translation>
     </message>
 </context>
 </TS>

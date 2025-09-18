@@ -8,7 +8,7 @@
 ImageViewer::ImageViewer(QWidget *parent)
     : QDialog(parent)
 {
-    setWindowTitle("图片查看器");
+    setWindowTitle(tr("image viewer"));
     resize(800, 600);
 
     imageLabel = new QLabel(this);

@@ -59,7 +59,7 @@ void FormPlotSimulate::init()
 
 void FormPlotSimulate::on_btnLoadFile_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, "choose file", "", "(*.*)");
+    QString filePath = QFileDialog::getOpenFileName(this, tr("choose file"), "", "(*.*)");
     if (filePath.isEmpty())
         return;
 
@@ -117,7 +117,7 @@ void FormPlotSimulate::simulate4k()
         int dataIndex = headers.indexOf("data");
         if (dataIndex == -1) {
             file.close();
-            SHOW_AUTO_CLOSE_MSGBOX(this, "Error Read CSV", "no data column found!");
+            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error Read CSV"), tr("no data column found!"));
             return;
         }
 
@@ -181,14 +181,14 @@ void FormPlotSimulate::simulate4k()
         }
 
         if (firstHeaderIdx == -1) {
-            SHOW_AUTO_CLOSE_MSGBOX(this, "Simulate", "no header found!");
+            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Simulate"), tr("no header found!"));
             LOG_WARN("no header found: {}", file.fileName());
             break;
         }
 
         int endIdx = buffer.indexOf(footer, firstHeaderIdx + matchedHeaderLen);
         if (endIdx == -1) {
-            SHOW_AUTO_CLOSE_MSGBOX(this, "Simulate", "simulate finish");
+            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Simulate"), tr("simulate finish"));
             return;
         }
 

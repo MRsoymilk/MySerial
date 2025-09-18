@@ -56,13 +56,13 @@ void FormPlotHistory::init()
     ui->radioButtonMix->setChecked(true);
 
     ui->tBtnPrev14->setObjectName("go-prev");
-    ui->tBtnPrev14->setToolTip("prev");
+    ui->tBtnPrev14->setToolTip(tr("prev"));
     ui->tBtnNext14->setObjectName("go-next");
-    ui->tBtnNext14->setToolTip("next");
+    ui->tBtnNext14->setToolTip(tr("next"));
     ui->tBtnPrev24->setObjectName("go-prev");
-    ui->tBtnPrev24->setToolTip("prev");
+    ui->tBtnPrev24->setToolTip(tr("prev"));
     ui->tBtnNext24->setObjectName("go-next");
-    ui->tBtnNext24->setToolTip("next");
+    ui->tBtnNext24->setToolTip(tr("next"));
 
     QString fitting_k = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_K, "0.0");
     QString fitting_b = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_B, "0.0");
@@ -135,7 +135,7 @@ void FormPlotHistory::updatePlot14()
             chart->removeSeries(series);
             delete series;
         }
-        ui->labelStatus14->setText("status");
+        ui->labelStatus14->setText(tr("status"));
         return;
     }
 
@@ -150,7 +150,7 @@ void FormPlotHistory::updatePlot24()
             chart->removeSeries(series);
             delete series;
         }
-        ui->labelStatus24->setText("status");
+        ui->labelStatus24->setText(tr("status"));
         return;
     }
 
@@ -191,12 +191,12 @@ void FormPlotHistory::updatePlot(int index)
         QLineSeries *series24 = new QLineSeries();
         series24->append(m_p24[m_index_24]);
         series24->setColor(Qt::blue);
-        series24->setName("curve24");
+        series24->setName(tr("curve24"));
 
         QLineSeries *series14 = new QLineSeries();
         series14->append(m_p14[m_index_14]);
         series14->setColor(Qt::magenta);
-        series14->setName("curve14");
+        series14->setName(tr("curve14"));
 
         chart->setTitle(tr("curve_mix"));
         m_chartMix->setChart(chart);
@@ -225,13 +225,13 @@ void FormPlotHistory::updatePlot(int index)
             if (index == INDEX_14) {
                 series->append(m_p14[m_index_14]);
                 series->setColor(Qt::magenta);
-                series->setName("curve14");
+                series->setName(tr("curve14"));
                 chart->setTitle(tr("curve_14bit"));
                 m_chartView14Split->setChart(chart);
             } else {
                 series->append(m_p24[m_index_24]);
                 series->setColor(Qt::blue);
-                series->setName("curve24");
+                series->setName(tr("curve24"));
                 chart->setTitle(tr("curve_24bit"));
                 m_chartView24Split->setChart(chart);
             }

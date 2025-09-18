@@ -139,7 +139,7 @@ void FormFittingSelf::on_tBtnToPlot_clicked()
     QChart *chart = new QChart();
     chart->addSeries(series);
     chart->createDefaultAxes();
-    chart->setTitle("line");
+    chart->setTitle(tr("line"));
 
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
@@ -149,6 +149,6 @@ void FormFittingSelf::on_tBtnToPlot_clicked()
     layout->addWidget(chartView);
     plotWindow->setLayout(layout);
     plotWindow->resize(600, 400);
-    plotWindow->setWindowTitle("fitting line display");
+    plotWindow->setWindowTitle(tr("fitting line display"));
     plotWindow->show();
 }

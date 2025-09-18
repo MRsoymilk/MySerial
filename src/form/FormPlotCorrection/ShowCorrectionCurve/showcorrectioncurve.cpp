@@ -57,9 +57,9 @@ void ShowCorrectionCurve::init()
     m_chart->addAxis(m_axisY, Qt::AlignLeft);
     m_line->attachAxis(m_axisX);
     m_line->attachAxis(m_axisY);
-    m_axisX->setTitleText("wavelength");
-    m_axisY->setTitleText("intensity");
-    m_chart->setTitle("correction curve");
+    m_axisX->setTitleText(tr("wavelength"));
+    m_axisY->setTitleText(tr("intensity"));
+    m_chart->setTitle(tr("correction curve"));
     m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->stackedWidget->addWidget(m_chartView);

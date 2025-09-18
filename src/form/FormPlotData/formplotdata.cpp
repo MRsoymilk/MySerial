@@ -270,7 +270,7 @@ void FormPlotData::exportAllToCSV()
 
     file.close();
     QString msg = QString("Selected group data exported to %1").arg(path);
-    SHOW_AUTO_CLOSE_MSGBOX(this, "Export", msg);
+    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export"), msg);
     LOG_INFO(msg);
 }
 
@@ -309,7 +309,7 @@ void FormPlotData::exportCurrentToCSV()
         selectedCols << 4;
 
     if (selectedCols.size() == 1) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, "Export", "No data columns selected for export.");
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export"), tr("No data columns selected for export."));
         return;
     }
 
@@ -331,7 +331,7 @@ void FormPlotData::exportCurrentToCSV()
 
     file.close();
     QString msg = QString("Selected data exported to %1").arg(path);
-    SHOW_AUTO_CLOSE_MSGBOX(this, "Export", msg);
+    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export"), msg);
     LOG_INFO(msg);
 }
 

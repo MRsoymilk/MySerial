@@ -105,11 +105,11 @@ void FormPlot::init2d()
     m_series24->setColor(Qt::blue);
     m_series14->setColor(Qt::magenta);
     m_scatter->setColor(Qt::red);
-    m_scatter->setName("Series24 Peaks");
+    m_scatter->setName(tr("Series24 Peaks"));
 
-    m_axisX->setTitleText("Time (s)");
+    m_axisX->setTitleText(tr("Time (s)"));
     m_axisX->setRange(0, 0.2);
-    m_axisY->setTitleText("Voltage (V)");
+    m_axisY->setTitleText(tr("Voltage (V)"));
     m_axisY->setRange(m_fixedYMin, m_fixedYMax);
 
     m_chart->legend()->setVisible(true);
@@ -123,7 +123,7 @@ void FormPlot::init2d()
             marker->setLabelBrush(visible ? Qt::gray : Qt::black);
         });
     }
-    m_chart->setTitle("Live ADC Waveform");
+    m_chart->setTitle(tr("Live ADC Waveform"));
 
     m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
@@ -146,36 +146,36 @@ void FormPlot::initToolButtons()
     ui->tBtnCrop->setIconSize(QSize(24, 24));
     ui->tBtnCrop->setCheckable(true);
     ui->tBtnCrop->setChecked(m_enableCrop);
-    ui->tBtnCrop->setToolTip("crop");
+    ui->tBtnCrop->setToolTip(tr("crop"));
     ui->tBtnCrop->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnZoom->setObjectName("zoom");
     ui->tBtnZoom->setIconSize(QSize(24, 24));
     ui->tBtnZoom->setCheckable(true);
     ui->tBtnZoom->setChecked(m_autoZoom);
-    ui->tBtnZoom->setToolTip("Auto Zoom");
+    ui->tBtnZoom->setToolTip(tr("Auto Zoom"));
     ui->tBtnZoom->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtn3D->setObjectName("3d");
     ui->tBtn3D->setIconSize(QSize(24, 24));
     ui->tBtn3D->setCheckable(true);
     ui->tBtn3D->setChecked(m_show3D);
-    ui->tBtn3D->setToolTip("3D");
+    ui->tBtn3D->setToolTip(tr("3D"));
     ui->tBtn3D->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnImgSave->setObjectName("img_save");
     ui->tBtnImgSave->setIconSize(QSize(24, 24));
-    ui->tBtnImgSave->setToolTip("image save (ctrl+s)");
+    ui->tBtnImgSave->setToolTip(tr("image save (ctrl+s)"));
     ui->tBtnImgSave->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnFindPeak->setObjectName("find_peak");
     ui->tBtnFindPeak->setIconSize(QSize(24, 24));
-    ui->tBtnFindPeak->setToolTip("find peaks");
+    ui->tBtnFindPeak->setToolTip(tr("find peaks"));
     ui->tBtnFindPeak->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnPause->setObjectName("pause");
     ui->tBtnPause->setIconSize(QSize(24, 24));
-    ui->tBtnPause->setToolTip("pause");
+    ui->tBtnPause->setToolTip(tr("pause"));
     ui->tBtnPause->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnOffset->setCheckable(true);
@@ -220,9 +220,9 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data14,
         ui->labelUpdateSign->setStyleSheet("background-color: blue; color: white;");
     }
     m_series14->replace(data14);
-    m_series14->setName("curve14_bit");
+    m_series14->setName(tr("curve14_bit"));
     m_series24->replace(data24);
-    m_series24->setName("curve24_bit");
+    m_series24->setName(tr("curve24_bit"));
 
     m_axisX->setRange(xMin, xMax);
     if (m_autoZoom) {
@@ -489,7 +489,7 @@ void FormPlot::findPeak()
 
         if (!peaks24.isEmpty()) {
             m_scatter = new QScatterSeries();
-            m_scatter->setName("Series24 Peaks");
+            m_scatter->setName(tr("Series24 Peaks"));
             m_scatter->setMarkerShape(QScatterSeries::MarkerShapeCircle);
             m_scatter->setMarkerSize(10.0);
             m_scatter->setColor(Qt::red);

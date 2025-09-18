@@ -14,7 +14,9 @@ int main(int argc, char *argv[])
     sharedMemory.setKey("MySerial_soymilk");
 
     if (!sharedMemory.create(1)) {
-        QMessageBox::warning(nullptr, "Warning", QObject::tr("Application is already running!"));
+        QMessageBox::warning(nullptr,
+                             QObject::tr("Warning"),
+                             QObject::tr("Application is already running!"));
 
         return 0;
     }

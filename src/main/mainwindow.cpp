@@ -182,28 +182,28 @@ void MainWindow::initToolbar()
     ui->tBtnData->setIconSize(QSize(24, 24));
     ui->tBtnData->setCheckable(true);
     ui->tBtnData->setChecked(m_showData);
-    ui->tBtnData->setToolTip("Data");
+    ui->tBtnData->setToolTip(tr("Data"));
     ui->tBtnData->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnHistory->setObjectName("history");
     ui->tBtnHistory->setIconSize(QSize(24, 24));
     ui->tBtnHistory->setCheckable(true);
     ui->tBtnHistory->setChecked(m_showHistory);
-    ui->tBtnHistory->setToolTip("History");
+    ui->tBtnHistory->setToolTip(tr("History"));
     ui->tBtnHistory->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnSimulate->setObjectName("simulate");
     ui->tBtnSimulate->setIconSize(QSize(24, 24));
     ui->tBtnSimulate->setCheckable(true);
     ui->tBtnSimulate->setChecked(m_showSimulate);
-    ui->tBtnSimulate->setToolTip("Simulate");
+    ui->tBtnSimulate->setToolTip(tr("Simulate"));
     ui->tBtnSimulate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnCorrection->setObjectName("correction");
     ui->tBtnCorrection->setIconSize(QSize(24, 24));
     ui->tBtnCorrection->setCheckable(true);
     ui->tBtnCorrection->setChecked(m_showCorrection);
-    ui->tBtnCorrection->setToolTip("Correction");
+    ui->tBtnCorrection->setToolTip(tr("Correction"));
     ui->tBtnCorrection->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 
@@ -419,21 +419,6 @@ void MainWindow::menuLanguageSelect(QAction *selectedAction)
 {
     QString language = selectedAction->text();
     setLanguage(language);
-    const QList<QAction *> actions = ui->menuLanguage->actions();
-    for (QAction *act : actions) {
-        if (act == selectedAction) {
-            act->setChecked(true);
-            if (m_theme.endsWith("Lite")) {
-                act->setIcon(QIcon(":res/icons/yes.png"));
-            } else {
-                act->setIcon(QIcon(":res/icons/yes_white.png"));
-            }
-
-        } else {
-            act->setChecked(false);
-            act->setIcon(QIcon());
-        }
-    }
 }
 
 void MainWindow::menuThemeSelect(QAction *selectedTheme)
@@ -441,21 +426,6 @@ void MainWindow::menuThemeSelect(QAction *selectedTheme)
     QString theme = selectedTheme->text();
     setTheme(theme);
     m_theme = theme;
-    const QList<QAction *> actions = ui->menuTheme->actions();
-    for (QAction *act : actions) {
-        if (act == selectedTheme) {
-            act->setChecked(true);
-            if (theme.endsWith("Lite")) {
-                act->setIcon(QIcon(":res/icons/yes.png"));
-            } else {
-                act->setIcon(QIcon(":res/icons/yes_white.png"));
-            }
-
-        } else {
-            act->setChecked(false);
-            act->setIcon(QIcon());
-        }
-    }
 }
 
 void MainWindow::on_tBtnData_clicked()
