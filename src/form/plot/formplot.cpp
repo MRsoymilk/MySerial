@@ -67,6 +67,11 @@ void FormPlot::getINI()
 
     int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
     ui->comboBoxAlgorithm->setCurrentIndex(algorithm);
+
+    double offset = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET, "0.0").toDouble();
+    double step = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_STEP, "1.0").toDouble();
+    ui->spinBoxOffset->setValue(offset);
+    ui->dSpinBoxStep->setValue(step);
 }
 
 void FormPlot::setINI()
@@ -414,6 +419,7 @@ void FormPlot::on_tBtnStep_clicked()
 {
     if (ui->tBtnStep->isChecked()) {
         m_step = ui->dSpinBoxStep->value();
+        SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_STEP, QString::number(m_step));
     } else {
         m_step = 1;
     }
@@ -492,6 +498,14 @@ void FormPlot::findPeak()
                 m_scatter->append(pt);
 
                 QString text = QString("(%1, %2)").arg(pt.x(), 0, 'f', 2).arg(pt.y(), 0, 'f', 2);
+
+                int idx = static_cast<int>(pt.x());
+                if (m_series14 && idx >= 0 && idx < m_series14->count()) {
+                    auto val = m_series14->at(idx).y();
+                    val = qRound(val / 3.3 * (1 << 13));
+                    text.append(QString("\n14bit : %1").arg(val));
+                }
+
                 QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(text);
                 label->setBrush(Qt::red);
                 label->setFont(QFont("Arial", 10, QFont::Bold));
@@ -672,4 +686,13 @@ void FormPlot::on_tBtnMeasureX_clicked()
     updateLabel();
     scene->update();
     m_chartView->update();
+}
+
+void FormPlot::on_tBtnOffset_clicked()
+{
+    if (ui->tBtnOffset->isChecked()) {
+        SETTING_CONFIG_SET(CFG_GROUP_PLOT,
+                           CFG_PLOT_OFFSET,
+                           QString::number(ui->spinBoxOffset->value()));
+    }
 }

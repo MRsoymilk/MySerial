@@ -71,6 +71,8 @@ private slots:
     void on_tBtnMeasureX_clicked();
     void on_tBtnMeasureY_clicked();
 
+    void on_tBtnOffset_clicked();
+
 private:
     void init();
     void init2d();
