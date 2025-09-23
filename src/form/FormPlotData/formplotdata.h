@@ -54,8 +54,8 @@ private:
     QList<QVector<double>> listV24;
     QList<QVector<qint32>> listRaw14;
     QList<QVector<qint32>> listRaw24;
-    int m_count;
-    int m_current;
+    int m_count = 0;
+    int m_current = 0;
 };
 
 #endif // FORMPLOTDATA_H
