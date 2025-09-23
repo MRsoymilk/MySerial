@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include <QMenu>
+#include <QShortcut>
 #include "funcdef.h"
 
 FormPlotData::FormPlotData(QWidget *parent)
@@ -47,6 +48,51 @@ void FormPlotData::displayData(const QVector<double> &v14,
         rowItems << new QStandardItem(yR14);
         rowItems << new QStandardItem(yR24);
         m_model->appendRow(rowItems);
+    }
+
+    if (ui->checkBoxHighlightMinMax->isChecked()) {
+        int columnCount = m_model->columnCount();
+        int rowCount = m_model->rowCount();
+        QStringList infoList;
+
+        for (int col = 1; col < columnCount; ++col) {
+            double minVal = std::numeric_limits<double>::max();
+            double maxVal = std::numeric_limits<double>::lowest();
+            int minRow = -1, maxRow = -1;
+
+            for (int row = 0; row < rowCount; ++row) {
+                bool ok = false;
+                double val = m_model->item(row, col)->text().toDouble(&ok);
+                if (!ok)
+                    continue; // 跳过空值或非数值
+
+                if (val < minVal) {
+                    minVal = val;
+                    minRow = row;
+                }
+                if (val > maxVal) {
+                    maxVal = val;
+                    maxRow = row;
+                }
+            }
+
+            if (minRow >= 0) {
+                m_model->item(minRow, col)->setBackground(QBrush(Qt::green));
+            }
+            if (maxRow >= 0) {
+                m_model->item(maxRow, col)->setBackground(QBrush(Qt::red));
+            }
+            QString header = m_model->headerData(col, Qt::Horizontal).toString();
+            QString info = QString("%1:"
+                                   "max= %2 (at %3), min= %4 (at=%5)")
+                               .arg(header)
+                               .arg(maxVal)
+                               .arg(maxRow)
+                               .arg(minVal)
+                               .arg(minRow);
+            infoList << info;
+        }
+        ui->labelMinMaxInfo->setText(infoList.join('\n'));
     }
 }
 
@@ -96,6 +142,11 @@ void FormPlotData::init()
     ui->cBoxRaw24->setChecked(true);
     ui->cBoxV14->setChecked(true);
     ui->cBoxV24->setChecked(true);
+
+    QShortcut *shortcut_prev = new QShortcut(QKeySequence(Qt::Key_Left), this);
+    connect(shortcut_prev, &QShortcut::activated, this, &FormPlotData::on_tBtnPrev_clicked);
+    QShortcut *shortcut_next = new QShortcut(QKeySequence(Qt::Key_Right), this);
+    connect(shortcut_next, &QShortcut::activated, this, &FormPlotData::on_tBtnNext_clicked);
 }
 
 void FormPlotData::closeEvent(QCloseEvent *event)
