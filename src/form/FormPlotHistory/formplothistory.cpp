@@ -85,6 +85,11 @@ void FormPlotHistory::init()
     ui->lineEdit_xc->setText(fitting_xc);
     ui->tBtnFittingSin->setCheckable(true);
     m_fitting = false;
+
+    QShortcut *shortcut_prev = new QShortcut(QKeySequence(Qt::Key_Left), this);
+    connect(shortcut_prev, &QShortcut::activated, this, &FormPlotHistory::on_tBtnPrev14_clicked);
+    QShortcut *shortcut_next = new QShortcut(QKeySequence(Qt::Key_Right), this);
+    connect(shortcut_next, &QShortcut::activated, this, &FormPlotHistory::on_tBtnNext14_clicked);
 }
 
 void FormPlotHistory::on_tBtnNext14_clicked()
