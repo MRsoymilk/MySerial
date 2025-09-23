@@ -225,9 +225,9 @@ void ThreadWorker::processData4k(const QByteArray &data14,
         // 生成阈值表
         QVector<qint32> threshold;
         if (m_use_loaded_threshold) {
-            threshold = generateThreshold(temperature);
-        } else {
             threshold = m_threshold;
+        } else {
+            threshold = generateThreshold(temperature);
         }
         applyThreshold(threshold, raw14, raw24, temperature);
     }
@@ -261,7 +261,7 @@ QVector<qint32> ThreadWorker::generateThreshold(const double &temperature)
         for (int j = 0; j < m_correction_num; ++j) {
             double x = j * m_correction_step + m_correction_offset;
             double y_lambda = 0.0;
-            if (x <= 1310) {
+            if (x <= 1300) {
                 y_lambda = m_correction_arcsin.l_k
                                * (qAsin(x / 1000.0
                                         / (2 * m_correction_arcsin.l_d

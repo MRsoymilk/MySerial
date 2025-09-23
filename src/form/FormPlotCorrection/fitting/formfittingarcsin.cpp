@@ -395,17 +395,14 @@ void FormFittingArcSin::on_btnUpdateFormula_clicked()
         ui->lineEdit_b2->setText(QString::number(m_formula_y.b2));
 
     } else {
-        if (ui->radioButtonLeft->isChecked()) {
-            m_formula_lambda_l.k = ui->lineEdit_k_lambda->text().toDouble();
-            m_formula_lambda_l.b = ui->lineEdit_b_lambda->text().toDouble();
-            m_formula_lambda_l.d = ui->lineEdit_d->text().toDouble();
-            m_formula_lambda_l.alpha = ui->lineEdit_alpha->text().toDouble();
-        } else {
-            m_formula_lambda_r.k = ui->lineEdit_k_lambda->text().toDouble();
-            m_formula_lambda_r.b = ui->lineEdit_b_lambda->text().toDouble();
-            m_formula_lambda_r.d = ui->lineEdit_d->text().toDouble();
-            m_formula_lambda_r.alpha = ui->lineEdit_alpha->text().toDouble();
-        }
+        m_formula_lambda_l.k = ui->lineEdit_k_lambda->text().toDouble();
+        m_formula_lambda_l.b = ui->lineEdit_b_lambda->text().toDouble();
+        m_formula_lambda_l.d = ui->lineEdit_d->text().toDouble();
+        m_formula_lambda_l.alpha = ui->lineEdit_alpha->text().toDouble();
+        m_formula_lambda_r.k = ui->lineEdit_k_lambda->text().toDouble();
+        m_formula_lambda_r.b = ui->lineEdit_b_lambda->text().toDouble();
+        m_formula_lambda_r.d = ui->lineEdit_d->text().toDouble();
+        m_formula_lambda_r.alpha = ui->lineEdit_alpha->text().toDouble();
 
         m_formula_y.k1 = ui->lineEdit_k1->text().toDouble();
         m_formula_y.k2 = ui->lineEdit_k2->text().toDouble();
@@ -419,7 +416,7 @@ void FormFittingArcSin::on_btnUpdateFormula_clicked()
 double FormFittingArcSin::calculate(const double &idx)
 {
     double y_lambda = 0.0;
-    if (idx <= 1310) {
+    if (idx <= 1300) {
         y_lambda = m_formula_lambda_l.k
                        * (qAsin(idx / 1000.0
                                 / (2 * m_formula_lambda_l.d
@@ -442,6 +439,7 @@ double FormFittingArcSin::calculate(const double &idx)
 
 void FormFittingArcSin::on_btnGenerateThreshold_clicked()
 {
+    m_modelThreshold->removeRows(0, m_modelThreshold->rowCount());
     double start = ui->doubleSpinBoxStart->value();
     double step = ui->doubleSpinBoxStep->value();
     int num = ui->spinBoxNum->value();
