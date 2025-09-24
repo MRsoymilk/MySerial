@@ -360,6 +360,15 @@ void MainWindow::paintEvent(QPaintEvent *event)
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    m_plotCorrection->close();
+    m_plotData->close();
+    m_plotHistory->close();
+    m_plotSimulate->close();
+    event->accept();
+}
+
 void MainWindow::on_btnSetting_clicked()
 {
     ui->stackedWidget->setCurrentWidget(formSetting);

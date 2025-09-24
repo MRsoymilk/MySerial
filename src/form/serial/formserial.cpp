@@ -126,6 +126,12 @@ void FormSerial::onSimulateOption(bool isEnable)
     }
 }
 
+void FormSerial::closeEvent(QCloseEvent *event)
+{
+    closeSerial();
+    event->accept();
+}
+
 void FormSerial::initMultSend()
 {
     int total = 30;
@@ -212,11 +218,6 @@ void FormSerial::init()
     ui->cBoxSendFormat->addItems(
         {VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX, VAL_SERIAL_SEND_HEX_TRANSLATE});
 
-    QObject::connect(qApp, &QCoreApplication::aboutToQuit, [=]() {
-        if (m_serial && m_serial->isOpen()) {
-            QMetaObject::invokeMethod(m_serial, "close", Qt::QueuedConnection);
-        }
-    });
     m_send_timer = new QTimer(this);
     connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
     ui->txtRecv->setMaximumBlockCount(1000);
@@ -699,24 +700,19 @@ void FormSerial::on_tBtnRefresh_clicked()
         currentPorts << port.portName();
     }
 
-    if (currentPorts != m_lastPortList) {
-        LOG_INFO("Serial ports changed: {}", currentPorts.join(", ").toStdString());
-        m_lastPortList = currentPorts;
-
-        ui->cBoxPortName->clear();
-        ui->cBoxPortName->addItems(currentPorts);
-
-        m_mapSerial.clear();
-        for (const auto &port : ports) {
-            SERIAL serial;
-            serial.SerialNumber = port.serialNumber();
-            serial.Description = port.description();
-            serial.Manufacturer = port.manufacturer();
-            serial.StandardBaudRates = port.standardBaudRates();
-            serial.SystemLocation = port.systemLocation();
-            m_mapSerial.insert(port.portName(), serial);
-        }
+    m_mapSerial.clear();
+    for (const auto &port : ports) {
+        SERIAL serial;
+        serial.SerialNumber = port.serialNumber();
+        serial.Description = port.description();
+        serial.Manufacturer = port.manufacturer();
+        serial.StandardBaudRates = port.standardBaudRates();
+        serial.SystemLocation = port.systemLocation();
+        m_mapSerial.insert(port.portName(), serial);
     }
+
+    ui->cBoxPortName->clear();
+    ui->cBoxPortName->addItems(currentPorts);
 }
 
 void FormSerial::on_tBtnNext_clicked()

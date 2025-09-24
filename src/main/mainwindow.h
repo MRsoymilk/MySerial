@@ -33,6 +33,7 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_btnSerial_clicked();

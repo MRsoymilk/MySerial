@@ -105,20 +105,21 @@ void ShowCorrectionCurve::on_tBtnLoadData_clicked()
 {
     m_load_data = !m_load_data;
     ui->tBtnLoadData->setChecked(m_load_data);
-    DataInput input;
-    input.exec();
-    auto values = input.getValues();
-    if (!values.isEmpty()) {
-        m_model->removeRows(0, m_model->rowCount());
-    }
-    for (int i = 0; i < values.size(); ++i) {
-        QList<QStandardItem *> rowItems;
-        rowItems << new QStandardItem(
-            QString::number(i * ui->doubleSpinBoxStep->value() + ui->doubleSpinBoxOffset->value()));
-        rowItems << new QStandardItem(QString::number(values.at(i)));
-        m_model->appendRow(rowItems);
-    }
+
     if (m_load_data) {
+        DataInput input;
+        input.exec();
+        auto values = input.getValues();
+        if (!values.isEmpty()) {
+            m_model->removeRows(0, m_model->rowCount());
+        }
+        for (int i = 0; i < values.size(); ++i) {
+            QList<QStandardItem *> rowItems;
+            rowItems << new QStandardItem(QString::number(i * ui->doubleSpinBoxStep->value()
+                                                          + ui->doubleSpinBoxOffset->value()));
+            rowItems << new QStandardItem(QString::number(values.at(i)));
+            m_model->appendRow(rowItems);
+        }
         emit useLoadedThreshold(true, values);
     } else {
         emit useLoadedThreshold(false, {});

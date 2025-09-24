@@ -61,6 +61,14 @@ signals:
     void recv2MPU(const QByteArray &data);
     void recvTemperature(double temperature);
 
+public slots:
+    void sendRaw(const QByteArray &bytes);
+    void onChangeFrameType(int index);
+    void onSimulateOption(bool isEnable);
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     void getINI();
     void init();
@@ -73,11 +81,6 @@ private:
                      const QByteArray &frame_candidate,
                      const QByteArray &temp = "");
     void loadPage(int page);
-
-public slots:
-    void sendRaw(const QByteArray &bytes);
-    void onChangeFrameType(int index);
-    void onSimulateOption(bool isEnable);
 
 private slots:
     void on_btnRecvSave_clicked();
@@ -122,7 +125,6 @@ private:
     int m_algorithm;
     FormSerial::FRAME m_frame;
     long long m_recv_count;
-    QStringList m_lastPortList;
 
     bool m_toPeek = false;
     bool m_waitting_byte = false;

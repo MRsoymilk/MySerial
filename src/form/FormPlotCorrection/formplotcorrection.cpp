@@ -140,6 +140,7 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
                 m_show = false;
                 ui->tBtnShowCorrectionCurve->setChecked(false);
             });
+            connect(this, &FormPlotCorrection::windowClose, this, [&]() { sinShow->close(); });
             sinShow->show();
         } else if (txt == "fitting_arcsin") {
             m_formArcSin->updateParams();
@@ -151,7 +152,7 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
                     &FormPlotCorrection::onShowCorrectionCurve,
                     arcSinShow,
                     &ShowCorrectionCurve::updatePlot);
-            connect(arcSinShow, &ShowCorrectionCurve::windowClose, this, [&]() {
+            connect(arcSinShow, &ShowCorrectionCurve::windowClose, this, [=]() {
                 m_show = false;
                 ui->tBtnShowCorrectionCurve->setChecked(false);
             });
@@ -159,6 +160,7 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
                     &ShowCorrectionCurve::useLoadedThreshold,
                     this,
                     &FormPlotCorrection::useLoadedThreshold);
+            connect(this, &FormPlotCorrection::windowClose, this, [=]() { arcSinShow->close(); });
             arcSinShow->show();
 
         } else {
