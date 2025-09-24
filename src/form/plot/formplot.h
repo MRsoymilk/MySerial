@@ -70,8 +70,8 @@ private slots:
     void on_tBtnPause_clicked();
     void on_tBtnMeasureX_clicked();
     void on_tBtnMeasureY_clicked();
-
     void on_tBtnOffset_clicked();
+    void on_tBtnFWHM_clicked();
 
 private:
     void init();
@@ -93,13 +93,14 @@ private:
                       const double &yMin,
                       const double &yMax);
     void saveChartAsImage(const QString &filePath);
-    void findPeak();
+    QVector<QPointF> findPeak(int window, double thresholdFactor, double minDist);
+    void callFindPeak();
 
 private:
     Ui::FormPlot *ui;
     QLineSeries *m_series24;
     QLineSeries *m_series14;
-    QScatterSeries *m_scatter;
+    QScatterSeries *m_peaks;
     QChart *m_chart;
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
@@ -114,10 +115,8 @@ private:
 
     MyChartView *m_chartView = nullptr;
     MyGLCurveWidget *m_glWidget = nullptr;
-
     bool m_findPeak = false;
-    QVector<QGraphicsSimpleTextItem *> m_peakLabels;
-
+    bool m_findFWHM = false;
     bool m_pause = false;
 
 private:
@@ -127,6 +126,8 @@ private:
     DraggableLine *m_measureLineY2 = nullptr;
     QGraphicsSimpleTextItem *m_measureLabelX = nullptr;
     QGraphicsSimpleTextItem *m_measureLabelY = nullptr;
+    QList<QLineSeries *> m_fwhmLines;
+    QList<QGraphicsSimpleTextItem *> m_fwhmLabels;
 };
 
 #endif // FORMPLOT_H

@@ -62,6 +62,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="tBtnFWHM">
+       <property name="text">
+        <string>FWHM</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="tBtnImgSave">
        <property name="text">
         <string>img_save</string>

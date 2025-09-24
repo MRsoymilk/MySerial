@@ -86,26 +86,32 @@ void FormPlot::init2d()
 {
     m_series24 = new QLineSeries();
     m_series14 = new QLineSeries();
-    m_scatter = new QScatterSeries();
+    m_peaks = new QScatterSeries();
     m_chart = new QChart();
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
 
     m_chart->addSeries(m_series24);
     m_chart->addSeries(m_series14);
-    m_chart->addSeries(m_scatter);
+    m_chart->addSeries(m_peaks);
     m_chart->addAxis(m_axisX, Qt::AlignBottom);
     m_chart->addAxis(m_axisY, Qt::AlignLeft);
     m_series24->attachAxis(m_axisX);
     m_series24->attachAxis(m_axisY);
     m_series14->attachAxis(m_axisX);
     m_series14->attachAxis(m_axisY);
-    m_scatter->attachAxis(m_axisX);
-    m_scatter->attachAxis(m_axisY);
+    m_peaks->attachAxis(m_axisX);
+    m_peaks->attachAxis(m_axisY);
     m_series24->setColor(Qt::blue);
     m_series14->setColor(Qt::magenta);
-    m_scatter->setColor(Qt::red);
-    m_scatter->setName(tr("Series24 Peaks"));
+    m_peaks->setColor(Qt::red);
+    m_peaks->setName(tr("Peaks"));
+    m_peaks->setMarkerSize(5.0);
+    m_peaks->setPointLabelsVisible(true);
+    m_peaks->setPointLabelsClipping(false);
+    m_peaks->setPointLabelsColor(Qt::red);
+    m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
+    m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
 
     m_axisX->setTitleText(tr("Time (s)"));
     m_axisX->setRange(0, 0.2);
@@ -178,10 +184,16 @@ void FormPlot::initToolButtons()
     ui->tBtnPause->setToolTip(tr("pause"));
     ui->tBtnPause->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnFWHM->setObjectName("FWHM");
+    ui->tBtnFWHM->setIconSize(QSize(24, 24));
+    ui->tBtnFWHM->setToolTip(tr("FWHM"));
+    ui->tBtnFWHM->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);
     ui->tBtnPause->setCheckable(true);
+    ui->tBtnFWHM->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -304,7 +316,7 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
                  yMin,
                  yMax);
 
-    findPeak();
+    callFindPeak();
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -425,114 +437,63 @@ void FormPlot::on_tBtnStep_clicked()
     }
 }
 
-void FormPlot::findPeak()
+QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double minDist)
+{
+    QVector<QPointF> peaks;
+    int n = m_series24->count();
+
+    QVector<double> values;
+    values.reserve(n);
+    for (int i = 0; i < n; i++)
+        values.append(m_series24->at(i).y());
+
+    double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
+    double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
+    double stdev = std::sqrt(sq_sum / n - mean * mean);
+    double threshold = mean + thresholdFactor * stdev;
+
+    double lastPeakX = -1e9;
+    for (int i = window; i < n - window; i++) {
+        double yCurr = m_series24->at(i).y();
+        if (yCurr < threshold)
+            continue;
+
+        bool isPeak = true;
+        for (int j = i - window; j <= i + window; j++) {
+            if (m_series24->at(j).y() > yCurr) {
+                isPeak = false;
+                break;
+            }
+        }
+
+        if (isPeak) {
+            double xCurr = m_series24->at(i).x();
+            if (xCurr - lastPeakX >= minDist) {
+                peaks.append(m_series24->at(i));
+                lastPeakX = xCurr;
+            }
+        }
+    }
+    return peaks;
+}
+
+void FormPlot::callFindPeak()
 {
     if (m_findPeak) {
         if (!m_series24 || m_series24->count() < 5) {
             return;
         }
 
-        auto findPeaksRobust = [](QLineSeries *series,
-                                  int window,
-                                  double thresholdFactor,
-                                  double minDist) {
-            QVector<QPointF> peaks;
-            int n = series->count();
+        QVector<QPointF> peaks24 = findPeak(3, 1.0, 5.0);
 
-            QVector<double> values;
-            values.reserve(n);
-            for (int i = 0; i < n; i++)
-                values.append(series->at(i).y());
-
-            double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
-            double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
-            double stdev = std::sqrt(sq_sum / n - mean * mean);
-            double threshold = mean + thresholdFactor * stdev;
-
-            double lastPeakX = -1e9;
-            for (int i = window; i < n - window; i++) {
-                double yCurr = series->at(i).y();
-                if (yCurr < threshold)
-                    continue;
-
-                bool isPeak = true;
-                for (int j = i - window; j <= i + window; j++) {
-                    if (series->at(j).y() > yCurr) {
-                        isPeak = false;
-                        break;
-                    }
-                }
-
-                if (isPeak) {
-                    double xCurr = series->at(i).x();
-                    if (xCurr - lastPeakX >= minDist) {
-                        peaks.append(series->at(i));
-                        lastPeakX = xCurr;
-                    }
-                }
-            }
-            return peaks;
-        };
-
-        QVector<QPointF> peaks24 = findPeaksRobust(m_series24, 3, 1.0, 5.0);
-
-        if (m_scatter) {
-            m_chart->removeSeries(m_scatter);
-            delete m_scatter;
-            m_scatter = nullptr;
-        }
-        for (auto label : m_peakLabels) {
-            m_chartView->scene()->removeItem(label);
-            delete label;
-        }
-        m_peakLabels.clear();
-
-        if (!peaks24.isEmpty()) {
-            m_scatter = new QScatterSeries();
-            m_scatter->setName(tr("Series24 Peaks"));
-            m_scatter->setMarkerShape(QScatterSeries::MarkerShapeCircle);
-            m_scatter->setMarkerSize(10.0);
-            m_scatter->setColor(Qt::red);
-
-            for (const auto &pt : peaks24) {
-                m_scatter->append(pt);
-
-                QString text = QString("(%1, %2)").arg(pt.x(), 0, 'f', 2).arg(pt.y(), 0, 'f', 2);
-
-                int idx = static_cast<int>(pt.x());
-                if (m_series14 && idx >= 0 && idx < m_series14->count()) {
-                    auto val = m_series14->at(idx).y();
-                    val = qRound(val / 3.3 * (1 << 13));
-                    text.append(QString("\n14bit : %1").arg(val));
-                }
-
-                QGraphicsSimpleTextItem *label = new QGraphicsSimpleTextItem(text);
-                label->setBrush(Qt::red);
-                label->setFont(QFont("Arial", 10, QFont::Bold));
-                label->setPos(m_chart->mapToPosition(pt) + QPointF(5, -15));
-                m_chartView->scene()->addItem(label);
-                m_peakLabels.append(label);
-            }
-
-            m_chart->addSeries(m_scatter);
-            m_scatter->attachAxis(m_axisX);
-            m_scatter->attachAxis(m_axisY);
+        m_peaks->clear();
+        for (const auto &pt : peaks24) {
+            m_peaks->append(pt);
         }
 
         m_chart->update();
-
     } else {
-        if (m_scatter) {
-            m_chart->removeSeries(m_scatter);
-            delete m_scatter;
-            m_scatter = nullptr;
-        }
-        for (auto label : m_peakLabels) {
-            m_chartView->scene()->removeItem(label);
-            delete label;
-        }
-        m_peakLabels.clear();
-        m_chart->update();
+        m_peaks->clear();
     }
 }
 
@@ -541,7 +502,7 @@ void FormPlot::on_tBtnFindPeak_clicked()
     m_findPeak = !m_findPeak;
     ui->tBtnFindPeak->setChecked(m_findPeak);
 
-    findPeak();
+    callFindPeak();
 }
 
 void FormPlot::on_tBtnPause_clicked()
@@ -694,5 +655,89 @@ void FormPlot::on_tBtnOffset_clicked()
         SETTING_CONFIG_SET(CFG_GROUP_PLOT,
                            CFG_PLOT_OFFSET,
                            QString::number(ui->spinBoxOffset->value()));
+    }
+}
+
+void FormPlot::on_tBtnFWHM_clicked()
+{
+    m_findFWHM = !m_findFWHM;
+    if (m_findFWHM) {
+        for (auto *line : m_fwhmLines) {
+            m_chart->removeSeries(line);
+            delete line;
+        }
+        m_fwhmLines.clear();
+        for (auto *label : m_fwhmLabels) {
+            delete label;
+        }
+        m_fwhmLabels.clear();
+
+        auto peaks = findPeak(3, 1.0, 5.0);
+        if (peaks.isEmpty())
+            return;
+
+        for (const auto &peak : peaks) {
+            double yPeak = peak.y();
+            double xPeak = peak.x();
+            double yHalf = yPeak / 2.0;
+
+            double xLeft = xPeak, xRight = xPeak;
+            for (int i = m_series24->count() - 1; i >= 1; --i) {
+                if (m_series24->at(i).x() >= xPeak)
+                    continue;
+                double y1 = m_series24->at(i).y();
+                double y2 = m_series24->at(i - 1).y();
+                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
+                    double x1 = m_series24->at(i).x();
+                    double x2 = m_series24->at(i - 1).x();
+                    // 线性插值
+                    xLeft = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
+                    break;
+                }
+            }
+            for (int i = 0; i < m_series24->count() - 1; ++i) {
+                if (m_series24->at(i).x() <= xPeak)
+                    continue;
+                double y1 = m_series24->at(i).y();
+                double y2 = m_series24->at(i + 1).y();
+                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
+                    double x1 = m_series24->at(i).x();
+                    double x2 = m_series24->at(i + 1).x();
+                    // 线性插值
+                    xRight = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
+                    break;
+                }
+            }
+            double fwhm = xRight - xLeft;
+
+            QLineSeries *fwhmLine = new QLineSeries();
+            fwhmLine->setColor(Qt::red);
+            fwhmLine->setName(QString("FWHM %1").arg(xPeak, 0, 'f', 1));
+            fwhmLine->append(xLeft, yHalf);
+            fwhmLine->append(xRight, yHalf);
+            m_chart->addSeries(fwhmLine);
+            fwhmLine->attachAxis(m_axisX);
+            fwhmLine->attachAxis(m_axisY);
+            m_fwhmLines.append(fwhmLine);
+
+            QPointF mid((xLeft + xRight) / 2.0, yHalf);
+            QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
+
+            auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2),
+                                                      m_chart);
+            label->setBrush(Qt::red);
+            label->setPos(scenePos + QPointF(5, -15));
+            m_fwhmLabels.append(label);
+        }
+    } else {
+        for (auto *line : m_fwhmLines) {
+            m_chart->removeSeries(line);
+            delete line;
+        }
+        m_fwhmLines.clear();
+        for (auto *label : m_fwhmLabels) {
+            delete label;
+        }
+        m_fwhmLabels.clear();
     }
 }
