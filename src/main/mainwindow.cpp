@@ -35,12 +35,7 @@ MainWindow::~MainWindow()
 void MainWindow::initMsgBar()
 {
     QLabel *linkLabel = new QLabel(this);
-    linkLabel->setText(
-        QString(
-            "version: %1 on "
-            "<a href='%2'><span style='text-decoration: underline; color: #2980b9;'>%2</span></a>")
-            .arg(APP_VERSION)
-            .arg(APP_REPO));
+    linkLabel->setText(QString("version: %1").arg(APP_VERSION));
     linkLabel->setTextFormat(Qt::RichText);
     linkLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     linkLabel->setOpenExternalLinks(true);
