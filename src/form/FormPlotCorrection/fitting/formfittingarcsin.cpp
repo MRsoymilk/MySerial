@@ -3,6 +3,7 @@
 #include "funcdef.h"
 #include "ui_formfittingarcsin.h"
 
+#include <QClipboard>
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QMenu>
@@ -95,8 +96,52 @@ void FormFittingArcSin::showContextMenu(const QPoint &pos)
     QAction *exportAllAction = new QAction(tr("Export Threshold to CSV"), this);
     connect(exportAllAction, &QAction::triggered, this, &FormFittingArcSin::exportThresholdToCSV);
     contextMenu.addAction(exportAllAction);
+    QAction *toHexAction = new QAction(tr("to Hex"), this);
+    connect(toHexAction, &QAction::triggered, this, &FormFittingArcSin::exportThresholdToHex);
+    contextMenu.addAction(toHexAction);
+    QAction *toArrayAction = new QAction(tr("to Array"), this);
+    connect(toArrayAction, &QAction::triggered, this, &FormFittingArcSin::exportThresholdToArray);
+    contextMenu.addAction(toArrayAction);
 
     contextMenu.exec(ui->tableViewFittingCurveData->viewport()->mapToGlobal(pos));
+}
+
+void FormFittingArcSin::exportThresholdToHex()
+{
+    QStringList hexList;
+    for (int row = 0; row < m_modelThreshold->rowCount(); ++row) {
+        QModelIndex idx = m_modelThreshold->index(row, 1);
+        bool ok = false;
+        double val = m_modelThreshold->data(idx).toDouble(&ok);
+        if (ok) {
+            int rounded = static_cast<int>(qRound(val)) & 0xFFFF;
+            hexList << QString("%1").arg(rounded, 4, 16, QChar('0')).toUpper();
+        }
+    }
+
+    QString hexLine = "DD3C043142" + hexList.join("") + "CDFF";
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(hexLine);
+
+    QMessageBox::information(this, tr("export success"), tr("hex add to clip board."));
+}
+
+void FormFittingArcSin::exportThresholdToArray()
+{
+    QStringList lst;
+    for (int row = 0; row < m_modelThreshold->rowCount(); ++row) {
+        QModelIndex idx = m_modelThreshold->index(row, 1);
+        QString val = m_modelThreshold->data(idx).toString();
+        lst << val;
+    }
+
+    QString result = QString("int threshold[%1] = {%2};").arg(lst.size()).arg(lst.join(','));
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(result);
+
+    QMessageBox::information(this, tr("export success"), tr("array add to clip board."));
 }
 
 void FormFittingArcSin::exportThresholdToCSV()

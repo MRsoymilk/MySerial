@@ -36,6 +36,9 @@ private slots:
     void on_radioButtonRight_clicked();
     void on_radioButtonLeft_clicked();
 
+    void exportThresholdToHex();
+    void exportThresholdToArray();
+
 private:
     void init();
     void showContextMenu(const QPoint &pos);

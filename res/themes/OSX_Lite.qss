@@ -1191,4 +1191,8 @@ QToolButton#pause {
   qproperty-icon: url(:/res/icons/pause.png);
 }
 
+QToolButton#FWHM {
+  qproperty-icon: url(:/res/icons/fwhm.png);
+}
+
 /*# sourceMappingURL=OSX%20Lite.qss.map */

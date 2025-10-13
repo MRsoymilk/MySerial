@@ -1186,3 +1186,7 @@ QToolButton#find_peak {
 QToolButton#pause {
   qproperty-icon: url(:/res/icons/pink/pause.png);
 }
+
+QToolButton#FWHM {
+  qproperty-icon: url(:/res/icons/pink/fwhm.png);
+}
