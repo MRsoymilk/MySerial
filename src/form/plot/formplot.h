@@ -95,6 +95,7 @@ private:
     void saveChartAsImage(const QString &filePath);
     QVector<QPointF> findPeak(int window, double thresholdFactor, double minDist);
     void callFindPeak();
+    void callCalcFWHM();
 
 private:
     Ui::FormPlot *ui;
