@@ -13,9 +13,16 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,0">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="labelInfo">
+     <property name="text">
+      <string>info</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

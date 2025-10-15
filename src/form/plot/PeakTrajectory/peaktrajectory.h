@@ -36,6 +36,8 @@ private:
     QLineSeries *m_line;
     QVector<int> m_data = {};
     int m_range = 100;
+    int m_history_min;
+    int m_history_max;
 };
 
 #endif // PEAKTRAJECTORY_H

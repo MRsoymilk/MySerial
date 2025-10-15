@@ -59,8 +59,19 @@ void PeakTrajectory::appendPeak(const int &value)
     int index = m_data.size() - 1;
     m_line->append(index, value);
 
-    int minY = *std::min_element(m_data.begin(), m_data.end());
-    int maxY = *std::max_element(m_data.begin(), m_data.end());
+    int rangeStart = std::max(0, static_cast<int>(m_data.length() - m_range));
+    auto [minIt, maxIt] = std::minmax_element(m_data.begin() + rangeStart, m_data.end());
+    int minY = *minIt;
+    int maxY = *maxIt;
+
+    if (m_data.size() == 1) {
+        m_history_min = minY;
+        m_history_max = maxY;
+    } else {
+        m_history_min = std::min(m_history_min, minY);
+        m_history_max = std::max(m_history_max, maxY);
+    }
+
     if (minY == maxY) {
         minY -= 1;
         maxY += 1;
@@ -77,6 +88,17 @@ void PeakTrajectory::appendPeak(const int &value)
     } else {
         m_axisX->setRange(total - m_range, total);
     }
+
+    double avg = std::accumulate(m_data.begin(), m_data.end(), 0.0) / m_data.size();
+
+    ui->labelInfo->setText(QString("history Min: %1, Max: %2\n"
+                                   "min: %3, max: %4\n"
+                                   "avg: %5")
+                               .arg(m_history_min)
+                               .arg(m_history_max)
+                               .arg(minY)
+                               .arg(maxY)
+                               .arg(avg, 0, 'f', 2));
 }
 
 void PeakTrajectory::init()
@@ -98,4 +120,6 @@ void PeakTrajectory::init()
     m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->gridLayout->addWidget(m_chartView);
+    m_history_min = INT_MAX;
+    m_history_max = INT_MIN;
 }
