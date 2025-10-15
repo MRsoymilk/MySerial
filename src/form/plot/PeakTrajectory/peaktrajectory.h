@@ -34,7 +34,7 @@ private:
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
     QLineSeries *m_line;
-    QVector<int> m_data;
+    QVector<int> m_data = {};
     int m_range = 100;
 };
 

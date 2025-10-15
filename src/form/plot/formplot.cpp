@@ -15,6 +15,7 @@
 #include "DraggableLine/draggableline.h"
 #include "PeakTrajectory/peaktrajectory.h"
 #include "funcdef.h"
+#include "plot_algorithm.h"
 
 void FormPlot::saveChartAsImage(const QString &filePath)
 {
@@ -207,6 +208,7 @@ void FormPlot::init()
 
     QShortcut *shortcut_ImgSave = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this);
     connect(shortcut_ImgSave, &QShortcut::activated, this, &FormPlot::on_tBtnImgSave_clicked);
+    m_trajectory = new PeakTrajectory;
 }
 
 void FormPlot::onDataReceived4k(const QByteArray &data14,
@@ -579,17 +581,21 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks24)
     }
 
     int xPeak = maxPeak.x();
+    const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
+    if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
+        // 在曲线14中找到与该 X 坐标最接近的点
+        double y14 = 0;
+        if (m_series14->count() > xPeak) {
+            y14 = m_series14->at(xPeak).y();
+        }
 
-    // 在曲线14中找到与该 X 坐标最接近的点
-    double y14 = 0;
-    if (m_series14->count() > xPeak) {
-        y14 = m_series14->at(xPeak).y();
-    }
-
-    // 转换为 raw 值
-    int raw = static_cast<int>((1 << 13) * 1.0 * y14 / 3.3);
-    if (m_trajectory) {
-        m_trajectory->appendPeak(raw);
+        // 转换为 raw 值
+        int raw = static_cast<int>((1 << 13) * 1.0 * y14 / 3.3);
+        if (m_trajectory) {
+            m_trajectory->appendPeak(raw);
+        }
+    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+        m_trajectory->appendPeak(maxPeak.rx());
     }
 }
 
@@ -647,13 +653,11 @@ void FormPlot::on_tBtnFWHM_clicked()
 void FormPlot::on_checkBoxTrajectory_clicked()
 {
     if (ui->checkBoxTrajectory->isChecked()) {
-        if (!m_trajectory) {
-            m_trajectory = new PeakTrajectory;
-            connect(m_trajectory, &QObject::destroyed, this, [this](QObject *) {
-                ui->checkBoxTrajectory->setChecked(false);
-                m_trajectory = nullptr;
-            });
-            m_trajectory->show();
+        m_trajectory_start = m_axisX->min();
+        m_trajectory_end = m_axisX->max();
+
+        if (ui->tBtnFindPeak->isChecked() == false) {
+            on_tBtnFindPeak_clicked();
         }
 
         QChart *chart = m_chartView->chart();
@@ -661,27 +665,26 @@ void FormPlot::on_checkBoxTrajectory_clicked()
 
         qreal leftX = plot.left();
         qreal rightX = plot.right();
-        m_trajectory_start = leftX;
-        m_trajectory_end = rightX;
 
         m_lineLeft = new DraggableLine(chart, leftX, Qt::green);
         m_lineRight = new DraggableLine(chart, rightX, Qt::darkGreen);
         connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) {
-            qDebug() << "Left line X:" << x;
             m_trajectory_start = x;
         });
         connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) {
-            qDebug() << "Right line X:" << x;
             m_trajectory_end = x;
         });
 
         chart->scene()->addItem(m_lineLeft);
         chart->scene()->addItem(m_lineRight);
+        m_trajectory->show();
     } else {
-        if (m_trajectory) {
-            m_trajectory->close();
-            m_trajectory->deleteLater();
+        if (ui->tBtnFindPeak->isChecked() == true) {
+            on_tBtnFindPeak_clicked();
         }
+
+        m_trajectory->hide();
+
         if (m_lineLeft) {
             m_chartView->chart()->scene()->removeItem(m_lineLeft);
             delete m_lineLeft;
