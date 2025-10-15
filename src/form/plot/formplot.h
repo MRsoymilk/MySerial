@@ -10,6 +10,7 @@
 #include "MyChartView/mychartview.h"
 
 class DraggableLine;
+class PeakTrajectory;
 
 namespace Ui {
 class FormPlot;
@@ -68,10 +69,10 @@ private slots:
     void on_tBtnStep_clicked();
     void on_tBtnFindPeak_clicked();
     void on_tBtnPause_clicked();
-    void on_tBtnMeasureX_clicked();
-    void on_tBtnMeasureY_clicked();
     void on_tBtnOffset_clicked();
     void on_tBtnFWHM_clicked();
+
+    void on_checkBoxTrajectory_clicked();
 
 private:
     void init();
@@ -96,6 +97,7 @@ private:
     QVector<QPointF> findPeak(int window, double thresholdFactor, double minDist);
     void callFindPeak();
     void callCalcFWHM();
+    void peakTrajectory(const QVector<QPointF> &peaks);
 
 private:
     Ui::FormPlot *ui;
@@ -129,6 +131,11 @@ private:
     QGraphicsSimpleTextItem *m_measureLabelY = nullptr;
     QList<QLineSeries *> m_fwhmLines;
     QList<QGraphicsSimpleTextItem *> m_fwhmLabels;
+    PeakTrajectory *m_trajectory = nullptr;
+    DraggableLine *m_lineLeft = nullptr;
+    DraggableLine *m_lineRight = nullptr;
+    int m_trajectory_start;
+    int m_trajectory_end;
 };
 
 #endif // FORMPLOT_H

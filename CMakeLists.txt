@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.15 LANGUAGES CXX)
+project(MySerial VERSION 1.3.16 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -41,6 +41,9 @@ set(PROJECT_SOURCES
         src/form/log/formlog.ui
         src/form/plot/3d/myglcurvewidget.h
         src/form/plot/3d/myglcurvewidget.cpp
+        src/form/plot/PeakTrajectory/peaktrajectory.h
+        src/form/plot/PeakTrajectory/peaktrajectory.cpp
+        src/form/plot/PeakTrajectory/peaktrajectory.ui
         src/enhance/DraggableLine/draggableline.h
         src/enhance/DraggableLine/draggableline.cpp
         src/enhance/MyChartView/mychartview.h

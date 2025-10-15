@@ -13,6 +13,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include "DraggableLine/draggableline.h"
+#include "PeakTrajectory/peaktrajectory.h"
 #include "funcdef.h"
 
 void FormPlot::saveChartAsImage(const QString &filePath)
@@ -561,6 +562,37 @@ void FormPlot::callCalcFWHM()
     }
 }
 
+void FormPlot::peakTrajectory(const QVector<QPointF> &peaks24)
+{
+    if (!ui->checkBoxTrajectory->isChecked() || peaks24.isEmpty() || !m_series14)
+        return;
+
+    // 找到 peaks24 中 Y 最大的点
+    QPointF maxPeak = QPointF(0, std::numeric_limits<float>::lowest());
+    for (const QPointF &p : peaks24) {
+        if (p.x() < m_trajectory_start || p.x() > m_trajectory_end) {
+            continue;
+        }
+        if (p.y() > maxPeak.y()) {
+            maxPeak = p;
+        }
+    }
+
+    int xPeak = maxPeak.x();
+
+    // 在曲线14中找到与该 X 坐标最接近的点
+    double y14 = 0;
+    if (m_series14->count() > xPeak) {
+        y14 = m_series14->at(xPeak).y();
+    }
+
+    // 转换为 raw 值
+    int raw = static_cast<int>((1 << 13) * 1.0 * y14 / 3.3);
+    if (m_trajectory) {
+        m_trajectory->appendPeak(raw);
+    }
+}
+
 void FormPlot::callFindPeak()
 {
     if (m_findPeak) {
@@ -569,7 +601,9 @@ void FormPlot::callFindPeak()
         }
 
         QVector<QPointF> peaks24 = findPeak(3, 1.0, 5.0);
-
+        if (ui->checkBoxTrajectory->isChecked()) {
+            peakTrajectory(peaks24);
+        }
         m_peaks->clear();
         for (const auto &pt : peaks24) {
             m_peaks->append(pt);
@@ -595,144 +629,6 @@ void FormPlot::on_tBtnPause_clicked()
     ui->tBtnPause->setChecked(m_pause);
 }
 
-void FormPlot::on_tBtnMeasureY_clicked()
-{
-    if (!m_chart || !m_chartView)
-        return;
-
-    QGraphicsScene *scene = m_chartView->scene();
-    if (!scene)
-        return;
-
-    // 删除旧线
-    if (m_measureLineY1) {
-        scene->removeItem(m_measureLineY1);
-        delete m_measureLineY1;
-        m_measureLineY1 = nullptr;
-    }
-    if (m_measureLineY2) {
-        scene->removeItem(m_measureLineY2);
-        delete m_measureLineY2;
-        m_measureLineY2 = nullptr;
-    }
-    if (m_measureLabelY) {
-        scene->removeItem(m_measureLabelY);
-        delete m_measureLabelY;
-        m_measureLabelY = nullptr;
-    }
-
-    // 创建两条水平测量线
-    m_measureLineY1 = new DraggableLine(DraggableLine::Horizontal, m_chart);
-    m_measureLineY2 = new DraggableLine(DraggableLine::Horizontal, m_chart);
-
-    m_measureLineY1->setAxis(m_axisX, m_axisY);
-    m_measureLineY2->setAxis(m_axisX, m_axisY);
-
-    // 设置线的初始位置（基于轴值）
-    QRectF plotArea = m_chart->plotArea();
-    QPointF scenePos1 = m_chart->mapToPosition(
-        QPointF(m_axisX->min(), m_axisY->max() - (m_axisY->max() - m_axisY->min()) * 0.3));
-    QPointF scenePos2 = m_chart->mapToPosition(
-        QPointF(m_axisX->min(), m_axisY->max() - (m_axisY->max() - m_axisY->min()) * 0.7));
-    m_measureLineY1->setPos(scenePos1);
-    m_measureLineY2->setPos(scenePos2);
-
-    // 设置线的长度覆盖图表宽度
-    m_measureLineY1->setLine(plotArea.left(), 0, plotArea.right(), 0);
-    m_measureLineY2->setLine(plotArea.left(), 0, plotArea.right(), 0);
-
-    scene->addItem(m_measureLineY1);
-    scene->addItem(m_measureLineY2);
-
-    // 添加标签显示距离
-    m_measureLabelY = new QGraphicsSimpleTextItem();
-    m_measureLabelY->setBrush(Qt::darkRed);
-    m_measureLabelY->setFont(QFont("Arial", 12, QFont::Bold));
-    scene->addItem(m_measureLabelY);
-
-    auto updateLabel = [=]() {
-        double val1 = m_measureLineY1->value();
-        double val2 = m_measureLineY2->value();
-        double dist = std::abs(val2 - val1);
-        m_measureLabelY->setText(QString("ΔY = %1").arg(dist, 0, 'f', 4));
-        QPointF posLabel(10, (m_measureLineY1->pos().y() + m_measureLineY2->pos().y()) / 2.0);
-        m_measureLabelY->setPos(posLabel);
-    };
-
-    connect(m_measureLineY1, &DraggableLine::moved, this, updateLabel);
-    connect(m_measureLineY2, &DraggableLine::moved, this, updateLabel);
-
-    updateLabel();
-    scene->update();
-    m_chartView->update();
-}
-
-void FormPlot::on_tBtnMeasureX_clicked()
-{
-    if (!m_chart || !m_chartView)
-        return;
-
-    QGraphicsScene *scene = m_chartView->scene();
-    if (!scene)
-        return;
-
-    // 删除旧线
-    if (m_measureLineX1) {
-        scene->removeItem(m_measureLineX1);
-        delete m_measureLineX1;
-        m_measureLineX1 = nullptr;
-    }
-    if (m_measureLineX2) {
-        scene->removeItem(m_measureLineX2);
-        delete m_measureLineX2;
-        m_measureLineX2 = nullptr;
-    }
-    if (m_measureLabelX) {
-        scene->removeItem(m_measureLabelX);
-        delete m_measureLabelX;
-        m_measureLabelX = nullptr;
-    }
-
-    // 创建两条垂直测量线
-    m_measureLineX1 = new DraggableLine(DraggableLine::Vertical, m_chart);
-    m_measureLineX2 = new DraggableLine(DraggableLine::Vertical, m_chart);
-
-    m_measureLineX1->setAxis(m_axisX, m_axisY);
-    m_measureLineX2->setAxis(m_axisX, m_axisY);
-
-    QRectF plotArea = m_chart->plotArea();
-    m_measureLineX1->setPos(plotArea.left() + plotArea.width() * 0.3, 0);
-    m_measureLineX2->setPos(plotArea.left() + plotArea.width() * 0.7, 0);
-
-    m_measureLineX1->setLine(0, plotArea.top(), 0, plotArea.bottom());
-    m_measureLineX2->setLine(0, plotArea.top(), 0, plotArea.bottom());
-
-    scene->addItem(m_measureLineX1);
-    scene->addItem(m_measureLineX2);
-
-    // 添加标签显示距离
-    m_measureLabelX = new QGraphicsSimpleTextItem();
-    m_measureLabelX->setBrush(Qt::darkRed);
-    m_measureLabelX->setFont(QFont("Arial", 12, QFont::Bold));
-    scene->addItem(m_measureLabelX);
-
-    auto updateLabel = [=]() {
-        double val1 = m_measureLineX1->value();
-        double val2 = m_measureLineX2->value();
-        double dist = std::abs(val2 - val1);
-        m_measureLabelX->setText(QString("ΔX = %1").arg(dist, 0, 'f', 4));
-        QPointF posLabel((m_measureLineX1->pos().x() + m_measureLineX2->pos().x()) / 2, 10);
-        m_measureLabelX->setPos(posLabel);
-    };
-
-    connect(m_measureLineX1, &DraggableLine::moved, this, updateLabel);
-    connect(m_measureLineX2, &DraggableLine::moved, this, updateLabel);
-
-    updateLabel();
-    scene->update();
-    m_chartView->update();
-}
-
 void FormPlot::on_tBtnOffset_clicked()
 {
     if (ui->tBtnOffset->isChecked()) {
@@ -746,4 +642,55 @@ void FormPlot::on_tBtnFWHM_clicked()
 {
     m_findFWHM = !m_findFWHM;
     callCalcFWHM();
+}
+
+void FormPlot::on_checkBoxTrajectory_clicked()
+{
+    if (ui->checkBoxTrajectory->isChecked()) {
+        if (!m_trajectory) {
+            m_trajectory = new PeakTrajectory;
+            connect(m_trajectory, &QObject::destroyed, this, [this](QObject *) {
+                ui->checkBoxTrajectory->setChecked(false);
+                m_trajectory = nullptr;
+            });
+            m_trajectory->show();
+        }
+
+        QChart *chart = m_chartView->chart();
+        QRectF plot = chart->plotArea();
+
+        qreal leftX = plot.left();
+        qreal rightX = plot.right();
+        m_trajectory_start = leftX;
+        m_trajectory_end = rightX;
+
+        m_lineLeft = new DraggableLine(chart, leftX, Qt::green);
+        m_lineRight = new DraggableLine(chart, rightX, Qt::darkGreen);
+        connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) {
+            qDebug() << "Left line X:" << x;
+            m_trajectory_start = x;
+        });
+        connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) {
+            qDebug() << "Right line X:" << x;
+            m_trajectory_end = x;
+        });
+
+        chart->scene()->addItem(m_lineLeft);
+        chart->scene()->addItem(m_lineRight);
+    } else {
+        if (m_trajectory) {
+            m_trajectory->close();
+            m_trajectory->deleteLater();
+        }
+        if (m_lineLeft) {
+            m_chartView->chart()->scene()->removeItem(m_lineLeft);
+            delete m_lineLeft;
+            m_lineLeft = nullptr;
+        }
+        if (m_lineRight) {
+            m_chartView->chart()->scene()->removeItem(m_lineRight);
+            delete m_lineRight;
+            m_lineRight = nullptr;
+        }
+    }
 }
