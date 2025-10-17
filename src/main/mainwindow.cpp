@@ -50,7 +50,9 @@ void MainWindow::initTheme()
     for (QAction *act : actions) {
         if (act->text() == theme) {
             menuThemeSelect(act);
-            return;
+            act->setChecked(true);
+        } else {
+            act->setChecked(false);
         }
     }
 }
@@ -63,7 +65,9 @@ void MainWindow::initLanguage()
     for (QAction *act : actions) {
         if (act->text() == language) {
             menuLanguageSelect(act);
-            return;
+            act->setChecked(true);
+        } else {
+            act->setChecked(false);
         }
     }
 }
@@ -202,6 +206,91 @@ void MainWindow::initToolbar()
     ui->tBtnCorrection->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 
+void MainWindow::initEasyMode()
+{
+    m_line = new QLineSeries();
+
+    m_axisX = new QValueAxis();
+    m_axisY = new QValueAxis();
+
+    m_chart = new QChart();
+    m_chart->addSeries(m_line);
+    m_chart->addAxis(m_axisX, Qt::AlignBottom);
+    m_chart->addAxis(m_axisY, Qt::AlignLeft);
+    m_line->attachAxis(m_axisX);
+    m_line->attachAxis(m_axisY);
+    m_axisX->setTitleText(tr("index"));
+    m_axisY->setTitleText(tr("intensity"));
+    m_chart->setTitle(tr("wavelength"));
+    m_chartView = new MyChartView(m_chart);
+    m_chartView->setRenderHint(QPainter::Antialiasing);
+    ui->gLayPlot->addWidget(m_chartView);
+
+    m_modelValue = new QStandardItemModel(this);
+    m_modelValue->setColumnCount(3);
+    m_modelValue->setHeaderData(0, Qt::Horizontal, tr("index"));
+    m_modelValue->setHeaderData(1, Qt::Horizontal, tr("intensity"));
+    m_modelValue->setHeaderData(2, Qt::Horizontal, tr("raw"));
+
+    ui->tableViewValue->setModel(m_modelValue);
+    ui->tableViewValue->horizontalHeader()->setStretchLastSection(true);
+    ui->tableViewValue->verticalHeader()->setVisible(false);
+    ui->tableViewValue->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableViewValue->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    ui->spinBox->setValue(5);
+
+    ui->tBtnSwitch->setToolTip("switch");
+    ui->tBtnPause->setToolTip("pause");
+    ui->tBtnZoom->setToolTip("zoom");
+    ui->tBtnCrop->setToolTip("crop");
+    ui->tBtnPeak->setToolTip("find peak");
+    ui->tBtnFWHM->setToolTip("FWHM");
+    ui->tBtnImg->setToolTip("save image");
+
+    const QString mode = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_EXPERT);
+    if (mode == CFG_MODE_EXPERT) {
+        on_actionExpert_triggered();
+    } else {
+        on_actionEasy_triggered();
+    }
+
+    ui->tBtnZoom->setChecked(true);
+
+    m_peaks = new QScatterSeries();
+    m_chart->addSeries(m_peaks);
+    m_peaks->attachAxis(m_axisX);
+    m_peaks->attachAxis(m_axisY);
+    m_peaks->setColor(Qt::red);
+    m_peaks->setName(tr("Peaks"));
+    m_peaks->setMarkerSize(5.0);
+    m_peaks->setPointLabelsVisible(true);
+    m_peaks->setPointLabelsClipping(false);
+    m_peaks->setPointLabelsColor(Qt::red);
+    m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
+    m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
+}
+#include "plot_algorithm.h"
+bool MainWindow::connectEasyMode()
+{
+    if (formSerial->startEasyConnect()) {
+        formSerial->setEasyFrame();
+        m_worker->setAlgorithm(static_cast<int>(SHOW_ALGORITHM::NUM_660));
+        formSerial->writeEasyData(calcIntegrationTime(ui->spinBox->value()));
+        formSerial->writeEasyData("DD3C000330CDFF");
+        return true;
+    } else {
+        LOG_WARN("connect failed!");
+        return false;
+    }
+}
+
+void MainWindow::closeEasyMode()
+{
+    formSerial->writeEasyData("DD3C000360CDFF");
+    formSerial->stopEasyConnect();
+}
+
 void MainWindow::init()
 {
     initMsgBar();
@@ -209,6 +298,7 @@ void MainWindow::init()
     initToolbar();
     initLanguage();
     initTheme();
+    initEasyMode();
 
     m_plotData = new FormPlotData;
     m_plotData->hide();
@@ -254,6 +344,16 @@ void MainWindow::init()
             &ThreadWorker::pointsReady4k,
             m_plotData,
             &FormPlotData::updateTable4k,
+            Qt::QueuedConnection);
+    connect(m_worker,
+            &ThreadWorker::dataReady4k,
+            this,
+            &MainWindow::updatePlot,
+            Qt::QueuedConnection);
+    connect(m_worker,
+            &ThreadWorker::pointsReady4k,
+            this,
+            &MainWindow::updateTable,
             Qt::QueuedConnection);
 
     m_workerThread->start();
@@ -489,4 +589,319 @@ void MainWindow::on_tBtnCorrection_clicked()
                 &FormPlotCorrection::onEpochCorrection,
                 Qt::QueuedConnection);
     }
+}
+
+void MainWindow::on_actionEasy_triggered()
+{
+    LOG_INFO("software mode: Easy");
+    ui->stackedWidgetMode->setCurrentWidget(ui->pageEasy);
+    ui->actionEasy->setChecked(true);
+    ui->actionExpert->setChecked(false);
+    SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_EASY);
+}
+
+void MainWindow::on_actionExpert_triggered()
+{
+    LOG_INFO("software mode: Expert");
+    ui->stackedWidgetMode->setCurrentWidget(ui->pageExpert);
+    ui->actionEasy->setChecked(false);
+    ui->actionExpert->setChecked(true);
+    SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_EXPERT);
+}
+
+void MainWindow::on_tBtnSwitch_clicked()
+{
+    if (!m_movie) {
+        m_movie = new QMovie(":/res/icons/start.gif", QByteArray(), this);
+
+        connect(m_movie, &QMovie::frameChanged, this, [this]() {
+            ui->tBtnSwitch->setIcon(QIcon(m_movie->currentPixmap()));
+        });
+    }
+
+    if (!m_isPlaying) {
+        if (connectEasyMode()) {
+            m_movie->start();
+            m_isPlaying = true;
+        }
+    } else {
+        m_movie->stop();
+        m_isPlaying = false;
+        ui->tBtnSwitch->setIcon(QIcon(":/res/icons/start.png"));
+        closeEasyMode();
+    }
+}
+
+void MainWindow::on_tBtnZoom_clicked()
+{
+    m_autoZoom = !m_autoZoom;
+    ui->tBtnZoom->setChecked(m_autoZoom);
+}
+
+void MainWindow::on_tBtnCrop_clicked()
+{
+    m_enableCrop = !m_enableCrop;
+    ui->tBtnCrop->setChecked(m_enableCrop);
+    if (m_enableCrop) {
+        m_chartView->setCropEnabled(true);
+        m_chartView->recordInitialAxisRange();
+    } else {
+        m_chartView->setCropEnabled(false);
+        m_chartView->backInitialRange();
+    }
+}
+
+void MainWindow::on_tBtnPeak_clicked()
+{
+    m_findPeak = !m_findPeak;
+    ui->tBtnPeak->setChecked(m_findPeak);
+    callFindPeak();
+}
+
+void MainWindow::on_tBtnFWHM_clicked()
+{
+    m_calcFWHM = !m_calcFWHM;
+    ui->tBtnFWHM->setChecked(m_calcFWHM);
+    callCalcFWHM();
+}
+
+void MainWindow::saveChartAsImage(const QString &filePath)
+{
+    if (!m_chartView)
+        return;
+
+    QSize size = m_chartView->size();
+
+    QImage image(size, QImage::Format_ARGB32);
+    image.fill(Qt::white);
+
+    QPainter painter(&image);
+    m_chartView->render(&painter);
+    painter.end();
+
+    image.save(filePath);
+}
+
+void MainWindow::updatePlot(const QList<QPointF> &v14,
+                            const QList<QPointF> &v24,
+                            const double &xMin,
+                            const double &xMax,
+                            const double &yMin,
+                            const double &yMax,
+                            const double &temperature,
+                            bool record)
+{
+    if (m_pause) {
+        return;
+    }
+    m_line->replace(v24);
+    if (m_autoZoom) {
+        m_axisX->setRange(xMin, xMax);
+        m_axisY->setRange(yMin, yMax);
+    }
+    callFindPeak();
+    callCalcFWHM();
+}
+
+void MainWindow::updateTable(const QVector<double> &v14,
+                             const QVector<double> &v24,
+                             const QVector<qint32> &raw14,
+                             const QVector<qint32> &raw24)
+{
+    if (m_pause) {
+        return;
+    }
+    if (m_modelValue->rowCount() > 0) {
+        m_modelValue->removeRows(0, m_modelValue->rowCount());
+    }
+    int count = qMax(qMax(v14.size(), v24.size()), qMax(raw14.size(), raw24.size()));
+    for (int i = 0; i < count; ++i) {
+        QString index = QString::number(i);
+        QString yV24 = (i < v24.size()) ? QString::number(v24[i]) : "";
+        QString yR24 = (i < raw24.size()) ? QString::number(raw24[i]) : "";
+
+        QList<QStandardItem *> rowItems;
+        rowItems << new QStandardItem(index);
+        rowItems << new QStandardItem(yV24);
+        rowItems << new QStandardItem(yR24);
+        m_modelValue->appendRow(rowItems);
+    }
+}
+
+QVector<QPointF> MainWindow::findPeak(int window, double thresholdFactor, double minDist)
+{
+    QVector<QPointF> peaks;
+    int n = m_line->count();
+
+    QVector<double> values;
+    values.reserve(n);
+    for (int i = 0; i < n; i++)
+        values.append(m_line->at(i).y());
+
+    double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
+    double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
+    double stdev = std::sqrt(sq_sum / n - mean * mean);
+    double threshold = mean + thresholdFactor * stdev;
+
+    double lastPeakX = -1e9;
+    for (int i = window; i < n - window; i++) {
+        double yCurr = m_line->at(i).y();
+        if (yCurr < threshold)
+            continue;
+
+        bool isPeak = true;
+        for (int j = i - window; j <= i + window; j++) {
+            if (m_line->at(j).y() > yCurr) {
+                isPeak = false;
+                break;
+            }
+        }
+
+        if (isPeak) {
+            double xCurr = m_line->at(i).x();
+            if (xCurr - lastPeakX >= minDist) {
+                peaks.append(m_line->at(i));
+                lastPeakX = xCurr;
+            }
+        }
+    }
+    return peaks;
+}
+
+void MainWindow::callFindPeak()
+{
+    if (m_findPeak) {
+        if (!m_line || m_line->count() < 5) {
+            return;
+        }
+
+        QVector<QPointF> peaks24 = findPeak(3, 1.0, 5.0);
+        // if (ui->checkBoxTrajectory->isChecked()) {
+        //     peakTrajectory(peaks24);
+        // }
+        m_peaks->clear();
+        for (const auto &pt : peaks24) {
+            m_peaks->append(pt);
+        }
+
+        m_chart->update();
+    } else {
+        m_peaks->clear();
+    }
+}
+
+void MainWindow::callCalcFWHM()
+{
+    if (m_calcFWHM) {
+        for (auto *line : m_fwhmLines) {
+            m_chart->removeSeries(line);
+            delete line;
+        }
+        m_fwhmLines.clear();
+        for (auto *label : m_fwhmLabels) {
+            delete label;
+        }
+        m_fwhmLabels.clear();
+
+        auto peaks = findPeak(3, 1.0, 5.0);
+        if (peaks.isEmpty())
+            return;
+
+        for (const auto &peak : peaks) {
+            double yPeak = peak.y();
+            double xPeak = peak.x();
+            double yHalf = yPeak / 2.0;
+
+            double xLeft = xPeak, xRight = xPeak;
+            for (int i = m_line->count() - 1; i >= 1; --i) {
+                if (m_line->at(i).x() >= xPeak)
+                    continue;
+                double y1 = m_line->at(i).y();
+                double y2 = m_line->at(i - 1).y();
+                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
+                    double x1 = m_line->at(i).x();
+                    double x2 = m_line->at(i - 1).x();
+                    // 线性插值
+                    xLeft = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
+                    break;
+                }
+            }
+            for (int i = 0; i < m_line->count() - 1; ++i) {
+                if (m_line->at(i).x() <= xPeak)
+                    continue;
+                double y1 = m_line->at(i).y();
+                double y2 = m_line->at(i + 1).y();
+                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
+                    double x1 = m_line->at(i).x();
+                    double x2 = m_line->at(i + 1).x();
+                    // 线性插值
+                    xRight = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
+                    break;
+                }
+            }
+            double fwhm = xRight - xLeft;
+
+            QLineSeries *fwhmLine = new QLineSeries();
+            fwhmLine->setColor(Qt::red);
+            fwhmLine->setName(QString("FWHM %1").arg(xPeak, 0, 'f', 1));
+            fwhmLine->append(xLeft, yHalf);
+            fwhmLine->append(xRight, yHalf);
+            m_chart->addSeries(fwhmLine);
+            fwhmLine->attachAxis(m_axisX);
+            fwhmLine->attachAxis(m_axisY);
+            m_fwhmLines.append(fwhmLine);
+
+            QPointF mid((xLeft + xRight) / 2.0, yHalf);
+            QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
+
+            auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2),
+                                                      m_chart);
+            label->setBrush(Qt::red);
+            label->setPos(scenePos + QPointF(5, -15));
+            m_fwhmLabels.append(label);
+        }
+    } else {
+        for (auto *line : m_fwhmLines) {
+            m_chart->removeSeries(line);
+            delete line;
+        }
+        m_fwhmLines.clear();
+        for (auto *label : m_fwhmLabels) {
+            delete label;
+        }
+        m_fwhmLabels.clear();
+    }
+}
+
+QString MainWindow::calcIntegrationTime(int value)
+{
+    int rawValue = value * 5;
+    QString hex = QString("%1").arg(rawValue, 6, 16, QLatin1Char('0')).toUpper();
+    QString prefix = "DD3C000622";
+    QString suffix = "CDFF";
+    return prefix + hex + suffix;
+}
+
+void MainWindow::on_tBtnImg_clicked()
+{
+    QString filePath = QFileDialog::getSaveFileName(this,
+                                                    "Save Chart",
+                                                    "",
+                                                    "PNG Image (*.png);;JPEG Image (*.jpg)");
+    if (!filePath.isEmpty()) {
+        saveChartAsImage(filePath);
+    }
+}
+
+void MainWindow::on_spinBox_valueChanged(int val)
+{
+    if (m_isPlaying) {
+        formSerial->writeEasyData(calcIntegrationTime(ui->spinBox->value()));
+    }
+}
+
+void MainWindow::on_tBtnPause_clicked()
+{
+    m_pause = !m_pause;
+    ui->tBtnPause->setChecked(m_pause);
 }

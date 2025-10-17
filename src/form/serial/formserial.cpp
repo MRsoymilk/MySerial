@@ -31,6 +31,78 @@ void FormSerial::retranslateUI()
     ui->retranslateUi(this);
 }
 
+bool FormSerial::startEasyConnect()
+{
+    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
+    QStringList ports;
+    for (const auto &port : availablePorts) {
+        ports.append(port.portName());
+    }
+#ifdef QT_DEBUG
+    QString debug_port = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
+    ports.push_front(debug_port);
+#endif
+    for (const auto &port : ports) {
+        LOG_INFO("test port: {}", port);
+        if (!m_serial) {
+            m_serial = new QSerialPort(this);
+        }
+        m_serial->setPortName(port);
+        m_serial->setBaudRate(115200);
+        m_serial->setDataBits(static_cast<QSerialPort::DataBits>(8));
+        m_serial->setParity(QSerialPort::NoParity);
+        m_serial->setStopBits(QSerialPort::OneStop);
+        if (!m_serial->open(QIODevice::ReadWrite)) {
+            LOG_ERROR("error: {}", m_serial->errorString());
+            continue;
+        }
+        m_serial->clear(QSerialPort::AllDirections);
+        send("DD3C000310CDFF");
+        if (m_serial->waitForReadyRead(100)) {
+            QByteArray response = m_serial->readAll();
+
+            qint64 start = QDateTime::currentMSecsSinceEpoch();
+
+            while (true) {
+                response += m_serial->readAll();
+                if (QDateTime::currentMSecsSinceEpoch() - start > 500)
+                    break;
+                if (!m_serial->waitForReadyRead(50))
+                    break;
+            }
+
+            QByteArray expected = QByteArray::fromHex("DE3A000311CEFF");
+            if (response.contains(expected)) {
+                connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+                return true;
+            } else {
+                closeSerial();
+            }
+        } else {
+            closeSerial();
+        }
+    }
+    return false;
+}
+
+void FormSerial::stopEasyConnect()
+{
+    closeSerial();
+}
+
+void FormSerial::writeEasyData(const QString &value)
+{
+    send(value);
+}
+
+void FormSerial::setEasyFrame()
+{
+    m_frameTypes = {
+        {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
+    };
+    m_algorithm = static_cast<int>(SHOW_ALGORITHM::NUM_660);
+}
+
 void FormSerial::getINI()
 {
     m_ini.port_name = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME);
@@ -370,6 +442,29 @@ void FormSerial::openSerial()
         return;
     }
 
+    QStringList groups = SETTING_FRAME_GROUPS();
+    if (!groups.empty()) {
+        for (const auto &g : groups) {
+            FrameType frame;
+            frame.name = g;
+            frame.header = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_HEADER).toUtf8());
+            frame.footer = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_FOOTER).toUtf8());
+            frame.length = SETTING_FRAME_GET(g, FRAME_LENGTH).toInt();
+            m_frameTypes.push_back(frame);
+        }
+    } else {
+        m_frameTypes = {
+            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 0},
+            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
+            {"MPU6050", "<MPU>", "<END>"},
+        };
+        for (const auto &frame : m_frameTypes) {
+            SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
+            SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
+            SETTING_FRAME_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
+        }
+    }
+
     connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
 
     ui->btnSerialSwitch->setText("To Close");
@@ -382,11 +477,15 @@ void FormSerial::openSerial()
 void FormSerial::closeSerial()
 {
     LOG_INFO("close serial");
-    if (m_serial && m_serial->isOpen()) {
-        m_serial->close();
+    if (m_serial) {
+        disconnect(m_serial, nullptr, this, nullptr);
+
+        if (m_serial->isOpen()) {
+            m_serial->close();
+        }
+        delete m_serial;
+        m_serial = nullptr;
     }
-    delete m_serial;
-    m_serial = nullptr;
 
     ui->btnSerialSwitch->setText("To Open");
     ui->btnSerialSwitch->setStyleSheet("background-color: white; color: black;");

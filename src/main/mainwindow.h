@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "MyChartView/mychartview.h"
 
 class FormSerial;
 class FormPlot;
@@ -53,6 +54,17 @@ private slots:
     void plotSimulateClose();
     void plotCorrectionClose();
 
+    void on_actionEasy_triggered();
+    void on_actionExpert_triggered();
+    void on_tBtnSwitch_clicked();
+    void on_tBtnCrop_clicked();
+    void on_tBtnZoom_clicked();
+    void on_tBtnPeak_clicked();
+    void on_tBtnFWHM_clicked();
+    void on_tBtnImg_clicked();
+    void on_tBtnPause_clicked();
+    void on_spinBox_valueChanged(int arg1);
+
 private:
     void init();
     void initMsgBar();
@@ -86,5 +98,45 @@ private:
     bool m_showHistory = false;
     bool m_showSimulate = false;
     bool m_showCorrection = false;
+
+    // EasyMode
+private:
+    void initEasyMode();
+    bool connectEasyMode();
+    void closeEasyMode();
+    void saveChartAsImage(const QString &filePath);
+    void updatePlot(const QList<QPointF> &v14,
+                    const QList<QPointF> &v24,
+                    const double &xMin,
+                    const double &xMax,
+                    const double &yMin,
+                    const double &yMax,
+                    const double &temperature = 0.0,
+                    bool record = true);
+    void updateTable(const QVector<double> &v14,
+                     const QVector<double> &v24,
+                     const QVector<qint32> &raw14,
+                     const QVector<qint32> &raw24);
+    void callFindPeak();
+    void callCalcFWHM();
+    QString calcIntegrationTime(int value);
+    QVector<QPointF> findPeak(int window, double thresholdFactor, double minDist);
+
+    MyChartView *m_chartView = nullptr;
+    QChart *m_chart;
+    QValueAxis *m_axisX;
+    QValueAxis *m_axisY;
+    QLineSeries *m_line;
+    QStandardItemModel *m_modelValue;
+    QMovie *m_movie = nullptr;
+    bool m_isPlaying = false;
+    bool m_enableCrop = false;
+    bool m_autoZoom = true;
+    bool m_pause = false;
+    bool m_findPeak = false;
+    bool m_calcFWHM = false;
+    QScatterSeries *m_peaks;
+    QList<QLineSeries *> m_fwhmLines;
+    QList<QGraphicsSimpleTextItem *> m_fwhmLabels;
 };
 #endif // MAINWINDOW_H

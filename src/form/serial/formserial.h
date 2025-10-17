@@ -50,6 +50,10 @@ public:
     explicit FormSerial(QWidget *parent = nullptr);
     ~FormSerial();
     void retranslateUI();
+    bool startEasyConnect();
+    void stopEasyConnect();
+    void writeEasyData(const QString &value);
+    void setEasyFrame();
 
 signals:
     void recv2Plot4k(const QByteArray &data14,

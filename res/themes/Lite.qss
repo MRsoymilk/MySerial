@@ -1187,4 +1187,39 @@ QToolButton#FWHM {
   qproperty-icon: url(:/res/icons/fwhm.png);
 }
 
+QToolButton#tBtnSwitch {
+  qproperty-icon: url(:/res/icons/start.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPause {
+  qproperty-icon: url(:/res/icons/pause.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnCrop {
+  qproperty-icon: url(:/res/icons/crop.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnZoom {
+  qproperty-icon: url(:/res/icons/zoom.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPeak {
+  qproperty-icon: url(:/res/icons/peaks.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnFWHM {
+  qproperty-icon: url(:/res/icons/fwhm.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnImg {
+  qproperty-icon: url(:/res/icons/img_save.png);
+  qproperty-iconSize: 48px 48px;
+}
+
 /*# sourceMappingURL=Lite.qss.map */

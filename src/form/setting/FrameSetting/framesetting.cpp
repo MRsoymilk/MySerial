@@ -46,6 +46,8 @@ void FrameSetting::on_btnUpdate_clicked()
     SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_HEADER, ui->lineEditHead24bit->text());
     SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_FOOTER, ui->lineEditFoot24bit->text());
     SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_LENGTH, ui->lineEditLength24bit->text());
+
+    SETTING_FRAME_SYNC();
 }
 
 void FrameSetting::init()
