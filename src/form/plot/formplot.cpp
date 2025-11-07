@@ -64,7 +64,7 @@ void FormPlot::getINI()
     }
 
     ui->comboBoxAlgorithm->blockSignals(true);
-    ui->comboBoxAlgorithm->addItems({"normal", "max_neg_95", "num_660", "play_mpu6050"});
+    ui->comboBoxAlgorithm->addItems({"normal", "max_neg_95", "num_660", "play_mpu6050", "F30_test"});
     ui->comboBoxAlgorithm->blockSignals(false);
 
     int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
@@ -209,6 +209,13 @@ void FormPlot::init()
     QShortcut *shortcut_ImgSave = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this);
     connect(shortcut_ImgSave, &QShortcut::activated, this, &FormPlot::on_tBtnImgSave_clicked);
     m_trajectory = new PeakTrajectory;
+}
+
+void FormPlot::onDataReceivedF30(const QByteArray &data31, const QByteArray &data33)
+{
+    if (!m_pause) {
+        emit newDataReceivedF30(data31, data33);
+    }
 }
 
 void FormPlot::onDataReceived4k(const QByteArray &data14,

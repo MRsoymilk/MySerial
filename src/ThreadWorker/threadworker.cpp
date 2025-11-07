@@ -161,6 +161,31 @@ void ThreadWorker::processCurve24(const QByteArray &data24,
     }
 }
 
+void ThreadWorker::processDataF30(const QByteArray &data31, const QByteArray &data33)
+{
+    double yMin = std::numeric_limits<double>::max();
+    double yMax = std::numeric_limits<double>::lowest();
+    double yMax31 = std::numeric_limits<double>::lowest();
+    QVector<double> v_voltage31;
+    QVector<double> v_voltage33;
+    QVector<qint32> raw31;
+    QVector<qint32> raw33;
+    int numPoints = 0;
+    processF30Curve31(data31, v_voltage31, raw31, yMin, yMax, yMax31);
+    processF30Curve33(data33, v_voltage33, raw33, yMin, yMax);
+    QList<QPointF> out31, out33;
+    for (int i = 0; i < v_voltage31.size(); ++i) {
+        out31.push_back({static_cast<double>(i), v_voltage31.at(i)});
+    }
+    for (int i = 0; i < v_voltage33.size(); ++i) {
+        out33.push_back({static_cast<double>(i), v_voltage33.at(i)});
+    }
+    double xMin, xMax;
+    xMin = 0;
+    xMax = std::max(v_voltage31.size(), v_voltage33.size());
+    emit dataReady4k(out31, out33, xMin, xMax, yMin, yMax);
+}
+
 void ThreadWorker::processData4k(const QByteArray &data14,
                                  const QByteArray &data24,
                                  const double &temperature)
@@ -384,4 +409,84 @@ void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<int> threshold)
 {
     m_use_loaded_threshold = isUse;
     m_threshold = threshold;
+}
+
+void ThreadWorker::processF30Curve31(const QByteArray &data31,
+                                     QVector<double> &v_voltage31,
+                                     QVector<qint32> &raw31,
+                                     double &yMin,
+                                     double &yMax,
+                                     double &yMax31)
+{
+    // 长度字段（2字节，大端序）
+    int length = 3000;
+    QByteArray payload = data31.mid(5, data31.size() - 7);
+    if (payload.size() % 2 != 0) {
+        LOG_WARN("Invalid data length: {}", payload.size());
+        return;
+    }
+
+    QByteArray filteredPayload = payload;
+
+    if (m_offset14 > 0) {
+        payload = QByteArray(m_offset24, 0) + filteredPayload;
+    } else if (m_offset14 < 0) {
+        int skip = -m_offset14;
+        payload = filteredPayload.mid(skip);
+        payload.append(QByteArray(skip, 0));
+    }
+    // 遍历所有采样点
+    for (int i = 0; i < length; i += 2) {
+        // big-endian 高字节在前
+        quint16 raw = (static_cast<quint8>(payload[i]) << 8)
+                      | (static_cast<quint8>(payload[i + 1]));
+
+        // reinterpret 为 int16（等价 MATLAB 的 typecast）
+        qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
+
+        // double voltage = static_cast<double>(signedRaw) * 38.15 / 1000.0;
+        double voltage = signedRaw;
+
+        if (voltage < yMin)
+            yMin = voltage;
+        if (voltage > yMax)
+            yMax = voltage;
+
+        v_voltage31.push_back(voltage);
+        raw31.push_back(signedRaw);
+    }
+
+    yMax31 = yMax;
+}
+
+void ThreadWorker::processF30Curve33(const QByteArray &data33,
+                                     QVector<double> &v_voltage33,
+                                     QVector<qint32> &raw33,
+                                     double &yMin,
+                                     double &yMax)
+{
+    int length = 3000;
+    QByteArray payload = data33.mid(5, data33.size() - 7);
+    if (payload.size() % 2 != 0) {
+        LOG_WARN("Invalid data length: {}", payload.size());
+        return;
+    }
+
+    for (int i = 0; i < length; i += 2) {
+        quint16 raw = (static_cast<quint8>(payload[i]) << 8)
+                      | (static_cast<quint8>(payload[i + 1]));
+        qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
+
+        // 与 MATLAB 中 y = double(typecast(w, 'int16')) 对应
+        // double voltage = static_cast<double>(signedRaw) / 0x8000 * 2.5;
+        double voltage = signedRaw;
+
+        if (voltage < yMin)
+            yMin = voltage;
+        if (voltage > yMax)
+            yMax = voltage;
+
+        v_voltage33.push_back(voltage);
+        raw33.push_back(signedRaw);
+    }
 }

@@ -26,6 +26,7 @@ public:
     void retranslateUI();
 
 signals:
+    void newDataReceivedF30(const QByteArray &data31, const QByteArray &data33);
     void newDataReceived4k(const QByteArray &data14,
                            const QByteArray &data24,
                            const double &temperature);
@@ -39,6 +40,7 @@ signals:
                    const double &temperature = 0.0);
 
 public slots:
+    void onDataReceivedF30(const QByteArray &data31, const QByteArray &data33);
     void onDataReceived4k(const QByteArray &data14,
                           const QByteArray &data24,
                           const double &temperature);

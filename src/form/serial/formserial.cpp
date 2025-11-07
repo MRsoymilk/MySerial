@@ -123,28 +123,32 @@ void FormSerial::getINI()
     m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
 
-    QStringList groups = SETTING_FRAME_GROUPS();
-    if (!groups.empty()) {
-        for (const auto &g : groups) {
-            FrameType frame;
-            frame.name = g;
-            frame.header = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_HEADER).toUtf8());
-            frame.footer = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_FOOTER).toUtf8());
-            frame.length = SETTING_FRAME_GET(g, FRAME_LENGTH).toInt();
-            m_frameTypes.push_back(frame);
-        }
-    } else {
-        m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 0},
-            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
-            {"MPU6050", "<MPU>", "<END>"},
-        };
-        for (const auto &frame : m_frameTypes) {
-            SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
-            SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
-            SETTING_FRAME_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
-        }
-    }
+    // QStringList groups = SETTING_FRAME_GROUPS();
+    // if (!groups.empty()) {
+    //     for (const auto &g : groups) {
+    //         FrameType frame;
+    //         frame.name = g;
+    //         frame.header = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_HEADER).toUtf8());
+    //         frame.footer = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_FOOTER).toUtf8());
+    //         frame.length = SETTING_FRAME_GET(g, FRAME_LENGTH).toInt();
+    //         m_frameTypes.push_back(frame);
+    //     }
+    // } else {
+    //     m_frameTypes = {
+    //         {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 0},
+    //         {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
+    //         {"MPU6050", "<MPU>", "<END>"},
+    //     };
+    //     for (const auto &frame : m_frameTypes) {
+    //         SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
+    //         SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
+    //         SETTING_FRAME_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
+    //     }
+    // }
+    m_frameTypes = {
+        {"F30_31", QByteArray::fromHex("DE3A0BBB31"), QByteArray::fromHex("CEFF"), 3007},
+        {"F30_33", QByteArray::fromHex("DE3A0BBB33"), QByteArray::fromHex("CEFF"), 3007},
+    };
     int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
     m_algorithm = current_algorithm;
 
@@ -442,29 +446,6 @@ void FormSerial::openSerial()
         return;
     }
 
-    QStringList groups = SETTING_FRAME_GROUPS();
-    if (!groups.empty()) {
-        for (const auto &g : groups) {
-            FrameType frame;
-            frame.name = g;
-            frame.header = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_HEADER).toUtf8());
-            frame.footer = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_FOOTER).toUtf8());
-            frame.length = SETTING_FRAME_GET(g, FRAME_LENGTH).toInt();
-            m_frameTypes.push_back(frame);
-        }
-    } else {
-        m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 0},
-            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
-            {"MPU6050", "<MPU>", "<END>"},
-        };
-        for (const auto &frame : m_frameTypes) {
-            SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
-            SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
-            SETTING_FRAME_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
-        }
-    }
-
     connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
 
     ui->btnSerialSwitch->setText("To Close");
@@ -509,6 +490,18 @@ void FormSerial::on_cBoxPortName_activated(int index)
 
 void FormSerial::handleFrame(const QString &type, const QByteArray &data, const QByteArray &temp)
 {
+    if (type == "F30_31") {
+        m_frame.bit14 = data;
+    } else if (type == "F30_33") {
+        if (!m_frame.bit14.isEmpty()) {
+            m_frame.bit24 = data;
+            emit recv2DataF30(m_frame.bit14, m_frame.bit24);
+            m_frame.bit14.clear();
+            m_frame.bit24.clear();
+        }
+    }
+    return;
+
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
         || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
         if (type == "curve_24bit") {

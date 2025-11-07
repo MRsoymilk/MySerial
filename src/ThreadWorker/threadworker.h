@@ -15,6 +15,7 @@ public:
     void setAlgorithm(int);
 
 public slots:
+    void processDataF30(const QByteArray &data31, const QByteArray &data33);
     void processData4k(const QByteArray &data14,
                        const QByteArray &data24,
                        const double &temperature);
@@ -42,6 +43,17 @@ signals:
                              const double &temperature);
 
 private:
+    void processF30Curve31(const QByteArray &data31,
+                           QVector<double> &v_voltage31,
+                           QVector<qint32> &raw31,
+                           double &yMin,
+                           double &yMax,
+                           double &yMax31);
+    void processF30Curve33(const QByteArray &data33,
+                           QVector<double> &v_voltage33,
+                           QVector<qint32> &raw33,
+                           double &yMin,
+                           double &yMax);
     void processCurve14(const QByteArray &data14,
                         QVector<double> &v_voltage14,
                         QVector<qint32> &raw14,
