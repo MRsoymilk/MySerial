@@ -444,8 +444,8 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
         // reinterpret 为 int16（等价 MATLAB 的 typecast）
         qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
 
-        // double voltage = static_cast<double>(signedRaw) * 38.15 / 1000.0;
-        double voltage = signedRaw;
+        double voltage = static_cast<double>(signedRaw) * 38.15 / 1000.0;
+        // double voltage = signedRaw;
 
         if (voltage < yMin)
             yMin = voltage;
@@ -478,8 +478,8 @@ void ThreadWorker::processF30Curve33(const QByteArray &data33,
         qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
 
         // 与 MATLAB 中 y = double(typecast(w, 'int16')) 对应
-        // double voltage = static_cast<double>(signedRaw) / 0x8000 * 2.5;
-        double voltage = signedRaw;
+        double voltage = static_cast<double>(signedRaw) / 0x8000 * 2.5;
+        // double voltage = signedRaw;
 
         if (voltage < yMin)
             yMin = voltage;
