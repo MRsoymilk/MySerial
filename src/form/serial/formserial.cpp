@@ -146,8 +146,8 @@ void FormSerial::getINI()
     //     }
     // }
     m_frameTypes = {
-        {"F30_31", QByteArray::fromHex("DE3A0BBB31"), QByteArray::fromHex("CEFF"), 3007},
-        {"F30_33", QByteArray::fromHex("DE3A0BBB33"), QByteArray::fromHex("CEFF"), 3007},
+        {"F30_31", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
+        {"F30_33", QByteArray::fromHex("DE3A177333"), QByteArray::fromHex("CEFF"), 6007},
     };
     int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
     m_algorithm = current_algorithm;
