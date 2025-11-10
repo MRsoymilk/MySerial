@@ -435,16 +435,12 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
         payload.append(QByteArray(skip, 0));
     }
     // 遍历所有采样点
-    for (int i = 0; i < payload.size(); i += 2) {
+    for (int i = 0; i + 2 < payload.size(); i += 2) {
         // big-endian 高字节在前
         quint16 raw = (static_cast<quint8>(payload[i]) << 8)
                       | (static_cast<quint8>(payload[i + 1]));
 
-        // reinterpret 为 int16（等价 MATLAB 的 typecast）
-        qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
-
-        double voltage = static_cast<double>(signedRaw) * 38.15 / 1000.0;
-        // double voltage = signedRaw;
+        double voltage = static_cast<double>(raw) * 38.15 / 1000.0;
 
         if (voltage < yMin)
             yMin = voltage;
@@ -452,7 +448,7 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
             yMax = voltage;
 
         v_voltage31.push_back(voltage);
-        raw31.push_back(signedRaw);
+        raw31.push_back(raw);
     }
 
     yMax31 = yMax;
@@ -470,14 +466,22 @@ void ThreadWorker::processF30Curve33(const QByteArray &data33,
         return;
     }
 
-    for (int i = 0; i < payload.size(); i += 2) {
+    QByteArray filteredPayload = payload;
+
+    if (m_offset24 > 0) {
+        payload = QByteArray(m_offset24, 0) + filteredPayload;
+    } else if (m_offset24 < 0) {
+        int skip = -m_offset24;
+        payload = filteredPayload.mid(skip);
+        payload.append(QByteArray(skip, 0));
+    }
+
+    for (int i = 0; i + 2 < payload.size(); i += 2) {
         quint16 raw = (static_cast<quint8>(payload[i]) << 8)
                       | (static_cast<quint8>(payload[i + 1]));
-        qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
 
-        // 与 MATLAB 中 y = double(typecast(w, 'int16')) 对应
+        qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
         double voltage = static_cast<double>(signedRaw) / 0x8000 * 2.5;
-        // double voltage = signedRaw;
 
         if (voltage < yMin)
             yMin = voltage;

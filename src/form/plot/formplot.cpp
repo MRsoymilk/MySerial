@@ -241,10 +241,12 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data14,
     } else {
         ui->labelUpdateSign->setStyleSheet("background-color: blue; color: white;");
     }
+    // 31
     m_series14->replace(data14);
-    m_series14->setName(tr("curve14_bit"));
+    m_series14->setName(tr("单端"));
+    // 33
     m_series24->replace(data24);
-    m_series24->setName(tr("curve24_bit"));
+    m_series24->setName(tr("差分"));
 
     m_axisX->setRange(xMin, xMax);
     if (m_autoZoom) {

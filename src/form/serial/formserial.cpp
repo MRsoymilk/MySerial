@@ -123,7 +123,7 @@ void FormSerial::getINI()
     m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
 
-    QStringList groups = SETTING_FRAME_GROUPS();
+    QStringList groups = /*SETTING_FRAME_GROUPS();*/ {"F30_31", "F30_33"};
     if (!groups.empty()) {
         for (const auto &g : groups) {
             FrameType frame;
