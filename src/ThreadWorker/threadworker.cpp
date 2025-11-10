@@ -419,7 +419,6 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
                                      double &yMax31)
 {
     // 长度字段（2字节，大端序）
-    int length = 3000;
     QByteArray payload = data31.mid(5, data31.size() - 7);
     if (payload.size() % 2 != 0) {
         LOG_WARN("Invalid data length: {}", payload.size());
@@ -436,7 +435,7 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
         payload.append(QByteArray(skip, 0));
     }
     // 遍历所有采样点
-    for (int i = 0; i < length; i += 2) {
+    for (int i = 0; i < payload.size(); i += 2) {
         // big-endian 高字节在前
         quint16 raw = (static_cast<quint8>(payload[i]) << 8)
                       | (static_cast<quint8>(payload[i + 1]));
@@ -465,14 +464,13 @@ void ThreadWorker::processF30Curve33(const QByteArray &data33,
                                      double &yMin,
                                      double &yMax)
 {
-    int length = 3000;
     QByteArray payload = data33.mid(5, data33.size() - 7);
     if (payload.size() % 2 != 0) {
         LOG_WARN("Invalid data length: {}", payload.size());
         return;
     }
 
-    for (int i = 0; i < length; i += 2) {
+    for (int i = 0; i < payload.size(); i += 2) {
         quint16 raw = (static_cast<quint8>(payload[i]) << 8)
                       | (static_cast<quint8>(payload[i + 1]));
         qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
