@@ -50,9 +50,7 @@ private slots:
     void on_btnSetTemperature_clicked();
     void on_btnSendFormula_clicked();
     void on_btnSendR_kb_clicked();
-
     void on_btnSendSegmentFormula_clicked();
-
     void on_tBtnAddStep1_clicked();
     void on_tBtnAddStep2_clicked();
 

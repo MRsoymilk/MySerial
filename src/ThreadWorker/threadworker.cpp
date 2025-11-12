@@ -440,7 +440,7 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
         quint16 raw = (static_cast<quint8>(payload[i]) << 8)
                       | (static_cast<quint8>(payload[i + 1]));
 
-        double voltage = static_cast<double>(raw) * 38.15 / 1000.0;
+        double voltage = static_cast<double>(raw) * 38.15 / 1000000.0;
 
         if (voltage < yMin)
             yMin = voltage;
