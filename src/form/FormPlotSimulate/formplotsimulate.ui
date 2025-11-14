@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>PlotSimulate</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -26,6 +26,27 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="hLayLoad">
+     <item>
+      <widget class="QLineEdit" name="lineEditPath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnLoadFile">
+       <property name="text">
+        <string>load file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonRe">
+       <property name="text">
+        <string>re</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0">
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
@@ -50,27 +71,6 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="hLayLoad">
-     <item>
-      <widget class="QLineEdit" name="lineEditPath"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnLoadFile">
-       <property name="text">
-        <string>load file</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="toolButtonRe">
-       <property name="text">
-        <string>re</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <layout class="QFormLayout" name="formLayoutOption">
      <item row="0" column="0">
@@ -88,6 +88,13 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
