@@ -90,6 +90,7 @@ private:
                      const QByteArray &frame_candidate,
                      const QByteArray &temp = "");
     void loadPage(int page);
+    void updateFrameTypes(int idx);
 
 private slots:
     void on_btnRecvSave_clicked();

@@ -103,28 +103,8 @@ void FormSerial::setEasyFrame()
     m_algorithm = static_cast<int>(SHOW_ALGORITHM::NUM_660);
 }
 
-void FormSerial::getINI()
+void FormSerial::updateFrameTypes(int idx)
 {
-    m_ini.port_name = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME);
-    m_ini.baud_rate = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE);
-    m_ini.send_format = SETTING_CONFIG_GET(CFG_GROUP_SERIAL,
-                                           CFG_SERIAL_SEND_FORMAT,
-                                           VAL_SERIAL_SEND_NORMAL);
-    m_ini.show_send = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE)
-                              == VAL_ENABLE
-                          ? true
-                          : false;
-    m_ini.hex_display = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE)
-                                == VAL_ENABLE
-                            ? true
-                            : false;
-    m_ini.debug_port = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
-    m_ini.cycle = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
-    m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
-    m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
-
-    int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
-    m_algorithm = current_algorithm;
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
         QStringList groups = SETTING_FRAME_F30Curves_GROUPS();
         if (!groups.empty()) {
@@ -183,6 +163,31 @@ void FormSerial::getINI()
     } else {
         m_frameTypes = {};
     }
+}
+
+void FormSerial::getINI()
+{
+    m_ini.port_name = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_PORT_NAME);
+    m_ini.baud_rate = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_BAUD_RATE);
+    m_ini.send_format = SETTING_CONFIG_GET(CFG_GROUP_SERIAL,
+                                           CFG_SERIAL_SEND_FORMAT,
+                                           VAL_SERIAL_SEND_NORMAL);
+    m_ini.show_send = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SHOW_SEND, VAL_ENABLE)
+                              == VAL_ENABLE
+                          ? true
+                          : false;
+    m_ini.hex_display = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE)
+                                == VAL_ENABLE
+                            ? true
+                            : false;
+    m_ini.debug_port = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
+    m_ini.cycle = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
+    m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
+    m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
+
+    int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
+    m_algorithm = current_algorithm;
+    updateFrameTypes(m_algorithm);
 
     initMultSend();
 }
