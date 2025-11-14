@@ -643,7 +643,6 @@ void FormPlot::callFindPeak()
 
         m_chart->update();
     } else {
-        ui->textBrowser->setVisible(false);
         m_peaks->clear();
     }
 }

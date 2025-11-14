@@ -105,5 +105,7 @@
         <file>res/icons/white/fwhm.png</file>
         <file>res/icons/measure_x.png</file>
         <file>res/icons/measure_y.png</file>
+        <file>res/icons/start.png</file>
+        <file>res/icons/start.gif</file>
     </qresource>
 </RCC>
