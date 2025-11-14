@@ -140,91 +140,11 @@ void FormPlotSimulate::simulate4k()
     file.close();
 
     QByteArray dataBytes = QByteArray::fromHex(data.toUtf8());
-    QByteArray buffer = dataBytes;
-    struct FrameType
-    {
-        QString name;
-        QByteArray header;
-        QByteArray footer;
-    };
-    struct FRAME
-    {
-        QByteArray bit14;
-        QByteArray bit24;
-    };
-    const QByteArray footer = QByteArray::fromHex("CEFF");
-    FRAME frame;
-    QList<FrameType> m_frameTypes;
-    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
-        || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
-        m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
-            {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF")},
-        };
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
-        m_frameTypes = {
-            {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF")},
-        };
-    }
-    while (true) {
-        int firstHeaderIdx = -1;
-        int matchedHeaderLen = 0;
-        QString matchedType;
 
-        for (const auto &type : m_frameTypes) {
-            int idx = buffer.indexOf(type.header);
-            if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
-                firstHeaderIdx = idx;
-                matchedHeaderLen = type.header.size();
-                matchedType = type.name;
-            }
-        }
-
-        if (firstHeaderIdx == -1) {
-            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Simulate"), tr("no header found!"));
-            LOG_WARN("no header found: {}", file.fileName());
-            break;
-        }
-
-        int endIdx = buffer.indexOf(footer, firstHeaderIdx + matchedHeaderLen);
-        if (endIdx == -1) {
-            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Simulate"), tr("simulate finish"));
-            return;
-        }
-
-        int frameLen = endIdx + footer.size() - firstHeaderIdx;
-        QByteArray tmp_frame = buffer.mid(firstHeaderIdx, frameLen);
-
-        if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
-            || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
-            if (matchedType == "curve_24bit") {
-                frame.bit24 = tmp_frame;
-            } else if (matchedType == "curve_14bit") {
-                frame.bit14 = tmp_frame;
-                if (!frame.bit24.isEmpty()) {
-                    if (option) {
-                        QByteArray tempBytes = buffer.mid(endIdx + footer.size(), 2);
-                        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
-                        double temperature = tempRaw / 1000.0;
-                        emit simulateDataReady4k(frame.bit14, frame.bit24, temperature);
-                        wait_delete = true;
-                    } else {
-                        emit simulateDataReady4k(frame.bit14, frame.bit24);
-                    }
-                }
-            }
-        } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
-            if (matchedType == "curve_24bit") {
-                frame.bit24 = tmp_frame;
-                emit simulateDataReady4k(frame.bit14, frame.bit24);
-            }
-        }
-        if (wait_delete) {
-            buffer.remove(0, endIdx + footer.size() + 2);
-            wait_delete = false;
-        } else {
-            buffer.remove(0, endIdx + footer.size());
-        }
+    const int chunkSize = 1024;
+    for (int i = 0; i < dataBytes.size(); i += chunkSize) {
+        QByteArray chunk = dataBytes.mid(i, chunkSize);
+        emit simulateDataReady(chunk);
     }
 }
 

@@ -15,7 +15,7 @@ DataInput::~DataInput()
     delete ui;
 }
 
-QVector<int> DataInput::getValues()
+QVector<double> DataInput::getValues()
 {
     return m_values;
 }

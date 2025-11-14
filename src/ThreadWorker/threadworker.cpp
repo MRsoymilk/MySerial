@@ -30,11 +30,11 @@ void ThreadWorker::setAlgorithm(int algorithm)
 }
 
 void ThreadWorker::processCurve14(const QByteArray &data14,
-                                QVector<double> &v_voltage14,
-                                QVector<qint32> &raw14,
-                                double &yMin,
-                                double &yMax,
-                                double &yMax14)
+                                  QVector<double> &v_voltage14,
+                                  QVector<double> &raw14,
+                                  double &yMin,
+                                  double &yMax,
+                                  double &yMax14)
 {
     {
         QByteArray payload = data14.mid(5, data14.size() - 7);
@@ -95,10 +95,10 @@ void ThreadWorker::processCurve14(const QByteArray &data14,
 }
 static int debug_count = 0;
 void ThreadWorker::processCurve24(const QByteArray &data24,
-                                QVector<double> &v_voltage24,
-                                QVector<qint32> &raw24,
-                                double &yMin,
-                                double &yMax)
+                                  QVector<double> &v_voltage24,
+                                  QVector<double> &raw24,
+                                  double &yMin,
+                                  double &yMax)
 {
     {
         // QByteArray payload = data24.mid(5, data24.size() - 7);
@@ -168,8 +168,8 @@ void ThreadWorker::processDataF30(const QByteArray &data31, const QByteArray &da
     double yMax31 = std::numeric_limits<double>::lowest();
     QVector<double> v_voltage31;
     QVector<double> v_voltage33;
-    QVector<qint32> raw31;
-    QVector<qint32> raw33;
+    QVector<double> raw31;
+    QVector<double> raw33;
     int numPoints = 0;
     processF30Curve31(data31, v_voltage31, raw31, yMin, yMax, yMax31);
     processF30Curve33(data33, v_voltage33, raw33, yMin, yMax);
@@ -183,7 +183,8 @@ void ThreadWorker::processDataF30(const QByteArray &data31, const QByteArray &da
     double xMin, xMax;
     xMin = 0;
     xMax = std::max(v_voltage31.size(), v_voltage33.size());
-    emit dataReady4k(out31, out33, xMin, xMax, yMin, yMax);
+    emit dataReady4k(out33, out31, xMin, xMax, yMin, yMax);
+    emit pointsReady4k(v_voltage33, v_voltage31, raw33, raw31);
 }
 
 void ThreadWorker::processData4k(const QByteArray &data14,
@@ -195,8 +196,8 @@ void ThreadWorker::processData4k(const QByteArray &data14,
     double yMax14 = std::numeric_limits<double>::lowest();
     QVector<double> v_voltage14;
     QVector<double> v_voltage24;
-    QVector<qint32> raw14;
-    QVector<qint32> raw24;
+    QVector<double> raw14;
+    QVector<double> raw24;
     int numPoints = 0;
 
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
@@ -248,7 +249,7 @@ void ThreadWorker::processData4k(const QByteArray &data14,
 
     if (m_correction_enable) {
         // 生成阈值表
-        QVector<qint32> threshold;
+        QVector<double> threshold;
         if (m_use_loaded_threshold) {
             threshold = m_threshold;
         } else {
@@ -261,9 +262,9 @@ void ThreadWorker::processData4k(const QByteArray &data14,
     emit dataReady4k(out14, out24, xMin, xMax, yMin, yMax, temperature);
 }
 
-QVector<qint32> ThreadWorker::generateThreshold(const double &temperature)
+QVector<double> ThreadWorker::generateThreshold(const double &temperature)
 {
-    QVector<qint32> threshold;
+    QVector<double> threshold;
     double T = temperature;
     if (m_formula == "sin") {
         if (qAbs(temperature) < 1e-9) {
@@ -310,9 +311,9 @@ QVector<qint32> ThreadWorker::generateThreshold(const double &temperature)
     return threshold;
 }
 
-void ThreadWorker::applyThreshold(const QVector<qint32> &threshold,
-                                  const QVector<qint32> &raw14,
-                                  const QVector<qint32> &raw24,
+void ThreadWorker::applyThreshold(const QVector<double> &threshold,
+                                  const QVector<double> &raw14,
+                                  const QVector<double> &raw24,
                                   const double &temperature)
 {
     QList<QPointF> out_correction;
@@ -405,7 +406,7 @@ void ThreadWorker::onEnableCorrection(bool enable, const QJsonObject &params)
     }
 }
 
-void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<int> threshold)
+void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<double> threshold)
 {
     m_use_loaded_threshold = isUse;
     m_threshold = threshold;
@@ -413,7 +414,7 @@ void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<int> threshold)
 
 void ThreadWorker::processF30Curve31(const QByteArray &data31,
                                      QVector<double> &v_voltage31,
-                                     QVector<qint32> &raw31,
+                                     QVector<double> &raw31,
                                      double &yMin,
                                      double &yMax,
                                      double &yMax31)
@@ -456,7 +457,7 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
 
 void ThreadWorker::processF30Curve33(const QByteArray &data33,
                                      QVector<double> &v_voltage33,
-                                     QVector<qint32> &raw33,
+                                     QVector<double> &raw33,
                                      double &yMin,
                                      double &yMax)
 {

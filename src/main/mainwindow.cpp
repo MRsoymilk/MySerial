@@ -92,7 +92,8 @@ void MainWindow::initStackWidget()
     playMPU6050 = new FormPlayMPU6050(this);
     ui->stackedWidget->addWidget(playMPU6050);
 
-    QObject::connect(formSerial, &FormSerial::recv2DataF30, formPlot, &FormPlot::onDataReceivedF30);
+    QObject::connect(formSerial, &FormSerial::recv2PlotF30, formPlot, &FormPlot::onDataReceivedF30);
+    QObject::connect(formSerial, &FormSerial::recv2DataF30, formData, &FormData::onDataReceivedF30);
     QObject::connect(formSerial, &FormSerial::recv2Plot4k, formPlot, &FormPlot::onDataReceived4k);
     QObject::connect(formSerial, &FormSerial::recv2Data4k, formData, &FormData::onDataReceived4k);
     QObject::connect(formPlot, &FormPlot::sendKB, formSerial, &FormSerial::sendRaw);
@@ -319,9 +320,9 @@ void MainWindow::init()
     m_worker->moveToThread(m_workerThread);
 
     connect(m_plotSimulate,
-            &FormPlotSimulate::simulateDataReady4k,
-            m_worker,
-            &ThreadWorker::processData4k,
+            &FormPlotSimulate::simulateDataReady,
+            formSerial,
+            &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
     connect(m_plotSimulate,
             &FormPlotSimulate::simulateOption,
@@ -711,8 +712,8 @@ void MainWindow::updatePlot(const QList<QPointF> &v14,
 
 void MainWindow::updateTable(const QVector<double> &v14,
                              const QVector<double> &v24,
-                             const QVector<qint32> &raw14,
-                             const QVector<qint32> &raw24)
+                             const QVector<double> &raw14,
+                             const QVector<double> &raw24)
 {
     if (m_pause) {
         return;

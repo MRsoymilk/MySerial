@@ -56,7 +56,10 @@ public:
     void setEasyFrame();
 
 signals:
-    void recv2DataF30(const QByteArray &data31, const QByteArray &data33);
+    void recv2PlotF30(const QByteArray &data31, const QByteArray &data33);
+    void recv2DataF30(const QByteArray &data14,
+                      const QByteArray &data24,
+                      const QByteArray &temperature = "");
     void recv2Plot4k(const QByteArray &data14,
                      const QByteArray &data24,
                      const double &temperature = 0.0);
@@ -70,6 +73,7 @@ public slots:
     void sendRaw(const QByteArray &bytes);
     void onChangeFrameType(int index);
     void onSimulateOption(bool isEnable);
+    void onSimulateRecv(const QByteArray &bytes);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

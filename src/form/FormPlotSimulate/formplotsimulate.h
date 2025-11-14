@@ -27,9 +27,7 @@ public:
 signals:
     void windowClose();
     void simulateOption(bool enable);
-    void simulateDataReady4k(const QByteArray &data14,
-                             const QByteArray &data24,
-                             const double &temperature = 0);
+    void simulateDataReady(const QByteArray &data);
 
 public slots:
     void onChangeFrameType(int index);

@@ -67,6 +67,27 @@ void FormData::onDataReceived4k(const QByteArray &data14,
     }
 }
 
+void FormData::onDataReceivedF30(const QByteArray &data14,
+                                 const QByteArray &data24,
+                                 const QByteArray &temperature)
+{
+    QList<QStandardItem *> rowItems;
+    auto data = data14 + data24 + temperature;
+    rowItems << new QStandardItem(TIMESTAMP());
+    QString to_show;
+    for (int i = 0; i < data.length(); ++i) {
+        to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
+    }
+    rowItems << new QStandardItem(to_show);
+    rowItems << new QStandardItem(QString::number(data.length()));
+
+    m_model->appendRow(rowItems);
+
+    while (m_model->rowCount() > m_limit) {
+        m_model->removeRow(0);
+    }
+}
+
 void FormData::showContextMenu(const QPoint &pos)
 {
     QMenu contextMenu(tr("Context Menu"), this);

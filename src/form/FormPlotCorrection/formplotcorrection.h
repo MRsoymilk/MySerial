@@ -31,7 +31,7 @@ signals:
                                const double &yMin,
                                const double &yMax,
                                const double &temperature);
-    void useLoadedThreshold(bool isUse, QVector<int> v);
+    void useLoadedThreshold(bool isUse, QVector<double> v);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

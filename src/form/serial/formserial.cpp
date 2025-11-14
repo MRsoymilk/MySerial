@@ -202,6 +202,109 @@ void FormSerial::onSimulateOption(bool isEnable)
     }
 }
 
+void FormSerial::onSimulateRecv(const QByteArray &bytes)
+{
+    QByteArray data = bytes;
+    m_recv_count += data.size();
+    ui->labelRecvCount->setText(QString("recv: %1").arg(m_recv_count));
+
+    QString to_show = data;
+    if (m_ini.hex_display) {
+        to_show.clear();
+        for (int i = 0; i < data.length(); ++i) {
+            to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
+        }
+    }
+    ui->txtRecv->appendPlainText("[RX] " + to_show);
+    m_buffer.append(data);
+
+    if (m_need_after) {
+        QByteArray tempBytes = m_buffer.left(2);
+        if (tempBytes.size() < 2) {
+            return;
+        }
+        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
+        double temperature = tempRaw / 1000.0;
+
+        LOG_INFO("Temperature: {} °C", temperature);
+
+        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
+        emit recv2Plot4k(m_frame.bit14, m_frame.bit24, temperature);
+        emit recvTemperature(temperature);
+        m_frame.bit24.clear();
+        m_need_after = false;
+    }
+
+    while (true) {
+        int firstHeaderIdx = -1;
+        FrameType current_frame;
+
+        // 查找所有已知帧头
+        for (const auto &type : m_frameTypes) {
+            int idx = m_buffer.indexOf(type.header);
+            if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
+                firstHeaderIdx = idx;
+                current_frame = type;
+            }
+        }
+
+        // 没有帧头，清理或等待
+        if (firstHeaderIdx == -1) {
+            if (m_buffer.size() > 10 * 1024) {
+                LOG_WARN("Buffer overflow, clearing");
+                m_buffer.clear();
+            }
+            break;
+        }
+
+        // 丢弃无效数据
+        if (firstHeaderIdx > 0) {
+            LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
+            m_buffer.remove(0, firstHeaderIdx);
+        }
+
+        if (current_frame.length != 0) {
+            // 长度固定帧
+            if (m_buffer.size() < current_frame.length)
+                break;
+
+            QByteArray frame_candidate = m_buffer.left(current_frame.length);
+            if (!frame_candidate.endsWith(current_frame.footer)) {
+                LOG_WARN("Invalid footer (fixed length), removing header only");
+                m_buffer.remove(0, current_frame.header.size());
+                continue;
+            }
+
+            LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
+            handleFrame(current_frame.name, frame_candidate);
+            m_buffer.remove(0, current_frame.length);
+        } else {
+            // 长度不固定：查找 footer 位置
+            int footerIdx = m_buffer.indexOf(current_frame.footer, current_frame.header.size());
+            if (footerIdx == -1) {
+                // 没找到帧尾，等待更多数据
+                break;
+            }
+
+            int frame_len = footerIdx + current_frame.footer.size();
+            QByteArray frame_candidate;
+            frame_candidate = m_buffer.left(frame_len);
+
+            LOG_INFO("Variable-length frame matched: {}, size = {}",
+                     current_frame.name.toStdString(),
+                     frame_len);
+            if (m_waitting_byte) {
+                QByteArray temp = m_buffer.mid(frame_len, 2);
+                handleFrame(current_frame.name, frame_candidate, temp);
+            } else {
+                handleFrame(current_frame.name, frame_candidate);
+            }
+
+            m_buffer.remove(0, frame_len);
+        }
+    }
+}
+
 void FormSerial::closeEvent(QCloseEvent *event)
 {
     closeSerial();
@@ -490,16 +593,23 @@ void FormSerial::on_cBoxPortName_activated(int index)
 
 void FormSerial::handleFrame(const QString &type, const QByteArray &data, const QByteArray &temp)
 {
-    if (type == "F30_31") {
-        m_frame.bit14 = data;
-    } else if (type == "F30_33") {
-        if (!m_frame.bit14.isEmpty()) {
-            m_frame.bit24 = data;
-            emit recv2DataF30(m_frame.bit14, m_frame.bit24);
-            m_frame.bit14.clear();
-            m_frame.bit24.clear();
+    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+        if (type == "F30_31") {
+            m_frame.bit14 = data;
+        } else if (type == "F30_33") {
+            if (!m_frame.bit14.isEmpty()) {
+                m_frame.bit24 = data;
+                emit recv2PlotF30(m_frame.bit14, m_frame.bit24);
+                emit recv2DataF30(m_frame.bit14, m_frame.bit24);
+                m_frame.bit14.clear();
+                m_frame.bit24.clear();
+            }
         }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
+        emit recv2PlotF30({}, data);
+        emit recv2DataF30({}, data);
     }
+
     return;
 
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)

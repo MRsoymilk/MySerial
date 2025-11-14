@@ -115,8 +115,8 @@ private:
                     bool record = true);
     void updateTable(const QVector<double> &v14,
                      const QVector<double> &v24,
-                     const QVector<qint32> &raw14,
-                     const QVector<qint32> &raw24);
+                     const QVector<double> &raw14,
+                     const QVector<double> &raw24);
     void callFindPeak();
     void callCalcFWHM();
     QString calcIntegrationTime(int value);

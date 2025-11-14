@@ -24,8 +24,8 @@ signals:
 public slots:
     void updateTable4k(const QVector<double> &v14,
                        const QVector<double> &v24,
-                       const QVector<qint32> &raw14,
-                       const QVector<qint32> &raw24);
+                       const QVector<double> &raw14,
+                       const QVector<double> &raw24);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -44,16 +44,16 @@ private:
     void init();
     void displayData(const QVector<double> &v14,
                      const QVector<double> &v24,
-                     const QVector<qint32> &raw14,
-                     const QVector<qint32> &raw24);
+                     const QVector<double> &raw14,
+                     const QVector<double> &raw24);
 
 private:
     Ui::FormPlotData *ui;
     QStandardItemModel *m_model;
     QList<QVector<double>> listV14;
     QList<QVector<double>> listV24;
-    QList<QVector<qint32>> listRaw14;
-    QList<QVector<qint32>> listRaw24;
+    QList<QVector<double>> listRaw14;
+    QList<QVector<double>> listRaw24;
     int m_count = 0;
     int m_current = 0;
 };

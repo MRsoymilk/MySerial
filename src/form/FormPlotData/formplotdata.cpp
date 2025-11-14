@@ -29,8 +29,8 @@ void FormPlotData::retranslateUI()
 
 void FormPlotData::displayData(const QVector<double> &v14,
                                const QVector<double> &v24,
-                               const QVector<qint32> &raw14,
-                               const QVector<qint32> &raw24)
+                               const QVector<double> &raw14,
+                               const QVector<double> &raw24)
 {
     clearData();
     int count = qMax(qMax(v14.size(), v24.size()), qMax(raw14.size(), raw24.size()));
@@ -98,8 +98,8 @@ void FormPlotData::displayData(const QVector<double> &v14,
 
 void FormPlotData::updateTable4k(const QVector<double> &v14,
                                  const QVector<double> &v24,
-                                 const QVector<qint32> &raw14,
-                                 const QVector<qint32> &raw24)
+                                 const QVector<double> &raw14,
+                                 const QVector<double> &raw24)
 {
     if (this->isVisible()) {
         ++m_count;

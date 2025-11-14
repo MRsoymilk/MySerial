@@ -64,7 +64,8 @@ void FormPlot::getINI()
     }
 
     ui->comboBoxAlgorithm->blockSignals(true);
-    ui->comboBoxAlgorithm->addItems({"normal", "max_neg_95", "num_660", "play_mpu6050", "F30_test"});
+    ui->comboBoxAlgorithm->addItems(
+        {"normal", "max_neg_95", "num_660", "play_mpu6050", "F30_single", "F30_curves"});
     ui->comboBoxAlgorithm->blockSignals(false);
 
     int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
@@ -243,10 +244,10 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data14,
     }
     // 31
     m_series14->replace(data14);
-    m_series14->setName(tr("单端"));
+    m_series14->setName(tr("差分"));
     // 33
     m_series24->replace(data24);
-    m_series24->setName(tr("差分"));
+    m_series24->setName(tr("单端"));
 
     m_axisX->setRange(xMin, xMax);
     if (m_autoZoom) {
@@ -516,6 +517,8 @@ void FormPlot::callCalcFWHM()
             for (int i = m_series24->count() - 1; i >= 1; --i) {
                 if (m_series24->at(i).x() >= xPeak)
                     continue;
+                if (xPeak - m_series24->at(i).x() > 5.0)
+                    break;
                 double y1 = m_series24->at(i).y();
                 double y2 = m_series24->at(i - 1).y();
                 if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
@@ -523,19 +526,6 @@ void FormPlot::callCalcFWHM()
                     double x2 = m_series24->at(i - 1).x();
                     // 线性插值
                     xLeft = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
-                    break;
-                }
-            }
-            for (int i = 0; i < m_series24->count() - 1; ++i) {
-                if (m_series24->at(i).x() <= xPeak)
-                    continue;
-                double y1 = m_series24->at(i).y();
-                double y2 = m_series24->at(i + 1).y();
-                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
-                    double x1 = m_series24->at(i).x();
-                    double x2 = m_series24->at(i + 1).x();
-                    // 线性插值
-                    xRight = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
                     break;
                 }
             }
@@ -573,14 +563,14 @@ void FormPlot::callCalcFWHM()
     }
 }
 
-void FormPlot::peakTrajectory(const QVector<QPointF> &peaks24)
+void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
 {
-    if (!ui->checkBoxTrajectory->isChecked() || peaks24.isEmpty() || !m_series14)
+    if (!ui->checkBoxTrajectory->isChecked() || peaks.isEmpty() || !m_series14)
         return;
 
-    // 找到 peaks24 中 Y 最大的点
+    // 找到 peaks 中 Y 最大的点
     QPointF maxPeak = QPointF(0, std::numeric_limits<float>::lowest());
-    for (const QPointF &p : peaks24) {
+    for (const QPointF &p : peaks) {
         if (p.x() < m_trajectory_start || p.x() > m_trajectory_end) {
             continue;
         }
@@ -605,6 +595,20 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks24)
         }
     } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
         m_trajectory->appendPeak(maxPeak.rx());
+    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
+        m_trajectory->appendPeak(maxPeak.rx());
+    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+        // 在曲线14中找到与该 X 坐标最接近的点
+        double y14 = 0;
+        if (m_series14->count() > xPeak) {
+            y14 = m_series14->at(xPeak).y();
+        }
+
+        // 转换为 raw 值
+        int raw = y14 * 0x8000 / 2.5;
+        if (m_trajectory) {
+            m_trajectory->appendPeak(raw);
+        }
     }
 }
 
@@ -622,10 +626,24 @@ void FormPlot::callFindPeak()
         m_peaks->clear();
         for (const auto &pt : peaks24) {
             m_peaks->append(pt);
+            const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
+            if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+                // 在曲线14中找到与该 X 坐标最接近的点
+                double y14 = 0;
+                if (m_series14->count() > pt.x()) {
+                    y14 = m_series14->at(pt.x()).y();
+                }
+
+                // 转换为 raw 值
+                int raw = y14 * 0x8000 / 2.5;
+                ui->textBrowser->append(
+                    QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y14).arg(raw));
+            }
         }
 
         m_chart->update();
     } else {
+        ui->textBrowser->setVisible(false);
         m_peaks->clear();
     }
 }

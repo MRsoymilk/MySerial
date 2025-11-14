@@ -31,7 +31,7 @@ public:
 
 signals:
     void windowClose();
-    void useLoadedThreshold(bool isUse, QVector<int> v);
+    void useLoadedThreshold(bool isUse, QVector<double> v);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

@@ -20,13 +20,13 @@ public slots:
                        const QByteArray &data24,
                        const double &temperature);
     void onEnableCorrection(bool enable, const QJsonObject &params);
-    void onUseLoadedThreshold(bool isUse, QVector<int> threshold);
+    void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
 
 signals:
     void pointsReady4k(const QVector<double> &v14,
                        const QVector<double> &v24,
-                       const QVector<qint32> &raw14,
-                       const QVector<qint32> &raw24);
+                       const QVector<double> &raw14,
+                       const QVector<double> &raw24);
     void dataReady4k(const QList<QPointF> &v14,
                      const QList<QPointF> &v24,
                      const double &xMin,
@@ -45,30 +45,30 @@ signals:
 private:
     void processF30Curve31(const QByteArray &data31,
                            QVector<double> &v_voltage31,
-                           QVector<qint32> &raw31,
+                           QVector<double> &raw31,
                            double &yMin,
                            double &yMax,
                            double &yMax31);
     void processF30Curve33(const QByteArray &data33,
                            QVector<double> &v_voltage33,
-                           QVector<qint32> &raw33,
+                           QVector<double> &raw33,
                            double &yMin,
                            double &yMax);
     void processCurve14(const QByteArray &data14,
                         QVector<double> &v_voltage14,
-                        QVector<qint32> &raw14,
+                        QVector<double> &raw14,
                         double &yMin,
                         double &yMax,
                         double &yMax14);
     void processCurve24(const QByteArray &data24,
                         QVector<double> &v_voltage24,
-                        QVector<qint32> &raw24,
+                        QVector<double> &raw24,
                         double &yMin,
                         double &yMax);
-    QVector<qint32> generateThreshold(const double &temperature);
-    void applyThreshold(const QVector<qint32> &threshold,
-                        const QVector<qint32> &raw14,
-                        const QVector<qint32> &raw24,
+    QVector<double> generateThreshold(const double &temperature);
+    void applyThreshold(const QVector<double> &threshold,
+                        const QVector<double> &raw14,
+                        const QVector<double> &raw24,
                         const double &temperature);
 
 private:
@@ -96,7 +96,7 @@ private:
         double r_k, r_b, r_d, r_alpha;
         double T;
     } m_correction_arcsin;
-    QVector<int> m_threshold;
+    QVector<double> m_threshold;
     bool m_use_loaded_threshold = false;
 };
 

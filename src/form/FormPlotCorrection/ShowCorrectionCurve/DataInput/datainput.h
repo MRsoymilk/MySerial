@@ -14,14 +14,14 @@ class DataInput : public QDialog
 public:
     explicit DataInput(QWidget *parent = nullptr);
     ~DataInput();
-    QVector<int> getValues();
+    QVector<double> getValues();
 
 private slots:
     void on_textEdit_textChanged();
 
 private:
     Ui::DataInput *ui;
-    QVector<int> m_values;
+    QVector<double> m_values;
 };
 
 #endif // DATAINPUT_H
