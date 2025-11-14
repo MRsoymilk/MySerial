@@ -28,6 +28,20 @@
     })(data)
 
 #include "../common/mysetting.h"
+#define SETTING_FRAME_F30Single_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::FRAME_F30_SINGLE, group, key, ##__VA_ARGS__)
+#define SETTING_FRAME_F30Single_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::FRAME_F30_SINGLE, group, key, value)
+#define SETTING_FRAME_F30Single_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME_F30_SINGLE)
+#define SETTING_FRAME_F30Single_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME_F30_SINGLE)
+
+#define SETTING_FRAME_F30Curves_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::FRAME_F30_CURVES, group, key, ##__VA_ARGS__)
+#define SETTING_FRAME_F30Curves_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::FRAME_F30_CURVES, group, key, value)
+#define SETTING_FRAME_F30Curves_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME_F30_CURVES)
+#define SETTING_FRAME_F30Curves_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME_F30_CURVES)
+
 #define SETTING_CONFIG_GET(group, key, ...) \
     MY_SETTING.getValue(MySetting::SETTING::CONFIG, group, key, ##__VA_ARGS__)
 #define SETTING_CONFIG_SET(group, key, value) \

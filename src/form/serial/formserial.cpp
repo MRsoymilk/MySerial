@@ -123,34 +123,66 @@ void FormSerial::getINI()
     m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
 
-    QStringList groups = /*SETTING_FRAME_GROUPS();*/ {"F30_31", "F30_33"};
-    if (!groups.empty()) {
-        for (const auto &g : groups) {
-            FrameType frame;
-            frame.name = g;
-            frame.header = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_HEADER).toUtf8());
-            frame.footer = QByteArray::fromHex(SETTING_FRAME_GET(g, FRAME_FOOTER).toUtf8());
-            frame.length = SETTING_FRAME_GET(g, FRAME_LENGTH).toInt();
-            m_frameTypes.push_back(frame);
-        }
-    } else {
-        // m_frameTypes = {
-        //     {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 0},
-        //     {"curve_14bit", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 0},
-        //     {"MPU6050", "<MPU>", "<END>"},
-        // };
-        // for (const auto &frame : m_frameTypes) {
-        //     SETTING_FRAME_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
-        //     SETTING_FRAME_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
-        //     SETTING_FRAME_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
-        // }
-        m_frameTypes = {
-            {"F30_31", QByteArray::fromHex("DE3A177D31"), QByteArray::fromHex("CEFF"), 6017},
-            {"F30_33", QByteArray::fromHex("DE3A177D33"), QByteArray::fromHex("CEFF"), 6017},
-        };
-    }
     int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
     m_algorithm = current_algorithm;
+    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+        QStringList groups = SETTING_FRAME_F30Curves_GROUPS();
+        if (!groups.empty()) {
+            for (const auto &g : groups) {
+                FrameType frame;
+                frame.name = g;
+                frame.header = QByteArray::fromHex(
+                    SETTING_FRAME_F30Curves_GET(g, FRAME_HEADER).toUtf8());
+                frame.footer = QByteArray::fromHex(
+                    SETTING_FRAME_F30Curves_GET(g, FRAME_FOOTER).toUtf8());
+                frame.length = SETTING_FRAME_F30Curves_GET(g, FRAME_LENGTH).toInt();
+                m_frameTypes.push_back(frame);
+            }
+        } else {
+            m_frameTypes = {
+                {"F30_31", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
+                {"F30_33", QByteArray::fromHex("DE3A177333"), QByteArray::fromHex("CEFF"), 6007},
+            };
+            for (const auto &frame : m_frameTypes) {
+                SETTING_FRAME_F30Curves_SET(frame.name,
+                                            FRAME_HEADER,
+                                            frame.header.toHex().toUpper());
+                SETTING_FRAME_F30Curves_SET(frame.name,
+                                            FRAME_FOOTER,
+                                            frame.footer.toHex().toUpper());
+                SETTING_FRAME_F30Curves_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
+            }
+        }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
+        QStringList groups = SETTING_FRAME_F30Single_GROUPS();
+        if (!groups.empty()) {
+            for (const auto &g : groups) {
+                FrameType frame;
+                frame.name = g;
+                frame.header = QByteArray::fromHex(
+                    SETTING_FRAME_F30Single_GET(g, FRAME_HEADER).toUtf8());
+                frame.footer = QByteArray::fromHex(
+                    SETTING_FRAME_F30Single_GET(g, FRAME_FOOTER).toUtf8());
+                frame.length = SETTING_FRAME_F30Single_GET(g, FRAME_LENGTH).toInt();
+                m_frameTypes.push_back(frame);
+            }
+        } else {
+            m_frameTypes = {
+                {"F30_31", QByteArray::fromHex("DE3A064331"), QByteArray::fromHex("CEFF"), 1607},
+            };
+            for (const auto &frame : m_frameTypes) {
+                SETTING_FRAME_F30Single_SET(frame.name,
+                                            FRAME_HEADER,
+                                            frame.header.toHex().toUpper());
+                SETTING_FRAME_F30Single_SET(frame.name,
+                                            FRAME_FOOTER,
+                                            frame.footer.toHex().toUpper());
+                SETTING_FRAME_F30Single_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
+            }
+        }
+    } else {
+        m_frameTypes = {};
+    }
 
     initMultSend();
 }
@@ -236,6 +268,10 @@ void FormSerial::onSimulateRecv(const QByteArray &bytes)
     }
 
     while (true) {
+        if (m_frameTypes.isEmpty()) {
+            m_buffer.clear();
+            return;
+        }
         int firstHeaderIdx = -1;
         FrameType current_frame;
 
@@ -715,6 +751,10 @@ void FormSerial::onReadyRead()
     }
 
     while (true) {
+        if (m_frameTypes.isEmpty()) {
+            m_buffer.clear();
+            return;
+        }
         int firstHeaderIdx = -1;
         FrameType current_frame;
 

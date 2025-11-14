@@ -40,4 +40,8 @@ MySetting::MySetting()
 {
     m_settings[SETTING::CONFIG] = new QSettings("config/config.ini", QSettings::IniFormat);
     m_settings[SETTING::FRAME] = new QSettings("config/frame.ini", QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F30_SINGLE] = new QSettings("config/frame_F30_single.ini",
+                                                          QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F30_CURVES] = new QSettings("config/frame_F30_curves.ini",
+                                                          QSettings::IniFormat);
 }
