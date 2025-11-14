@@ -13,8 +13,6 @@ class FormPlotSimulate : public QWidget
 public:
     struct INI_SIMULATE
     {
-        QStringList head;
-        QStringList tail;
         QString file;
         QString option_correction;
     };

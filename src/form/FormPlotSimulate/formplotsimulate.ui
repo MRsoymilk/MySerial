@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>PlotSimulate</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -26,7 +26,25 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="2" column="0">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayoutOption">
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelCorrection">
+       <property name="text">
+        <string>correction</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="checkBoxCorrection">
+       <property name="text">
+        <string>enable</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
     <layout class="QHBoxLayout" name="hLayLoad">
      <item>
       <widget class="QLineEdit" name="lineEditPath"/>
@@ -47,49 +65,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="labelHead">
-       <property name="text">
-        <string>head</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEditHead"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="labelTail">
-       <property name="text">
-        <string>tail</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEditTail"/>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <layout class="QFormLayout" name="formLayoutOption">
-     <item row="0" column="0">
-      <widget class="QLabel" name="labelCorrection">
-       <property name="text">
-        <string>correction</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QCheckBox" name="checkBoxCorrection">
-       <property name="text">
-        <string>enable</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
+   <item row="2" column="0">
     <widget class="QProgressBar" name="progressBar">
      <property name="value">
       <number>0</number>
@@ -99,8 +75,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>lineEditHead</tabstop>
-  <tabstop>lineEditTail</tabstop>
   <tabstop>lineEditPath</tabstop>
   <tabstop>btnLoadFile</tabstop>
   <tabstop>toolButtonRe</tabstop>
