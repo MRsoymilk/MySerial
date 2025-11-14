@@ -77,8 +77,8 @@ void ShowCorrectionCurve::init()
     ui->doubleSpinBoxStep->setValue(1.5);
 
     m_load_data = false;
-    ui->tBtnLoadData->setCheckable(true);
-    ui->tBtnLoadData->setChecked(m_load_data);
+    ui->tBtnLoadDataFromInput->setCheckable(true);
+    ui->tBtnLoadDataFromCSV->setCheckable(true);
 }
 
 void ShowCorrectionCurve::on_tBtnPrev_clicked()
@@ -101,10 +101,10 @@ void ShowCorrectionCurve::on_tBtnNext_clicked()
     ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
 }
 
-void ShowCorrectionCurve::on_tBtnLoadData_clicked()
+void ShowCorrectionCurve::on_tBtnLoadDataFromInput_clicked()
 {
     m_load_data = !m_load_data;
-    ui->tBtnLoadData->setChecked(m_load_data);
+    ui->tBtnLoadDataFromInput->setChecked(m_load_data);
 
     if (m_load_data) {
         DataInput input;
@@ -130,6 +130,7 @@ void ShowCorrectionCurve::on_doubleSpinBoxOffset_valueChanged(double offset)
 {
     updateIndex();
 }
+
 void ShowCorrectionCurve::on_doubleSpinBoxStep_valueChanged(double step)
 {
     updateIndex();
@@ -148,4 +149,78 @@ void ShowCorrectionCurve::updateIndex()
             m_model->setItem(i, 0, new QStandardItem(QString::number(idx)));
         }
     }
+}
+
+void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
+{
+    m_load_data = !m_load_data;
+    ui->tBtnLoadDataFromCSV->setChecked(m_load_data);
+
+    if (!m_load_data) {
+        emit useLoadedThreshold(false, {});
+        return;
+    }
+
+    // 选择 CSV 文件
+    QString filePath = QFileDialog::getOpenFileName(this,
+                                                    tr("选择数据 CSV 文件"),
+                                                    "",
+                                                    tr("CSV Files (*.csv)"));
+
+    if (filePath.isEmpty()) {
+        ui->tBtnLoadDataFromCSV->setChecked(false);
+        m_load_data = false;
+        return;
+    }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, tr("错误"), tr("无法打开文件"));
+        return;
+    }
+
+    QTextStream in(&file);
+
+    QList<double> values;
+    m_model->removeRows(0, m_model->rowCount());
+
+    bool firstLine = true; // 跳过表头
+
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty())
+            continue;
+
+        // 跳过表头行
+        if (firstLine) {
+            firstLine = false;
+            continue;
+        }
+
+        QStringList parts = line.split(",");
+        if (parts.size() < 2)
+            continue;
+
+        double indexVal = parts[0].toDouble();
+        double thresholdVal = parts[1].toDouble();
+
+        // 添加到模型
+        QList<QStandardItem *> rowItems;
+        rowItems << new QStandardItem(QString::number(indexVal));
+        rowItems << new QStandardItem(QString::number(thresholdVal));
+        m_model->appendRow(rowItems);
+
+        values.append(thresholdVal);
+    }
+
+    file.close();
+
+    emit useLoadedThreshold(true, values);
+}
+
+void ShowCorrectionCurve::on_btnApplyOption_clicked()
+{
+    double step = ui->doubleSpinBoxStep->value();
+    double offset = ui->doubleSpinBoxOffset->value();
+    emit useLoadedThreadsholdOption(offset, step);
 }

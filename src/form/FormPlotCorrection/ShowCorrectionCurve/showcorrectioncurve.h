@@ -32,6 +32,7 @@ public:
 signals:
     void windowClose();
     void useLoadedThreshold(bool isUse, QVector<double> v);
+    void useLoadedThreadsholdOption(const double &offset, const double &step);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -39,9 +40,13 @@ protected:
 private slots:
     void on_tBtnPrev_clicked();
     void on_tBtnNext_clicked();
-    void on_tBtnLoadData_clicked();
+    void on_tBtnLoadDataFromInput_clicked();
     void on_doubleSpinBoxOffset_valueChanged(double offset);
     void on_doubleSpinBoxStep_valueChanged(double step);
+
+    void on_tBtnLoadDataFromCSV_clicked();
+
+    void on_btnApplyOption_clicked();
 
 private:
     void init();

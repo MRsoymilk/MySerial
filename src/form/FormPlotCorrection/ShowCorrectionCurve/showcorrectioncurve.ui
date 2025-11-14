@@ -23,7 +23,7 @@
       <enum>QTabWidget::TabShape::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::TextElideMode::ElideLeft</enum>
@@ -117,6 +117,13 @@
           <widget class="QDoubleSpinBox" name="doubleSpinBoxStep"/>
          </item>
          <item>
+          <widget class="QPushButton" name="btnApplyOption">
+           <property name="text">
+            <string>Apply Option</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
@@ -134,9 +141,16 @@
        <item row="1" column="0" colspan="2">
         <layout class="QHBoxLayout" name="hLayTools">
          <item>
-          <widget class="QToolButton" name="tBtnLoadData">
+          <widget class="QToolButton" name="tBtnLoadDataFromCSV">
            <property name="text">
-            <string>load data</string>
+            <string>load data from .csv</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnLoadDataFromInput">
+           <property name="text">
+            <string>load data from input</string>
            </property>
           </widget>
          </item>

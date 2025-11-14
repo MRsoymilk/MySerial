@@ -32,6 +32,7 @@ signals:
                                const double &yMax,
                                const double &temperature);
     void useLoadedThreshold(bool isUse, QVector<double> v);
+    void useLoadedThreadsholdOption(const double &offset, const double &step);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

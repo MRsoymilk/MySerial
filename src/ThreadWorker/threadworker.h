@@ -21,7 +21,7 @@ public slots:
                        const double &temperature);
     void onEnableCorrection(bool enable, const QJsonObject &params);
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
-
+    void onUseLoadedThreadsholdOption(const double &offset, const double &step);
 signals:
     void pointsReady4k(const QVector<double> &v14,
                        const QVector<double> &v24,

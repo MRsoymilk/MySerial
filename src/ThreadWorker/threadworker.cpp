@@ -93,7 +93,7 @@ void ThreadWorker::processCurve14(const QByteArray &data14,
         }
     }
 }
-static int debug_count = 0;
+
 void ThreadWorker::processCurve24(const QByteArray &data24,
                                   QVector<double> &v_voltage24,
                                   QVector<double> &raw24,
@@ -183,6 +183,9 @@ void ThreadWorker::processDataF30(const QByteArray &data31, const QByteArray &da
     double xMin, xMax;
     xMin = 0;
     xMax = std::max(v_voltage31.size(), v_voltage33.size());
+    if (m_correction_enable) {
+        applyThreshold(m_threshold, raw33, raw31, 0);
+    }
     emit dataReady4k(out33, out31, xMin, xMax, yMin, yMax);
     emit pointsReady4k(v_voltage33, v_voltage31, raw33, raw31);
 }
@@ -201,10 +204,10 @@ void ThreadWorker::processData4k(const QByteArray &data14,
     int numPoints = 0;
 
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
-        || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
+        || m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
         processCurve14(data14, v_voltage14, raw14, yMin, yMax, yMax14);
         processCurve24(data24, v_voltage24, raw24, yMin, yMax);
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
         processCurve24(data24, v_voltage24, raw24, yMin, yMax);
     }
 
@@ -230,7 +233,7 @@ void ThreadWorker::processData4k(const QByteArray &data14,
             ++index;
         }
         xMax = std::min(out14.size(), out24.size());
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
         xMin = 980;
         xMax = std::min(xMin + v_voltage24.size(), xMin + 660);
         out14.clear();
@@ -410,6 +413,12 @@ void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<double> threshold)
 {
     m_use_loaded_threshold = isUse;
     m_threshold = threshold;
+}
+
+void ThreadWorker::onUseLoadedThreadsholdOption(const double &offset, const double &step)
+{
+    m_correction_offset = offset;
+    m_correction_step = step;
 }
 
 void ThreadWorker::processF30Curve31(const QByteArray &data31,

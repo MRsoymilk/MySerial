@@ -98,6 +98,7 @@ void FormPlotCorrection::init()
     }
     connect(m_formSin, &FormFittingSin::sendSin, this, &FormPlotCorrection::sendSin);
     connect(m_formArcSin, &FormFittingArcSin::sendSin, this, &FormPlotCorrection::sendSin);
+
     ui->tBtnShowCorrectionCurve->setCheckable(true);
 }
 
@@ -160,6 +161,10 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
                     &ShowCorrectionCurve::useLoadedThreshold,
                     this,
                     &FormPlotCorrection::useLoadedThreshold);
+            connect(arcSinShow,
+                    &ShowCorrectionCurve::useLoadedThreadsholdOption,
+                    this,
+                    &FormPlotCorrection::useLoadedThreadsholdOption);
             connect(this, &FormPlotCorrection::windowClose, this, [=]() { arcSinShow->close(); });
             arcSinShow->show();
 
