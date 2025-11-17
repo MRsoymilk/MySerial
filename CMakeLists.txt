@@ -13,100 +13,161 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools)
 
+set(FORM_SERIAL
+    src/form/serial/formserial.h
+    src/form/serial/formserial.cpp
+    src/form/serial/formserial.ui
+    src/form/serial/LineSend/linesend.h
+    src/form/serial/LineSend/linesend.cpp
+    src/form/serial/LineSend/linesend.ui
+)
+
+set(FORM_PLOT
+    src/form/plot/formplot.h
+    src/form/plot/formplot.cpp
+    src/form/plot/formplot.ui
+    src/form/plot/PeakTrajectory/peaktrajectory.h
+    src/form/plot/PeakTrajectory/peaktrajectory.cpp
+    src/form/plot/PeakTrajectory/peaktrajectory.ui
+)
+
+set(FORM_LOG
+    src/form/log/formlog.h
+    src/form/log/formlog.cpp
+    src/form/log/formlog.ui
+)
+
+set(FORM_DATA
+    src/form/data/formdata.h
+    src/form/data/formdata.cpp
+    src/form/data/formdata.ui
+)
+
+set(FORM_SETTING
+    src/form/setting/formsetting.h
+    src/form/setting/formsetting.cpp
+    src/form/setting/formsetting.ui
+    src/form/setting/formtip.h
+    src/form/setting/formtip.cpp
+    src/form/setting/formtip.ui
+    src/form/setting/AutoUpdate/autoupdate.h
+    src/form/setting/AutoUpdate/autoupdate.cpp
+    src/form/setting/AutoUpdate/autoupdate.ui
+    src/form/setting/ExternalControl/externalcontrol.h
+    src/form/setting/ExternalControl/externalcontrol.cpp
+    src/form/setting/ExternalControl/externalcontrol.ui
+)
+
+set(SRC_ENHANCE
+    src/enhance/DraggableLine/draggableline.h
+    src/enhance/DraggableLine/draggableline.cpp
+    src/enhance/MyChartView/mychartview.h
+    src/enhance/MyChartView/mychartview.cpp
+)
+
+set(SRC_MODULE
+    src/module/server/server.h
+    src/module/server/server.cpp
+    src/module/httpclient/httpclient.h
+    src/module/httpclient/httpclient.cpp
+)
+
+set(PLOT_DATA
+    src/form/FormPlotData/formplotdata.h
+    src/form/FormPlotData/formplotdata.cpp
+    src/form/FormPlotData/formplotdata.ui
+)
+
+set(PLOT_CORRECTION
+    src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.h
+    src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp
+    src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui
+    src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.h
+    src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.cpp
+    src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.ui
+    src/form/FormPlotCorrection/formplotcorrection.h
+    src/form/FormPlotCorrection/formplotcorrection.cpp
+    src/form/FormPlotCorrection/formplotcorrection.ui
+    src/form/FormPlotCorrection/fitting/formfittingkb.h
+    src/form/FormPlotCorrection/fitting/formfittingkb.cpp
+    src/form/FormPlotCorrection/fitting/formfittingkb.ui
+    src/form/FormPlotCorrection/fitting/formfittingsin.h
+    src/form/FormPlotCorrection/fitting/formfittingsin.cpp
+    src/form/FormPlotCorrection/fitting/formfittingsin.ui
+    src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.h
+    src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp
+    src/form/FormPlotCorrection/fitting/formfittingself.h
+    src/form/FormPlotCorrection/fitting/formfittingself.cpp
+    src/form/FormPlotCorrection/fitting/formfittingself.ui
+    src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.h
+    src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp
+    src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.ui
+    src/form/FormPlotCorrection/fitting/formfittingarcsin.h
+    src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp
+    src/form/FormPlotCorrection/fitting/formfittingarcsin.ui
+)
+
+set(FORM_PLAY
+    src/form/play/formplaympu6050.h
+    src/form/play/formplaympu6050.cpp
+    src/form/play/formplaympu6050.ui
+)
+
+set(PLOT_HISTORY
+    src/form/FormPlotHistory/formplothistory.h
+    src/form/FormPlotHistory/formplothistory.cpp
+    src/form/FormPlotHistory/formplothistory.ui
+    src/form/FormPlotSimulate/formplotsimulate.h
+)
+
+set(PLOT_SIMULATE
+    src/form/FormPlotSimulate/formplotsimulate.cpp
+    src/form/FormPlotSimulate/formplotsimulate.ui
+)
+
+set(SRC_MAIN
+    src/main/main.cpp
+    src/main/mainwindow.cpp
+    src/main/mainwindow.h
+    src/main/mainwindow.ui
+)
+
+set(SRC_THREADWORKER
+    src/ThreadWorker/threadworker.h
+    src/ThreadWorker/threadworker.cpp
+)
+set(SRC_COMMON
+    src/common/mysetting.h
+    src/common/mysetting.cpp
+    src/common/mylog.h
+    src/common/mylog.cpp
+    src/common/UILogSink.h
+)
+
+set(SRC_INCLUDE
+    src/include/keydef.h
+    src/include/datadef.h
+    src/include/funcdef.h
+    src/include/global.h
+)
+
 set(PROJECT_SOURCES
-        src/main/main.cpp
-        src/main/mainwindow.cpp
-        src/main/mainwindow.h
-        src/main/mainwindow.ui
-        src/ThreadWorker/threadworker.h
-        src/ThreadWorker/threadworker.cpp
-        src/module/server/server.h
-        src/module/server/server.cpp
-        src/form/serial/formserial.h
-        src/form/serial/formserial.cpp
-        src/form/serial/formserial.ui
-        src/form/serial/LineSend/linesend.h
-        src/form/serial/LineSend/linesend.cpp
-        src/form/serial/LineSend/linesend.ui
-        src/form/plot/formplot.h
-        src/form/plot/formplot.cpp
-        src/form/plot/formplot.ui
-        src/form/data/formdata.h
-        src/form/data/formdata.cpp
-        src/form/data/formdata.ui
-        src/form/log/formlog.h
-        src/form/log/formlog.cpp
-        src/form/log/formlog.ui
-        src/form/plot/PeakTrajectory/peaktrajectory.h
-        src/form/plot/PeakTrajectory/peaktrajectory.cpp
-        src/form/plot/PeakTrajectory/peaktrajectory.ui
-        src/enhance/DraggableLine/draggableline.h
-        src/enhance/DraggableLine/draggableline.cpp
-        src/enhance/MyChartView/mychartview.h
-        src/enhance/MyChartView/mychartview.cpp
-        src/form/FormPlotData/formplotdata.h
-        src/form/FormPlotData/formplotdata.cpp
-        src/form/FormPlotData/formplotdata.ui
-        src/form/FormPlotHistory/formplothistory.h
-        src/form/FormPlotHistory/formplothistory.cpp
-        src/form/FormPlotHistory/formplothistory.ui
-        src/form/FormPlotSimulate/formplotsimulate.h
-        src/form/FormPlotSimulate/formplotsimulate.cpp
-        src/form/FormPlotSimulate/formplotsimulate.ui
-        src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.h
-        src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp
-        src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui
-        src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.h
-        src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.cpp
-        src/form/FormPlotCorrection/ShowCorrectionCurve/DataInput/datainput.ui
-        src/form/FormPlotCorrection/formplotcorrection.h
-        src/form/FormPlotCorrection/formplotcorrection.cpp
-        src/form/FormPlotCorrection/formplotcorrection.ui
-        src/form/FormPlotCorrection/fitting/formfittingkb.h
-        src/form/FormPlotCorrection/fitting/formfittingkb.cpp
-        src/form/FormPlotCorrection/fitting/formfittingkb.ui
-        src/form/FormPlotCorrection/fitting/formfittingsin.h
-        src/form/FormPlotCorrection/fitting/formfittingsin.cpp
-        src/form/FormPlotCorrection/fitting/formfittingsin.ui
-        src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.h
-        src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp
-        src/form/FormPlotCorrection/fitting/formfittingself.h
-        src/form/FormPlotCorrection/fitting/formfittingself.cpp
-        src/form/FormPlotCorrection/fitting/formfittingself.ui
-        src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.h
-        src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp
-        src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.ui
-        src/form/FormPlotCorrection/fitting/formfittingarcsin.h
-        src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp
-        src/form/FormPlotCorrection/fitting/formfittingarcsin.ui
-        src/module/httpclient/httpclient.h
-        src/module/httpclient/httpclient.cpp
-        src/form/setting/formsetting.h
-        src/form/setting/formsetting.cpp
-        src/form/setting/formsetting.ui
-        src/form/setting/formtip.h
-        src/form/setting/formtip.cpp
-        src/form/setting/formtip.ui
-        src/form/setting/AutoUpdate/autoupdate.h
-        src/form/setting/AutoUpdate/autoupdate.cpp
-        src/form/setting/AutoUpdate/autoupdate.ui
-        src/form/setting/ExternalControl/externalcontrol.h
-        src/form/setting/ExternalControl/externalcontrol.cpp
-        src/form/setting/ExternalControl/externalcontrol.ui
-        src/form/serial/SerialWorker/serialworker.h
-        src/form/serial/SerialWorker/serialworker.cpp
-        src/form/play/formplaympu6050.h
-        src/form/play/formplaympu6050.cpp
-        src/form/play/formplaympu6050.ui
-        src/common/mysetting.h
-        src/common/mysetting.cpp
-        src/common/mylog.h
-        src/common/mylog.cpp
-        src/common/UILogSink.h
-        src/include/keydef.h
-        src/include/datadef.h
-        src/include/funcdef.h
-        src/include/global.h
+        ${SRC_MAIN}
+        ${SRC_THREADWORKER}
+        ${SRC_MODULE}
+        ${SRC_ENHANCE}
+        ${SRC_COMMON}
+        ${SRC_INCLUDE}
+        ${FORM_SERIAL}
+        ${FORM_PLOT}
+        ${FORM_DATA}
+        ${FORM_LOG}
+        ${FORM_SETTING}
+        ${FORM_PLAY}
+        ${PLOT_DATA}
+        ${PLOT_CORRECTION}
+        ${PLOT_HISTORY}
+        ${PLOT_SIMULATE}
         res.qrc
 )
 
