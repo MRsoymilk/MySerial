@@ -28,9 +28,7 @@ private:
     Ui::FormSetting *ui;
 
     AutoUpdate *m_autoUpdate;
-    Calculate *m_calculate;
     ExternalControl *m_externalControl;
-    FrameSetting *m_frameSetting;
 };
 
 #endif // FORMSETTING_H

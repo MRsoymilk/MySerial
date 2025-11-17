@@ -90,18 +90,9 @@ set(PROJECT_SOURCES
         src/form/setting/AutoUpdate/autoupdate.h
         src/form/setting/AutoUpdate/autoupdate.cpp
         src/form/setting/AutoUpdate/autoupdate.ui
-        src/form/setting/Calculate/calculate.h
-        src/form/setting/Calculate/calculate.cpp
-        src/form/setting/Calculate/calculate.ui
         src/form/setting/ExternalControl/externalcontrol.h
         src/form/setting/ExternalControl/externalcontrol.cpp
         src/form/setting/ExternalControl/externalcontrol.ui
-        src/form/setting/FrameSetting/framesetting.h
-        src/form/setting/FrameSetting/framesetting.cpp
-        src/form/setting/FrameSetting/framesetting.ui
-        src/form/setting/FrameSetting/LengthCalc/lengthcalc.h
-        src/form/setting/FrameSetting/LengthCalc/lengthcalc.cpp
-        src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui
         src/form/serial/SerialWorker/serialworker.h
         src/form/serial/SerialWorker/serialworker.cpp
         src/form/play/formplaympu6050.h
