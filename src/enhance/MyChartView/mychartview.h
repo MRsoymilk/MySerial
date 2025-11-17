@@ -149,13 +149,17 @@ protected:
         // 找最近点
         QPointF closestPoint;
         QString seriesName;
-        qreal minDist = std::numeric_limits<qreal>::max();
+        qreal minXDist = std::numeric_limits<qreal>::max();
+        qreal minYDist = std::numeric_limits<qreal>::max();
         for (auto *series : m_chart->series()) {
             if (auto *xySeries = qobject_cast<QXYSeries *>(series)) {
                 for (const QPointF &p : xySeries->points()) {
-                    qreal dist = std::hypot(p.x() - x, p.y() - y);
-                    if (dist < minDist) {
-                        minDist = dist;
+                    qreal dx = std::abs(p.x() - x);
+                    qreal dy = std::abs(p.y() - y);
+
+                    if (dx < minXDist || (qFuzzyCompare(dx, minXDist) && dy < minYDist)) {
+                        minXDist = dx;
+                        minYDist = dy;
                         closestPoint = p;
                         seriesName = xySeries->name();
                     }
