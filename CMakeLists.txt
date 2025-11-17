@@ -37,8 +37,6 @@ set(PROJECT_SOURCES
         src/form/log/formlog.h
         src/form/log/formlog.cpp
         src/form/log/formlog.ui
-        src/form/plot/3d/myglcurvewidget.h
-        src/form/plot/3d/myglcurvewidget.cpp
         src/form/plot/PeakTrajectory/peaktrajectory.h
         src/form/plot/PeakTrajectory/peaktrajectory.cpp
         src/form/plot/PeakTrajectory/peaktrajectory.ui
