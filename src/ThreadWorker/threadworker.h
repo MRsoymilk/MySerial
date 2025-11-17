@@ -52,46 +52,29 @@ private:
                            QVector<double> &raw33,
                            double &yMin,
                            double &yMax);
-    void processCurve31(const QByteArray &data31,
-                        QVector<double> &v_voltage31,
-                        QVector<double> &raw31,
-                        double &yMin,
-                        double &yMax);
-    void processCurve33(const QByteArray &data33,
-                        QVector<double> &v_voltage33,
-                        QVector<double> &raw33,
-                        double &yMin,
-                        double &yMax);
+    void processF15Curve31(const QByteArray &data31,
+                           QVector<double> &v_voltage31,
+                           QVector<double> &raw31,
+                           double &yMin,
+                           double &yMax);
+    void processF15Curve33(const QByteArray &data33,
+                           QVector<double> &v_voltage33,
+                           QVector<double> &raw33,
+                           double &yMin,
+                           double &yMax);
     void applyThreshold(const QVector<double> &threshold,
                         const QVector<double> &raw31,
                         const QVector<double> &raw33,
                         const double &temperature);
 
 private:
-    double m_time = 0.0;
-    const double m_fs = 3600.0;
-    const double m_T = 1.0 / m_fs;
     int m_offset33 = 0;
     int m_offset31 = 0;
     int m_algorithm = 0;
-    int m_index_algorithm_neg_max95 = 0;
     QLineSeries *m_series;
     bool m_correction_enable = false;
     double m_correction_offset = 900;
     double m_correction_step = 1.5;
-    double m_correction_num = 535;
-    QString m_formula;
-    struct CORRECTION_SIN
-    {
-        double k1, b1, k2, b2, y0, A, xc, w, T;
-    } m_correction_sin;
-    struct CORRECTION_ARCSIN
-    {
-        double k1, b1, k2, b2;
-        double l_k, l_b, l_d, l_alpha;
-        double r_k, r_b, r_d, r_alpha;
-        double T;
-    } m_correction_arcsin;
     QVector<double> m_threshold;
     bool m_use_loaded_threshold = false;
 };

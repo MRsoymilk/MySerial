@@ -29,11 +29,11 @@ void ThreadWorker::setAlgorithm(int algorithm)
     m_algorithm = algorithm;
 }
 
-void ThreadWorker::processCurve31(const QByteArray &data31,
-                                  QVector<double> &v_voltage31,
-                                  QVector<double> &raw31,
-                                  double &yMin,
-                                  double &yMax)
+void ThreadWorker::processF15Curve31(const QByteArray &data31,
+                                     QVector<double> &v_voltage31,
+                                     QVector<double> &raw31,
+                                     double &yMin,
+                                     double &yMax)
 {
     QByteArray payload = data31.mid(5, data31.size() - 7);
     int remainder = payload.size() % 3;
@@ -89,11 +89,11 @@ void ThreadWorker::processCurve31(const QByteArray &data31,
     }
 }
 
-void ThreadWorker::processCurve33(const QByteArray &data33,
-                                  QVector<double> &v_voltage33,
-                                  QVector<double> &raw33,
-                                  double &yMin,
-                                  double &yMax)
+void ThreadWorker::processF15Curve33(const QByteArray &data33,
+                                     QVector<double> &v_voltage33,
+                                     QVector<double> &raw33,
+                                     double &yMin,
+                                     double &yMax)
 {
     {
         QByteArray payload = data33.mid(5, data33.size() - 7);
@@ -192,10 +192,10 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
     int numPoints = 0;
 
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
-        processCurve31(data31, v_voltage31, raw31, yMin, yMax);
-        processCurve33(data33, v_voltage33, raw33, yMin, yMax);
+        processF15Curve31(data31, v_voltage31, raw31, yMin, yMax);
+        processF15Curve33(data33, v_voltage33, raw33, yMin, yMax);
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
-        processCurve33(data33, v_voltage33, raw33, yMin, yMax);
+        processF15Curve33(data33, v_voltage33, raw33, yMin, yMax);
     }
 
     double xMin = 0.0;
