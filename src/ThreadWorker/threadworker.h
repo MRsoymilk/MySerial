@@ -72,7 +72,6 @@ private:
     int m_offset31 = 0;
     int m_algorithm = 0;
     QLineSeries *m_series;
-    bool m_correction_enable = false;
     double m_correction_offset = 900;
     double m_correction_step = 1.5;
     QVector<double> m_threshold;

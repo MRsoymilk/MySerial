@@ -172,8 +172,8 @@ void ThreadWorker::processDataF30(const QByteArray &data31, const QByteArray &da
     double xMin, xMax;
     xMin = 0;
     xMax = std::max(v_voltage31.size(), v_voltage33.size());
-    if (m_correction_enable) {
-        applyThreshold(m_threshold, raw33, raw31, 0);
+    if (m_use_loaded_threshold) {
+        applyThreshold(m_threshold, raw31, raw33, 0);
     }
     emit plotReady4k(out31, out33, xMin, xMax, yMin, yMax);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
@@ -220,7 +220,7 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
         xMax = numPoints;
     }
 
-    if (m_correction_enable) {
+    if (m_use_loaded_threshold) {
         applyThreshold(m_threshold, raw31, raw33, temperature);
     }
 
@@ -229,16 +229,16 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
 }
 
 void ThreadWorker::applyThreshold(const QVector<double> &threshold,
-                                  const QVector<double> &raw14,
-                                  const QVector<double> &raw24,
+                                  const QVector<double> &raw31,
+                                  const QVector<double> &raw33,
                                   const double &temperature)
 {
     QList<QPointF> out_correction;
     int idx_max = 0;
     int raw_max = INT_MIN;
-    for (int i = 0; i < raw14.size(); ++i) {
-        if (raw_max < raw14[i]) {
-            raw_max = raw14[i];
+    for (int i = 0; i < raw33.size(); ++i) {
+        if (raw_max < raw33[i]) {
+            raw_max = raw33[i];
             idx_max = i;
         }
     }
@@ -247,34 +247,31 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     double y_min_correction = std::numeric_limits<double>::max();
     double y_max_correction = std::numeric_limits<double>::lowest();
 
-    int start_idx = idx_max; // 从 raw14 最大值位置开始
+    int start_idx = idx_max;
     for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
         int best_idx = -1;
         int best_diff = INT_MAX;
 
-        // 只在剩余的 raw14 中寻找最近点
-        for (int j = start_idx; j < raw14.size(); ++j) {
-            int diff = std::abs(raw14[j] - threshold[idx_threshold]);
+        for (int j = start_idx; j < raw33.size(); ++j) {
+            int diff = std::abs(raw33[j] - threshold[idx_threshold]);
             if (diff < best_diff) {
                 best_diff = diff;
                 best_idx = j;
             }
-            // 一旦 raw14[j] 小于 threshold[idx_threshold] 且差值开始变大，可以提前跳出
-            if (raw14[j] < threshold[idx_threshold] && diff > best_diff) {
+            if (raw33[j] < threshold[idx_threshold] && diff > best_diff) {
                 break;
             }
         }
 
-        if (best_idx >= 0 && best_idx < raw24.size()) {
+        if (best_idx >= 0 && best_idx < raw31.size()) {
             double x = m_correction_offset + idx_threshold * m_correction_step;
-            double y = raw24[best_idx];
+            double y = raw31[best_idx];
             out_correction.push_back(QPointF(x, y));
 
             x_max_correction = std::max(x_max_correction, x);
             y_min_correction = std::min(y_min_correction, y);
             y_max_correction = std::max(y_max_correction, y);
 
-            // 下一次匹配从这里开始，保证顺序不回退
             start_idx = best_idx;
         }
     }
