@@ -60,8 +60,10 @@ private slots:
     void on_spinBox33Offset_valueChanged(int val);
     void on_comboBoxAlgorithm_currentIndexChanged(int index);
     void on_tBtnImgSave_clicked();
-    void on_spinBoxFrom_valueChanged(int val);
-    void on_spinBoxTo_valueChanged(int val);
+    void on_spinBoxStartX_valueChanged(int val);
+    void on_spinBoxEndX_valueChanged(int val);
+    void on_spinBoxStartY_valueChanged(int val);
+    void on_spinBoxEndY_valueChanged(int val);
     void on_dSpinBoxStep_valueChanged(double arg1);
     void on_tBtnStep_clicked();
     void on_tBtnFindPeak_clicked();
@@ -69,6 +71,8 @@ private slots:
     void on_tBtnOffset_clicked();
     void on_tBtnFWHM_clicked();
     void on_checkBoxTrajectory_clicked();
+    void on_tBtnRangeX_clicked();
+    void on_tBtnRangeY_clicked();
 
 private:
     void init();

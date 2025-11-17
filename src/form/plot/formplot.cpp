@@ -185,6 +185,8 @@ void FormPlot::initToolButtons()
     ui->tBtnFindPeak->setCheckable(true);
     ui->tBtnPause->setCheckable(true);
     ui->tBtnFWHM->setCheckable(true);
+    ui->tBtnRangeX->setCheckable(true);
+    ui->tBtnRangeY->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -234,7 +236,11 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data31,
     m_series33->replace(data33);
     m_series33->setName(tr("curve33"));
 
-    m_axisX->setRange(xMin, xMax);
+    if (ui->tBtnRangeX->isChecked()) {
+        m_axisX->setRange(ui->spinBoxStartX->value(), ui->spinBoxEndX->value());
+    } else {
+        m_axisX->setRange(xMin, xMax);
+    }
     if (m_autoZoom) {
         double padding = (yMax - yMin) * 0.1;
         if (padding == 0) {
@@ -242,7 +248,7 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data31,
         }
         m_axisY->setRange(yMin - padding, yMax + padding);
     } else {
-        m_axisY->setRange(m_fixedYMin, m_fixedYMax);
+        m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
     }
 }
 
@@ -357,25 +363,43 @@ void FormPlot::on_tBtnImgSave_clicked()
     }
 }
 
-void FormPlot::on_spinBoxFrom_valueChanged(int val)
+void FormPlot::on_spinBoxStartX_valueChanged(int val)
 {
-    int to = ui->spinBoxTo->value();
-    if (to == 0) {
-        to = m_axisX->max();
-    }
-    if (val < to) {
-        m_axisX->setRange(val, to);
+    if (ui->tBtnRangeX->isChecked()) {
+        int from = ui->spinBoxStartX->value();
+        if (from == 0) {
+            from = m_axisX->min();
+        }
+        if (from < val) {
+            m_axisX->setRange(from, val);
+        }
     }
 }
 
-void FormPlot::on_spinBoxTo_valueChanged(int val)
+void FormPlot::on_spinBoxEndX_valueChanged(int val)
 {
-    int from = ui->spinBoxFrom->value();
-    if (from == 0) {
-        from = m_axisX->min();
+    if (ui->tBtnRangeX->isChecked()) {
+        int to = ui->spinBoxEndX->value();
+        if (to == 0) {
+            to = m_axisX->max();
+        }
+        if (val < to) {
+            m_axisX->setRange(val, to);
+        }
     }
-    if (from < val) {
-        m_axisX->setRange(from, val);
+}
+
+void FormPlot::on_spinBoxStartY_valueChanged(int val)
+{
+    if (ui->tBtnRangeY->isChecked()) {
+        m_axisY->setRange(val, m_axisY->max());
+    }
+}
+
+void FormPlot::on_spinBoxEndY_valueChanged(int val)
+{
+    if (ui->tBtnRangeY->isChecked()) {
+        m_axisY->setRange(m_axisY->min(), val);
     }
 }
 
@@ -666,5 +690,19 @@ void FormPlot::on_checkBoxTrajectory_clicked()
             delete m_lineRight;
             m_lineRight = nullptr;
         }
+    }
+}
+
+void FormPlot::on_tBtnRangeX_clicked()
+{
+    if (ui->tBtnRangeX->isChecked()) {
+        m_axisX->setRange(ui->spinBoxStartX->value(), ui->spinBoxEndX->value());
+    }
+}
+
+void FormPlot::on_tBtnRangeY_clicked()
+{
+    if (ui->tBtnRangeY->isChecked()) {
+        m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
     }
 }
