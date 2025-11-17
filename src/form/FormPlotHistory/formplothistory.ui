@@ -80,7 +80,7 @@
        <item>
         <layout class="QHBoxLayout" name="hLay14Status">
          <item>
-          <widget class="QLabel" name="labelStatus14">
+          <widget class="QLabel" name="labelStatus31">
            <property name="text">
             <string>status</string>
            </property>
@@ -134,7 +134,7 @@
        <item>
         <layout class="QHBoxLayout" name="hLay24Status">
          <item>
-          <widget class="QLabel" name="labelStatus24">
+          <widget class="QLabel" name="labelStatus33">
            <property name="text">
             <string>status</string>
            </property>

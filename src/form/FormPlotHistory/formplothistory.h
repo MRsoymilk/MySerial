@@ -35,8 +35,8 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 public slots:
-    void onHistoryRecv(const QList<QPointF> &data14,
-                       const QList<QPointF> &data24,
+    void onHistoryRecv(const QList<QPointF> &data31,
+                       const QList<QPointF> &data33,
                        const double &temperature);
     void onTemperature(double temperature);
 
@@ -55,19 +55,19 @@ private slots:
     void on_tBtnToPlot_clicked();
 
 private:
-    void updatePlot14();
-    void updatePlot24();
+    void updatePlot31();
+    void updatePlot33();
     void updatePlot(int index = 0);
     void init();
     void getFittingChart();
 
 private:
     Ui::FormPlotHistory *ui;
-    QList<QList<QPointF>> m_p14, m_p24;
+    QList<QList<QPointF>> m_p31, m_p33;
     QList<double> m_temperature;
     int m_index_31, m_index_33;
-    MyChartView *m_chartView14Split = nullptr;
-    MyChartView *m_chartView24Split = nullptr;
+    MyChartView *m_chartView31Split = nullptr;
+    MyChartView *m_chartView33Split = nullptr;
     MyChartView *m_chartMix = nullptr;
     QChart *m_chart = nullptr;
     QWidget *m_widgetSplit = nullptr;
