@@ -20,8 +20,6 @@ set(PROJECT_SOURCES
         src/main/mainwindow.ui
         src/ThreadWorker/threadworker.h
         src/ThreadWorker/threadworker.cpp
-        src/ThreadWorker/MethodThreshold/methodthreshold.h
-        src/ThreadWorker/MethodThreshold/methodthreshold.cpp
         src/module/server/server.h
         src/module/server/server.cpp
         src/form/serial/formserial.h
