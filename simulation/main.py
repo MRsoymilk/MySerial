@@ -50,7 +50,8 @@ def main():
         sys.exit(1)
 
     ser = open_serial(args.port, args.baudrate)
-    cmd_start = bytes([0xDD, 0x3C, 0x00, 0x01, 0x30, 0xCD, 0xFF])
+    cmd_start = bytes([0xDD, 0x3C, 0x00, 0x03, 0x40, 0xCD, 0xFF])
+    cmd_trans = bytes([0xDD, 0x3C, 0x00, 0x03, 0x30, 0xCD, 0xFF])
 
     try:
         print("[INFO] Waiting for start command...")
@@ -63,7 +64,17 @@ def main():
                     ser.write(packet)
                     if args.delay > 0:
                         time.sleep(args.delay)
+                print("send temperature")
+                ser.write(bytes([0x6e, 0xf0]))
                 print("[INFO] All packets sent.")
+            elif recv == bytes([0xdd, 0x3c, 0x00, 0x03, 0x10, 0xcd, 0xff]):
+                print("shake hands")
+                ser.write(bytes([0xdd, 0x3c, 0x00, 0x03, 0x11, 0xcd, 0xff]))
+            elif recv == cmd_trans:
+                print("start trans")
+                for i, packet in enumerate(spectrum_packets):
+                    print(f"[SEND] Packet {i} ({len(packet)} bytes)")
+                    ser.write(packet)
             else:
                 if recv:
                     print(f"[RECV] {recv.hex(' ')}")
