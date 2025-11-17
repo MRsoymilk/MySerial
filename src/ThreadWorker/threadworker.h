@@ -10,25 +10,24 @@ class ThreadWorker : public QObject
 public:
     explicit ThreadWorker(QObject *parent = nullptr);
     ~ThreadWorker();
-    void setOffset14(const int &offset);
-    void setOffset24(const int &offset);
+    void setOffset31(const int &offset);
+    void setOffset33(const int &offset);
     void setAlgorithm(int);
 
 public slots:
     void processDataF30(const QByteArray &data31, const QByteArray &data33);
-    void processData4k(const QByteArray &data14,
-                       const QByteArray &data24,
-                       const double &temperature);
-    void onEnableCorrection(bool enable, const QJsonObject &params);
+    void processDataF15(const QByteArray &data31,
+                        const QByteArray &data33,
+                        const double &temperature);
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
     void onUseLoadedThreadsholdOption(const double &offset, const double &step);
 signals:
-    void pointsReady4k(const QVector<double> &v14,
-                       const QVector<double> &v24,
-                       const QVector<double> &raw14,
-                       const QVector<double> &raw24);
-    void dataReady4k(const QList<QPointF> &v14,
-                     const QList<QPointF> &v24,
+    void dataReady4k(const QVector<double> &v31,
+                     const QVector<double> &v33,
+                     const QVector<double> &raw31,
+                     const QVector<double> &raw33);
+    void plotReady4k(const QList<QPointF> &v31,
+                     const QList<QPointF> &v33,
                      const double &xMin,
                      const double &xMax,
                      const double &yMin,
@@ -47,36 +46,33 @@ private:
                            QVector<double> &v_voltage31,
                            QVector<double> &raw31,
                            double &yMin,
-                           double &yMax,
-                           double &yMax31);
+                           double &yMax);
     void processF30Curve33(const QByteArray &data33,
                            QVector<double> &v_voltage33,
                            QVector<double> &raw33,
                            double &yMin,
                            double &yMax);
-    void processCurve14(const QByteArray &data14,
-                        QVector<double> &v_voltage14,
-                        QVector<double> &raw14,
-                        double &yMin,
-                        double &yMax,
-                        double &yMax14);
-    void processCurve24(const QByteArray &data24,
-                        QVector<double> &v_voltage24,
-                        QVector<double> &raw24,
+    void processCurve31(const QByteArray &data31,
+                        QVector<double> &v_voltage31,
+                        QVector<double> &raw31,
                         double &yMin,
                         double &yMax);
-    QVector<double> generateThreshold(const double &temperature);
+    void processCurve33(const QByteArray &data33,
+                        QVector<double> &v_voltage33,
+                        QVector<double> &raw33,
+                        double &yMin,
+                        double &yMax);
     void applyThreshold(const QVector<double> &threshold,
-                        const QVector<double> &raw14,
-                        const QVector<double> &raw24,
+                        const QVector<double> &raw31,
+                        const QVector<double> &raw33,
                         const double &temperature);
 
 private:
     double m_time = 0.0;
     const double m_fs = 3600.0;
     const double m_T = 1.0 / m_fs;
-    int m_offset14 = 0;
-    int m_offset24 = 0;
+    int m_offset33 = 0;
+    int m_offset31 = 0;
     int m_algorithm = 0;
     int m_index_algorithm_neg_max95 = 0;
     QLineSeries *m_series;

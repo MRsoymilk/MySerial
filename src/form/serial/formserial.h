@@ -20,8 +20,8 @@ public:
 
     struct FRAME
     {
-        QByteArray bit14;
-        QByteArray bit24;
+        QByteArray bit31;
+        QByteArray bit33;
     };
 
     struct SERIAL
@@ -57,15 +57,15 @@ public:
 
 signals:
     void recv2PlotF30(const QByteArray &data31, const QByteArray &data33);
-    void recv2DataF30(const QByteArray &data14,
-                      const QByteArray &data24,
+    void recv2DataF30(const QByteArray &data31,
+                      const QByteArray &data33,
                       const QByteArray &temperature = "");
-    void recv2Plot4k(const QByteArray &data14,
-                     const QByteArray &data24,
-                     const double &temperature = 0.0);
-    void recv2Data4k(const QByteArray &data14,
-                     const QByteArray &data24,
-                     const QByteArray &temperature = "");
+    void recv2PlotF15(const QByteArray &data31,
+                      const QByteArray &data33,
+                      const double &temperature = 0.0);
+    void recv2DataF15(const QByteArray &data31,
+                      const QByteArray &data33,
+                      const QByteArray &temperature = "");
     void recv2MPU(const QByteArray &data);
     void recvTemperature(double temperature);
 
@@ -91,6 +91,7 @@ private:
                      const QByteArray &temp = "");
     void loadPage(int page);
     void updateFrameTypes(int idx);
+    void doFrameExtra(const QByteArray &data);
 
 private slots:
     void on_btnRecvSave_clicked();

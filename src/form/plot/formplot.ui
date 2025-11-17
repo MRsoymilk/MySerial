@@ -32,7 +32,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>177</width>
+          <width>208</width>
           <height>70</height>
          </rect>
         </property>
@@ -75,13 +75,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QToolButton" name="tBtn3D">
-       <property name="text">
-        <string>3D</string>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="tBtnMeasureX">
@@ -216,16 +209,16 @@
       <number>0</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="hLay14bit">
+      <layout class="QHBoxLayout" name="hLay31">
        <item>
-        <widget class="QLabel" name="label14">
+        <widget class="QLabel" name="label31">
          <property name="text">
-          <string>offset_14bit</string>
+          <string>offset_31bit</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBox14Offset">
+        <widget class="QSpinBox" name="spinBox31Offset">
          <property name="minimum">
           <number>-10</number>
          </property>
@@ -237,16 +230,16 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="hLay24bit">
+      <layout class="QHBoxLayout" name="hLay33">
        <item>
-        <widget class="QLabel" name="label24">
+        <widget class="QLabel" name="label33">
          <property name="text">
-          <string>offset_24bit</string>
+          <string>offset_33bit</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBox24Offset">
+        <widget class="QSpinBox" name="spinBox33Offset">
          <property name="minimum">
           <number>-10</number>
          </property>

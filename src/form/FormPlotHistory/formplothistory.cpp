@@ -64,28 +64,6 @@ void FormPlotHistory::init()
     ui->tBtnNext24->setObjectName("go-next");
     ui->tBtnNext24->setToolTip(tr("next"));
 
-    QString fitting_k = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_K, "0.0");
-    QString fitting_b = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_B, "0.0");
-    ui->lineEditK->setText(fitting_k);
-    ui->lineEditB->setText(fitting_b);
-    QString conversion = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_CONVERSION, VAL_ENABLE);
-    if (conversion == VAL_ENABLE) {
-        ui->checkBoxConversion->setChecked(true);
-    } else {
-        ui->checkBoxConversion->setChecked(false);
-    }
-    ui->tBtnFittingKB->setCheckable(true);
-    QString fitting_A = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_A, "0.0");
-    QString fitting_y0 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_y0, "0.0");
-    QString fitting_w = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_w, "1.0");
-    QString fitting_xc = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_xc, "0.0");
-    ui->lineEdit_A->setText(fitting_A);
-    ui->lineEdit_y0->setText(fitting_y0);
-    ui->lineEdit_w->setText(fitting_w);
-    ui->lineEdit_xc->setText(fitting_xc);
-    ui->tBtnFittingSin->setCheckable(true);
-    m_fitting = false;
-
     QShortcut *shortcut_prev = new QShortcut(QKeySequence(Qt::Key_Left), this);
     connect(shortcut_prev, &QShortcut::activated, this, &FormPlotHistory::on_tBtnPrev14_clicked);
     QShortcut *shortcut_next = new QShortcut(QKeySequence(Qt::Key_Right), this);
@@ -94,47 +72,47 @@ void FormPlotHistory::init()
 
 void FormPlotHistory::on_tBtnNext14_clicked()
 {
-    if (m_index_14 + 1 < m_p14.size()) {
-        m_index_14++;
+    if (m_index_31 + 1 < m_p14.size()) {
+        m_index_31++;
     } else {
-        m_index_14 = m_p14.size() - 1;
+        m_index_31 = m_p14.size() - 1;
     }
     updatePlot14();
 }
 
 void FormPlotHistory::on_tBtnPrev14_clicked()
 {
-    if (m_index_14 - 1 >= 0) {
-        m_index_14--;
+    if (m_index_31 - 1 >= 0) {
+        m_index_31--;
     } else {
-        m_index_14 = 0;
+        m_index_31 = 0;
     }
     updatePlot14();
 }
 
 void FormPlotHistory::on_tBtnNext24_clicked()
 {
-    if (m_index_24 + 1 < m_p24.size()) {
-        m_index_24++;
+    if (m_index_33 + 1 < m_p24.size()) {
+        m_index_33++;
     } else {
-        m_index_24 = m_p24.size() - 1;
+        m_index_33 = m_p24.size() - 1;
     }
     updatePlot24();
 }
 
 void FormPlotHistory::on_tBtnPrev24_clicked()
 {
-    if (m_index_24 - 1 >= 0) {
-        m_index_24--;
+    if (m_index_33 - 1 >= 0) {
+        m_index_33--;
     } else {
-        m_index_24 = 0;
+        m_index_33 = 0;
     }
     updatePlot24();
 }
 
 void FormPlotHistory::updatePlot14()
 {
-    if (m_index_14 >= m_p14.size() || m_p14.empty()) {
+    if (m_index_31 >= m_p14.size() || m_p14.empty()) {
         QChart *chart = m_chartView14Split->chart();
         for (QAbstractSeries *series : chart->series()) {
             chart->removeSeries(series);
@@ -144,12 +122,12 @@ void FormPlotHistory::updatePlot14()
         return;
     }
 
-    updatePlot(INDEX_14);
+    updatePlot(INDEX_31);
 }
 
 void FormPlotHistory::updatePlot24()
 {
-    if (m_index_24 >= m_p24.size() || m_p24.empty()) {
+    if (m_index_33 >= m_p24.size() || m_p24.empty()) {
         QChart *chart = m_chartView24Split->chart();
         for (QAbstractSeries *series : chart->series()) {
             chart->removeSeries(series);
@@ -159,7 +137,7 @@ void FormPlotHistory::updatePlot24()
         return;
     }
 
-    updatePlot(INDEX_24);
+    updatePlot(INDEX_33);
 }
 
 void FormPlotHistory::updatePlot(int index)
@@ -177,67 +155,67 @@ void FormPlotHistory::updatePlot(int index)
         }
     };
     if (isMix) {
-        if (index == INDEX_14) {
-            if (m_index_14 < m_p24.size()) {
-                m_index_24 = m_index_14;
+        if (index == INDEX_31) {
+            if (m_index_31 < m_p24.size()) {
+                m_index_33 = m_index_31;
             } else {
                 return;
             }
-        } else if (index == INDEX_24) {
-            if (m_index_24 < m_p14.size()) {
-                m_index_14 = m_index_24;
+        } else if (index == INDEX_33) {
+            if (m_index_33 < m_p14.size()) {
+                m_index_31 = m_index_33;
             } else {
                 return;
             }
         }
-        ui->labelTemperature->setText(QString("%1 ℃").arg(m_temperature.at(m_index_24)));
+        ui->labelTemperature->setText(QString("%1 ℃").arg(m_temperature.at(m_index_33)));
         QChart *chart = new QChart();
 
-        QLineSeries *series24 = new QLineSeries();
-        series24->append(m_p24[m_index_24]);
-        series24->setColor(Qt::blue);
-        series24->setName(tr("curve24"));
+        QLineSeries *series33 = new QLineSeries();
+        series33->append(m_p24[m_index_33]);
+        series33->setColor(Qt::blue);
+        series33->setName(tr("curve33"));
 
-        QLineSeries *series14 = new QLineSeries();
-        series14->append(m_p14[m_index_14]);
-        series14->setColor(Qt::magenta);
-        series14->setName(tr("curve14"));
+        QLineSeries *series31 = new QLineSeries();
+        series31->append(m_p14[m_index_31]);
+        series31->setColor(Qt::magenta);
+        series31->setName(tr("curve31"));
 
         chart->setTitle(tr("curve_mix"));
         m_chartMix->setChart(chart);
-        chart->addSeries(series24);
-        chart->addSeries(series14);
+        chart->addSeries(series33);
+        chart->addSeries(series31);
         chart->createDefaultAxes();
         setXAxisInteger(chart);
         ui->stackedWidget->setCurrentWidget(m_widgetMix);
     } else {
         if (isSplit) {
-            if (index == INDEX_14) {
-                if (m_index_14 < m_p24.size()) {
-                    m_index_24 = m_index_14;
+            if (index == INDEX_31) {
+                if (m_index_31 < m_p24.size()) {
+                    m_index_33 = m_index_31;
                 } else {
                     return;
                 }
-            } else if (index == INDEX_24) {
-                if (m_index_24 < m_p14.size()) {
-                    m_index_14 = m_index_24;
+            } else if (index == INDEX_33) {
+                if (m_index_33 < m_p14.size()) {
+                    m_index_31 = m_index_33;
                 } else {
                     return;
                 }
             }
             QChart *chart = new QChart();
             QLineSeries *series = new QLineSeries();
-            if (index == INDEX_14) {
-                series->append(m_p14[m_index_14]);
-                series->setColor(Qt::magenta);
-                series->setName(tr("curve14"));
-                chart->setTitle(tr("curve_14bit"));
+            if (index == INDEX_31) {
+                series->append(m_p14[m_index_31]);
+                series->setColor(Qt::blue);
+                series->setName(tr("curve_31"));
+                chart->setTitle(tr("curve_31"));
                 m_chartView14Split->setChart(chart);
             } else {
-                series->append(m_p24[m_index_24]);
-                series->setColor(Qt::blue);
-                series->setName(tr("curve24"));
-                chart->setTitle(tr("curve_24bit"));
+                series->append(m_p24[m_index_33]);
+                series->setColor(Qt::magenta);
+                series->setName(tr("curve_33"));
+                chart->setTitle(tr("curve_33"));
                 m_chartView24Split->setChart(chart);
             }
             chart->addSeries(series);
@@ -246,13 +224,8 @@ void FormPlotHistory::updatePlot(int index)
             ui->stackedWidget->setCurrentWidget(m_widgetSplit);
         }
     }
-    if (m_fitting) {
-        getFittingChart();
-        clearFitting();
-        drawFitting();
-    }
-    ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
-    ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
+    ui->labelStatus14->setText(QString("%1/%2").arg(m_index_31 + 1).arg(m_p14.size()));
+    ui->labelStatus24->setText(QString("%1/%2").arg(m_index_33 + 1).arg(m_p24.size()));
 }
 
 void FormPlotHistory::closeEvent(QCloseEvent *event)
@@ -275,10 +248,10 @@ void FormPlotHistory::onHistoryRecv(const QList<QPointF> &data14,
         m_p14.append(data14);
         m_p24.append(data24);
         m_temperature.append(temperature);
-        m_index_14 = m_p14.size() - 1;
-        m_index_24 = m_p24.size() - 1;
-        ui->labelStatus14->setText(QString("%1/%2").arg(m_index_14 + 1).arg(m_p14.size()));
-        ui->labelStatus24->setText(QString("%1/%2").arg(m_index_24 + 1).arg(m_p24.size()));
+        m_index_31 = m_p14.size() - 1;
+        m_index_33 = m_p24.size() - 1;
+        ui->labelStatus14->setText(QString("%1/%2").arg(m_index_31 + 1).arg(m_p14.size()));
+        ui->labelStatus24->setText(QString("%1/%2").arg(m_index_33 + 1).arg(m_p24.size()));
         updatePlot14();
         updatePlot24();
         ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
@@ -296,8 +269,8 @@ void FormPlotHistory::on_lineEdit14Go_editingFinished()
 {
     int val = ui->lineEdit14Go->text().toInt();
     if (val > 0 && val <= m_p14.size()) {
-        m_index_14 = val - 1;
-        updatePlot(INDEX_14);
+        m_index_31 = val - 1;
+        updatePlot(INDEX_31);
     }
 }
 
@@ -305,19 +278,19 @@ void FormPlotHistory::on_lineEdit24Go_editingFinished()
 {
     int val = ui->lineEdit24Go->text().toInt();
     if (val > 0 && val <= m_p24.size()) {
-        m_index_24 = val - 1;
-        updatePlot(INDEX_24);
+        m_index_33 = val - 1;
+        updatePlot(INDEX_33);
     }
 }
 
 void FormPlotHistory::on_radioButtonMix_clicked()
 {
-    updatePlot(INDEX_14);
+    updatePlot(INDEX_31);
 }
 
 void FormPlotHistory::on_radioButtonSplit_clicked()
 {
-    updatePlot(INDEX_14);
+    updatePlot(INDEX_31);
 }
 
 void FormPlotHistory::getFittingChart()
@@ -329,162 +302,12 @@ void FormPlotHistory::getFittingChart()
     }
 }
 
-void FormPlotHistory::clearFitting()
-{
-    QList<QAbstractSeries *> existing = m_chart->series();
-    for (QAbstractSeries *s : existing) {
-        if (s->name() == "Fitting Line") {
-            m_chart->removeSeries(s);
-            delete s;
-            break;
-        }
-    }
-}
-
-double calcY(double x, double offset, double y0, double A, double xc, double w)
-{
-    double shiftedX = x + offset;
-    return y0 + A * qSin(M_PI * (x - xc) / w);
-}
-
-double g_offset;
-float g_y0, g_A, g_xc, g_w;
-
-void FormPlotHistory::drawFittingSin()
-{
-    QString txt_A = ui->lineEdit_A->text();
-    QString txt_y0 = ui->lineEdit_y0->text();
-    QString txt_w = ui->lineEdit_w->text();
-    QString txt_xc = ui->lineEdit_xc->text();
-
-    if (txt_A.isEmpty() || txt_y0.isEmpty() || txt_w.isEmpty() || txt_xc.isEmpty()) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Empty Params"), tr("A, y0, w, and xc can not be empty!"));
-        return;
-    }
-
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_A, txt_A);
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_y0, txt_y0);
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_w, txt_w);
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_xc, txt_xc);
-
-    bool okA, okY0, okW, okXc;
-    float A = txt_A.toFloat(&okA);
-    float y0 = txt_y0.toFloat(&okY0);
-    float w = txt_w.toFloat(&okW);
-    float xc = txt_xc.toFloat(&okXc);
-    g_y0 = y0;
-    g_A = A;
-    g_xc = xc;
-    g_w = w;
-
-    if (!(okA && okY0 && okW && okXc)) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Wrong Params"), tr("Invalid number format."));
-        return;
-    }
-
-    if (w == 0.0f) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Wrong Params"), tr("w can not be 0!"));
-        return;
-    }
-
-    const QList<QPointF> &points = m_p14[m_index_14];
-    if (points.isEmpty())
-        return;
-
-    QLineSeries *line = new QLineSeries();
-    line->setColor(Qt::red);
-    line->setName("Fitting Line");
-    QPen pen(Qt::red);
-    pen.setStyle(Qt::DashLine);
-    line->setPen(pen);
-
-    for (const QPointF &pt : points) {
-        double x = pt.x();
-        double y = y0 + A * qSin(M_PI * (x - xc) / w);
-        line->append(x, y);
-    }
-
-    if (!m_chart)
-        return;
-
-    m_chart->addSeries(line);
-    QList<QAbstractAxis *> axes = m_chart->axes(Qt::Horizontal);
-    if (!axes.isEmpty())
-        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
-
-    axes = m_chart->axes(Qt::Vertical);
-    if (!axes.isEmpty())
-        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
-}
-
-void FormPlotHistory::drawFittingKB()
-{
-    QString txt_k = ui->lineEditK->text();
-    QString txt_b = ui->lineEditB->text();
-    if (txt_k.isEmpty() || txt_b.isEmpty()) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Empty Params"), tr("k and b can not be empty!"));
-        return;
-    }
-
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_K, txt_k);
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_FITTING_B, txt_b);
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT,
-                       CFG_PLOT_FITTING_CONVERSION,
-                       ui->checkBoxConversion->isChecked() ? VAL_ENABLE : VAL_DISABLE);
-
-    float k = txt_k.toFloat();
-    float b = txt_b.toFloat();
-    if (ui->checkBoxConversion->isChecked()) {
-        k = k / 0x1FFF * 3.3;
-        b = b / 0x1FFF * 3.3;
-    }
-    const QList<QPointF> &points = m_p14[m_index_14];
-
-    QLineSeries *line = new QLineSeries();
-    line->setColor(Qt::red);
-    line->setName("Fitting Line");
-    QPen pen(Qt::red);
-    pen.setStyle(Qt::DashLine);
-    line->setPen(pen);
-
-    for (const QPointF &pt : points) {
-        double x = pt.x();
-        double y = k * x + b;
-        line->append(x, y);
-    }
-
-    if (!m_chart)
-        return;
-
-    m_chart->addSeries(line);
-    QList<QAbstractAxis *> axes = m_chart->axes(Qt::Horizontal);
-    if (!axes.isEmpty())
-        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
-
-    axes = m_chart->axes(Qt::Vertical);
-    if (!axes.isEmpty())
-        line->attachAxis(qobject_cast<QValueAxis *>(axes.first()));
-}
-
-void FormPlotHistory::drawFitting()
-{
-    if (m_index_14 >= m_p14.size() || m_p14[m_index_14].isEmpty()) {
-        LOG_WARN("curve 14 is empty!");
-        return;
-    }
-    if (ui->tBtnFittingKB->isChecked()) {
-        drawFittingKB();
-    } else if (ui->tBtnFittingSin->isChecked()) {
-        drawFittingSin();
-    }
-}
-
 void FormPlotHistory::on_toolButtonDumpPlot_clicked()
 {
     if (!ui->radioButtonMix->isChecked()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Failed"), tr("Only support Mix!"));
     }
-    QString dftName = QString("%1.png").arg(m_index_14 + 1);
+    QString dftName = QString("%1.png").arg(m_index_31 + 1);
     QString filePath = QFileDialog::getSaveFileName(this,
                                                     "Save Chart",
                                                     dftName,
@@ -561,7 +384,7 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
                                tr("Export Successful"),
                                tr("All data exported to:\n%1").arg(filePath));
     } else {
-        QString dftName = QString("%1.csv").arg(m_index_14 + 1);
+        QString dftName = QString("%1.csv").arg(m_index_31 + 1);
         QString filePath = QFileDialog::getSaveFileName(this,
                                                         tr("Save Curve Data"),
                                                         dftName,
@@ -579,12 +402,12 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
         QTextStream out(&file);
         out << "index,14bit,24bit\n";
 
-        int size = qMax(m_p14.size() > m_index_14 ? m_p14[m_index_14].size() : 0,
-                        m_p24.size() > m_index_24 ? m_p24[m_index_24].size() : 0);
+        int size = qMax(m_p14.size() > m_index_31 ? m_p14[m_index_31].size() : 0,
+                        m_p24.size() > m_index_33 ? m_p24[m_index_33].size() : 0);
 
-        const QList<QPointF> &list14 = (m_index_14 < m_p14.size()) ? m_p14[m_index_14]
+        const QList<QPointF> &list14 = (m_index_31 < m_p14.size()) ? m_p14[m_index_31]
                                                                    : QList<QPointF>();
-        const QList<QPointF> &list24 = (m_index_24 < m_p24.size()) ? m_p24[m_index_24]
+        const QList<QPointF> &list24 = (m_index_33 < m_p24.size()) ? m_p24[m_index_33]
                                                                    : QList<QPointF>();
 
         for (int i = 0; i < size; ++i) {
@@ -601,47 +424,20 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
     }
 }
 
-void FormPlotHistory::on_tBtnFittingSin_clicked()
-{
-    getFittingChart();
-    m_fitting = !m_fitting;
-    ui->tBtnFittingSin->setChecked(m_fitting);
-    if (m_fitting) {
-        clearFitting();
-        drawFitting();
-    } else {
-        clearFitting();
-    }
-}
-
-void FormPlotHistory::on_tBtnFittingKB_clicked()
-{
-    // 14bit
-    m_fitting = !m_fitting;
-    ui->tBtnFittingKB->setChecked(m_fitting);
-    getFittingChart();
-    if (m_fitting) {
-        clearFitting();
-        drawFitting();
-    } else {
-        clearFitting();
-    }
-}
-
 void FormPlotHistory::on_tBtnToPlot_clicked()
 {
     getFittingChart();
     QList<QPointF> data14;
     QList<QPointF> data24;
     double temperature = 0;
-    if (m_index_14 < m_p14.size()) {
-        data14 = m_p14[m_index_14];
+    if (m_index_31 < m_p14.size()) {
+        data14 = m_p14[m_index_31];
     }
-    if (m_index_24 < m_p24.size()) {
-        data24 = m_p24[m_index_24];
+    if (m_index_33 < m_p24.size()) {
+        data24 = m_p24[m_index_33];
     }
-    if (m_index_24 < m_temperature.size()) {
-        temperature = m_temperature[m_index_24];
+    if (m_index_33 < m_temperature.size()) {
+        temperature = m_temperature[m_index_33];
     }
 
     QValueAxis *axisX = nullptr;

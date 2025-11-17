@@ -6,7 +6,6 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
-#include "3d/myglcurvewidget.h"
 #include "MyChartView/mychartview.h"
 
 class DraggableLine;
@@ -27,25 +26,23 @@ public:
 
 signals:
     void newDataReceivedF30(const QByteArray &data31, const QByteArray &data33);
-    void newDataReceived4k(const QByteArray &data14,
-                           const QByteArray &data24,
-                           const double &temperature);
-    void sendKB(const QByteArray &bytes);
-    void sendSin(const QByteArray &bytes);
-    void sendOffset14(int val);
-    void sendOffset24(int val);
+    void newDataReceivedF15(const QByteArray &data31,
+                            const QByteArray &data33,
+                            const double &temperature);
+    void sendOffset31(int val);
+    void sendOffset33(int val);
     void changeFrameType(int index);
-    void toHistory(const QList<QPointF> &data14,
-                   const QList<QPointF> &data24,
+    void toHistory(const QList<QPointF> &data31,
+                   const QList<QPointF> &data33,
                    const double &temperature = 0.0);
 
 public slots:
     void onDataReceivedF30(const QByteArray &data31, const QByteArray &data33);
-    void onDataReceived4k(const QByteArray &data14,
-                          const QByteArray &data24,
-                          const double &temperature);
-    void updatePlot4k(const QList<QPointF> &data14,
-                      const QList<QPointF> &data24,
+    void onDataReceivedF15(const QByteArray &data31,
+                           const QByteArray &data33,
+                           const double &temperature);
+    void updatePlot4k(const QList<QPointF> &data31,
+                      const QList<QPointF> &data33,
                       const double &xMin,
                       const double &xMax,
                       const double &yMin,
@@ -59,10 +56,8 @@ protected:
 private slots:
     void on_tBtnCrop_clicked();
     void on_tBtnZoom_clicked();
-    void on_tBtn3D_clicked();
-
-    void on_spinBox14Offset_valueChanged(int val);
-    void on_spinBox24Offset_valueChanged(int val);
+    void on_spinBox31Offset_valueChanged(int val);
+    void on_spinBox33Offset_valueChanged(int val);
     void on_comboBoxAlgorithm_currentIndexChanged(int index);
     void on_tBtnImgSave_clicked();
     void on_spinBoxFrom_valueChanged(int val);
@@ -73,24 +68,16 @@ private slots:
     void on_tBtnPause_clicked();
     void on_tBtnOffset_clicked();
     void on_tBtnFWHM_clicked();
-
     void on_checkBoxTrajectory_clicked();
 
 private:
     void init();
     void init2d();
-    void init3d();
     void initToolButtons();
     void getINI();
     void setINI();
-    void updatePlot2d(const QList<QPointF> &data14,
-                      const QList<QPointF> &data24,
-                      const double &xMin,
-                      const double &xMax,
-                      const double &yMin,
-                      const double &yMax);
-    void updatePlot3d(const QList<QPointF> &data14,
-                      const QList<QPointF> &data24,
+    void updatePlot2d(const QList<QPointF> &data31,
+                      const QList<QPointF> &data33,
                       const double &xMin,
                       const double &xMax,
                       const double &yMin,
@@ -103,8 +90,8 @@ private:
 
 private:
     Ui::FormPlot *ui;
-    QLineSeries *m_series24;
-    QLineSeries *m_series14;
+    QLineSeries *m_series33;
+    QLineSeries *m_series31;
     QScatterSeries *m_peaks;
     QChart *m_chart;
     QValueAxis *m_axisX;
@@ -112,14 +99,11 @@ private:
     bool m_enableCrop = false;
     bool m_autoZoom = true;
 
-    bool m_show3D = false;
-
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
     double m_step = 1;
 
     MyChartView *m_chartView = nullptr;
-    MyGLCurveWidget *m_glWidget = nullptr;
     bool m_findPeak = false;
     bool m_findFWHM = false;
     bool m_pause = false;

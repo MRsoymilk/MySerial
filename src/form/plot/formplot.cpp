@@ -54,18 +54,18 @@ void FormPlot::retranslateUI()
 
 void FormPlot::getINI()
 {
-    int offset14 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, "0").toInt();
-    int offset24 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, "0").toInt();
-    if (offset14 != 0) {
-        ui->spinBox14Offset->setValue(offset14);
+    int offset31 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET31, "0").toInt();
+    int offset33 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET33, "0").toInt();
+    if (offset31 != 0) {
+        ui->spinBox31Offset->setValue(offset31);
     }
-    if (offset24 != 0) {
-        ui->spinBox24Offset->setValue(offset24);
+    if (offset33 != 0) {
+        ui->spinBox33Offset->setValue(offset33);
     }
 
     ui->comboBoxAlgorithm->blockSignals(true);
     ui->comboBoxAlgorithm->addItems(
-        {"normal", "max_neg_95", "num_660", "play_mpu6050", "F30_single", "F30_curves"});
+        {"F15_curves", "F15_single", "play_mpu6050", "F30_curves", "F30_single"});
     ui->comboBoxAlgorithm->blockSignals(false);
 
     int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
@@ -79,34 +79,36 @@ void FormPlot::getINI()
 
 void FormPlot::setINI()
 {
-    int offset14 = ui->spinBox14Offset->value();
-    int offset24 = ui->spinBox24Offset->value();
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET14, QString::number(offset14));
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET24, QString::number(offset24));
+    int offset31 = ui->spinBox31Offset->value();
+    int offset33 = ui->spinBox33Offset->value();
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET31, QString::number(offset31));
+    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET33, QString::number(offset33));
 }
 
 void FormPlot::init2d()
 {
-    m_series24 = new QLineSeries();
-    m_series14 = new QLineSeries();
+    m_series33 = new QLineSeries();
+    m_series31 = new QLineSeries();
     m_peaks = new QScatterSeries();
     m_chart = new QChart();
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
 
-    m_chart->addSeries(m_series24);
-    m_chart->addSeries(m_series14);
+    m_chart->addSeries(m_series31);
+    m_chart->addSeries(m_series33);
     m_chart->addSeries(m_peaks);
     m_chart->addAxis(m_axisX, Qt::AlignBottom);
     m_chart->addAxis(m_axisY, Qt::AlignLeft);
-    m_series24->attachAxis(m_axisX);
-    m_series24->attachAxis(m_axisY);
-    m_series14->attachAxis(m_axisX);
-    m_series14->attachAxis(m_axisY);
+
+    m_series31->attachAxis(m_axisX);
+    m_series31->attachAxis(m_axisY);
+    m_series33->attachAxis(m_axisX);
+    m_series33->attachAxis(m_axisY);
+    m_series31->setColor(Qt::blue);
+    m_series33->setColor(Qt::magenta);
+
     m_peaks->attachAxis(m_axisX);
     m_peaks->attachAxis(m_axisY);
-    m_series24->setColor(Qt::blue);
-    m_series14->setColor(Qt::magenta);
     m_peaks->setColor(Qt::red);
     m_peaks->setName(tr("Peaks"));
     m_peaks->setMarkerSize(5.0);
@@ -142,13 +144,6 @@ void FormPlot::init2d()
     ui->tBtnMeasureY->setVisible(false);
 }
 
-void FormPlot::init3d()
-{
-    m_glWidget = new MyGLCurveWidget();
-    ui->stackedWidget->addWidget(m_glWidget);
-    ui->stackedWidget->setCurrentWidget(m_chartView);
-}
-
 void FormPlot::initToolButtons()
 {
     ui->tBtnCrop->setObjectName("crop");
@@ -164,13 +159,6 @@ void FormPlot::initToolButtons()
     ui->tBtnZoom->setChecked(m_autoZoom);
     ui->tBtnZoom->setToolTip(tr("Auto Zoom"));
     ui->tBtnZoom->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-    ui->tBtn3D->setObjectName("3d");
-    ui->tBtn3D->setIconSize(QSize(24, 24));
-    ui->tBtn3D->setCheckable(true);
-    ui->tBtn3D->setChecked(m_show3D);
-    ui->tBtn3D->setToolTip(tr("3D"));
-    ui->tBtn3D->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     ui->tBtnImgSave->setObjectName("img_save");
     ui->tBtnImgSave->setIconSize(QSize(24, 24));
@@ -202,7 +190,6 @@ void FormPlot::initToolButtons()
 void FormPlot::init()
 {
     init2d();
-    init3d();
     initToolButtons();
 
     getINI();
@@ -219,17 +206,17 @@ void FormPlot::onDataReceivedF30(const QByteArray &data31, const QByteArray &dat
     }
 }
 
-void FormPlot::onDataReceived4k(const QByteArray &data14,
-                                const QByteArray &data24,
-                                const double &temperature)
+void FormPlot::onDataReceivedF15(const QByteArray &data31,
+                                 const QByteArray &data33,
+                                 const double &temperature)
 {
     if (!m_pause) {
-        emit newDataReceived4k(data14, data24, temperature);
+        emit newDataReceivedF15(data31, data33, temperature);
     }
 }
 
-void FormPlot::updatePlot2d(const QList<QPointF> &data14,
-                            const QList<QPointF> &data24,
+void FormPlot::updatePlot2d(const QList<QPointF> &data31,
+                            const QList<QPointF> &data33,
                             const double &xMin,
                             const double &xMax,
                             const double &yMin,
@@ -242,12 +229,10 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data14,
     } else {
         ui->labelUpdateSign->setStyleSheet("background-color: blue; color: white;");
     }
-    // 31
-    m_series14->replace(data14);
-    m_series14->setName(tr("差分"));
-    // 33
-    m_series24->replace(data24);
-    m_series24->setName(tr("单端"));
+    m_series31->replace(data31);
+    m_series31->setName(tr("curve31"));
+    m_series33->replace(data33);
+    m_series33->setName(tr("curve33"));
 
     m_axisX->setRange(xMin, xMax);
     if (m_autoZoom) {
@@ -261,32 +246,8 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data14,
     }
 }
 
-void FormPlot::updatePlot3d(const QList<QPointF> &data14,
-                            const QList<QPointF> &data24,
-                            const double &xMin,
-                            const double &xMax,
-                            const double &yMin,
-                            const double &yMax)
-{
-    QVector<CurveData> curves;
-    CurveData curve14;
-    CurveData curve24;
-    curve14.color = Qt::magenta;
-    curve24.color = Qt::blue;
-    auto to3dCurve = [&](const QLineSeries *series, CurveData &curve) {
-        for (int i = 0; i < series->count(); ++i) {
-            curve.points.append(QVector2D(series->at(i).x(), series->at(i).y()));
-        }
-    };
-    to3dCurve(m_series14, curve14);
-    to3dCurve(m_series24, curve24);
-    curves.append(curve14);
-    curves.append(curve24);
-    m_glWidget->setCurves(curves);
-}
-
-void FormPlot::updatePlot4k(const QList<QPointF> &data14,
-                            const QList<QPointF> &data24,
+void FormPlot::updatePlot4k(const QList<QPointF> &data31,
+                            const QList<QPointF> &data33,
                             const double &xMin,
                             const double &xMax,
                             const double &yMin,
@@ -302,30 +263,24 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data14,
         offset = ui->spinBoxOffset->value();
     }
 
-    QList<QPointF> offsetData14 = data14;
-    QList<QPointF> offsetData24 = data24;
-    for (int i = 0; i < data14.size(); ++i) {
-        offsetData14[i].setX(offset + i * m_step);
-        offsetData14[i].setY(data14[i].y());
+    QList<QPointF> offsetData31 = data31;
+    QList<QPointF> offsetData33 = data33;
+    for (int i = 0; i < data31.size(); ++i) {
+        offsetData31[i].setX(offset + i * m_step);
+        offsetData31[i].setY(data31[i].y());
     }
-    for (int i = 0; i < data24.size(); ++i) {
-        offsetData24[i].setX(offset + i * m_step);
-        offsetData24[i].setY(data24[i].y());
+    for (int i = 0; i < data33.size(); ++i) {
+        offsetData33[i].setX(offset + i * m_step);
+        offsetData33[i].setY(data33[i].y());
     }
     if (record) {
-        emit toHistory(offsetData14, offsetData24, temperature);
+        emit toHistory(offsetData31, offsetData33, temperature);
     }
     ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
-    updatePlot2d(offsetData14,
-                 offsetData24,
+    updatePlot2d(offsetData31,
+                 offsetData33,
                  offset,
-                 offset + std::max(data14.size(), data24.size()) * m_step,
-                 yMin,
-                 yMax);
-    updatePlot3d(offsetData14,
-                 offsetData24,
-                 offset,
-                 offset + std::max(data14.size(), data24.size()) * m_step,
+                 offset + std::max(data31.size(), data33.size()) * m_step,
                  yMin,
                  yMax);
 
@@ -373,25 +328,15 @@ void FormPlot::on_tBtnZoom_clicked()
     ui->tBtnZoom->setChecked(m_autoZoom);
 }
 
-void FormPlot::on_tBtn3D_clicked()
+void FormPlot::on_spinBox31Offset_valueChanged(int val)
 {
-    m_show3D = !m_show3D;
-    if (m_show3D) {
-        ui->stackedWidget->setCurrentWidget(m_glWidget);
-    } else {
-        ui->stackedWidget->setCurrentWidget(m_chartView);
-    }
-}
-
-void FormPlot::on_spinBox14Offset_valueChanged(int val)
-{
-    emit sendOffset14(val);
+    emit sendOffset31(val);
     setINI();
 }
 
-void FormPlot::on_spinBox24Offset_valueChanged(int val)
+void FormPlot::on_spinBox33Offset_valueChanged(int val)
 {
-    emit sendOffset24(val);
+    emit sendOffset33(val);
     setINI();
 }
 
@@ -404,7 +349,7 @@ void FormPlot::on_comboBoxAlgorithm_currentIndexChanged(int index)
 void FormPlot::on_tBtnImgSave_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this,
-                                                    "Save Chart",
+                                                    tr("Save Chart"),
                                                     "",
                                                     "PNG Image (*.png);;JPEG Image (*.jpg)");
     if (!filePath.isEmpty()) {
@@ -454,12 +399,12 @@ void FormPlot::on_tBtnStep_clicked()
 QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double minDist)
 {
     QVector<QPointF> peaks;
-    int n = m_series24->count();
+    int n = m_series31->count();
 
     QVector<double> values;
     values.reserve(n);
     for (int i = 0; i < n; i++)
-        values.append(m_series24->at(i).y());
+        values.append(m_series31->at(i).y());
 
     double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
     double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
@@ -468,22 +413,22 @@ QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double m
 
     double lastPeakX = -1e9;
     for (int i = window; i < n - window; i++) {
-        double yCurr = m_series24->at(i).y();
+        double yCurr = m_series31->at(i).y();
         if (yCurr < threshold)
             continue;
 
         bool isPeak = true;
         for (int j = i - window; j <= i + window; j++) {
-            if (m_series24->at(j).y() > yCurr) {
+            if (m_series31->at(j).y() > yCurr) {
                 isPeak = false;
                 break;
             }
         }
 
         if (isPeak) {
-            double xCurr = m_series24->at(i).x();
+            double xCurr = m_series31->at(i).x();
             if (xCurr - lastPeakX >= minDist) {
-                peaks.append(m_series24->at(i));
+                peaks.append(m_series31->at(i));
                 lastPeakX = xCurr;
             }
         }
@@ -514,16 +459,16 @@ void FormPlot::callCalcFWHM()
             double yHalf = yPeak / 2.0;
 
             double xLeft = xPeak, xRight = xPeak;
-            for (int i = m_series24->count() - 1; i >= 1; --i) {
-                if (m_series24->at(i).x() >= xPeak)
+            for (int i = m_series31->count() - 1; i >= 1; --i) {
+                if (m_series31->at(i).x() >= xPeak)
                     continue;
-                if (xPeak - m_series24->at(i).x() > 5.0)
+                if (xPeak - m_series31->at(i).x() > 5.0)
                     break;
-                double y1 = m_series24->at(i).y();
-                double y2 = m_series24->at(i - 1).y();
+                double y1 = m_series31->at(i).y();
+                double y2 = m_series31->at(i - 1).y();
                 if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
-                    double x1 = m_series24->at(i).x();
-                    double x2 = m_series24->at(i - 1).x();
+                    double x1 = m_series31->at(i).x();
+                    double x2 = m_series31->at(i - 1).x();
                     // 线性插值
                     xLeft = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
                     break;
@@ -565,7 +510,7 @@ void FormPlot::callCalcFWHM()
 
 void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
 {
-    if (!ui->checkBoxTrajectory->isChecked() || peaks.isEmpty() || !m_series14)
+    if (!ui->checkBoxTrajectory->isChecked() || peaks.isEmpty() || !m_series31)
         return;
 
     // 找到 peaks 中 Y 最大的点
@@ -581,31 +526,31 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
 
     int xPeak = maxPeak.x();
     const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
-    if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
-        // 在曲线14中找到与该 X 坐标最接近的点
-        double y14 = 0;
-        if (m_series14->count() > xPeak) {
-            y14 = m_series14->at(xPeak).y();
+    if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
+        // 在曲线33中找到与该 X 坐标最接近的点
+        double y = 0;
+        if (m_series33->count() > xPeak) {
+            y = m_series33->at(xPeak).y();
         }
 
         // 转换为 raw 值
-        int raw = static_cast<int>((1 << 13) * 1.0 * y14 / 3.3);
+        int raw = static_cast<int>((1 << 13) * 1.0 * y / 3.3);
         if (m_trajectory) {
             m_trajectory->appendPeak(raw);
         }
-    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
+    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
         m_trajectory->appendPeak(maxPeak.rx());
     } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
         m_trajectory->appendPeak(maxPeak.rx());
     } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
-        // 在曲线14中找到与该 X 坐标最接近的点
-        double y14 = 0;
-        if (m_series14->count() > xPeak) {
-            y14 = m_series14->at(xPeak).y();
+        // 在曲线33中找到与该 X 坐标最接近的点
+        double y = 0;
+        if (m_series33->count() > xPeak) {
+            y = m_series33->at(xPeak).y();
         }
 
         // 转换为 raw 值
-        int raw = y14 * 0x8000 / 2.5;
+        int raw = y * 0x8000 / 2.5;
         if (m_trajectory) {
             m_trajectory->appendPeak(raw);
         }
@@ -615,29 +560,29 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
 void FormPlot::callFindPeak()
 {
     if (m_findPeak) {
-        if (!m_series24 || m_series24->count() < 5) {
+        if (!m_series31 || m_series31->count() < 5) {
             return;
         }
 
-        QVector<QPointF> peaks24 = findPeak(3, 1.0, 5.0);
+        QVector<QPointF> peaks31 = findPeak(3, 1.0, 5.0);
         if (ui->checkBoxTrajectory->isChecked()) {
-            peakTrajectory(peaks24);
+            peakTrajectory(peaks31);
         }
         m_peaks->clear();
-        for (const auto &pt : peaks24) {
+        for (const auto &pt : peaks31) {
             m_peaks->append(pt);
             const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
             if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
-                // 在曲线14中找到与该 X 坐标最接近的点
-                double y14 = 0;
-                if (m_series14->count() > pt.x()) {
-                    y14 = m_series14->at(pt.x()).y();
+                // 在曲线33中找到与该 X 坐标最接近的点
+                double y = 0;
+                if (m_series33->count() > pt.x()) {
+                    y = m_series33->at(pt.x()).y();
                 }
 
                 // 转换为 raw 值
-                int raw = y14 * 0x8000 / 2.5;
+                int raw = y * 0x8000 / 2.5;
                 ui->textBrowser->append(
-                    QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y14).arg(raw));
+                    QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y).arg(raw));
             }
         }
 

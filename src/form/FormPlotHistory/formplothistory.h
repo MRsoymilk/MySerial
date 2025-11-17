@@ -12,8 +12,8 @@ class FormPlotHistory : public QWidget
 {
     Q_OBJECT
 public:
-    const int INDEX_14 = 1;
-    const int INDEX_24 = 2;
+    const int INDEX_31 = 1;
+    const int INDEX_33 = 2;
 
 public:
     explicit FormPlotHistory(QWidget *parent = nullptr);
@@ -22,8 +22,8 @@ public:
 
 signals:
     void windowClose();
-    void sendToPlot(const QList<QPointF> &data14,
-                    const QList<QPointF> &data24,
+    void sendToPlot(const QList<QPointF> &data31,
+                    const QList<QPointF> &data33,
                     const double &xMin,
                     const double &xMax,
                     const double &yMin,
@@ -51,8 +51,6 @@ private slots:
     void on_radioButtonSplit_clicked();
     void on_toolButtonDumpPlot_clicked();
     void on_toolButtonDumpData_clicked();
-    void on_tBtnFittingSin_clicked();
-    void on_tBtnFittingKB_clicked();
 
     void on_tBtnToPlot_clicked();
 
@@ -61,24 +59,19 @@ private:
     void updatePlot24();
     void updatePlot(int index = 0);
     void init();
-    void clearFitting();
-    void drawFitting();
     void getFittingChart();
 
 private:
     Ui::FormPlotHistory *ui;
     QList<QList<QPointF>> m_p14, m_p24;
     QList<double> m_temperature;
-    int m_index_14, m_index_24;
+    int m_index_31, m_index_33;
     MyChartView *m_chartView14Split = nullptr;
     MyChartView *m_chartView24Split = nullptr;
     MyChartView *m_chartMix = nullptr;
     QChart *m_chart = nullptr;
     QWidget *m_widgetSplit = nullptr;
     QWidget *m_widgetMix = nullptr;
-    bool m_fitting;
-    void drawFittingKB();
-    void drawFittingSin();
 };
 
 #endif // FORMPLOTHISTORY_H

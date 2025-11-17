@@ -98,14 +98,99 @@ void FormSerial::writeEasyData(const QString &value)
 void FormSerial::setEasyFrame()
 {
     m_frameTypes = {
-        {"curve_24bit", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
+        {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
     };
-    m_algorithm = static_cast<int>(SHOW_ALGORITHM::NUM_660);
+    m_algorithm = static_cast<int>(SHOW_ALGORITHM::F15_SINGLE);
 }
 
 void FormSerial::updateFrameTypes(int idx)
 {
-    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+    m_frameTypes.clear();
+    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
+        QStringList groups = SETTING_FRAME_F15Curves_GROUPS();
+        if (!groups.empty()) {
+            for (const auto &g : groups) {
+                FrameType frame;
+                frame.name = g;
+                frame.header = QByteArray::fromHex(
+                    SETTING_FRAME_F15Curves_GET(g, FRAME_HEADER).toUtf8());
+                frame.footer = QByteArray::fromHex(
+                    SETTING_FRAME_F15Curves_GET(g, FRAME_FOOTER).toUtf8());
+                frame.length = SETTING_FRAME_F15Curves_GET(g, FRAME_LENGTH).toInt();
+                m_frameTypes.push_back(frame);
+            }
+        } else {
+            m_frameTypes = {
+                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 6007},
+                {"F15_33", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 6007},
+            };
+            for (const auto &frame : m_frameTypes) {
+                SETTING_FRAME_F15Curves_SET(frame.name,
+                                            FRAME_HEADER,
+                                            frame.header.toHex().toUpper());
+                SETTING_FRAME_F15Curves_SET(frame.name,
+                                            FRAME_FOOTER,
+                                            frame.footer.toHex().toUpper());
+                SETTING_FRAME_F15Curves_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
+            }
+        }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
+        QStringList groups = SETTING_FRAME_F15Single_GROUPS();
+        if (!groups.empty()) {
+            for (const auto &g : groups) {
+                FrameType frame;
+                frame.name = g;
+                frame.header = QByteArray::fromHex(
+                    SETTING_FRAME_F15Single_GET(g, FRAME_HEADER).toUtf8());
+                frame.footer = QByteArray::fromHex(
+                    SETTING_FRAME_F15Single_GET(g, FRAME_FOOTER).toUtf8());
+                frame.length = SETTING_FRAME_F15Single_GET(g, FRAME_LENGTH).toInt();
+                m_frameTypes.push_back(frame);
+            }
+        } else {
+            m_frameTypes = {
+                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 6007},
+            };
+            for (const auto &frame : m_frameTypes) {
+                SETTING_FRAME_F15Single_SET(frame.name,
+                                            FRAME_HEADER,
+                                            frame.header.toHex().toUpper());
+                SETTING_FRAME_F15Single_SET(frame.name,
+                                            FRAME_FOOTER,
+                                            frame.footer.toHex().toUpper());
+                SETTING_FRAME_F15Single_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
+            }
+        }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
+        QStringList groups = SETTING_FRAME_PLAY_MPU6050_GROUPS();
+        if (!groups.empty()) {
+            for (const auto &g : groups) {
+                FrameType frame;
+                frame.name = g;
+                frame.header = QByteArray::fromHex(
+                    SETTING_FRAME_PLAY_MPU6050_GET(g, FRAME_HEADER).toUtf8());
+                frame.footer = QByteArray::fromHex(
+                    SETTING_FRAME_PLAY_MPU6050_GET(g, FRAME_FOOTER).toUtf8());
+                frame.length = SETTING_FRAME_PLAY_MPU6050_GET(g, FRAME_LENGTH).toInt();
+                m_frameTypes.push_back(frame);
+            }
+        } else {
+            m_frameTypes = {
+                {"MPU6050", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
+            };
+            for (const auto &frame : m_frameTypes) {
+                SETTING_FRAME_PLAY_MPU6050_SET(frame.name,
+                                               FRAME_HEADER,
+                                               frame.header.toHex().toUpper());
+                SETTING_FRAME_PLAY_MPU6050_SET(frame.name,
+                                               FRAME_FOOTER,
+                                               frame.footer.toHex().toUpper());
+                SETTING_FRAME_PLAY_MPU6050_SET(frame.name,
+                                               FRAME_LENGTH,
+                                               QString::number(frame.length));
+            }
+        }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
         QStringList groups = SETTING_FRAME_F30Curves_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -229,6 +314,7 @@ void FormSerial::sendRaw(const QByteArray &bytes)
 void FormSerial::onChangeFrameType(int index)
 {
     m_algorithm = index;
+    updateFrameTypes(m_algorithm);
 }
 
 void FormSerial::onSimulateOption(bool isEnable)
@@ -239,9 +325,8 @@ void FormSerial::onSimulateOption(bool isEnable)
     }
 }
 
-void FormSerial::onSimulateRecv(const QByteArray &bytes)
+void FormSerial::doFrameExtra(const QByteArray &data)
 {
-    QByteArray data = bytes;
     m_recv_count += data.size();
     ui->labelRecvCount->setText(QString("recv: %1").arg(m_recv_count));
 
@@ -265,10 +350,10 @@ void FormSerial::onSimulateRecv(const QByteArray &bytes)
 
         LOG_INFO("Temperature: {} °C", temperature);
 
-        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
-        emit recv2Plot4k(m_frame.bit14, m_frame.bit24, temperature);
+        emit recv2DataF15(m_frame.bit33, m_frame.bit31, tempBytes);
+        emit recv2PlotF15(m_frame.bit33, m_frame.bit31, temperature);
         emit recvTemperature(temperature);
-        m_frame.bit24.clear();
+        m_frame.bit31.clear();
         m_need_after = false;
     }
 
@@ -344,6 +429,11 @@ void FormSerial::onSimulateRecv(const QByteArray &bytes)
             m_buffer.remove(0, frame_len);
         }
     }
+}
+
+void FormSerial::onSimulateRecv(const QByteArray &bytes)
+{
+    doFrameExtra(bytes);
 }
 
 void FormSerial::closeEvent(QCloseEvent *event)
@@ -636,34 +726,29 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
 {
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
         if (type == "F30_31") {
-            m_frame.bit14 = data;
+            m_frame.bit31 = data;
         } else if (type == "F30_33") {
-            if (!m_frame.bit14.isEmpty()) {
-                m_frame.bit24 = data;
-                emit recv2PlotF30(m_frame.bit14, m_frame.bit24);
-                emit recv2DataF30(m_frame.bit14, m_frame.bit24);
-                m_frame.bit14.clear();
-                m_frame.bit24.clear();
+            if (!m_frame.bit31.isEmpty()) {
+                m_frame.bit33 = data;
+                emit recv2PlotF30(m_frame.bit31, m_frame.bit33);
+                emit recv2DataF30(m_frame.bit31, m_frame.bit33);
+                m_frame.bit33.clear();
+                m_frame.bit31.clear();
             }
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
-        emit recv2PlotF30({}, data);
-        emit recv2DataF30({}, data);
-    }
-
-    return;
-
-    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::MAX_NEG_95)
-        || m_algorithm == static_cast<int>(SHOW_ALGORITHM::NORMAL)) {
-        if (type == "curve_24bit") {
-            m_frame.bit24 = data;
+        emit recv2PlotF30(data, {});
+        emit recv2DataF30(data, {});
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
+        if (type == "F15_31") {
+            m_frame.bit31 = data;
             if (m_toPeek) {
                 m_waitting_byte = true;
             }
             m_need_after = false;
-        } else if (type == "curve_14bit") {
-            m_frame.bit14 = data;
-            if (!m_frame.bit24.isEmpty()) {
+        } else if (type == "F15_33") {
+            m_frame.bit33 = data;
+            if (!m_frame.bit31.isEmpty()) {
                 if (m_toPeek) {
                     if (m_waitting_byte) {
                         QByteArray tempBytes = temp;
@@ -676,23 +761,24 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
 
                         LOG_INFO("Temperature: {} °C", temperature);
 
-                        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
-                        emit recv2Plot4k(m_frame.bit14, m_frame.bit24, temperature);
+                        emit recv2DataF15(m_frame.bit31, m_frame.bit33, tempBytes);
+                        emit recv2PlotF15(m_frame.bit31, m_frame.bit33, temperature);
                         emit recvTemperature(temperature);
-                        m_frame.bit24.clear();
+                        m_frame.bit31.clear();
+                        m_frame.bit33.clear();
                     }
                 } else {
-                    emit recv2Data4k(m_frame.bit14, m_frame.bit24);
-                    emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
-                    m_frame.bit24.clear();
+                    emit recv2DataF15(m_frame.bit31, m_frame.bit33);
+                    emit recv2PlotF15(m_frame.bit31, m_frame.bit33);
+                    m_frame.bit31.clear();
+                    m_frame.bit33.clear();
                 }
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::NUM_660)) {
-        if (type == "curve_24bit") {
-            m_frame.bit24 = data;
-            emit recv2Data4k(m_frame.bit14, m_frame.bit24);
-            emit recv2Plot4k(m_frame.bit14, m_frame.bit24);
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
+        if (type == "F15_31") {
+            emit recv2DataF15(data, {});
+            emit recv2PlotF15(data, {});
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
         emit recv2MPU(data);
@@ -725,108 +811,7 @@ void FormSerial::loadPage(int page)
 void FormSerial::onReadyRead()
 {
     QByteArray data = m_serial->readAll();
-    m_recv_count += data.size();
-    ui->labelRecvCount->setText(QString("recv: %1").arg(m_recv_count));
-
-    QString to_show = data;
-    if (m_ini.hex_display) {
-        to_show.clear();
-        for (int i = 0; i < data.length(); ++i) {
-            to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
-        }
-    }
-    ui->txtRecv->appendPlainText("[RX] " + to_show);
-    m_buffer.append(data);
-
-    if (m_need_after) {
-        QByteArray tempBytes = m_buffer.left(2);
-        if (tempBytes.size() < 2) {
-            return;
-        }
-        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
-        double temperature = tempRaw / 1000.0;
-
-        LOG_INFO("Temperature: {} °C", temperature);
-
-        emit recv2Data4k(m_frame.bit14, m_frame.bit24, tempBytes);
-        emit recv2Plot4k(m_frame.bit14, m_frame.bit24, temperature);
-        emit recvTemperature(temperature);
-        m_frame.bit24.clear();
-        m_need_after = false;
-    }
-
-    while (true) {
-        if (m_frameTypes.isEmpty()) {
-            m_buffer.clear();
-            return;
-        }
-        int firstHeaderIdx = -1;
-        FrameType current_frame;
-
-        // 查找所有已知帧头
-        for (const auto &type : m_frameTypes) {
-            int idx = m_buffer.indexOf(type.header);
-            if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
-                firstHeaderIdx = idx;
-                current_frame = type;
-            }
-        }
-
-        // 没有帧头，清理或等待
-        if (firstHeaderIdx == -1) {
-            if (m_buffer.size() > 10 * 1024) {
-                LOG_WARN("Buffer overflow, clearing");
-                m_buffer.clear();
-            }
-            break;
-        }
-
-        // 丢弃无效数据
-        if (firstHeaderIdx > 0) {
-            LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
-            m_buffer.remove(0, firstHeaderIdx);
-        }
-
-        if (current_frame.length != 0) {
-            // 长度固定帧
-            if (m_buffer.size() < current_frame.length)
-                break;
-
-            QByteArray frame_candidate = m_buffer.left(current_frame.length);
-            if (!frame_candidate.endsWith(current_frame.footer)) {
-                LOG_WARN("Invalid footer (fixed length), removing header only");
-                m_buffer.remove(0, current_frame.header.size());
-                continue;
-            }
-
-            LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
-            handleFrame(current_frame.name, frame_candidate);
-            m_buffer.remove(0, current_frame.length);
-        } else {
-            // 长度不固定：查找 footer 位置
-            int footerIdx = m_buffer.indexOf(current_frame.footer, current_frame.header.size());
-            if (footerIdx == -1) {
-                // 没找到帧尾，等待更多数据
-                break;
-            }
-
-            int frame_len = footerIdx + current_frame.footer.size();
-            QByteArray frame_candidate;
-            frame_candidate = m_buffer.left(frame_len);
-
-            LOG_INFO("Variable-length frame matched: {}, size = {}",
-                     current_frame.name.toStdString(),
-                     frame_len);
-            if (m_waitting_byte) {
-                QByteArray temp = m_buffer.mid(frame_len, 2);
-                handleFrame(current_frame.name, frame_candidate, temp);
-            } else {
-                handleFrame(current_frame.name, frame_candidate);
-            }
-
-            m_buffer.remove(0, frame_len);
-        }
-    }
+    doFrameExtra(data);
 }
 
 void FormSerial::on_btnRecvClear_clicked()

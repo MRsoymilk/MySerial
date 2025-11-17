@@ -94,10 +94,8 @@ void MainWindow::initStackWidget()
 
     QObject::connect(formSerial, &FormSerial::recv2PlotF30, formPlot, &FormPlot::onDataReceivedF30);
     QObject::connect(formSerial, &FormSerial::recv2DataF30, formData, &FormData::onDataReceivedF30);
-    QObject::connect(formSerial, &FormSerial::recv2Plot4k, formPlot, &FormPlot::onDataReceived4k);
-    QObject::connect(formSerial, &FormSerial::recv2Data4k, formData, &FormData::onDataReceived4k);
-    QObject::connect(formPlot, &FormPlot::sendKB, formSerial, &FormSerial::sendRaw);
-    QObject::connect(formPlot, &FormPlot::sendSin, formSerial, &FormSerial::sendRaw);
+    QObject::connect(formSerial, &FormSerial::recv2PlotF15, formPlot, &FormPlot::onDataReceivedF15);
+    QObject::connect(formSerial, &FormSerial::recv2DataF15, formData, &FormData::onDataReceivedF15);
     QObject::connect(formPlot,
                      &FormPlot::changeFrameType,
                      formSerial,
@@ -277,7 +275,7 @@ bool MainWindow::connectEasyMode()
 {
     if (formSerial->startEasyConnect()) {
         formSerial->setEasyFrame();
-        m_worker->setAlgorithm(static_cast<int>(SHOW_ALGORITHM::NUM_660));
+        m_worker->setAlgorithm(static_cast<int>(SHOW_ALGORITHM::F15_SINGLE));
         formSerial->writeEasyData(calcIntegrationTime(ui->spinBox->value()));
         formSerial->writeEasyData("DD3C000330CDFF");
         return true;
@@ -331,9 +329,9 @@ void MainWindow::init()
 
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(formPlot,
-            &FormPlot::newDataReceived4k,
+            &FormPlot::newDataReceivedF15,
             m_worker,
-            &ThreadWorker::processData4k,
+            &ThreadWorker::processDataF15,
             Qt::QueuedConnection);
     connect(formPlot,
             &FormPlot::newDataReceivedF30,
@@ -343,22 +341,22 @@ void MainWindow::init()
 
     connect(m_plotHistory, &FormPlotHistory::sendToPlot, formPlot, &FormPlot::updatePlot4k);
     connect(m_worker,
-            &ThreadWorker::dataReady4k,
+            &ThreadWorker::plotReady4k,
             formPlot,
             &FormPlot::updatePlot4k,
             Qt::QueuedConnection);
     connect(m_worker,
-            &ThreadWorker::pointsReady4k,
+            &ThreadWorker::dataReady4k,
             m_plotData,
             &FormPlotData::updateTable4k,
             Qt::QueuedConnection);
     connect(m_worker,
-            &ThreadWorker::dataReady4k,
+            &ThreadWorker::plotReady4k,
             this,
             &MainWindow::updatePlot,
             Qt::QueuedConnection);
     connect(m_worker,
-            &ThreadWorker::pointsReady4k,
+            &ThreadWorker::dataReady4k,
             this,
             &MainWindow::updateTable,
             Qt::QueuedConnection);
@@ -378,15 +376,15 @@ void MainWindow::init()
             m_worker,
             &ThreadWorker::onUseLoadedThreshold,
             Qt::QueuedConnection);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::useLoadedThreadsholdOption,
+            m_worker,
+            &ThreadWorker::onUseLoadedThreadsholdOption,
+            Qt::QueuedConnection);
     connect(formSerial,
             &FormSerial::recvTemperature,
             m_plotCorrection,
             &FormPlotCorrection::onTemperature);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::enableCorrectionCurve,
-            m_worker,
-            &ThreadWorker::onEnableCorrection,
-            Qt::QueuedConnection);
     connect(m_worker,
             &ThreadWorker::showCorrectionCurve,
             m_plotCorrection,
@@ -402,8 +400,8 @@ void MainWindow::init()
     connect(formPlot, &FormPlot::changeFrameType, this, [&](int index) {
         m_worker->setAlgorithm(index);
     });
-    connect(formPlot, &FormPlot::sendOffset14, this, [&](int val) { m_worker->setOffset14(val); });
-    connect(formPlot, &FormPlot::sendOffset24, this, [&](int val) { m_worker->setOffset24(val); });
+    connect(formPlot, &FormPlot::sendOffset31, this, [&](int val) { m_worker->setOffset31(val); });
+    connect(formPlot, &FormPlot::sendOffset33, this, [&](int val) { m_worker->setOffset33(val); });
 }
 
 void MainWindow::on_btnSerial_clicked()
@@ -568,7 +566,7 @@ void MainWindow::plotCorrectionClose()
     m_showCorrection = false;
     ui->tBtnCorrection->setChecked(false);
     disconnect(m_worker,
-               &ThreadWorker::pointsReady4k,
+               &ThreadWorker::dataReady4k,
                m_plotCorrection,
                &FormPlotCorrection::onEpochCorrection);
 }
@@ -591,7 +589,7 @@ void MainWindow::on_tBtnCorrection_clicked()
     m_plotCorrection->setVisible(m_showCorrection);
     if (m_showCorrection) {
         connect(m_worker,
-                &ThreadWorker::pointsReady4k,
+                &ThreadWorker::dataReady4k,
                 m_plotCorrection,
                 &FormPlotCorrection::onEpochCorrection,
                 Qt::QueuedConnection);
@@ -892,7 +890,7 @@ QString MainWindow::calcIntegrationTime(int value)
 void MainWindow::on_tBtnImg_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this,
-                                                    "Save Chart",
+                                                    tr("Save Chart"),
                                                     "",
                                                     "PNG Image (*.png);;JPEG Image (*.jpg)");
     if (!filePath.isEmpty()) {

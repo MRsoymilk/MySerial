@@ -7,7 +7,14 @@
 class MySetting
 {
 public:
-    enum class SETTING { CONFIG, FRAME, FRAME_F30_SINGLE, FRAME_F30_CURVES };
+    enum class SETTING {
+        CONFIG,
+        FRAME_F15_SINGLE,
+        FRAME_F15_CURVES,
+        FRAME_F30_SINGLE,
+        FRAME_F30_CURVES,
+        PLAY_MPU6050,
+    };
 
 public:
     static MySetting &getInstance();

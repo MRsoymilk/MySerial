@@ -42,19 +42,33 @@
 #define SETTING_FRAME_F30Curves_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME_F30_CURVES)
 #define SETTING_FRAME_F30Curves_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME_F30_CURVES)
 
+#define SETTING_FRAME_F15Curves_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::FRAME_F15_CURVES, group, key, ##__VA_ARGS__)
+#define SETTING_FRAME_F15Curves_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::FRAME_F15_CURVES, group, key, value)
+#define SETTING_FRAME_F15Curves_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME_F15_CURVES)
+#define SETTING_FRAME_F15Curves_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME_F15_CURVES)
+
+#define SETTING_FRAME_F15Single_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::FRAME_F15_SINGLE, group, key, ##__VA_ARGS__)
+#define SETTING_FRAME_F15Single_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::FRAME_F15_SINGLE, group, key, value)
+#define SETTING_FRAME_F15Single_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME_F15_SINGLE)
+#define SETTING_FRAME_F15Single_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME_F15_SINGLE)
+
+#define SETTING_FRAME_PLAY_MPU6050_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::PLAY_MPU6050, group, key, ##__VA_ARGS__)
+#define SETTING_FRAME_PLAY_MPU6050_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::PLAY_MPU6050, group, key, value)
+#define SETTING_FRAME_PLAY_MPU6050_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::PLAY_MPU6050)
+#define SETTING_FRAME_PLAY_MPU6050_SYNC() MY_SETTING.sync(MySetting::SETTING::PLAY_MPU6050)
+
 #define SETTING_CONFIG_GET(group, key, ...) \
     MY_SETTING.getValue(MySetting::SETTING::CONFIG, group, key, ##__VA_ARGS__)
 #define SETTING_CONFIG_SET(group, key, value) \
     MY_SETTING.setValue(MySetting::SETTING::CONFIG, group, key, value)
 #define SETTING_CONFIG_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::CONFIG)
 #define SETTING_CONFIG_SYNC() MY_SETTING.sync(MySetting::SETTING::CONFIG)
-
-#define SETTING_FRAME_GET(group, key, ...) \
-    MY_SETTING.getValue(MySetting::SETTING::FRAME, group, key, ##__VA_ARGS__)
-#define SETTING_FRAME_SET(group, key, value) \
-    MY_SETTING.setValue(MySetting::SETTING::FRAME, group, key, value)
-#define SETTING_FRAME_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME)
-#define SETTING_FRAME_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME)
 
 #include <QGraphicsOpacityEffect>
 #include <QMessageBox>

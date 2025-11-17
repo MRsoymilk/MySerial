@@ -46,12 +46,12 @@ void FormData::init()
     getINI();
 }
 
-void FormData::onDataReceived4k(const QByteArray &data14,
-                                const QByteArray &data24,
-                                const QByteArray &temperature)
+void FormData::onDataReceivedF15(const QByteArray &data31,
+                                 const QByteArray &data33,
+                                 const QByteArray &temperature)
 {
     QList<QStandardItem *> rowItems;
-    auto data = data24 + data14 + temperature;
+    auto data = data33 + data31 + temperature;
     rowItems << new QStandardItem(TIMESTAMP());
     QString to_show;
     for (int i = 0; i < data.length(); ++i) {

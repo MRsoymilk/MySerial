@@ -27,19 +27,19 @@ void FormPlotData::retranslateUI()
     ui->retranslateUi(this);
 }
 
-void FormPlotData::displayData(const QVector<double> &v14,
-                               const QVector<double> &v24,
-                               const QVector<double> &raw14,
-                               const QVector<double> &raw24)
+void FormPlotData::displayData(const QVector<double> &v31,
+                               const QVector<double> &v33,
+                               const QVector<double> &raw31,
+                               const QVector<double> &raw33)
 {
     clearData();
-    int count = qMax(qMax(v14.size(), v24.size()), qMax(raw14.size(), raw24.size()));
+    int count = qMax(qMax(v31.size(), v33.size()), qMax(raw31.size(), raw33.size()));
     for (int i = 0; i < count; ++i) {
         QString index = QString::number(i);
-        QString yV14 = (i < v14.size()) ? QString::number(v14[i]) : "";
-        QString yV24 = (i < v24.size()) ? QString::number(v24[i]) : "";
-        QString yR14 = (i < raw14.size()) ? QString::number(raw14[i]) : "";
-        QString yR24 = (i < raw24.size()) ? QString::number(raw24[i]) : "";
+        QString yV14 = (i < v31.size()) ? QString::number(v31[i]) : "";
+        QString yV24 = (i < v33.size()) ? QString::number(v33[i]) : "";
+        QString yR14 = (i < raw31.size()) ? QString::number(raw31[i]) : "";
+        QString yR24 = (i < raw33.size()) ? QString::number(raw33[i]) : "";
 
         QList<QStandardItem *> rowItems;
         rowItems << new QStandardItem(index);
@@ -96,20 +96,20 @@ void FormPlotData::displayData(const QVector<double> &v14,
     }
 }
 
-void FormPlotData::updateTable4k(const QVector<double> &v14,
-                                 const QVector<double> &v24,
-                                 const QVector<double> &raw14,
-                                 const QVector<double> &raw24)
+void FormPlotData::updateTable4k(const QVector<double> &v31,
+                                 const QVector<double> &v33,
+                                 const QVector<double> &raw31,
+                                 const QVector<double> &raw33)
 {
     if (this->isVisible()) {
         ++m_count;
         m_current = m_count;
-        listV14.append(v14);
-        listV24.append(v24);
-        listRaw14.append(raw14);
-        listRaw24.append(raw24);
+        listV31.append(v31);
+        listV33.append(v33);
+        listRaw31.append(raw31);
+        listRaw33.append(raw33);
         ui->labelStatus->setText(QString("%1/%2").arg(m_current).arg(m_count));
-        displayData(listV14.back(), listV24.back(), listRaw14.back(), listRaw24.back());
+        displayData(listV31.back(), listV33.back(), listRaw31.back(), listRaw33.back());
     }
 }
 
@@ -239,7 +239,7 @@ void FormPlotData::exportAllToCSV()
     QTextStream stream(&file);
     stream.setRealNumberPrecision(10);
 
-    int groupCount = listV14.size();
+    int groupCount = listV31.size();
     if (groupCount == 0) {
         LOG_WARN("No data to export!");
         return;
@@ -293,26 +293,26 @@ void FormPlotData::exportAllToCSV()
         rowData << QString::number(row);
 
         for (int groupIndex : selectedGroups) {
-            bool hasV14 = (groupIndex < listV14.size());
-            bool hasV24 = (groupIndex < listV24.size());
-            bool hasRaw14 = (groupIndex < listRaw14.size());
-            bool hasRaw24 = (groupIndex < listRaw24.size());
+            bool hasV14 = (groupIndex < listV31.size());
+            bool hasV24 = (groupIndex < listV33.size());
+            bool hasRaw14 = (groupIndex < listRaw31.size());
+            bool hasRaw24 = (groupIndex < listRaw33.size());
 
             if (exportV14)
-                rowData << (hasV14 && row < listV14[groupIndex].size()
-                                ? QString::number(listV14[groupIndex][row], 'f', 6)
+                rowData << (hasV14 && row < listV31[groupIndex].size()
+                                ? QString::number(listV31[groupIndex][row], 'f', 6)
                                 : "");
             if (exportV24)
-                rowData << (hasV24 && row < listV24[groupIndex].size()
-                                ? QString::number(listV24[groupIndex][row], 'f', 6)
+                rowData << (hasV24 && row < listV33[groupIndex].size()
+                                ? QString::number(listV33[groupIndex][row], 'f', 6)
                                 : "");
             if (exportRaw14)
-                rowData << (hasRaw14 && row < listRaw14[groupIndex].size()
-                                ? QString::number(listRaw14[groupIndex][row])
+                rowData << (hasRaw14 && row < listRaw31[groupIndex].size()
+                                ? QString::number(listRaw31[groupIndex][row])
                                 : "");
             if (exportRaw24)
-                rowData << (hasRaw24 && row < listRaw24[groupIndex].size()
-                                ? QString::number(listRaw24[groupIndex][row])
+                rowData << (hasRaw24 && row < listRaw33[groupIndex].size()
+                                ? QString::number(listRaw33[groupIndex][row])
                                 : "");
         }
 
@@ -391,10 +391,10 @@ void FormPlotData::on_tBtnPrev_clicked()
     if (m_current - 1 > 0) {
         --m_current;
         ui->labelStatus->setText(QString("%1/%2").arg(m_current).arg(m_count));
-        displayData(listV14[m_current - 1],
-                    listV24[m_current - 1],
-                    listRaw14[m_current - 1],
-                    listRaw24[m_current - 1]);
+        displayData(listV31[m_current - 1],
+                    listV33[m_current - 1],
+                    listRaw31[m_current - 1],
+                    listRaw33[m_current - 1]);
     }
 }
 
@@ -403,10 +403,10 @@ void FormPlotData::on_tBtnNext_clicked()
     if (m_current + 1 <= m_count) {
         ++m_current;
         ui->labelStatus->setText(QString("%1/%2").arg(m_current).arg(m_count));
-        displayData(listV14[m_current - 1],
-                    listV24[m_current - 1],
-                    listRaw14[m_current - 1],
-                    listRaw24[m_current - 1]);
+        displayData(listV31[m_current - 1],
+                    listV33[m_current - 1],
+                    listRaw31[m_current - 1],
+                    listRaw33[m_current - 1]);
     }
 }
 
@@ -416,10 +416,10 @@ void FormPlotData::on_lineEditGo_editingFinished()
     if (target > 0 && target <= m_count) {
         m_current = target;
         ui->labelStatus->setText(QString("%1/%2").arg(m_current).arg(m_count));
-        displayData(listV14[m_current - 1],
-                    listV24[m_current - 1],
-                    listRaw14[m_current - 1],
-                    listRaw24[m_current - 1]);
+        displayData(listV31[m_current - 1],
+                    listV33[m_current - 1],
+                    listRaw31[m_current - 1],
+                    listRaw33[m_current - 1]);
     }
 }
 

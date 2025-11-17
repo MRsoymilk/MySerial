@@ -39,23 +39,23 @@ void FrameSetting::on_tBtnCalculate14bit_clicked()
 
 void FrameSetting::on_btnUpdate_clicked()
 {
-    SETTING_FRAME_SET(FRAME_CURVE_14, FRAME_HEADER, ui->lineEditHead14bit->text());
-    SETTING_FRAME_SET(FRAME_CURVE_14, FRAME_FOOTER, ui->lineEditFoot14bit->text());
-    SETTING_FRAME_SET(FRAME_CURVE_14, FRAME_LENGTH, ui->lineEditLength14bit->text());
+    // SETTING_FRAME_SET(FRAME_CURVE_14, FRAME_HEADER, ui->lineEditHead14bit->text());
+    // SETTING_FRAME_SET(FRAME_CURVE_14, FRAME_FOOTER, ui->lineEditFoot14bit->text());
+    // SETTING_FRAME_SET(FRAME_CURVE_14, FRAME_LENGTH, ui->lineEditLength14bit->text());
 
-    SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_HEADER, ui->lineEditHead24bit->text());
-    SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_FOOTER, ui->lineEditFoot24bit->text());
-    SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_LENGTH, ui->lineEditLength24bit->text());
+    // SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_HEADER, ui->lineEditHead24bit->text());
+    // SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_FOOTER, ui->lineEditFoot24bit->text());
+    // SETTING_FRAME_SET(FRAME_CURVE_24, FRAME_LENGTH, ui->lineEditLength24bit->text());
 
-    SETTING_FRAME_SYNC();
+    // SETTING_FRAME_SYNC();
 }
 
 void FrameSetting::init()
 {
-    ui->lineEditHead14bit->setText(SETTING_FRAME_GET(FRAME_CURVE_14, FRAME_HEADER));
-    ui->lineEditFoot14bit->setText(SETTING_FRAME_GET(FRAME_CURVE_14, FRAME_FOOTER));
-    ui->lineEditLength14bit->setText(SETTING_FRAME_GET(FRAME_CURVE_14, FRAME_LENGTH));
-    ui->lineEditHead24bit->setText(SETTING_FRAME_GET(FRAME_CURVE_24, FRAME_HEADER));
-    ui->lineEditFoot24bit->setText(SETTING_FRAME_GET(FRAME_CURVE_24, FRAME_FOOTER));
-    ui->lineEditLength24bit->setText(SETTING_FRAME_GET(FRAME_CURVE_24, FRAME_LENGTH));
+    // ui->lineEditHead14bit->setText(SETTING_FRAME_GET(FRAME_CURVE_14, FRAME_HEADER));
+    // ui->lineEditFoot14bit->setText(SETTING_FRAME_GET(FRAME_CURVE_14, FRAME_FOOTER));
+    // ui->lineEditLength14bit->setText(SETTING_FRAME_GET(FRAME_CURVE_14, FRAME_LENGTH));
+    // ui->lineEditHead24bit->setText(SETTING_FRAME_GET(FRAME_CURVE_24, FRAME_HEADER));
+    // ui->lineEditFoot24bit->setText(SETTING_FRAME_GET(FRAME_CURVE_24, FRAME_FOOTER));
+    // ui->lineEditLength24bit->setText(SETTING_FRAME_GET(FRAME_CURVE_24, FRAME_LENGTH));
 }

@@ -18,7 +18,7 @@ public:
     void retranslateUI();
 
 public slots:
-    void onDataReceived4k(const QByteArray &data14,
+    void onDataReceivedF15(const QByteArray &data14,
                           const QByteArray &data24,
                           const QByteArray &temperature = "");
     void onDataReceivedF30(const QByteArray &data14,

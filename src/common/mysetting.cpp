@@ -39,9 +39,14 @@ void MySetting::sync(SETTING s)
 MySetting::MySetting()
 {
     m_settings[SETTING::CONFIG] = new QSettings("config/config.ini", QSettings::IniFormat);
-    m_settings[SETTING::FRAME] = new QSettings("config/frame.ini", QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F15_SINGLE] = new QSettings("config/frame_F15_single.ini",
+                                                          QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F15_CURVES] = new QSettings("config/frame_F15_curves.ini",
+                                                          QSettings::IniFormat);
     m_settings[SETTING::FRAME_F30_SINGLE] = new QSettings("config/frame_F30_single.ini",
                                                           QSettings::IniFormat);
     m_settings[SETTING::FRAME_F30_CURVES] = new QSettings("config/frame_F30_curves.ini",
                                                           QSettings::IniFormat);
+    m_settings[SETTING::PLAY_MPU6050] = new QSettings("config/frame_play_MPU6050.ini",
+                                                      QSettings::IniFormat);
 }
