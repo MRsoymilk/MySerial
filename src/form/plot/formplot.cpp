@@ -486,7 +486,8 @@ void FormPlot::callCalcFWHM()
             for (int i = m_series31->count() - 1; i >= 1; --i) {
                 if (m_series31->at(i).x() >= xPeak)
                     continue;
-                if (xPeak - m_series31->at(i).x() > 5.0)
+                if (ui->spinBoxLimit->value() != 0
+                    && (xPeak - m_series31->at(i).x() > ui->spinBoxLimit->value()))
                     break;
                 double y1 = m_series31->at(i).y();
                 double y2 = m_series31->at(i - 1).y();
@@ -498,6 +499,24 @@ void FormPlot::callCalcFWHM()
                     break;
                 }
             }
+            for (int i = 0; i < m_series31->count() - 1; ++i) {
+                if (m_series31->at(i).x() <= xPeak)
+                    continue;
+                if (ui->spinBoxLimit->value() != 0
+                    && (xPeak - m_series31->at(i).x() > ui->spinBoxLimit->value()))
+                    break;
+
+                double y1 = m_series31->at(i).y();
+                double y2 = m_series31->at(i + 1).y();
+
+                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
+                    double x1 = m_series31->at(i).x();
+                    double x2 = m_series31->at(i + 1).x();
+                    xRight = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
+                    break;
+                }
+            }
+
             double fwhm = xRight - xLeft;
 
             QLineSeries *fwhmLine = new QLineSeries();

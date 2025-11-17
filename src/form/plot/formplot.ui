@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>843</width>
+    <width>859</width>
     <height>530</height>
    </rect>
   </property>
@@ -142,7 +142,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>208</width>
+          <width>199</width>
           <height>70</height>
          </rect>
         </property>
@@ -248,11 +248,39 @@
       </layout>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnFWHM">
-       <property name="text">
-        <string>FWHM</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="vLayFWHM">
+       <item>
+        <widget class="QToolButton" name="tBtnFWHM">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>FWHM</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="hLayLimit">
+         <item>
+          <widget class="QLabel" name="labelLimit">
+           <property name="text">
+            <string>limit</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBoxLimit">
+           <property name="maximum">
+            <number>999</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QToolButton" name="tBtnImgSave">
