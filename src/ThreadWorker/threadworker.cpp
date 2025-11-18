@@ -270,7 +270,6 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
 
             x_max_correction = std::max(x_max_correction, x);
             y_min_correction = std::min(y_min_correction, y);
-            y_max_correction = std::max(y_max_correction, y);
 
             start_idx = best_idx;
         }

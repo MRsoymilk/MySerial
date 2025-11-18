@@ -24,7 +24,6 @@ signals:
     void windowClose();
     void sendKB(const QByteArray &bytes);
     void sendSin(const QByteArray &bytes);
-    void enableCorrectionCurve(bool enable, const QJsonObject &params);
     void onShowCorrectionCurve(const QList<QPointF> &data,
                                const double &xMin,
                                const double &xMax,

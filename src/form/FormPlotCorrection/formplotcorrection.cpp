@@ -129,9 +129,7 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
         QString txt = ui->comboBoxAlgorithm->currentText();
         if (txt == "fitting_sin") {
             m_formSin->updateParams();
-            QJsonObject params = m_formSin->getParams();
 
-            emit enableCorrectionCurve(true, params);
             ShowCorrectionCurve *sinShow = new ShowCorrectionCurve;
             connect(this,
                     &FormPlotCorrection::onShowCorrectionCurve,
@@ -145,9 +143,7 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
             sinShow->show();
         } else if (txt == "fitting_arcsin") {
             m_formArcSin->updateParams();
-            QJsonObject params = m_formArcSin->getParams();
 
-            emit enableCorrectionCurve(true, params);
             ShowCorrectionCurve *arcSinShow = new ShowCorrectionCurve;
             connect(this,
                     &FormPlotCorrection::onShowCorrectionCurve,
@@ -174,6 +170,5 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
                                    tr("only support fitting_sin or fitting_arcsin"));
         }
     } else {
-        emit enableCorrectionCurve(false, {});
     }
 }

@@ -16,7 +16,6 @@ public:
     explicit FormFittingArcSin(QWidget *parent = nullptr);
     ~FormFittingArcSin();
     void updateParams();
-    QJsonObject getParams();
     void retranslateUI();
 
 signals:

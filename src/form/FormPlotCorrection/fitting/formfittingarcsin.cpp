@@ -28,27 +28,6 @@ void FormFittingArcSin::updateParams()
     on_btnUpdateFormula_clicked();
 }
 
-QJsonObject FormFittingArcSin::getParams()
-{
-    QJsonObject params;
-    params.insert("formula", "arcsin");
-    params.insert("offset", 900.0);
-    params.insert("step", 1.5);
-    params.insert("k1", m_formula_y.k1);
-    params.insert("b1", m_formula_y.b1);
-    params.insert("l_k", m_formula_lambda_l.k);
-    params.insert("l_b", m_formula_lambda_l.b);
-    params.insert("l_d", m_formula_lambda_l.d);
-    params.insert("l_alpha", m_formula_lambda_l.alpha);
-    params.insert("r_k", m_formula_lambda_r.k);
-    params.insert("r_b", m_formula_lambda_r.b);
-    params.insert("r_d", m_formula_lambda_r.d);
-    params.insert("r_alpha", m_formula_lambda_r.alpha);
-    params.insert("k2", m_formula_y.k2);
-    params.insert("b2", m_formula_y.b2);
-    return params;
-}
-
 void FormFittingArcSin::retranslateUI()
 {
     ui->retranslateUi(this);

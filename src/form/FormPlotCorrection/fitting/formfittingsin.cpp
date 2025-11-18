@@ -426,24 +426,6 @@ void FormFittingSin::setTemperature(double temperature)
     startFitting();
 }
 
-QJsonObject FormFittingSin::getParams()
-{
-    QJsonObject params;
-    params.insert("formula", "sin");
-    params.insert("offset", 900.0);
-    params.insert("step", 1.5);
-    params.insert("k1", m_sin.k1);
-    params.insert("b1", m_sin.b1);
-    params.insert("y0", m_sin.y0);
-    params.insert("A", m_sin.A);
-    params.insert("xc", m_sin.xc);
-    params.insert("w", m_sin.w);
-    params.insert("k2", m_sin.k2);
-    params.insert("b2", m_sin.b2);
-    params.insert("T", m_sin.T);
-    return params;
-}
-
 void FormFittingSin::updateParams()
 {
     on_btnUpdate_clicked();

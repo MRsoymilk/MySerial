@@ -30,7 +30,6 @@ public:
     ~FormFittingSin();
     void doCorrection(const QVector<double> &v14, const QVector<double> &v24);
     void setTemperature(double temperature);
-    QJsonObject getParams();
     void updateParams();
     void retranslateUI();
 
