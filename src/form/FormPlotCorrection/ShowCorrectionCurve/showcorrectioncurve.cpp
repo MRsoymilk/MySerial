@@ -1,5 +1,6 @@
 #include "showcorrectioncurve.h"
 #include "DataInput/datainput.h"
+#include "funcdef.h"
 #include "ui_showcorrectioncurve.h"
 
 ShowCorrectionCurve::ShowCorrectionCurve(QWidget *parent)
@@ -30,7 +31,11 @@ void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
     ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
     m_line->replace(data);
     m_axisX->setRange(xMin, xMax);
-    m_axisY->setRange(yMin, yMax);
+    if (ui->tBtnRangeY->isChecked()) {
+        m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
+    } else {
+        m_axisY->setRange(yMin, yMax);
+    }
     m_data.push_back(data);
     m_current_page = m_data.size() - 1;
     ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
@@ -73,12 +78,20 @@ void ShowCorrectionCurve::init()
     m_model->setHeaderData(1, Qt::Horizontal, "threshold");
     ui->tableView->setModel(m_model);
 
-    ui->doubleSpinBoxOffset->setValue(900);
-    ui->doubleSpinBoxStep->setValue(1.5);
+    int offset = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_OFFSET, "900").toInt();
+    double step = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_STEP, "1").toDouble();
+    ui->doubleSpinBoxOffset->setValue(offset);
+    ui->doubleSpinBoxStep->setValue(step);
 
     m_load_data = false;
     ui->tBtnLoadDataFromInput->setCheckable(true);
     ui->tBtnLoadDataFromCSV->setCheckable(true);
+
+    ui->tBtnRangeY->setCheckable(true);
+    int start = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MIN, "0").toInt();
+    int end = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MAX, "9999").toInt();
+    ui->spinBoxStartY->setValue(start);
+    ui->spinBoxEndY->setValue(end);
 }
 
 void ShowCorrectionCurve::on_tBtnPrev_clicked()
@@ -215,7 +228,9 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
 
     file.close();
 
+    on_btnApplyOption_clicked();
     emit useLoadedThreshold(true, values);
+    ui->tabWidget->setCurrentWidget(ui->tabCurve);
 }
 
 void ShowCorrectionCurve::on_btnApplyOption_clicked()
@@ -223,4 +238,35 @@ void ShowCorrectionCurve::on_btnApplyOption_clicked()
     double step = ui->doubleSpinBoxStep->value();
     double offset = ui->doubleSpinBoxOffset->value();
     emit useLoadedThreadsholdOption(offset, step);
+    SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_OFFSET, QString::number(offset));
+    SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_STEP, QString::number(step));
+}
+
+void ShowCorrectionCurve::on_tBtnRangeY_clicked()
+{
+    if (ui->tBtnRangeY->isChecked()) {
+        m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
+        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION,
+                           CFG_CORRECTION_CURVE_Y_MIN,
+                           QString::number(ui->spinBoxStartY->value()));
+        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION,
+                           CFG_CORRECTION_CURVE_Y_MAX,
+                           QString::number(ui->spinBoxEndY->value()));
+    }
+}
+
+void ShowCorrectionCurve::on_spinBoxStartY_valueChanged(int val)
+{
+    if (ui->tBtnRangeY->isChecked()) {
+        m_axisY->setRange(val, m_axisY->max());
+        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MIN, QString::number(val));
+    }
+}
+
+void ShowCorrectionCurve::on_spinBoxEndY_valueChanged(int val)
+{
+    if (ui->tBtnRangeY->isChecked()) {
+        m_axisY->setRange(m_axisY->min(), val);
+        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MAX, QString::number(val));
+    }
 }

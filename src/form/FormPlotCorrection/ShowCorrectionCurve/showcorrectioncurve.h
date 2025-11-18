@@ -43,10 +43,11 @@ private slots:
     void on_tBtnLoadDataFromInput_clicked();
     void on_doubleSpinBoxOffset_valueChanged(double offset);
     void on_doubleSpinBoxStep_valueChanged(double step);
-
     void on_tBtnLoadDataFromCSV_clicked();
-
     void on_btnApplyOption_clicked();
+    void on_tBtnRangeY_clicked();
+    void on_spinBoxStartY_valueChanged(int val);
+    void on_spinBoxEndY_valueChanged(int val);
 
 private:
     void init();
