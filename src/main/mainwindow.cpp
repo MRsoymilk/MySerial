@@ -695,22 +695,18 @@ void MainWindow::saveChartAsImage(const QString &filePath)
     image.save(filePath);
 }
 
-void MainWindow::updatePlot(const QList<QPointF> &v14,
-                            const QList<QPointF> &v24,
-                            const double &xMin,
-                            const double &xMax,
-                            const double &yMin,
-                            const double &yMax,
+void MainWindow::updatePlot(const CURVE &curve31,
+                            const CURVE &curve33,
                             const double &temperature,
                             bool record)
 {
     if (m_pause) {
         return;
     }
-    m_line->replace(v24);
+    m_line->replace(curve31.data);
     if (m_autoZoom) {
-        m_axisX->setRange(xMin, xMax);
-        m_axisY->setRange(yMin, yMax);
+        m_axisX->setRange(curve31.x_min, curve31.x_max);
+        m_axisY->setRange(curve31.y_min, curve31.y_max);
     }
     callFindPeak();
     callCalcFWHM();
@@ -789,9 +785,7 @@ void MainWindow::callFindPeak()
         }
 
         QVector<QPointF> peaks24 = findPeak(3, 1.0, 5.0);
-        // if (ui->checkBoxTrajectory->isChecked()) {
-        //     peakTrajectory(peaks24);
-        // }
+
         m_peaks->clear();
         for (const auto &pt : peaks24) {
             m_peaks->append(pt);

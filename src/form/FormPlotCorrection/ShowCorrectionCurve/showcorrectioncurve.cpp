@@ -44,6 +44,7 @@ void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
 void ShowCorrectionCurve::closeEvent(QCloseEvent *event)
 {
     m_data.clear();
+    QList<QList<QPointF>>().swap(m_data);
     m_current_page = 0;
     emit windowClose();
     QWidget::closeEvent(event);

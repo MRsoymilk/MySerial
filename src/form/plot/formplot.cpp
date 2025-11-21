@@ -268,51 +268,51 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data31,
     }
 }
 
-void FormPlot::updatePlot4k(const QList<QPointF> &data31,
-                            const QList<QPointF> &data33,
-                            const double &xMin,
-                            const double &xMax,
-                            const double &yMin,
-                            const double &yMax,
+void FormPlot::updatePlot4k(const CURVE &curve31,
+                            const CURVE &curve33,
                             const double &temperature,
                             bool record)
 {
     if (m_pause) {
         return;
     }
+    ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
+
     int offset = 0;
     if (ui->tBtnOffset->isChecked()) {
         offset = ui->spinBoxOffset->value();
     }
 
-    QList<QPointF> offsetData31 = data31;
-    QList<QPointF> offsetData33 = data33;
-    for (int i = 0; i < data31.size(); ++i) {
+    QList<QPointF> offsetData31 = curve31.data;
+    QList<QPointF> offsetData33 = curve33.data;
+    for (int i = 0; i < curve31.data.size(); ++i) {
         offsetData31[i].setX(offset + i * m_step);
-        offsetData31[i].setY(data31[i].y());
+        offsetData31[i].setY(curve31.data[i].y());
     }
-    for (int i = 0; i < data33.size(); ++i) {
+    for (int i = 0; i < curve33.data.size(); ++i) {
         offsetData33[i].setX(offset + i * m_step);
-        offsetData33[i].setY(data33[i].y());
-    }
-    if (record) {
-        emit toHistory(offsetData31, offsetData33, temperature);
-    }
-    ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
-
-    if (m_enableFourier) {
-        m_fourierTransform->transform(offsetData31);
+        offsetData33[i].setY(curve33.data[i].y());
     }
 
+    double yMin = std::min(curve31.y_min, curve33.y_min);
+    double yMax = std::max(curve31.y_max, curve33.y_max);
     updatePlot2d(offsetData31,
                  offsetData33,
                  offset,
-                 offset + std::max(data31.size(), data33.size()) * m_step,
+                 offset + std::max(curve31.data.size(), curve33.data.size()) * m_step,
                  yMin,
                  yMax);
 
     callFindPeak();
     callCalcFWHM();
+
+    if (record) {
+        emit toHistory(curve31, curve33, temperature);
+    }
+
+    if (m_enableFourier) {
+        m_fourierTransform->transform(offsetData31);
+    }
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)

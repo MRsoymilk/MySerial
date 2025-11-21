@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "MyChartView/mychartview.h"
+#include "global.h"
 
 namespace Ui {
 class FormPlotHistory;
@@ -22,12 +23,8 @@ public:
 
 signals:
     void windowClose();
-    void sendToPlot(const QList<QPointF> &data31,
-                    const QList<QPointF> &data33,
-                    const double &xMin,
-                    const double &xMax,
-                    const double &yMin,
-                    const double &yMax,
+    void sendToPlot(const CURVE &curve31,
+                    const CURVE &curve33,
                     const double &temperature,
                     bool record = false);
 
@@ -35,9 +32,7 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 public slots:
-    void onHistoryRecv(const QList<QPointF> &data31,
-                       const QList<QPointF> &data33,
-                       const double &temperature);
+    void onHistoryRecv(const CURVE &curve31, const CURVE &curve33, const double &temperature);
     void onTemperature(double temperature);
 
 private slots:
@@ -51,7 +46,6 @@ private slots:
     void on_radioButtonSplit_clicked();
     void on_toolButtonDumpPlot_clicked();
     void on_toolButtonDumpData_clicked();
-
     void on_tBtnToPlot_clicked();
 
 private:
@@ -63,15 +57,26 @@ private:
 
 private:
     Ui::FormPlotHistory *ui;
-    QList<QList<QPointF>> m_p31, m_p33;
+    QList<CURVE> m_p31, m_p33;
     QList<double> m_temperature;
-    int m_index_31, m_index_33;
+    int m_index_31 = 0, m_index_33 = 0;
     MyChartView *m_chartView31Split = nullptr;
     MyChartView *m_chartView33Split = nullptr;
-    MyChartView *m_chartMix = nullptr;
+    MyChartView *m_chartViewMix = nullptr;
+    QLineSeries *m_lineMix31 = nullptr;
+    QLineSeries *m_lineMix33 = nullptr;
+    QLineSeries *m_splitLine31 = nullptr;
+    QLineSeries *m_splitLine33 = nullptr;
     QChart *m_chart = nullptr;
-    QWidget *m_widgetSplit = nullptr;
-    QWidget *m_widgetMix = nullptr;
+    QChart *m_chartMix = nullptr;
+    QChart *m_chart31 = nullptr;
+    QChart *m_chart33 = nullptr;
+    QValueAxis *m_axisMixX;
+    QValueAxis *m_axisMixY;
+    QValueAxis *m_axisSplit31X;
+    QValueAxis *m_axisSplit31Y;
+    QValueAxis *m_axisSplit33X;
+    QValueAxis *m_axisSplit33Y;
 };
 
 #endif // FORMPLOTHISTORY_H

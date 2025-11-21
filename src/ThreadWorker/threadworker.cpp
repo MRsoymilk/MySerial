@@ -165,19 +165,28 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     processF30Curve31(data31, v_voltage31, raw31, yMin, yMax);
     processF30Curve33(data33, v_voltage33, raw33, yMin, yMax);
     QList<QPointF> out31, out33;
+    CURVE curve31;
+    CURVE curve33;
     for (int i = 0; i < v_voltage31.size(); ++i) {
-        out31.push_back({static_cast<double>(i), v_voltage31.at(i)});
+        curve31.data.push_back({static_cast<double>(i), v_voltage31.at(i)});
+        curve31.y_min = std::min(curve31.y_min, v_voltage31.at(i));
+        curve31.y_max = std::max(curve31.y_max, v_voltage31.at(i));
     }
+    curve31.x_min = 0;
+    curve31.x_max = v_voltage31.size();
     for (int i = 0; i < v_voltage33.size(); ++i) {
-        out33.push_back({static_cast<double>(i), v_voltage33.at(i)});
+        curve33.data.push_back({static_cast<double>(i), v_voltage33.at(i)});
+        curve33.y_min = std::min(curve33.y_min, v_voltage33.at(i));
+        curve33.y_max = std::max(curve33.y_max, v_voltage33.at(i));
     }
-    double xMin, xMax;
-    xMin = 0;
-    xMax = std::max(v_voltage31.size(), v_voltage33.size());
+    curve33.x_min = 0;
+    curve33.x_max = v_voltage33.size();
+
     if (m_use_loaded_threshold) {
         applyThreshold(m_threshold, raw31, raw33, 0);
     }
-    emit plotReady4k(out31, out33, xMin, xMax, yMin, yMax, temperature);
+
+    emit plotReady4k(curve31, curve33, temperature);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
 }
 
@@ -200,36 +209,40 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
         processF15Curve33(data33, v_voltage33, raw33, yMin, yMax);
     }
 
-    double xMin = 0.0;
-    double xMax = 1999.0;
-
-    QList<QPointF> out14, out24;
-
+    CURVE curve31;
+    CURVE curve33;
     if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
-        xMin = 980;
-        xMax = std::min(xMin + v_voltage33.size(), xMin + 660);
-        out14.clear();
-        v_voltage31.clear();
-        for (int i = 0; i < v_voltage33.size(); ++i) {
-            out24.push_back({static_cast<double>(i + xMin), v_voltage33[i]});
+        for (int i = 0; i < v_voltage31.size(); ++i) {
+            curve31.data.push_back({static_cast<double>(i), v_voltage31[i]});
+            curve31.y_min = std::min(curve31.y_min, v_voltage31[i]);
+            curve31.y_max = std::max(curve31.y_max, v_voltage31[i]);
         }
+        curve31.x_min = 0;
+        curve31.x_max = v_voltage31.size();
     } else {
         numPoints = std::min(v_voltage31.size(), v_voltage33.size());
         for (int i = 0; i < numPoints; ++i) {
-            out14.push_back({static_cast<double>(i), v_voltage31[i]});
-            out24.push_back({static_cast<double>(i), v_voltage33[i]});
+            curve31.data.push_back({static_cast<double>(i), v_voltage31[i]});
+            curve31.y_min = std::min(curve31.y_min, v_voltage31[i]);
+            curve31.y_max = std::max(curve31.y_max, v_voltage31[i]);
+            curve33.data.push_back({static_cast<double>(i), v_voltage33[i]});
+            curve33.y_min = std::min(curve33.y_min, v_voltage33[i]);
+            curve33.y_max = std::max(curve33.y_max, v_voltage33[i]);
         }
-        xMax = numPoints;
+        curve31.x_min = 0;
+        curve31.x_max = numPoints;
+        curve33.x_min = 0;
+        curve33.x_max = numPoints;
     }
 
     if (m_use_loaded_threshold) {
         applyThreshold(m_threshold, raw31, raw33, temperature);
     }
 
+    emit plotReady4k(curve31, curve33, temperature);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
-    emit plotReady4k(out14, out24, xMin, xMax, yMin, yMax, temperature);
 }
-// #include <fstream>
+
 void ThreadWorker::applyThreshold(const QVector<double> &threshold,
                                   const QVector<double> &raw31,
                                   const QVector<double> &raw33,
@@ -288,17 +301,6 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
             start_idx = best_idx + 1;
         }
     }
-
-    // std::ofstream fout("output.csv");
-    // fout << "i,idx,threshold,raw31,raw33\n";
-
-    // for (size_t i = 0; i < v_idx.size(); ++i) {
-    //     int idx = v_idx[i];
-    //     fout << 900 + i << "," << idx << "," << threshold[i] << "," << raw31[idx] << ","
-    //          << raw33[idx] << "\n";
-    // }
-
-    // fout.close();
 
     emit showCorrectionCurve(out_correction,
                              m_correction_offset,

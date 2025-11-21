@@ -3,6 +3,7 @@
 
 #include <QLineSeries>
 #include <QObject>
+#include "global.h"
 
 class ThreadWorker : public QObject
 {
@@ -28,12 +29,8 @@ signals:
                      const QVector<double> &v33,
                      const QVector<double> &raw31,
                      const QVector<double> &raw33);
-    void plotReady4k(const QList<QPointF> &v31,
-                     const QList<QPointF> &v33,
-                     const double &xMin,
-                     const double &xMax,
-                     const double &yMin,
-                     const double &yMax,
+    void plotReady4k(const CURVE &curve31,
+                     const CURVE &curve33,
                      const double &temperature = 0.0,
                      bool record = true);
     void showCorrectionCurve(const QList<QPointF> &data,

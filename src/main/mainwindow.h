@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "MyChartView/mychartview.h"
+#include "global.h"
 
 class FormSerial;
 class FormPlot;
@@ -105,12 +106,8 @@ private:
     bool connectEasyMode();
     void closeEasyMode();
     void saveChartAsImage(const QString &filePath);
-    void updatePlot(const QList<QPointF> &v14,
-                    const QList<QPointF> &v24,
-                    const double &xMin,
-                    const double &xMax,
-                    const double &yMin,
-                    const double &yMax,
+    void updatePlot(const CURVE &curve31,
+                    const CURVE &curve33,
                     const double &temperature = 0.0,
                     bool record = true);
     void updateTable(const QVector<double> &v14,

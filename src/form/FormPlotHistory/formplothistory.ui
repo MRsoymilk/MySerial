@@ -46,7 +46,25 @@
     </layout>
    </item>
    <item row="0" column="1">
-    <widget class="QStackedWidget" name="stackedWidget"/>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QWidget" name="pageMix">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gLayMix"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="pageSplit">
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gLay31"/>
+       </item>
+       <item row="1" column="0">
+        <layout class="QGridLayout" name="gLay33"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout" stretch="9,9">

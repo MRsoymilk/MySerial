@@ -7,6 +7,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include "MyChartView/mychartview.h"
+#include "global.h"
 
 class DraggableLine;
 class PeakTrajectory;
@@ -35,9 +36,7 @@ signals:
     void sendOffset31(int val);
     void sendOffset33(int val);
     void changeFrameType(int index);
-    void toHistory(const QList<QPointF> &data31,
-                   const QList<QPointF> &data33,
-                   const double &temperature = 0.0);
+    void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0);
 
 public slots:
     void onDataReceivedF30(const QByteArray &data31,
@@ -46,14 +45,19 @@ public slots:
     void onDataReceivedF15(const QByteArray &data31,
                            const QByteArray &data33,
                            const double &temperature);
-    void updatePlot4k(const QList<QPointF> &data31,
+    void updatePlot4k(
+        const CURVE& curve31,
+        const CURVE& curve33,
+        const double &temperature,
+        bool record = false
+        /*const QList<QPointF> &data31,
                       const QList<QPointF> &data33,
                       const double &xMin,
                       const double &xMax,
                       const double &yMin,
                       const double &yMax,
                       const double &temperature,
-                      bool record = false);
+                      bool record = false*/);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;

@@ -142,7 +142,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>242</width>
+          <width>226</width>
           <height>70</height>
          </rect>
         </property>
@@ -200,6 +200,13 @@
       <widget class="QToolButton" name="tBtnCrop">
        <property name="text">
         <string>crop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnSNR">
+       <property name="text">
+        <string>SNR</string>
        </property>
       </widget>
      </item>
