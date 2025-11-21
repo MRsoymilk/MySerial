@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.17 LANGUAGES CXX)
+project(MySerial VERSION 1.3.18 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -29,6 +29,9 @@ set(FORM_PLOT
     src/form/plot/PeakTrajectory/peaktrajectory.h
     src/form/plot/PeakTrajectory/peaktrajectory.cpp
     src/form/plot/PeakTrajectory/peaktrajectory.ui
+    src/form/plot/FourierTransform/fouriertransform.h
+    src/form/plot/FourierTransform/fouriertransform.cpp
+    src/form/plot/FourierTransform/fouriertransform.ui
 )
 
 set(FORM_LOG
@@ -246,6 +249,31 @@ qt_add_translations(MySerial TS_FILES ${TRANSLATIONS})
 
 add_subdirectory(vendor/spdlog-1.15.0/)
 target_link_libraries(MySerial PRIVATE spdlog::spdlog)
+
+include(ExternalProject)
+
+set(FFTW_PREFIX ${CMAKE_BINARY_DIR}/fftw)
+set(FFTW_SRC ${CMAKE_SOURCE_DIR}/vendor/fftw-3.3.10)
+
+ExternalProject_Add(fftw_external
+    SOURCE_DIR ${FFTW_SRC}
+    CMAKE_ARGS
+        -DCMAKE_INSTALL_PREFIX=${FFTW_PREFIX}
+        -DBUILD_SHARED_LIBS=ON          # ON 生成动态库, OFF 静态库
+        -DENABLE_THREADS=OFF            # 单线程
+        -DENABLE_OPENMP=OFF
+        -DENABLE_MPI=OFF
+        -DENABLE_FLOAT=OFF
+        -DENABLE_LONG_DOUBLE=OFF
+        -DENABLE_QUAD_PRECISION=OFF
+    UPDATE_COMMAND ""                  # 禁止自动下载更新
+    PATCH_COMMAND ""                   # 禁止 patch
+)
+
+add_dependencies(${PROJECT_NAME} fftw_external)
+target_include_directories(${PROJECT_NAME} PRIVATE ${FFTW_PREFIX}/include)
+target_link_directories(${PROJECT_NAME} PRIVATE ${FFTW_PREFIX}/lib)
+target_link_libraries(${PROJECT_NAME} PRIVATE fftw3)
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in

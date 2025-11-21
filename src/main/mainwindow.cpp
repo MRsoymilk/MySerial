@@ -322,10 +322,6 @@ void MainWindow::init()
             formSerial,
             &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
-    connect(m_plotSimulate,
-            &FormPlotSimulate::simulateOption,
-            formSerial,
-            &FormSerial::onSimulateOption);
 
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(formPlot,

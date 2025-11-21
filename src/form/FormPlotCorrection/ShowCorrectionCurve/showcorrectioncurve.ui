@@ -23,7 +23,7 @@
       <enum>QTabWidget::TabShape::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::TextElideMode::ElideLeft</enum>
@@ -177,6 +177,13 @@
          </item>
          <item>
           <widget class="QDoubleSpinBox" name="doubleSpinBoxStep"/>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxAcceptTemperature">
+           <property name="text">
+            <string>accept temperature</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btnApplyOption">

@@ -142,7 +142,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>199</width>
+          <width>242</width>
           <height>70</height>
          </rect>
         </property>
@@ -187,20 +187,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnMeasureX">
-       <property name="text">
-        <string>measure x</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="tBtnMeasureY">
-       <property name="text">
-        <string>measure y</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="tBtnZoom">
        <property name="text">
         <string>zoom</string>
@@ -214,6 +200,13 @@
       <widget class="QToolButton" name="tBtnCrop">
        <property name="text">
         <string>crop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnFourier">
+       <property name="text">
+        <string>Fourier</string>
        </property>
       </widget>
      </item>

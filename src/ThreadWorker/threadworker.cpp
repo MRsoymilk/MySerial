@@ -150,7 +150,9 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33,
     }
 }
 
-void ThreadWorker::processDataF30(const QByteArray &data31, const QByteArray &data33)
+void ThreadWorker::processDataF30(const QByteArray &data31,
+                                  const QByteArray &data33,
+                                  const double &temperature)
 {
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();
@@ -175,7 +177,7 @@ void ThreadWorker::processDataF30(const QByteArray &data31, const QByteArray &da
     if (m_use_loaded_threshold) {
         applyThreshold(m_threshold, raw31, raw33, 0);
     }
-    emit plotReady4k(out31, out33, xMin, xMax, yMin, yMax);
+    emit plotReady4k(out31, out33, xMin, xMax, yMin, yMax, temperature);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
 }
 
@@ -227,7 +229,7 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
     emit plotReady4k(out14, out24, xMin, xMax, yMin, yMax, temperature);
 }
-
+// #include <fstream>
 void ThreadWorker::applyThreshold(const QVector<double> &threshold,
                                   const QVector<double> &raw31,
                                   const QVector<double> &raw33,
@@ -235,18 +237,28 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
 {
     QList<QPointF> out_correction;
     int idx_max = 0;
+    int idx_min = 0;
     int raw_max = INT_MIN;
+    int raw_min = INT_MAX;
     for (int i = 0; i < raw33.size(); ++i) {
         if (raw_max < raw33[i]) {
             raw_max = raw33[i];
             idx_max = i;
         }
+        if (raw_min > raw33[i]) {
+            raw_min = raw33[i];
+            idx_min = i;
+        }
+    }
+    if (idx_min < idx_max) {
+        idx_max = 0;
     }
 
     double x_max_correction = m_correction_offset;
     double y_min_correction = std::numeric_limits<double>::max();
     double y_max_correction = std::numeric_limits<double>::lowest();
 
+    QList<int> v_idx;
     int start_idx = idx_max;
     for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
         int best_idx = -1;
@@ -264,6 +276,7 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
         }
 
         if (best_idx >= 0 && best_idx < raw31.size()) {
+            v_idx.push_back(best_idx);
             double x = m_correction_offset + idx_threshold * m_correction_step;
             double y = raw31[best_idx];
             out_correction.push_back(QPointF(x, y));
@@ -272,9 +285,20 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
             y_min_correction = std::min(y_min_correction, y);
             y_max_correction = std::max(y_max_correction, y);
 
-            start_idx = best_idx;
+            start_idx = best_idx + 1;
         }
     }
+
+    // std::ofstream fout("output.csv");
+    // fout << "i,idx,threshold,raw31,raw33\n";
+
+    // for (size_t i = 0; i < v_idx.size(); ++i) {
+    //     int idx = v_idx[i];
+    //     fout << 900 + i << "," << idx << "," << threshold[i] << "," << raw31[idx] << ","
+    //          << raw33[idx] << "\n";
+    // }
+
+    // fout.close();
 
     emit showCorrectionCurve(out_correction,
                              m_correction_offset,

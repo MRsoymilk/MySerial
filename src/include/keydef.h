@@ -44,7 +44,6 @@ const QString CFG_SERVER_PORT = "port";
 const QString CFG_SERVER_LOG = "log";
 const QString CFG_GROUP_SIMULATE = "Simulate";
 const QString CFG_SIMULATE_FILE = "file";
-const QString CFG_SIMULATE_OPTION_CORRECTION = "option_correction";
 const QString CFG_GROUP_PLOT = "Plot";
 const QString CFG_PLOT_OFFSET31 = "offset31";
 const QString CFG_PLOT_OFFSET33 = "offset33";
@@ -72,5 +71,7 @@ const QString KEY_y0 = "y0";
 const QString KEY_IMG_URL = "image_url";
 const QString CFG_GROUP_AUTOUPDATE = "AutoUpdate";
 const QString CFG_AUTOUPDATE_URL = "url";
+const QString CFG_GROUP_FOURIER = "Fourier";
+const QString CFG_FOURIER_SAMPLE_RATE = "sample_rate";
 
 #endif

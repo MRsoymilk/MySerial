@@ -56,7 +56,9 @@ public:
     void setEasyFrame();
 
 signals:
-    void recv2PlotF30(const QByteArray &data31, const QByteArray &data33);
+    void recv2PlotF30(const QByteArray &data31,
+                      const QByteArray &data33,
+                      const double &temperature = 0.0);
     void recv2DataF30(const QByteArray &data31,
                       const QByteArray &data33,
                       const QByteArray &temperature = "");
@@ -72,7 +74,6 @@ signals:
 public slots:
     void sendRaw(const QByteArray &bytes);
     void onChangeFrameType(int index);
-    void onSimulateOption(bool isEnable);
     void onSimulateRecv(const QByteArray &bytes);
 
 protected:
@@ -137,9 +138,9 @@ private:
     FormSerial::FRAME m_frame;
     long long m_recv_count;
 
-    bool m_toPeek = false;
-    bool m_waitting_byte = false;
-    bool m_need_after = false;
+    // bool m_toPeek = false;
+    // bool m_waitting_byte = false;
+    // bool m_need_after = false;
 
     QVector<LineSend *> m_lineSends;
     int m_pageSize = 5;

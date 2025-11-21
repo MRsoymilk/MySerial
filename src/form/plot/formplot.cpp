@@ -13,6 +13,7 @@
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
 #include "DraggableLine/draggableline.h"
+#include "FourierTransform/fouriertransform.h"
 #include "PeakTrajectory/peaktrajectory.h"
 #include "funcdef.h"
 #include "plot_algorithm.h"
@@ -139,9 +140,6 @@ void FormPlot::init2d()
     m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->stackedWidget->addWidget(m_chartView);
-
-    ui->tBtnMeasureX->setVisible(false);
-    ui->tBtnMeasureY->setVisible(false);
 }
 
 void FormPlot::initToolButtons()
@@ -180,6 +178,11 @@ void FormPlot::initToolButtons()
     ui->tBtnFWHM->setToolTip(tr("FWHM"));
     ui->tBtnFWHM->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnFourier->setObjectName("Fourier");
+    ui->tBtnFourier->setIconSize(QSize(24, 24));
+    ui->tBtnFourier->setToolTip(tr("Fourier"));
+    ui->tBtnFourier->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);
@@ -187,6 +190,7 @@ void FormPlot::initToolButtons()
     ui->tBtnFWHM->setCheckable(true);
     ui->tBtnRangeX->setCheckable(true);
     ui->tBtnRangeY->setCheckable(true);
+    ui->tBtnFourier->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -199,12 +203,15 @@ void FormPlot::init()
     QShortcut *shortcut_ImgSave = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_S), this);
     connect(shortcut_ImgSave, &QShortcut::activated, this, &FormPlot::on_tBtnImgSave_clicked);
     m_trajectory = new PeakTrajectory;
+    m_fourierTransform = new FourierTransform;
 }
 
-void FormPlot::onDataReceivedF30(const QByteArray &data31, const QByteArray &data33)
+void FormPlot::onDataReceivedF30(const QByteArray &data31,
+                                 const QByteArray &data33,
+                                 const double &temperature)
 {
     if (!m_pause) {
-        emit newDataReceivedF30(data31, data33);
+        emit newDataReceivedF30(data31, data33, temperature);
     }
 }
 
@@ -283,6 +290,11 @@ void FormPlot::updatePlot4k(const QList<QPointF> &data31,
         emit toHistory(offsetData31, offsetData33, temperature);
     }
     ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
+
+    if (m_enableFourier) {
+        m_fourierTransform->transform(offsetData31);
+    }
+
     updatePlot2d(offsetData31,
                  offsetData33,
                  offset,
@@ -313,6 +325,17 @@ void FormPlot::wheelEvent(QWheelEvent *event)
     } else {
         QWidget::wheelEvent(event);
     }
+}
+
+void FormPlot::closeEvent(QCloseEvent *event)
+{
+    if (m_trajectory) {
+        m_trajectory->close();
+    }
+    if (m_fourierTransform) {
+        m_fourierTransform->close();
+    }
+    this->close();
 }
 
 void FormPlot::on_tBtnCrop_clicked()
@@ -723,5 +746,15 @@ void FormPlot::on_tBtnRangeY_clicked()
 {
     if (ui->tBtnRangeY->isChecked()) {
         m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
+    }
+}
+
+void FormPlot::on_tBtnFourier_clicked()
+{
+    m_enableFourier = !m_enableFourier;
+    if (m_enableFourier) {
+        m_fourierTransform->show();
+    } else {
+        m_fourierTransform->hide();
     }
 }

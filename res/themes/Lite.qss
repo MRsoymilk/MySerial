@@ -1187,6 +1187,10 @@ QToolButton#FWHM {
   qproperty-icon: url(:/res/icons/fwhm.png);
 }
 
+QToolButton#Fourier {
+  qproperty-icon: url(:/res/icons/fourier.png);
+}
+
 QToolButton#tBtnSwitch {
   qproperty-icon: url(:/res/icons/start.png);
   qproperty-iconSize: 48px 48px;
@@ -1219,6 +1223,11 @@ QToolButton#tBtnFWHM {
 
 QToolButton#tBtnImg {
   qproperty-icon: url(:/res/icons/img_save.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnFourier {
+  qproperty-icon: url(:/res/icons/fourier.png);
   qproperty-iconSize: 48px 48px;
 }
 

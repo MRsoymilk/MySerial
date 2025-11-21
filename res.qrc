@@ -107,5 +107,6 @@
         <file>res/icons/measure_y.png</file>
         <file>res/icons/start.png</file>
         <file>res/icons/start.gif</file>
+        <file>res/icons/fourier.png</file>
     </qresource>
 </RCC>

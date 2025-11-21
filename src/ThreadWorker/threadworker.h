@@ -15,7 +15,9 @@ public:
     void setAlgorithm(int);
 
 public slots:
-    void processDataF30(const QByteArray &data31, const QByteArray &data33);
+    void processDataF30(const QByteArray &data31,
+                        const QByteArray &data33,
+                        const double &temperature);
     void processDataF15(const QByteArray &data31,
                         const QByteArray &data33,
                         const double &temperature);

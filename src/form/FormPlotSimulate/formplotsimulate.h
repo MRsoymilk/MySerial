@@ -14,7 +14,6 @@ public:
     struct INI_SIMULATE
     {
         QString file;
-        QString option_correction;
     };
 
 public:
@@ -24,7 +23,6 @@ public:
 
 signals:
     void windowClose();
-    void simulateOption(bool enable);
     void simulateDataReady(const QByteArray &data);
 
 public slots:
@@ -36,7 +34,6 @@ protected:
 private slots:
     void on_btnLoadFile_clicked();
     void on_toolButtonRe_clicked();
-    void on_checkBoxCorrection_clicked();
 
 private:
     void init();

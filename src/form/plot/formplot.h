@@ -10,6 +10,7 @@
 
 class DraggableLine;
 class PeakTrajectory;
+class FourierTransform;
 
 namespace Ui {
 class FormPlot;
@@ -25,7 +26,9 @@ public:
     void retranslateUI();
 
 signals:
-    void newDataReceivedF30(const QByteArray &data31, const QByteArray &data33);
+    void newDataReceivedF30(const QByteArray &data31,
+                            const QByteArray &data33,
+                            const double &temperature);
     void newDataReceivedF15(const QByteArray &data31,
                             const QByteArray &data33,
                             const double &temperature);
@@ -37,7 +40,9 @@ signals:
                    const double &temperature = 0.0);
 
 public slots:
-    void onDataReceivedF30(const QByteArray &data31, const QByteArray &data33);
+    void onDataReceivedF30(const QByteArray &data31,
+                           const QByteArray &data33,
+                           const double &temperature);
     void onDataReceivedF15(const QByteArray &data31,
                            const QByteArray &data33,
                            const double &temperature);
@@ -52,6 +57,7 @@ public slots:
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_tBtnCrop_clicked();
@@ -73,6 +79,7 @@ private slots:
     void on_checkBoxTrajectory_clicked();
     void on_tBtnRangeX_clicked();
     void on_tBtnRangeY_clicked();
+    void on_tBtnFourier_clicked();
 
 private:
     void init();
@@ -111,17 +118,13 @@ private:
     bool m_findPeak = false;
     bool m_findFWHM = false;
     bool m_pause = false;
+    bool m_enableFourier = false;
 
 private:
-    DraggableLine *m_measureLineX1 = nullptr;
-    DraggableLine *m_measureLineX2 = nullptr;
-    DraggableLine *m_measureLineY1 = nullptr;
-    DraggableLine *m_measureLineY2 = nullptr;
-    QGraphicsSimpleTextItem *m_measureLabelX = nullptr;
-    QGraphicsSimpleTextItem *m_measureLabelY = nullptr;
     QList<QLineSeries *> m_fwhmLines;
     QList<QGraphicsSimpleTextItem *> m_fwhmLabels;
     PeakTrajectory *m_trajectory = nullptr;
+    FourierTransform *m_fourierTransform = nullptr;
     DraggableLine *m_lineLeft = nullptr;
     DraggableLine *m_lineRight = nullptr;
     int m_trajectory_start;

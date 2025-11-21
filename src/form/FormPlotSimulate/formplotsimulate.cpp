@@ -30,21 +30,13 @@ void FormPlotSimulate::onChangeFrameType(int index)
 void FormPlotSimulate::getINI()
 {
     m_ini.file = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);
-    m_ini.option_correction = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE,
-                                                 CFG_SIMULATE_OPTION_CORRECTION,
-                                                 VAL_DISABLE);
-
     ui->lineEditPath->setText(m_ini.file);
-    if (m_ini.option_correction == VAL_ENABLE) {
-        ui->checkBoxCorrection->setChecked(true);
-    }
     m_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
 }
 
 void FormPlotSimulate::setINI()
 {
     SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE, m_ini.file);
-    SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_OPTION_CORRECTION, m_ini.option_correction);
 }
 
 void FormPlotSimulate::init()
@@ -61,7 +53,6 @@ void FormPlotSimulate::on_btnLoadFile_clicked()
     ui->lineEditPath->setText(filePath);
 
     m_ini.file = filePath;
-    m_ini.option_correction = ui->checkBoxCorrection->isChecked() ? VAL_ENABLE : VAL_DISABLE;
     simulate4k();
     setINI();
 }
@@ -75,22 +66,12 @@ void FormPlotSimulate::closeEvent(QCloseEvent *event)
 void FormPlotSimulate::on_toolButtonRe_clicked()
 {
     m_ini.file = ui->lineEditPath->text();
-    m_ini.option_correction = ui->checkBoxCorrection->isChecked() ? VAL_ENABLE : VAL_DISABLE;
     simulate4k();
     setINI();
 }
 
 void FormPlotSimulate::simulate4k()
 {
-    bool option = false;
-    bool wait_delete = false;
-    if (m_ini.option_correction == VAL_ENABLE) {
-        option = true;
-    } else {
-        option = false;
-    }
-    emit simulateOption(option);
-
     QFile file(m_ini.file);
     QString data;
 
@@ -145,9 +126,4 @@ void FormPlotSimulate::simulate4k()
         ui->progressBar->setValue((sent + len) * 100 / total);
         QCoreApplication::processEvents();
     }
-}
-
-void FormPlotSimulate::on_checkBoxCorrection_clicked()
-{
-    m_ini.option_correction = ui->checkBoxCorrection->isChecked() ? VAL_ENABLE : VAL_DISABLE;
 }

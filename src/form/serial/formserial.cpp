@@ -317,14 +317,6 @@ void FormSerial::onChangeFrameType(int index)
     updateFrameTypes(m_algorithm);
 }
 
-void FormSerial::onSimulateOption(bool isEnable)
-{
-    if (isEnable) {
-        m_toPeek = true;
-        m_waitting_byte = false;
-    }
-}
-
 void FormSerial::doFrameExtra(const QByteArray &data)
 {
     m_recv_count += data.size();
@@ -339,23 +331,6 @@ void FormSerial::doFrameExtra(const QByteArray &data)
     }
     ui->txtRecv->appendPlainText("[RX] " + to_show);
     m_buffer.append(data);
-
-    if (m_need_after) {
-        QByteArray tempBytes = m_buffer.left(2);
-        if (tempBytes.size() < 2) {
-            return;
-        }
-        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
-        double temperature = tempRaw / 1000.0;
-
-        LOG_INFO("Temperature: {} °C", temperature);
-
-        emit recv2DataF15(m_frame.bit33, m_frame.bit31, tempBytes);
-        emit recv2PlotF15(m_frame.bit33, m_frame.bit31, temperature);
-        emit recvTemperature(temperature);
-        m_frame.bit31.clear();
-        m_need_after = false;
-    }
 
     while (true) {
         if (m_frameTypes.isEmpty()) {
@@ -419,12 +394,7 @@ void FormSerial::doFrameExtra(const QByteArray &data)
             LOG_INFO("Variable-length frame matched: {}, size = {}",
                      current_frame.name.toStdString(),
                      frame_len);
-            if (m_waitting_byte) {
-                QByteArray temp = m_buffer.mid(frame_len, 2);
-                handleFrame(current_frame.name, frame_candidate, temp);
-            } else {
-                handleFrame(current_frame.name, frame_candidate);
-            }
+            handleFrame(current_frame.name, frame_candidate);
 
             m_buffer.remove(0, frame_len);
         }
@@ -547,15 +517,6 @@ void FormSerial::send(const QString &text)
     if (text.isEmpty()) {
         LOG_WARN("Send txt is empty.");
         return;
-    }
-
-    // Production Instructions
-    if (m_acceptTemperature) {
-        m_toPeek = true;
-        m_waitting_byte = false;
-    } else {
-        m_toPeek = false;
-        m_waitting_byte = false;
     }
 
     QByteArray data;
@@ -729,9 +690,24 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
             m_frame.bit31 = data;
         } else if (type == "F30_33") {
             if (!m_frame.bit31.isEmpty()) {
-                m_frame.bit33 = data;
-                emit recv2PlotF30(m_frame.bit31, m_frame.bit33);
-                emit recv2DataF30(m_frame.bit31, m_frame.bit33);
+                double temperature = 0;
+                QByteArray frame_temperature = "";
+
+                if (m_acceptTemperature) {
+                    QByteArray frame_data = data.left(data.size() - 4);
+                    m_frame.bit33 = frame_data;
+                    frame_temperature = data.right(4);
+                    if (frame_temperature.size() >= 2) {
+                        int raw_temperature = (static_cast<quint8>(frame_temperature[0]) << 8)
+                                              | (static_cast<quint8>(frame_temperature[1]));
+                        temperature = raw_temperature / 1000.0;
+                    }
+                } else {
+                    m_frame.bit33 = data;
+                }
+
+                emit recv2PlotF30(m_frame.bit31, m_frame.bit33, temperature);
+                emit recv2DataF30(m_frame.bit31, m_frame.bit33, frame_temperature);
                 m_frame.bit33.clear();
                 m_frame.bit31.clear();
             }
@@ -742,37 +718,13 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
         if (type == "F15_31") {
             m_frame.bit31 = data;
-            if (m_toPeek) {
-                m_waitting_byte = true;
-            }
-            m_need_after = false;
         } else if (type == "F15_33") {
             m_frame.bit33 = data;
             if (!m_frame.bit31.isEmpty()) {
-                if (m_toPeek) {
-                    if (m_waitting_byte) {
-                        QByteArray tempBytes = temp;
-                        if (tempBytes.isEmpty() || tempBytes.size() < 2) {
-                            m_need_after = true;
-                            return;
-                        }
-                        int tempRaw = (quint8) tempBytes[0] << 8 | (quint8) tempBytes[1];
-                        double temperature = tempRaw / 1000.0;
-
-                        LOG_INFO("Temperature: {} °C", temperature);
-
-                        emit recv2DataF15(m_frame.bit31, m_frame.bit33, tempBytes);
-                        emit recv2PlotF15(m_frame.bit31, m_frame.bit33, temperature);
-                        emit recvTemperature(temperature);
-                        m_frame.bit31.clear();
-                        m_frame.bit33.clear();
-                    }
-                } else {
-                    emit recv2DataF15(m_frame.bit31, m_frame.bit33);
-                    emit recv2PlotF15(m_frame.bit31, m_frame.bit33);
-                    m_frame.bit31.clear();
-                    m_frame.bit33.clear();
-                }
+                emit recv2DataF15(m_frame.bit31, m_frame.bit33);
+                emit recv2PlotF15(m_frame.bit31, m_frame.bit33);
+                m_frame.bit31.clear();
+                m_frame.bit33.clear();
             }
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
@@ -980,4 +932,19 @@ void FormSerial::on_lineEditPageName_editingFinished()
 void FormSerial::on_checkBoxAcceptTemperature_clicked()
 {
     m_acceptTemperature = ui->checkBoxAcceptTemperature->isChecked();
+    if (m_acceptTemperature) {
+        for (auto &frame : m_frameTypes) {
+            if (frame.name == "F30_33") {
+                frame.length += 4;
+                break;
+            }
+        }
+    } else {
+        for (auto &frame : m_frameTypes) {
+            if (frame.name == "F30_33") {
+                frame.length -= 4;
+                break;
+            }
+        }
+    }
 }
