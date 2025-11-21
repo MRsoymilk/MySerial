@@ -76,6 +76,15 @@ void FormPlot::getINI()
     double step = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_STEP, "1.0").toDouble();
     ui->spinBoxOffset->setValue(offset);
     ui->dSpinBoxStep->setValue(step);
+
+    int y_start = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_Y_START, "0").toInt();
+    int y_end = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_Y_END, "0").toInt();
+    ui->spinBoxStartY->setValue(y_start);
+    ui->spinBoxEndY->setValue(y_end);
+    int x_start = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_X_START, "0").toInt();
+    int x_end = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_X_END, "0").toInt();
+    ui->spinBoxStartX->setValue(x_start);
+    ui->spinBoxEndX->setValue(x_end);
 }
 
 void FormPlot::setINI()
@@ -389,26 +398,16 @@ void FormPlot::on_tBtnImgSave_clicked()
 void FormPlot::on_spinBoxStartX_valueChanged(int val)
 {
     if (ui->tBtnRangeX->isChecked()) {
-        int from = ui->spinBoxStartX->value();
-        if (from == 0) {
-            from = m_axisX->min();
-        }
-        if (from < val) {
-            m_axisX->setRange(from, val);
-        }
+        m_axisX->setRange(val, m_axisX->max());
+        SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_X_START, QString::number(val));
     }
 }
 
 void FormPlot::on_spinBoxEndX_valueChanged(int val)
 {
     if (ui->tBtnRangeX->isChecked()) {
-        int to = ui->spinBoxEndX->value();
-        if (to == 0) {
-            to = m_axisX->max();
-        }
-        if (val < to) {
-            m_axisX->setRange(val, to);
-        }
+        m_axisX->setRange(m_axisX->min(), val);
+        SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_X_END, QString::number(val));
     }
 }
 
@@ -416,6 +415,7 @@ void FormPlot::on_spinBoxStartY_valueChanged(int val)
 {
     if (ui->tBtnRangeY->isChecked()) {
         m_axisY->setRange(val, m_axisY->max());
+        SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_Y_START, QString::number(val));
     }
 }
 
@@ -423,6 +423,7 @@ void FormPlot::on_spinBoxEndY_valueChanged(int val)
 {
     if (ui->tBtnRangeY->isChecked()) {
         m_axisY->setRange(m_axisY->min(), val);
+        SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_Y_END, QString::number(val));
     }
 }
 
