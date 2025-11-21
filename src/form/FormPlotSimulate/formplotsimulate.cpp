@@ -114,11 +114,11 @@ void FormPlotSimulate::simulate4k()
     QByteArray dataBytes = QByteArray::fromHex(data.toUtf8());
 
     const int chunkSize = 1024 * 10;
-    int total = dataBytes.size();
-    int sent = 0;
+    long long total = dataBytes.size();
+    long long sent = 0;
 
     for (; sent < total; sent += chunkSize) {
-        int len = qMin(chunkSize, total - sent);
+        long long len = qMin(chunkSize, total - sent);
         QByteArray chunk = dataBytes.mid(sent, len);
 
         emit simulateDataReady(chunk);
