@@ -48,11 +48,9 @@ void MainWindow::initTheme()
     connect(ui->menuTheme, &QMenu::triggered, this, &MainWindow::menuThemeSelect);
     const QList<QAction *> actions = ui->menuTheme->actions();
     for (QAction *act : actions) {
+        act->setCheckable(true);
         if (act->text() == theme) {
             menuThemeSelect(act);
-            act->setChecked(true);
-        } else {
-            act->setChecked(false);
         }
     }
 }
@@ -63,11 +61,9 @@ void MainWindow::initLanguage()
     connect(ui->menuLanguage, &QMenu::triggered, this, &MainWindow::menuLanguageSelect);
     const QList<QAction *> actions = ui->menuLanguage->actions();
     for (QAction *act : actions) {
+        act->setCheckable(true);
         if (act->text() == language) {
             menuLanguageSelect(act);
-            act->setChecked(true);
-        } else {
-            act->setChecked(false);
         }
     }
 }
@@ -524,6 +520,14 @@ void MainWindow::menuLanguageSelect(QAction *selectedAction)
 {
     QString language = selectedAction->text();
     setLanguage(language);
+    const QList<QAction *> actions = ui->menuLanguage->actions();
+    for (QAction *act : actions) {
+        if (act == selectedAction) {
+            act->setChecked(true);
+        } else {
+            act->setChecked(false);
+        }
+    }
 }
 
 void MainWindow::menuThemeSelect(QAction *selectedTheme)
@@ -531,6 +535,14 @@ void MainWindow::menuThemeSelect(QAction *selectedTheme)
     QString theme = selectedTheme->text();
     setTheme(theme);
     m_theme = theme;
+    const QList<QAction *> actions = ui->menuTheme->actions();
+    for (QAction *act : actions) {
+        if (act == selectedTheme) {
+            act->setChecked(true);
+        } else {
+            act->setChecked(false);
+        }
+    }
 }
 
 void MainWindow::on_tBtnData_clicked()
