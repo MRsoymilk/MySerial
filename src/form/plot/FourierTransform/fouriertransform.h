@@ -26,8 +26,10 @@ public:
 
 private slots:
     void on_tBtnRange_clicked();
-
-    void on_spinBoxSampleRate_valueChanged(int arg1);
+    void on_spinBoxSampleRate_valueChanged(int rate);
+    void on_tBtnAxis_clicked();
+    void on_spinBoxAxisXStart_valueChanged(int val);
+    void on_spinBoxAxisXEnd_valueChanged(int val);
 
 private:
     void init();
@@ -65,6 +67,10 @@ private:
     double m_sampleRate = 1000.0;
 
     QList<QPointF> m_currentData;
+
+    bool m_enableAxisX = false;
+    int m_axisXStart = 0;
+    int m_axisXEnd = 0;
 };
 
 #endif // FOURIERTRANSFORM_H

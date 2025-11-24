@@ -27,6 +27,7 @@ void FourierTransform::setSampleRate(double rate)
         m_sampleRate = rate;
     }
 }
+
 QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
                                                  double sampleRate,
                                                  double freqStart,
@@ -47,17 +48,24 @@ QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
     fftw_plan p_forward = fftw_plan_dft_r2c_1d(N, in, freq, FFTW_ESTIMATE);
     fftw_execute(p_forward);
 
+    double transitionWidth = (freqEnd - freqStart) * 0.05; // 5% transition
+
     for (int k = 0; k <= N / 2; ++k) {
         double f = (double) k * sampleRate / N;
 
-        bool isDC = (k == 0);
-
-        if (f < freqStart || f > freqEnd) {
-            if (isDC && freqStart <= 1e-6) {
-            } else {
-                freq[k][0] = 0.0;
-                freq[k][1] = 0.0;
-            }
+        if (f < freqStart - transitionWidth || f > freqEnd + transitionWidth) {
+            freq[k][0] = 0.0;
+            freq[k][1] = 0.0;
+        } else if (f < freqStart) {
+            double x = (f - (freqStart - transitionWidth)) / transitionWidth;
+            double w = 0.5 * (1 - cos(M_PI * x)); // Hann 窗渐变
+            freq[k][0] *= w;
+            freq[k][1] *= w;
+        } else if (f > freqEnd) {
+            double x = ((freqEnd + transitionWidth) - f) / transitionWidth;
+            double w = 0.5 * (1 - cos(M_PI * x));
+            freq[k][0] *= w;
+            freq[k][1] *= w;
         }
     }
 
@@ -162,7 +170,13 @@ void FourierTransform::transform(const QList<QPointF> &data)
     if (data.isEmpty())
         return;
 
-    m_currentData = data;
+    if (m_enableAxisX) {
+        int start = qMax(0, m_axisXStart);
+        int end = qMin(data.size(), m_axisXEnd);
+        m_currentData = data.mid(start, end - start);
+    } else {
+        m_currentData = data;
+    }
 
     fftAmplitude(m_currentData, m_sampleRate);
 
@@ -239,6 +253,8 @@ void FourierTransform::init()
     ui->tBtnRange->setCheckable(true);
     int rate = SETTING_CONFIG_GET(CFG_GROUP_FOURIER, CFG_FOURIER_SAMPLE_RATE, "1000").toInt();
     ui->spinBoxSampleRate->setValue(rate);
+
+    ui->tBtnAxis->setCheckable(true);
 }
 
 void FourierTransform::on_tBtnRange_clicked()
@@ -319,4 +335,19 @@ void FourierTransform::on_spinBoxSampleRate_valueChanged(int rate)
 {
     m_sampleRate = rate;
     SETTING_CONFIG_SET(CFG_GROUP_FOURIER, CFG_FOURIER_SAMPLE_RATE, QString::number(rate));
+}
+
+void FourierTransform::on_tBtnAxis_clicked()
+{
+    m_enableAxisX = !m_enableAxisX;
+    ui->tBtnAxis->setChecked(m_enableAxisX);
+}
+
+void FourierTransform::on_spinBoxAxisXStart_valueChanged(int val)
+{
+    m_axisXStart = val;
+}
+void FourierTransform::on_spinBoxAxisXEnd_valueChanged(int val)
+{
+    m_axisXEnd = val;
 }
