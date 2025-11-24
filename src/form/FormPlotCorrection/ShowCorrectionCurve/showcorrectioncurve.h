@@ -49,6 +49,10 @@ private slots:
     void on_spinBoxStartY_valueChanged(int val);
     void on_spinBoxEndY_valueChanged(int val);
 
+    void on_tBtnExportCurve_clicked();
+
+    void on_tBtnClear_clicked();
+
 private:
     void init();
     void updateIndex();

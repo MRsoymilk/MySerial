@@ -85,8 +85,6 @@ void ShowCorrectionCurve::init()
     ui->doubleSpinBoxStep->setValue(step);
 
     m_load_data = false;
-    ui->tBtnLoadDataFromInput->setCheckable(true);
-    ui->tBtnLoadDataFromCSV->setCheckable(true);
 
     ui->tBtnRangeY->setCheckable(true);
     int start = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MIN, "0").toInt();
@@ -270,4 +268,60 @@ void ShowCorrectionCurve::on_spinBoxEndY_valueChanged(int val)
         m_axisY->setRange(m_axisY->min(), val);
         SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MAX, QString::number(val));
     }
+}
+
+void ShowCorrectionCurve::on_tBtnExportCurve_clicked()
+{
+    if (m_data.isEmpty()) {
+        qDebug() << "No curve data to export.";
+        return;
+    }
+
+    QString path = QFileDialog::getSaveFileName(this,
+                                                tr("Export Curve to CSV"),
+                                                QDir::homePath() + "/curves_export.csv",
+                                                "CSV Files (*.csv)");
+
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open export file";
+        return;
+    }
+
+    QTextStream out(&file);
+
+    out << "index";
+    for (int i = 0; i < m_data.size(); ++i) {
+        out << ",x_" << (i + 1) << ",y_" << (i + 1);
+    }
+    out << "\n";
+
+    int maxLen = 0;
+    for (const auto &curve : m_data)
+        maxLen = std::max(maxLen, static_cast<int>(curve.size()));
+
+    for (int row = 0; row < maxLen; ++row) {
+        out << row;
+
+        for (const auto &curve : m_data) {
+            if (row < curve.size()) {
+                out << "," << curve[row].x() << "," << curve[row].y();
+            } else {
+                out << ",,";
+            }
+        }
+        out << "\n";
+    }
+
+    file.close();
+}
+
+void ShowCorrectionCurve::on_tBtnClear_clicked()
+{
+    m_data.clear();
+    m_current_page = 0;
+    ui->labelPage->setText(QString("%1 / %2").arg(m_current_page).arg(m_data.size()));
 }
