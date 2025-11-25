@@ -243,6 +243,115 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
 }
 
+void ThreadWorker::processDataLLC(const QByteArray &data31,
+                                  const QByteArray &data33,
+                                  const double &temperature)
+{
+    double yMin = std::numeric_limits<double>::max();
+    double yMax = std::numeric_limits<double>::lowest();
+    double yMax31 = std::numeric_limits<double>::lowest();
+    QVector<double> v_voltage31;
+    QVector<double> v_voltage33;
+    QVector<double> raw31;
+    QVector<double> raw33;
+    int numPoints = 0;
+    // 31
+    {
+        // 长度字段（2字节，大端序）
+        QByteArray payload = data31.mid(5, data31.size() - 7);
+        if (payload.size() % 4 != 0) {
+            LOG_WARN("Invalid data length: {}", payload.size());
+            return;
+        }
+
+        QByteArray filteredPayload = payload;
+
+        if (m_offset31 > 0) {
+            payload = QByteArray(m_offset31, 0) + filteredPayload;
+        } else if (m_offset31 < 0) {
+            int skip = -m_offset31;
+            payload = filteredPayload.mid(skip);
+            payload.append(QByteArray(skip, 0));
+        }
+        // 遍历所有采样点
+        for (int i = 0; i + 4 < payload.size(); i += 4) {
+            // big-endian 高字节在前
+            quint16 raw = (static_cast<quint8>(payload[i + 1]))
+                          | (static_cast<quint8>(payload[i + 2]) << 8);
+
+            double voltage = static_cast<double>(raw) * 38.15 / 1000000.0;
+            // double voltage = raw;
+
+            if (voltage < yMin)
+                yMin = voltage;
+            if (voltage > yMax)
+                yMax = voltage;
+
+            v_voltage31.push_back(voltage);
+            raw31.push_back(raw);
+        }
+    }
+    // 33
+    {
+        QByteArray payload = data33.mid(5, data33.size() - 7);
+        if (payload.size() % 4 != 0) {
+            LOG_WARN("Invalid data length: {}", payload.size());
+            return;
+        }
+
+        QByteArray filteredPayload = payload;
+
+        if (m_offset33 > 0) {
+            payload = QByteArray(m_offset33, 0) + filteredPayload;
+        } else if (m_offset33 < 0) {
+            int skip = -m_offset33;
+            payload = filteredPayload.mid(skip);
+            payload.append(QByteArray(skip, 0));
+        }
+
+        for (int i = 0; i + 4 < payload.size(); i += 4) {
+            quint16 raw = (static_cast<quint8>(payload[i + 1]))
+                          | (static_cast<quint8>(payload[i + 2]) << 8);
+
+            qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
+            double voltage = static_cast<double>(signedRaw) / 0x8000 * 2.5;
+            // double voltage = signedRaw;
+
+            if (voltage < yMin)
+                yMin = voltage;
+            if (voltage > yMax)
+                yMax = voltage;
+
+            v_voltage33.push_back(voltage);
+            raw33.push_back(signedRaw);
+        }
+    }
+    QList<QPointF> out31, out33;
+    CURVE curve31;
+    CURVE curve33;
+    for (int i = 0; i < v_voltage31.size(); ++i) {
+        curve31.data.push_back({static_cast<double>(i), v_voltage31.at(i)});
+        curve31.y_min = std::min(curve31.y_min, v_voltage31.at(i));
+        curve31.y_max = std::max(curve31.y_max, v_voltage31.at(i));
+    }
+    curve31.x_min = 0;
+    curve31.x_max = v_voltage31.size();
+    for (int i = 0; i < v_voltage33.size(); ++i) {
+        curve33.data.push_back({static_cast<double>(i), v_voltage33.at(i)});
+        curve33.y_min = std::min(curve33.y_min, v_voltage33.at(i));
+        curve33.y_max = std::max(curve33.y_max, v_voltage33.at(i));
+    }
+    curve33.x_min = 0;
+    curve33.x_max = v_voltage33.size();
+
+    if (m_use_loaded_threshold) {
+        applyThreshold(m_threshold, raw31, raw33, 0);
+    }
+
+    emit plotReady4k(curve31, curve33, temperature);
+    emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
+}
+
 void ThreadWorker::applyThreshold(const QVector<double> &threshold,
                                   const QVector<double> &raw31,
                                   const QVector<double> &raw33,

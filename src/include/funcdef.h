@@ -56,6 +56,13 @@
 #define SETTING_FRAME_F15Single_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME_F15_SINGLE)
 #define SETTING_FRAME_F15Single_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME_F15_SINGLE)
 
+#define SETTING_FRAME_LLC_GET(group, key, ...) \
+    MY_SETTING.getValue(MySetting::SETTING::FRAME_LLC_CURVES, group, key, ##__VA_ARGS__)
+#define SETTING_FRAME_LLC_SET(group, key, value) \
+    MY_SETTING.setValue(MySetting::SETTING::FRAME_LLC_CURVES, group, key, value)
+#define SETTING_FRAME_LLC_GROUPS() MY_SETTING.getGroups(MySetting::SETTING::FRAME_LLC_CURVES)
+#define SETTING_FRAME_LLC_SYNC() MY_SETTING.sync(MySetting::SETTING::FRAME_LLC_CURVES)
+
 #define SETTING_FRAME_PLAY_MPU6050_GET(group, key, ...) \
     MY_SETTING.getValue(MySetting::SETTING::PLAY_MPU6050, group, key, ##__VA_ARGS__)
 #define SETTING_FRAME_PLAY_MPU6050_SET(group, key, value) \

@@ -91,6 +91,11 @@ void ShowCorrectionCurve::init()
     int end = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MAX, "9999").toInt();
     ui->spinBoxStartY->setValue(start);
     ui->spinBoxEndY->setValue(end);
+
+    QShortcut *shortcut_prev = new QShortcut(QKeySequence(Qt::Key_Left), this);
+    connect(shortcut_prev, &QShortcut::activated, this, &ShowCorrectionCurve::on_tBtnPrev_clicked);
+    QShortcut *shortcut_next = new QShortcut(QKeySequence(Qt::Key_Right), this);
+    connect(shortcut_next, &QShortcut::activated, this, &ShowCorrectionCurve::on_tBtnNext_clicked);
 }
 
 void ShowCorrectionCurve::on_tBtnPrev_clicked()

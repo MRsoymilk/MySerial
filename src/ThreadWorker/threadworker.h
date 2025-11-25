@@ -22,8 +22,12 @@ public slots:
     void processDataF15(const QByteArray &data31,
                         const QByteArray &data33,
                         const double &temperature);
+    void processDataLLC(const QByteArray &data31,
+                        const QByteArray &data33,
+                        const double &temperature);
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
     void onUseLoadedThreadsholdOption(const double &offset, const double &step);
+
 signals:
     void dataReady4k(const QVector<double> &v31,
                      const QVector<double> &v33,

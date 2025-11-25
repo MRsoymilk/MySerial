@@ -245,6 +245,16 @@ void FormSerial::updateFrameTypes(int idx)
                 SETTING_FRAME_F30Single_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::LLC_CURVES)) {
+        QStringList groups = SETTING_FRAME_LLC_GROUPS();
+        for (const auto &g : groups) {
+            FrameType frame;
+            frame.name = g;
+            frame.header = QByteArray::fromHex(SETTING_FRAME_LLC_GET(g, FRAME_HEADER).toUtf8());
+            frame.footer = QByteArray::fromHex(SETTING_FRAME_LLC_GET(g, FRAME_FOOTER).toUtf8());
+            frame.length = SETTING_FRAME_LLC_GET(g, FRAME_LENGTH).toInt();
+            m_frameTypes.push_back(frame);
+        }
     } else {
         m_frameTypes = {};
     }
@@ -285,6 +295,7 @@ void FormSerial::setINI()
     ui->cBoxPortName->setCurrentText(m_ini.debug_port);
 #else
     ui->cBoxPortName->setCurrentText(m_ini.port_name);
+    on_cBoxPortName_activated(0);
 #endif
     ui->cBoxBaudRate->setCurrentText(m_ini.baud_rate);
     on_cBoxSendFormat_currentTextChanged(m_ini.send_format);
@@ -734,6 +745,18 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
         }
     } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
         emit recv2MPU(data);
+    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::LLC_CURVES)) {
+        if (type == "F30_31") {
+            m_frame.bit31 = data;
+        } else if (type == "F30_33") {
+            m_frame.bit33 = data;
+            if (!m_frame.bit31.isEmpty()) {
+                // emit recv2DataLLC(m_frame.bit31, m_frame.bit33);
+                emit recv2PlotLLC(m_frame.bit31, m_frame.bit33);
+                m_frame.bit31.clear();
+                m_frame.bit33.clear();
+            }
+        }
     }
 }
 

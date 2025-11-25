@@ -56,6 +56,9 @@ public:
     void setEasyFrame();
 
 signals:
+    void recv2PlotLLC(const QByteArray &data31,
+                      const QByteArray &data33,
+                      const double &temperature = 0.0);
     void recv2PlotF30(const QByteArray &data31,
                       const QByteArray &data33,
                       const double &temperature = 0.0);

@@ -12,6 +12,8 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+#include "Accumulate/accumulate.h"
+#include "Derivation/derivation.h"
 #include "DraggableLine/draggableline.h"
 #include "FourierTransform/fouriertransform.h"
 #include "PeakTrajectory/peaktrajectory.h"
@@ -53,6 +55,15 @@ void FormPlot::retranslateUI()
     ui->retranslateUi(this);
 }
 
+void FormPlot::onDataReceivedLLC(const QByteArray &data31,
+                                 const QByteArray &data33,
+                                 const double temperature)
+{
+    if (!m_pause) {
+        emit newDataReceivedLLC(data31, data33, temperature);
+    }
+}
+
 void FormPlot::getINI()
 {
     int offset31 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET31, "0").toInt();
@@ -66,7 +77,7 @@ void FormPlot::getINI()
 
     ui->comboBoxAlgorithm->blockSignals(true);
     ui->comboBoxAlgorithm->addItems(
-        {"F15_curves", "F15_single", "play_mpu6050", "F30_curves", "F30_single"});
+        {"F15_curves", "F15_single", "play_mpu6050", "F30_curves", "F30_single", "LLC_curves"});
     ui->comboBoxAlgorithm->blockSignals(false);
 
     int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
@@ -192,6 +203,11 @@ void FormPlot::initToolButtons()
     ui->tBtnFourier->setToolTip(tr("Fourier"));
     ui->tBtnFourier->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnSNR->setObjectName("SNR");
+    ui->tBtnSNR->setIconSize(QSize(24, 24));
+    ui->tBtnSNR->setToolTip(tr("Signal-to-noise ratio"));
+    ui->tBtnSNR->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);
@@ -200,6 +216,8 @@ void FormPlot::initToolButtons()
     ui->tBtnRangeX->setCheckable(true);
     ui->tBtnRangeY->setCheckable(true);
     ui->tBtnFourier->setCheckable(true);
+    ui->tBtnSNR->setCheckable(true);
+    ui->tBtnAccumulate->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -213,6 +231,8 @@ void FormPlot::init()
     connect(shortcut_ImgSave, &QShortcut::activated, this, &FormPlot::on_tBtnImgSave_clicked);
     m_trajectory = new PeakTrajectory;
     m_fourierTransform = new FourierTransform;
+    m_derivation = new Derivation;
+    m_accumulate = new Accumulate;
 }
 
 void FormPlot::onDataReceivedF30(const QByteArray &data31,
@@ -313,6 +333,14 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     if (m_enableFourier) {
         m_fourierTransform->transform(offsetData31);
     }
+
+    if (m_enableDerivation) {
+        m_derivation->derivation(offsetData31, offsetData33);
+    }
+
+    if (m_enableAccumulate) {
+        m_accumulate->accumulate(offsetData31);
+    }
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -343,6 +371,12 @@ void FormPlot::closeEvent(QCloseEvent *event)
     }
     if (m_fourierTransform) {
         m_fourierTransform->close();
+    }
+    if (m_derivation) {
+        m_derivation->close();
+    }
+    if (m_accumulate) {
+        m_accumulate->close();
     }
     this->close();
 }
@@ -757,5 +791,23 @@ void FormPlot::on_tBtnFourier_clicked()
         m_fourierTransform->show();
     } else {
         m_fourierTransform->hide();
+    }
+}
+
+void FormPlot::on_tBtnDerivation_clicked()
+{
+    m_enableDerivation = !m_enableDerivation;
+    ui->tBtnDerivation->setChecked(m_enableDerivation);
+    if (m_enableDerivation) {
+        m_derivation->show();
+    }
+}
+
+void FormPlot::on_tBtnAccumulate_clicked()
+{
+    m_enableAccumulate = !m_enableAccumulate;
+    ui->tBtnAccumulate->setChecked(m_enableAccumulate);
+    if (m_enableAccumulate) {
+        m_accumulate->show();
     }
 }

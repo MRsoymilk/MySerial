@@ -88,6 +88,7 @@ void MainWindow::initStackWidget()
     playMPU6050 = new FormPlayMPU6050(this);
     ui->stackedWidget->addWidget(playMPU6050);
 
+    QObject::connect(formSerial, &FormSerial::recv2PlotLLC, formPlot, &FormPlot::onDataReceivedLLC);
     QObject::connect(formSerial, &FormSerial::recv2PlotF30, formPlot, &FormPlot::onDataReceivedF30);
     QObject::connect(formSerial, &FormSerial::recv2DataF30, formData, &FormData::onDataReceivedF30);
     QObject::connect(formSerial, &FormSerial::recv2PlotF15, formPlot, &FormPlot::onDataReceivedF15);
@@ -330,6 +331,11 @@ void MainWindow::init()
             m_worker,
             &ThreadWorker::processDataF30,
             Qt::QueuedConnection);
+    connect(formPlot,
+            &FormPlot::newDataReceivedLLC,
+            m_worker,
+            &ThreadWorker::processDataLLC,
+            Qt::QueuedConnection);
 
     connect(m_plotHistory, &FormPlotHistory::sendToPlot, formPlot, &FormPlot::updatePlot4k);
     connect(m_worker,
@@ -458,6 +464,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
     m_plotData->close();
     m_plotHistory->close();
     m_plotSimulate->close();
+    formPlot->close();
+    formData->close();
+    formLog->close();
+    formSerial->close();
+    formSetting->close();
     event->accept();
 }
 

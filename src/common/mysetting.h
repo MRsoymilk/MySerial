@@ -13,6 +13,7 @@ public:
         FRAME_F15_CURVES,
         FRAME_F30_SINGLE,
         FRAME_F30_CURVES,
+        FRAME_LLC_CURVES,
         PLAY_MPU6050,
     };
 

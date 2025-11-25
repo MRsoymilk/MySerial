@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.18 LANGUAGES CXX)
+project(MySerial VERSION 1.3.19 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -32,6 +32,18 @@ set(FORM_PLOT
     src/form/plot/FourierTransform/fouriertransform.h
     src/form/plot/FourierTransform/fouriertransform.cpp
     src/form/plot/FourierTransform/fouriertransform.ui
+    src/form/plot/SignalNoiseRatio/signalnoiseratio.h
+    src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp
+    src/form/plot/SignalNoiseRatio/signalnoiseratio.ui
+    src/form/plot/Derivation/derivation.h
+    src/form/plot/Derivation/derivation.cpp
+    src/form/plot/Derivation/derivation.ui
+    src/form/plot/Derivation/SingleCurveWindow/singlecurvewindow.h
+    src/form/plot/Derivation/SingleCurveWindow/singlecurvewindow.cpp
+    src/form/plot/Derivation/SingleCurveWindow/singlecurvewindow.ui
+    src/form/plot/Accumulate/accumulate.h
+    src/form/plot/Accumulate/accumulate.cpp
+    src/form/plot/Accumulate/accumulate.ui
 )
 
 set(FORM_LOG
@@ -207,6 +219,10 @@ else()
     endif()
 endif()
 
+if(MSVC)
+    add_compile_options(/Zm1000)
+endif()
+
 target_link_libraries(MySerial PRIVATE
   Qt${QT_VERSION_MAJOR}::Widgets
   Qt${QT_VERSION_MAJOR}::Charts
@@ -274,6 +290,13 @@ add_dependencies(${PROJECT_NAME} fftw_external)
 target_include_directories(${PROJECT_NAME} PRIVATE ${FFTW_PREFIX}/include)
 target_link_directories(${PROJECT_NAME} PRIVATE ${FFTW_PREFIX}/lib)
 target_link_libraries(${PROJECT_NAME} PRIVATE fftw3)
+
+add_library(eigen INTERFACE)
+target_include_directories(eigen INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/eigen-5.0.0
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE eigen)
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in

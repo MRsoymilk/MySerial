@@ -12,6 +12,8 @@
 class DraggableLine;
 class PeakTrajectory;
 class FourierTransform;
+class Derivation;
+class Accumulate;
 
 namespace Ui {
 class FormPlot;
@@ -27,6 +29,9 @@ public:
     void retranslateUI();
 
 signals:
+    void newDataReceivedLLC(const QByteArray &data31,
+                            const QByteArray &data33,
+                            const double &temperature);
     void newDataReceivedF30(const QByteArray &data31,
                             const QByteArray &data33,
                             const double &temperature);
@@ -39,25 +44,19 @@ signals:
     void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0);
 
 public slots:
+    void onDataReceivedLLC(const QByteArray &data31,
+                           const QByteArray &data33,
+                           const double temperature);
     void onDataReceivedF30(const QByteArray &data31,
                            const QByteArray &data33,
                            const double &temperature);
     void onDataReceivedF15(const QByteArray &data31,
                            const QByteArray &data33,
                            const double &temperature);
-    void updatePlot4k(
-        const CURVE& curve31,
-        const CURVE& curve33,
-        const double &temperature,
-        bool record = false
-        /*const QList<QPointF> &data31,
-                      const QList<QPointF> &data33,
-                      const double &xMin,
-                      const double &xMax,
-                      const double &yMin,
-                      const double &yMax,
+    void updatePlot4k(const CURVE &curve31,
+                      const CURVE &curve33,
                       const double &temperature,
-                      bool record = false*/);
+                      bool record = false);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
@@ -84,6 +83,8 @@ private slots:
     void on_tBtnRangeX_clicked();
     void on_tBtnRangeY_clicked();
     void on_tBtnFourier_clicked();
+    void on_tBtnDerivation_clicked();
+    void on_tBtnAccumulate_clicked();
 
 private:
     void init();
@@ -123,12 +124,16 @@ private:
     bool m_findFWHM = false;
     bool m_pause = false;
     bool m_enableFourier = false;
+    bool m_enableDerivation = false;
+    bool m_enableAccumulate = false;
 
 private:
     QList<QLineSeries *> m_fwhmLines;
     QList<QGraphicsSimpleTextItem *> m_fwhmLabels;
     PeakTrajectory *m_trajectory = nullptr;
     FourierTransform *m_fourierTransform = nullptr;
+    Derivation *m_derivation = nullptr;
+    Accumulate *m_accumulate = nullptr;
     DraggableLine *m_lineLeft = nullptr;
     DraggableLine *m_lineRight = nullptr;
     int m_trajectory_start;

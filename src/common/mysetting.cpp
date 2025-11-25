@@ -49,4 +49,6 @@ MySetting::MySetting()
                                                           QSettings::IniFormat);
     m_settings[SETTING::PLAY_MPU6050] = new QSettings("config/frame_play_MPU6050.ini",
                                                       QSettings::IniFormat);
+    m_settings[SETTING::FRAME_LLC_CURVES] = new QSettings("config/frame_llc_curves.ini",
+                                                          QSettings::IniFormat);
 }
