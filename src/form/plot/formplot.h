@@ -14,6 +14,7 @@ class PeakTrajectory;
 class FourierTransform;
 class Derivation;
 class Accumulate;
+class SignalNoiseRatio;
 
 namespace Ui {
 class FormPlot;
@@ -85,6 +86,7 @@ private slots:
     void on_tBtnFourier_clicked();
     void on_tBtnDerivation_clicked();
     void on_tBtnAccumulate_clicked();
+    void on_tBtnSNR_clicked();
 
 private:
     void init();
@@ -126,6 +128,7 @@ private:
     bool m_enableFourier = false;
     bool m_enableDerivation = false;
     bool m_enableAccumulate = false;
+    bool m_enableSNR = false;
 
 private:
     QList<QLineSeries *> m_fwhmLines;
@@ -133,6 +136,7 @@ private:
     PeakTrajectory *m_trajectory = nullptr;
     FourierTransform *m_fourierTransform = nullptr;
     Derivation *m_derivation = nullptr;
+    SignalNoiseRatio *m_snr = nullptr;
     Accumulate *m_accumulate = nullptr;
     DraggableLine *m_lineLeft = nullptr;
     DraggableLine *m_lineRight = nullptr;

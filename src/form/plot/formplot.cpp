@@ -17,6 +17,7 @@
 #include "DraggableLine/draggableline.h"
 #include "FourierTransform/fouriertransform.h"
 #include "PeakTrajectory/peaktrajectory.h"
+#include "SignalNoiseRatio/signalnoiseratio.h"
 #include "funcdef.h"
 #include "plot_algorithm.h"
 
@@ -243,6 +244,7 @@ void FormPlot::init()
     m_fourierTransform = new FourierTransform;
     m_derivation = new Derivation;
     m_accumulate = new Accumulate;
+    m_snr = new SignalNoiseRatio;
 }
 
 void FormPlot::onDataReceivedF30(const QByteArray &data31,
@@ -351,6 +353,10 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     if (m_enableAccumulate) {
         m_accumulate->accumulate(offsetData31);
     }
+
+    if (m_enableSNR) {
+        m_snr->calculate(offsetData31);
+    }
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -387,6 +393,9 @@ void FormPlot::closeEvent(QCloseEvent *event)
     }
     if (m_accumulate) {
         m_accumulate->close();
+    }
+    if (m_snr) {
+        m_snr->close();
     }
     this->close();
 }
@@ -819,5 +828,14 @@ void FormPlot::on_tBtnAccumulate_clicked()
     ui->tBtnAccumulate->setChecked(m_enableAccumulate);
     if (m_enableAccumulate) {
         m_accumulate->show();
+    }
+}
+
+void FormPlot::on_tBtnSNR_clicked()
+{
+    m_enableSNR = !m_enableSNR;
+    ui->tBtnSNR->setChecked(m_enableSNR);
+    if (m_enableSNR) {
+        m_snr->show();
     }
 }

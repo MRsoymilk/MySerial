@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>859</width>
+    <width>887</width>
     <height>530</height>
    </rect>
   </property>
@@ -142,7 +142,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>83</width>
+          <width>111</width>
           <height>70</height>
          </rect>
         </property>
@@ -219,6 +219,12 @@
      </item>
      <item>
       <widget class="QToolButton" name="tBtnSNR">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>SNR</string>
        </property>
