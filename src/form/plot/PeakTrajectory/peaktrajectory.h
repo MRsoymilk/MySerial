@@ -6,7 +6,8 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
-#include "MyChartView/mychartview.h"
+
+class MyChartView;
 
 namespace Ui {
 class PeakTrajectory;

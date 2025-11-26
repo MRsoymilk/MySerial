@@ -3,6 +3,7 @@
 #include <QContextMenuEvent>
 #include <QInputDialog>
 #include <QMenu>
+#include "MyChartView/mychartview.h"
 #include "ui_peaktrajectory.h"
 
 PeakTrajectory::PeakTrajectory(QWidget *parent)
