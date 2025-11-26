@@ -19,6 +19,12 @@ public:
     ~Accumulate();
     void accumulate(const QList<QPointF> &v);
 
+signals:
+    void windowClose();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_tBtnNoiseEnable_clicked();
     void on_tBtnAccumulateEnable_clicked();

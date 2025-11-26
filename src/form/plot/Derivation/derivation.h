@@ -18,6 +18,12 @@ public:
 
     void derivation(const QList<QPointF> &data31, const QList<QPointF> &data33);
 
+signals:
+    void windowClose();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     void initChart();
 

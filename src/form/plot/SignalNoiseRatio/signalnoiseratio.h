@@ -21,11 +21,15 @@ public:
     ~SignalNoiseRatio();
     void calculate(const QList<QPointF> &data);
 
-public slots:
-    void contextMenuEvent(QContextMenuEvent *event) override;
+signals:
+    void windowClose();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_checkBoxUseIdx_checkStateChanged(const Qt::CheckState &arg1);
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
     void init();

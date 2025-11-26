@@ -102,6 +102,11 @@ void PeakTrajectory::appendPeak(const int &value)
                                .arg(avg, 0, 'f', 2));
 }
 
+void PeakTrajectory::closeEvent(QCloseEvent *event)
+{
+    emit windowClose();
+}
+
 void PeakTrajectory::init()
 {
     m_line = new QLineSeries();

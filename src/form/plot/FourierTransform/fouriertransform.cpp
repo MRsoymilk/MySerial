@@ -28,6 +28,11 @@ void FourierTransform::setSampleRate(double rate)
     }
 }
 
+void FourierTransform::closeEvent(QCloseEvent *event)
+{
+    emit windowClose();
+}
+
 QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
                                                  double sampleRate,
                                                  double freqStart,

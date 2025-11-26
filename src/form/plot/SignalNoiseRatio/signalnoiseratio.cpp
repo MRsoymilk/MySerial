@@ -78,6 +78,11 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
     m_axisY->setRange(ymin, ymax);
 }
 
+void SignalNoiseRatio::closeEvent(QCloseEvent *event)
+{
+    emit windowClose();
+}
+
 void SignalNoiseRatio::on_checkBoxUseIdx_checkStateChanged(const Qt::CheckState &state)
 {
     if (state == Qt::Checked) {

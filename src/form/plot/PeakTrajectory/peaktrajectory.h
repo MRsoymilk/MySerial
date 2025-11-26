@@ -22,6 +22,12 @@ public:
     ~PeakTrajectory();
     void appendPeak(const int &value);
 
+signals:
+    void windowClose();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 public slots:
     void contextMenuEvent(QContextMenuEvent *event) override;
 

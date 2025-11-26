@@ -177,6 +177,11 @@ void Accumulate::accumulate(const QList<QPointF> &v)
     }
 }
 
+void Accumulate::closeEvent(QCloseEvent *event)
+{
+    emit windowClose();
+}
+
 // 初始化
 void Accumulate::init()
 {

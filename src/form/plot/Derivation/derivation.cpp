@@ -124,3 +124,8 @@ void Derivation::derivation(const QList<QPointF> &data31, const QList<QPointF> &
     m_chart->axes(Qt::Vertical).first()->setRange(yMin - margin, yMax + margin);
     m_chart->axes(Qt::Horizontal).first()->setRange(x(0), x(count - 1));
 }
+
+void Derivation::closeEvent(QCloseEvent *event)
+{
+    emit windowClose();
+}

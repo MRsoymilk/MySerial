@@ -24,6 +24,12 @@ public:
     void transform(const QList<QPointF> &data);
     void setSampleRate(double rate);
 
+signals:
+    void windowClose();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_tBtnRange_clicked();
     void on_spinBoxSampleRate_valueChanged(int rate);

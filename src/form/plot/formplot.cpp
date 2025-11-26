@@ -229,6 +229,7 @@ void FormPlot::initToolButtons()
     ui->tBtnFourier->setCheckable(true);
     ui->tBtnSNR->setCheckable(true);
     ui->tBtnAccumulate->setCheckable(true);
+    ui->tBtnDerivation->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -245,6 +246,26 @@ void FormPlot::init()
     m_derivation = new Derivation;
     m_accumulate = new Accumulate;
     m_snr = new SignalNoiseRatio;
+    connect(m_trajectory, &PeakTrajectory::windowClose, this, [this]() {
+        ui->checkBoxTrajectory->setChecked(false);
+        on_checkBoxTrajectory_clicked();
+    });
+    connect(m_fourierTransform, &FourierTransform::windowClose, this, [this]() {
+        m_enableFourier = false;
+        ui->tBtnFourier->setChecked(false);
+    });
+    connect(m_derivation, &Derivation::windowClose, this, [this]() {
+        m_enableDerivation = false;
+        ui->tBtnDerivation->setChecked(false);
+    });
+    connect(m_accumulate, &Accumulate::windowClose, this, [this]() {
+        m_enableAccumulate = false;
+        ui->tBtnAccumulate->setChecked(false);
+    });
+    connect(m_snr, &SignalNoiseRatio::windowClose, this, [this]() {
+        m_enableSNR = false;
+        ui->tBtnSNR->setChecked(false);
+    });
 }
 
 void FormPlot::onDataReceivedF30(const QByteArray &data31,
