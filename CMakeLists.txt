@@ -38,9 +38,6 @@ set(FORM_PLOT
     src/form/plot/Derivation/derivation.h
     src/form/plot/Derivation/derivation.cpp
     src/form/plot/Derivation/derivation.ui
-    src/form/plot/Derivation/SingleCurveWindow/singlecurvewindow.h
-    src/form/plot/Derivation/SingleCurveWindow/singlecurvewindow.cpp
-    src/form/plot/Derivation/SingleCurveWindow/singlecurvewindow.ui
     src/form/plot/Accumulate/accumulate.h
     src/form/plot/Accumulate/accumulate.cpp
     src/form/plot/Accumulate/accumulate.ui

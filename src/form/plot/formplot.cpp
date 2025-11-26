@@ -208,6 +208,16 @@ void FormPlot::initToolButtons()
     ui->tBtnSNR->setToolTip(tr("Signal-to-noise ratio"));
     ui->tBtnSNR->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnDerivation->setObjectName("Derivation");
+    ui->tBtnDerivation->setIconSize(QSize(24, 24));
+    ui->tBtnDerivation->setToolTip(tr("Derivation"));
+    ui->tBtnDerivation->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    ui->tBtnAccumulate->setObjectName("Accumulate");
+    ui->tBtnAccumulate->setIconSize(QSize(24, 24));
+    ui->tBtnAccumulate->setToolTip(tr("Accumulate"));
+    ui->tBtnAccumulate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);

@@ -108,5 +108,8 @@
         <file>res/icons/start.png</file>
         <file>res/icons/start.gif</file>
         <file>res/icons/fourier.png</file>
+        <file>res/icons/accumulate.png</file>
+        <file>res/icons/derivation.png</file>
+        <file>res/icons/snr.png</file>
     </qresource>
 </RCC>

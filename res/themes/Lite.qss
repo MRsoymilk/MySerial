@@ -1191,6 +1191,18 @@ QToolButton#Fourier {
   qproperty-icon: url(:/res/icons/fourier.png);
 }
 
+QToolButton#Derivation {
+  qproperty-icon: url(:/res/icons/derivation.png);
+}
+
+QToolButton#Accumulate {
+  qproperty-icon: url(:/res/icons/accumulate.png);
+}
+
+QToolButton#SNR {
+  qproperty-icon: url(:/res/icons/snr.png);
+}
+
 QToolButton#tBtnSwitch {
   qproperty-icon: url(:/res/icons/start.png);
   qproperty-iconSize: 48px 48px;
@@ -1228,6 +1240,21 @@ QToolButton#tBtnImg {
 
 QToolButton#tBtnFourier {
   qproperty-icon: url(:/res/icons/fourier.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnDerivation {
+  qproperty-icon: url(:/res/icons/derivation.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnAccumulate {
+  qproperty-icon: url(:/res/icons/accumulate.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnSNR {
+  qproperty-icon: url(:/res/icons/snr.png);
   qproperty-iconSize: 48px 48px;
 }
 
