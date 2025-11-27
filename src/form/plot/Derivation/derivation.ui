@@ -6,16 +6,99 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>734</width>
+    <height>601</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Derivation</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="1">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,1,0,0">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gLayChart"/>
+   </item>
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gLayExtra"/>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="hLayOption">
+     <item>
+      <widget class="QToolButton" name="tBtnFindPeak">
+       <property name="text">
+        <string>FindPeak</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPlainTextEdit" name="plainTextEdit"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="hLayMinLength">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="labelMinLength">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>min length</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBoxMinLength">
+           <property name="maximum">
+            <number>9999</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QSlider" name="horizontalSlider">
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QToolButton" name="tBtnNextExtra">
+       <property name="text">
+        <string>prev</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelPageExtra">
+       <property name="text">
+        <string>page</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignmentFlag::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnPrevExtra">
+       <property name="text">
+        <string>next</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
