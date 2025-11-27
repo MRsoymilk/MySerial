@@ -27,7 +27,6 @@ private:
 private:
     Ui::FormSetting *ui;
 
-    AutoUpdate *m_autoUpdate;
     ExternalControl *m_externalControl;
 };
 

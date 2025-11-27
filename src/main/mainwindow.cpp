@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "../form/AutoUpdate/autoupdate.h"
 #include "../form/FormPlotCorrection/formplotcorrection.h"
 #include "../form/FormPlotData/formplotdata.h"
 #include "../form/FormPlotHistory/formplothistory.h"
@@ -85,6 +86,9 @@ void MainWindow::initStackWidget()
     formSetting = new FormSetting(this);
     ui->stackedWidget->addWidget(formSetting);
 
+    formAutoUpdate = new AutoUpdate(this);
+    ui->stackedWidget->addWidget(formAutoUpdate);
+
     playMPU6050 = new FormPlayMPU6050(this);
     ui->stackedWidget->addWidget(playMPU6050);
 
@@ -134,6 +138,7 @@ void MainWindow::initToolbar()
         ui->btnData,
         ui->btnLog,
         ui->btnPlot,
+        ui->btnUpdate,
         ui->btnSetting,
     };
 
@@ -142,6 +147,7 @@ void MainWindow::initToolbar()
         {ui->btnData, "data-on"},
         {ui->btnLog, "log-on"},
         {ui->btnPlot, "plot-on"},
+        {ui->btnUpdate, "update-on"},
         {ui->btnSetting, "setting-on"},
     };
 
@@ -150,6 +156,7 @@ void MainWindow::initToolbar()
         {ui->btnData, "data-off"},
         {ui->btnLog, "log-off"},
         {ui->btnPlot, "plot-off"},
+        {ui->btnUpdate, "update-off"},
         {ui->btnSetting, "setting-off"},
     };
 
@@ -422,6 +429,11 @@ void MainWindow::on_btnLog_clicked()
     ui->stackedWidget->setCurrentWidget(formLog);
 }
 
+void MainWindow::on_btnUpdate_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(formAutoUpdate);
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Tab) {
@@ -467,6 +479,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     formPlot->close();
     formData->close();
     formLog->close();
+    formAutoUpdate->close();
     formSerial->close();
     formSetting->close();
     event->accept();
@@ -509,6 +522,9 @@ void MainWindow::setLanguage(const QString &language)
         }
         if (formSetting) {
             formSetting->retranslateUI();
+        }
+        if (formAutoUpdate) {
+            formAutoUpdate->retranslateUI();
         }
     }
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);

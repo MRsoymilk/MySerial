@@ -1151,6 +1151,10 @@ QToolButton#setting-off {
   qproperty-icon: url(:/res/icons/setting-off.png);
 }
 
+QToolButton#update-off {
+  qproperty-icon: url(:/res/icons/update-off.png);
+}
+
 QToolButton#usb-on {
   qproperty-icon: url(:/res/icons/usb-on.png);
 }
@@ -1169,6 +1173,10 @@ QToolButton#plot-on {
 
 QToolButton#setting-on {
   qproperty-icon: url(:/res/icons/setting-on.png);
+}
+
+QToolButton#update-on {
+  qproperty-icon: url(:/res/icons/update-on.png);
 }
 
 QToolButton#crop {

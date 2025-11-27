@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.3.19 LANGUAGES CXX)
+project(MySerial VERSION 1.3.20 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -55,6 +55,12 @@ set(FORM_DATA
     src/form/data/formdata.ui
 )
 
+set(FORM_AUTOUPDATE
+    src/form/AutoUpdate/autoupdate.h
+    src/form/AutoUpdate/autoupdate.cpp
+    src/form/AutoUpdate/autoupdate.ui
+)
+
 set(FORM_SETTING
     src/form/setting/formsetting.h
     src/form/setting/formsetting.cpp
@@ -62,9 +68,6 @@ set(FORM_SETTING
     src/form/setting/formtip.h
     src/form/setting/formtip.cpp
     src/form/setting/formtip.ui
-    src/form/setting/AutoUpdate/autoupdate.h
-    src/form/setting/AutoUpdate/autoupdate.cpp
-    src/form/setting/AutoUpdate/autoupdate.ui
     src/form/setting/ExternalControl/externalcontrol.h
     src/form/setting/ExternalControl/externalcontrol.cpp
     src/form/setting/ExternalControl/externalcontrol.ui
@@ -175,6 +178,7 @@ set(PROJECT_SOURCES
         ${FORM_DATA}
         ${FORM_LOG}
         ${FORM_SETTING}
+        ${FORM_AUTOUPDATE}
         ${FORM_PLAY}
         ${PLOT_DATA}
         ${PLOT_CORRECTION}
