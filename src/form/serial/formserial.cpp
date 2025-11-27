@@ -340,7 +340,7 @@ void FormSerial::doFrameExtra(const QByteArray &data)
             to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
         }
     }
-    ui->txtRecv->appendPlainText("[RX] " + to_show);
+    ui->txtRecv->appendPlainText(to_show);
     m_buffer.append(data);
 
     while (true) {

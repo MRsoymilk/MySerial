@@ -2,7 +2,8 @@
 #define PLOT_ALGORITHM_H
 
 enum class SHOW_ALGORITHM {
-    F15_CURVES = 0,
+    FREEDOM = 0,
+    F15_CURVES,
     F15_SINGLE,
     PLAY_MPU6050,
     F30_CURVES,

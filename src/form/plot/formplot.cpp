@@ -77,8 +77,15 @@ void FormPlot::getINI()
     }
 
     ui->comboBoxAlgorithm->blockSignals(true);
-    ui->comboBoxAlgorithm->addItems(
-        {"F15_curves", "F15_single", "play_mpu6050", "F30_curves", "F30_single", "LLC_curves"});
+    ui->comboBoxAlgorithm->addItems({
+        "Freedom",
+        "F15_curves",
+        "F15_single",
+        "play_mpu6050",
+        "F30_curves",
+        "F30_single",
+        "LLC_curves",
+    });
     ui->comboBoxAlgorithm->blockSignals(false);
 
     int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
