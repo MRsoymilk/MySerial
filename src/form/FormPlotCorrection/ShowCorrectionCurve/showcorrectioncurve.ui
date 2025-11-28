@@ -158,6 +158,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QToolButton" name="tBtnExportRaw">
+           <property name="text">
+            <string>export  raw</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

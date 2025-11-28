@@ -192,7 +192,7 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
 
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("错误"), tr("无法打开文件"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("can't open file %1").arg(filePath));
         return;
     }
 
@@ -278,7 +278,7 @@ void ShowCorrectionCurve::on_spinBoxEndY_valueChanged(int val)
 void ShowCorrectionCurve::on_tBtnExportCurve_clicked()
 {
     if (m_data.isEmpty()) {
-        qDebug() << "No curve data to export.";
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("no curve data to export."));
         return;
     }
 
@@ -292,7 +292,7 @@ void ShowCorrectionCurve::on_tBtnExportCurve_clicked()
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qDebug() << "Failed to open export file";
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Failed to open export file"));
         return;
     }
 
@@ -329,4 +329,53 @@ void ShowCorrectionCurve::on_tBtnClear_clicked()
     m_data.clear();
     m_current_page = 0;
     ui->labelPage->setText(QString("%1 / %2").arg(m_current_page).arg(m_data.size()));
+}
+
+void ShowCorrectionCurve::on_tBtnExportRaw_clicked()
+{
+    if (m_data.isEmpty()) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("No raw data to export."));
+        return;
+    }
+
+    QString path = QFileDialog::getSaveFileName(this,
+                                                tr("Export raw to txt"),
+                                                QDir::homePath() + "/curves_export.txt",
+                                                "TXT Files (*.txt)");
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Failed to open export file."));
+        return;
+    }
+
+    QTextStream out(&file);
+
+    const QByteArray header = QByteArray::fromHex("DE3A064331");
+    const QByteArray tail = QByteArray::fromHex("CEFF");
+
+    for (const auto &curve : m_data) {
+        QByteArray payload;
+
+        for (int i = 0; i < curve.size(); ++i) {
+            quint16 raw = static_cast<quint16>(std::round(curve[i].y()));
+            payload.append(raw >> 8 & 0xFF);
+            payload.append(raw & 0xFF);
+        }
+
+        QByteArray packet;
+        packet.append(header);
+        packet.append(payload);
+        packet.append(tail);
+
+        for (int i = 0; i < packet.size(); ++i) {
+            out << QString("%1 ").arg(static_cast<quint8>(packet[i]), 2, 16, QChar('0')).toUpper();
+        }
+        out << "\n";
+    }
+
+    file.close();
+    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Export finished: %1").arg(path));
 }
