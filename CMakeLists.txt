@@ -191,6 +191,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(MySerial
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    src/form/plot/TemperatureView/temperatureview.h src/form/plot/TemperatureView/temperatureview.cpp src/form/plot/TemperatureView/temperatureview.ui
   )
 
 target_include_directories(MySerial PUBLIC

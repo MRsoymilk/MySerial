@@ -15,6 +15,7 @@ class FourierTransform;
 class Derivation;
 class Accumulate;
 class SignalNoiseRatio;
+class TemperatureView;
 
 namespace Ui {
 class FormPlot;
@@ -87,6 +88,7 @@ private slots:
     void on_tBtnDerivation_clicked();
     void on_tBtnAccumulate_clicked();
     void on_tBtnSNR_clicked();
+    void on_tBtnTemperature_clicked();
 
 private:
     void init();
@@ -129,6 +131,7 @@ private:
     bool m_enableDerivation = false;
     bool m_enableAccumulate = false;
     bool m_enableSNR = false;
+    bool m_enableTemperature = false;
 
 private:
     QList<QLineSeries *> m_fwhmLines;
@@ -138,6 +141,7 @@ private:
     Derivation *m_derivation = nullptr;
     SignalNoiseRatio *m_snr = nullptr;
     Accumulate *m_accumulate = nullptr;
+    TemperatureView *m_temperature;
     DraggableLine *m_lineLeft = nullptr;
     DraggableLine *m_lineRight = nullptr;
     int m_trajectory_start;

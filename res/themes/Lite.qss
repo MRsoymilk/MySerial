@@ -1211,6 +1211,10 @@ QToolButton#SNR {
   qproperty-icon: url(:/res/icons/snr.png);
 }
 
+QToolButton#Temperature {
+  qproperty-icon: url(:/res/icons/temperature.png);
+}
+
 QToolButton#tBtnSwitch {
   qproperty-icon: url(:/res/icons/start.png);
   qproperty-iconSize: 48px 48px;
@@ -1263,6 +1267,11 @@ QToolButton#tBtnAccumulate {
 
 QToolButton#tBtnSNR {
   qproperty-icon: url(:/res/icons/snr.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnTemperature {
+  qproperty-icon: url(:/res/icons/temperature.png);
   qproperty-iconSize: 48px 48px;
 }
 

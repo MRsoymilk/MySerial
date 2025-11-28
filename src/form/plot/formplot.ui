@@ -142,7 +142,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>111</width>
+          <width>70</width>
           <height>70</height>
          </rect>
         </property>
@@ -301,6 +301,13 @@
         </layout>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnTemperature">
+       <property name="text">
+        <string>temperature</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="tBtnImgSave">

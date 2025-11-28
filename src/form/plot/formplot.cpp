@@ -18,6 +18,7 @@
 #include "FourierTransform/fouriertransform.h"
 #include "PeakTrajectory/peaktrajectory.h"
 #include "SignalNoiseRatio/signalnoiseratio.h"
+#include "TemperatureView/temperatureview.h"
 #include "funcdef.h"
 #include "plot_algorithm.h"
 
@@ -226,6 +227,11 @@ void FormPlot::initToolButtons()
     ui->tBtnAccumulate->setToolTip(tr("Accumulate"));
     ui->tBtnAccumulate->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnTemperature->setObjectName("Temperature");
+    ui->tBtnTemperature->setIconSize(QSize(24, 24));
+    ui->tBtnTemperature->setToolTip(tr("Temperature"));
+    ui->tBtnTemperature->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);
@@ -237,6 +243,7 @@ void FormPlot::initToolButtons()
     ui->tBtnSNR->setCheckable(true);
     ui->tBtnAccumulate->setCheckable(true);
     ui->tBtnDerivation->setCheckable(true);
+    ui->tBtnTemperature->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -253,6 +260,7 @@ void FormPlot::init()
     m_derivation = new Derivation;
     m_accumulate = new Accumulate;
     m_snr = new SignalNoiseRatio;
+    m_temperature = new TemperatureView;
     connect(m_trajectory, &PeakTrajectory::windowClose, this, [this]() {
         ui->checkBoxTrajectory->setChecked(false);
         on_checkBoxTrajectory_clicked();
@@ -272,6 +280,10 @@ void FormPlot::init()
     connect(m_snr, &SignalNoiseRatio::windowClose, this, [this]() {
         m_enableSNR = false;
         ui->tBtnSNR->setChecked(false);
+    });
+    connect(m_temperature, &TemperatureView::windowClose, this, [this]() {
+        m_enableTemperature = false;
+        ui->tBtnTemperature->setChecked(false);
     });
 }
 
@@ -385,6 +397,10 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     if (m_enableSNR) {
         m_snr->calculate(offsetData31);
     }
+
+    if (m_enableTemperature) {
+        m_temperature->appendTemperature(temperature);
+    }
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -424,6 +440,9 @@ void FormPlot::closeEvent(QCloseEvent *event)
     }
     if (m_snr) {
         m_snr->close();
+    }
+    if (m_temperature) {
+        m_temperature->close();
     }
     this->close();
 }
@@ -865,5 +884,14 @@ void FormPlot::on_tBtnSNR_clicked()
     ui->tBtnSNR->setChecked(m_enableSNR);
     if (m_enableSNR) {
         m_snr->show();
+    }
+}
+
+void FormPlot::on_tBtnTemperature_clicked()
+{
+    m_enableTemperature = !m_enableTemperature;
+    ui->tBtnTemperature->setChecked(m_enableTemperature);
+    if (m_enableTemperature) {
+        m_temperature->show();
     }
 }

@@ -113,5 +113,6 @@
         <file>res/icons/snr.png</file>
         <file>res/icons/update-on.png</file>
         <file>res/icons/update-off.png</file>
+        <file>res/icons/temperature.png</file>
     </qresource>
 </RCC>
