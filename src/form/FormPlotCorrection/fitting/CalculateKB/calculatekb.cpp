@@ -32,7 +32,7 @@ QJsonObject CalculateKB::getResult()
 void CalculateKB::init()
 {
     m_model = new QStandardItemModel(0, 3, this);
-    m_model->setHeaderData(0, Qt::Horizontal, tr("temperature (℃)"));
+    m_model->setHeaderData(0, Qt::Horizontal, tr("temperature (R)"));
     m_model->setHeaderData(1, Qt::Horizontal, tr("slope (mV)"));
     m_model->setHeaderData(2, Qt::Horizontal, tr("intercept (mV)"));
     ui->tableView->setModel(m_model);
@@ -43,6 +43,8 @@ void CalculateKB::init()
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    ui->spinBoxTemperatureColumn->setValue(m_temp_column);
 
     m_urlFitKB = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIT_KB_URL, URL_FITTING_KB);
 }
@@ -201,7 +203,7 @@ void CalculateKB::on_textEditInput_textChanged()
         QStringList cols = line.split(' ', Qt::SkipEmptyParts);
         if (cols.size() >= 5) {
             bool ok1 = false, ok2 = false, ok3 = false;
-            double temp = cols[1].toDouble(&ok1);      // 第2列
+            double temp = cols[m_temp_column].toDouble(&ok1) * 1000;
             double slope = cols[3].toDouble(&ok2);     // 第4列
             double intercept = cols[4].toDouble(&ok3); // 第5列
             if (ok1 && ok2 && ok3) {
@@ -226,6 +228,9 @@ void CalculateKB::on_textEditInput_textChanged()
         m_model->setItem(row, 2, new QStandardItem(QString::number(intercepts[row])));
     }
     ui->tableView->resizeColumnsToContents();
+}
 
-    ui->tabWidget->setCurrentWidget(ui->tabProcessing);
+void CalculateKB::on_spinBoxTemperatureColumn_valueChanged(int val)
+{
+    m_temp_column = val;
 }

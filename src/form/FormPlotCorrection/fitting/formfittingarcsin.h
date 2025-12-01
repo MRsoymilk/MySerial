@@ -27,6 +27,7 @@ private slots:
     void on_btnFittingArcSin_clicked();
     void on_btnSendFormula_clicked();
     void on_btnSetTemperatureT_clicked();
+    void on_btnSetTemperatureR_clicked();
     void on_btnUpdateFormula_clicked();
     void on_btnGenerateThreshold_clicked();
     void on_tBtnAdd_clicked();

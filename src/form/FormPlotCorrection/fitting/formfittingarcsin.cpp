@@ -339,6 +339,12 @@ void FormFittingArcSin::on_btnSetTemperatureT_clicked()
     ui->lineEdit_T_->setText(QString::number(m_formula_y.T));
 }
 
+void FormFittingArcSin::on_btnSetTemperatureR_clicked()
+{
+    m_formula_y.T = ui->doubleSpinBoxTemperatureR->value();
+    ui->lineEdit_T->setText(QString::number(m_formula_y.T));
+    ui->lineEdit_T_->setText(QString::number(m_formula_y.T));
+}
 void FormFittingArcSin::updateFormulaLambda()
 {
     if (ui->radioButtonLeft->isChecked()) {

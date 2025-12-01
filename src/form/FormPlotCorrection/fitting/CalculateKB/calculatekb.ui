@@ -31,8 +31,22 @@
        <string>Input</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
+       <item row="1" column="0">
         <widget class="QTextEdit" name="textEditInput"/>
+       </item>
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="hLayTemperatureColumn">
+         <item>
+          <widget class="QLabel" name="labelTemperatureColumn">
+           <property name="text">
+            <string>temperature column</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBoxTemperatureColumn"/>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

@@ -26,6 +26,8 @@ private slots:
     void deleteData();
     void displayData();
 
+    void on_spinBoxTemperatureColumn_valueChanged(int arg1);
+
 private:
     void init();
 
@@ -34,6 +36,7 @@ private:
     QStandardItemModel *m_model;
     QJsonObject m_result;
     QString m_urlFitKB;
+    int m_temp_column = 1;
 };
 
 #endif // CALCULATEKB_H

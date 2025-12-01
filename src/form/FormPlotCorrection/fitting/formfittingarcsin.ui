@@ -23,132 +23,118 @@
       <item row="0" column="0">
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
-        <widget class="QWidget" name="tabStandard">
+        <widget class="QWidget" name="tabSendR">
          <attribute name="title">
-          <string>Standard</string>
+          <string>Send R=kT+b</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_13">
+          <item row="0" column="0">
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_R_k">
+              <property name="text">
+               <string>k</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_R_b">
+              <property name="text">
+               <string>b</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxR_k"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxR_b"/>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btnSendR">
+            <property name="text">
+             <string>1. send R = kT + b</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabCalculate_k1b1k2b2">
+         <attribute name="title">
+          <string>Calculate_k1b1k2b2</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_14">
+          <item row="0" column="0">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>311</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btnCalculate_k1b1k2b2">
+            <property name="text">
+             <string>2. calculate k1, b1, k2, b2</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tabFittingArcSin">
+         <attribute name="title">
+          <string>Fitting ArcSin</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <widget class="QTabWidget" name="tabWidget_2">
-            <property name="currentIndex">
-             <number>0</number>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QToolButton" name="tBtnAdd">
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="tBtnDelete">
+              <property name="text">
+               <string>Delete</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="btnFittingArcSin">
+            <property name="text">
+             <string>3. fitting ArcSin</string>
             </property>
-            <widget class="QWidget" name="tabSendR">
-             <attribute name="title">
-              <string>send R = kT + b</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_10">
-              <item row="0" column="0">
-               <layout class="QFormLayout" name="formLayout">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_R_k">
-                  <property name="text">
-                   <string>k</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_R_b">
-                  <property name="text">
-                   <string>b</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBoxR_k"/>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBoxR_b"/>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="0">
-               <widget class="QPushButton" name="btnSendR">
-                <property name="text">
-                 <string>1. send R = kT + b</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="tabCal">
-             <attribute name="title">
-              <string>Calculate k1b1k2b2</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_11">
-              <item row="1" column="0">
-               <widget class="QPushButton" name="btnCalculate_k1b1k2b2">
-                <property name="text">
-                 <string>2. calculate k1, b1, k2, b2</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="tabFitting">
-             <attribute name="title">
-              <string>fitting ArcSin</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_12">
-              <item row="0" column="0" colspan="2">
-               <widget class="QTableView" name="tableViewPoints"/>
-              </item>
-              <item row="1" column="0">
-               <spacer name="horizontalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Orientation::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>337</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <item>
-                 <widget class="QToolButton" name="tBtnAdd">
-                  <property name="text">
-                   <string>Add</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QToolButton" name="tBtnDelete">
-                  <property name="text">
-                   <string>Delete</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QPushButton" name="btnFittingArcSin">
-                <property name="text">
-                 <string>3. fitting ArcSin</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
            </widget>
+          </item>
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>337</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0">
+           <widget class="QTableView" name="tableViewPoints"/>
           </item>
          </layout>
         </widget>
@@ -157,35 +143,7 @@
           <string>Adjust</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_9">
-          <item row="0" column="0">
-           <layout class="QHBoxLayout" name="hLaySetTemperature">
-            <item>
-             <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureT"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnSetTemperatureT">
-              <property name="text">
-               <string>set temperature T</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <layout class="QVBoxLayout" name="vLayFormula">
-            <item>
-             <widget class="QLineEdit" name="lineEditFormula"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnUpdateFormula">
-              <property name="text">
-               <string>update formula</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <layout class="QHBoxLayout" name="hLayGenerateThreshold">
             <item>
              <layout class="QFormLayout" name="formLayout_2">
@@ -238,6 +196,56 @@
             </item>
            </layout>
           </item>
+          <item row="2" column="0">
+           <layout class="QVBoxLayout" name="vLayFormula">
+            <item>
+             <widget class="QLineEdit" name="lineEditFormula"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnUpdateFormula">
+              <property name="text">
+               <string>update formula</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <layout class="QHBoxLayout" name="hLaySetTemperatureT">
+              <item>
+               <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureT"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnSetTemperatureT">
+                <property name="text">
+                 <string>set temperature T</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="hLaySetTemperatureR">
+              <item>
+               <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureR">
+                <property name="maximum">
+                 <double>9999.989999999999782</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnSetTemperatureR">
+                <property name="text">
+                 <string>set temperature R</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="tabFittingCurveData">
@@ -287,7 +295,7 @@
         <item row="0" column="11">
          <widget class="QLabel" name="label_T_">
           <property name="text">
-           <string>T</string>
+           <string>T/R</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -366,7 +374,7 @@
         <item row="0" column="3">
          <widget class="QLabel" name="label_T">
           <property name="text">
-           <string>T</string>
+           <string>T/R</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -653,8 +661,6 @@ color: balck;</string>
   <tabstop>lineEdit_b2</tabstop>
   <tabstop>textEditLog</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>doubleSpinBoxR_k</tabstop>
-  <tabstop>doubleSpinBoxR_b</tabstop>
   <tabstop>tBtnAdd</tabstop>
   <tabstop>tBtnDelete</tabstop>
   <tabstop>doubleSpinBoxTemperatureT</tabstop>
