@@ -348,7 +348,7 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     if (m_pause) {
         return;
     }
-    ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
+    ui->labelTemperature->setText(QString("%1 ℃").arg(temperature, 0, 'f', 4));
 
     int offset = 0;
     if (ui->tBtnOffset->isChecked()) {

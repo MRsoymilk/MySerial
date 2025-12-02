@@ -32,7 +32,8 @@ public:
 signals:
     void windowClose();
     void useLoadedThreshold(bool isUse, QVector<double> v);
-    void useLoadedThreadsholdOption(const double &offset, const double &step);
+    void useLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
+    void useAutoUpdateThreshold(bool isUse);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -66,7 +67,7 @@ private:
     QList<QList<QPointF>> m_data;
     int m_current_page;
     QStandardItemModel *m_model;
-    bool m_load_data;
+    bool m_load_data = false;
 };
 
 #endif // SHOWCORRECTIONCURVE_H

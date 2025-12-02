@@ -59,6 +59,7 @@ const QString CFG_DATA_LIMIT = "limit";
 const QString CFG_GROUP_CORRECTION = "Correction";
 const QString CFG_CORRECTION_CURVE_OFFSET = "correction_offset";
 const QString CFG_CORRECTION_CURVE_STEP = "correction_step";
+const QString CFG_CORRECTION_CURVE_COUNT = "correction_count";
 const QString CFG_CORRECTION_ALGORITHM = "algorithm";
 const QString CFG_CORRECTION_ROUND = "round";
 const QString CFG_CORRECTION_CURVE_Y_MIN = "curve_y_max";

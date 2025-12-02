@@ -54,8 +54,8 @@ void FormFittingSin::init()
     m_model = new QStandardItemModel(this);
     m_model->setColumnCount(3);
     m_model->setHeaderData(0, Qt::Horizontal, "index");
-    m_model->setHeaderData(1, Qt::Horizontal, "fitting curve V(14bit)");
-    m_model->setHeaderData(2, Qt::Horizontal, "fitting curve Raw(14bit)");
+    m_model->setHeaderData(1, Qt::Horizontal, "fitting curve V(curve33)");
+    m_model->setHeaderData(2, Qt::Horizontal, "fitting curve Raw(curve33)");
     ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(
         QHeaderView::ResizeToContents);
     ui->tableViewFittingCurveData->setModel(m_model);

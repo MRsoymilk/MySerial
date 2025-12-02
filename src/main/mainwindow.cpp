@@ -386,6 +386,10 @@ void MainWindow::init()
             m_worker,
             &ThreadWorker::onUseLoadedThreadsholdOption,
             Qt::QueuedConnection);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::sendParamsArcSin,
+            m_worker,
+            &ThreadWorker::onParamsArcSin);
     connect(formSerial,
             &FormSerial::recvTemperature,
             m_plotCorrection,

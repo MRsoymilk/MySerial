@@ -2,6 +2,7 @@
 #define FORMPLOTCORRECTION_H
 
 #include <QWidget>
+#include "global.h"
 
 class FormFittingKB;
 class FormFittingSin;
@@ -24,6 +25,8 @@ signals:
     void windowClose();
     void sendKB(const QByteArray &bytes);
     void sendSin(const QByteArray &bytes);
+    void sendSerialArcSin(const QByteArray &bytes);
+    void sendParamsArcSin(const PARAMS_ARCSIN &params);
     void onShowCorrectionCurve(const QList<QPointF> &data,
                                const double &xMin,
                                const double &xMax,
@@ -31,7 +34,8 @@ signals:
                                const double &yMax,
                                const double &temperature);
     void useLoadedThreshold(bool isUse, QVector<double> v);
-    void useLoadedThreadsholdOption(const double &offset, const double &step);
+    void useLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
+    void useAutoUpdateThreshold(bool isUse);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

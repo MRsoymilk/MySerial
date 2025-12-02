@@ -118,10 +118,10 @@ void FormPlotData::init()
     m_model = new QStandardItemModel(this);
     m_model->setColumnCount(5);
     m_model->setHeaderData(0, Qt::Horizontal, "index");
-    m_model->setHeaderData(1, Qt::Horizontal, "14bit(v)");
-    m_model->setHeaderData(2, Qt::Horizontal, "24bit(v)");
-    m_model->setHeaderData(3, Qt::Horizontal, "14bit(raw)");
-    m_model->setHeaderData(4, Qt::Horizontal, "24bit(raw)");
+    m_model->setHeaderData(1, Qt::Horizontal, "curve31(v)");
+    m_model->setHeaderData(2, Qt::Horizontal, "curve31(v)");
+    m_model->setHeaderData(3, Qt::Horizontal, "curve33(raw)");
+    m_model->setHeaderData(4, Qt::Horizontal, "curve33(raw)");
 
     ui->table->setModel(m_model);
 

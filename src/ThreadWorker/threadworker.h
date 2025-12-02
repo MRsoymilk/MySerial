@@ -26,7 +26,8 @@ public slots:
                         const QByteArray &data33,
                         const double &temperature);
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
-    void onUseLoadedThreadsholdOption(const double &offset, const double &step);
+    void onUseLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
+    void onParamsArcSin(const PARAMS_ARCSIN &params);
 
 signals:
     void dataReady4k(const QVector<double> &v31,
@@ -69,6 +70,7 @@ private:
                         const QVector<double> &raw31,
                         const QVector<double> &raw33,
                         const double &temperature);
+    void calculateArcSinThreshold(const double &temperature);
 
 private:
     int m_offset33 = 0;
@@ -76,9 +78,11 @@ private:
     int m_algorithm = 0;
     QLineSeries *m_series;
     double m_correction_offset = 900;
-    double m_correction_step = 1.5;
+    double m_correction_step = 1;
+    int m_correction_count = 800;
     QVector<double> m_threshold;
-    bool m_use_loaded_threshold = false;
+    bool m_autoupdate_threshold = false;
+    PARAMS_ARCSIN m_params_arcsin;
 };
 
 #endif // THREADWORKER_H

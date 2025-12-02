@@ -3,6 +3,7 @@
 
 #include <QStandardItem>
 #include <QWidget>
+#include "global.h"
 
 namespace Ui {
 class FormFittingArcSin;
@@ -19,7 +20,8 @@ public:
     void retranslateUI();
 
 signals:
-    void sendSin(const QByteArray &bytes);
+    void sendSerialArcSin(const QByteArray &bytes);
+    void sendParamsArcSin(const PARAMS_ARCSIN &params);
 
 private slots:
     void on_btnSendR_clicked();

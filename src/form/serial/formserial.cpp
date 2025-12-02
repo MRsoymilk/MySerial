@@ -705,13 +705,19 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
                 QByteArray frame_temperature = "";
 
                 if (m_acceptTemperature) {
-                    QByteArray frame_data = data.left(data.size() - 4);
+                    QByteArray frame_data = data.left(data.size() - (2 + 4));
                     m_frame.bit33 = frame_data;
-                    frame_temperature = data.right(4);
-                    if (frame_temperature.size() >= 2) {
-                        int raw_temperature = (static_cast<quint8>(frame_temperature[0]) << 8)
-                                              | (static_cast<quint8>(frame_temperature[1]));
-                        temperature = raw_temperature / 1000.0;
+                    frame_temperature = data.right(2 + 4);
+                    if (frame_temperature.size() >= 4) {
+                        long long raw_temperature = (static_cast<quint8>(frame_temperature[0])
+                                                     << 8 * 3)
+                                                    | (static_cast<quint8>(frame_temperature[1])
+                                                       << 8 * 2)
+                                                    | (static_cast<quint8>(frame_temperature[2])
+                                                       << 8)
+                                                    | (static_cast<quint8>(frame_temperature[3]));
+
+                        temperature = raw_temperature / 10000.0;
                     }
                 } else {
                     m_frame.bit33 = data;
@@ -958,14 +964,14 @@ void FormSerial::on_checkBoxAcceptTemperature_clicked()
     if (m_acceptTemperature) {
         for (auto &frame : m_frameTypes) {
             if (frame.name == "F30_33") {
-                frame.length += 4;
+                frame.length += 6;
                 break;
             }
         }
     } else {
         for (auto &frame : m_frameTypes) {
             if (frame.name == "F30_33") {
-                frame.length -= 4;
+                frame.length -= 6;
                 break;
             }
         }

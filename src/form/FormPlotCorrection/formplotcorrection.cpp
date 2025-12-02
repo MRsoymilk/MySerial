@@ -97,7 +97,14 @@ void FormPlotCorrection::init()
         ui->stackedWidget->setCurrentWidget(m_formSelf);
     }
     connect(m_formSin, &FormFittingSin::sendSin, this, &FormPlotCorrection::sendSin);
-    connect(m_formArcSin, &FormFittingArcSin::sendSin, this, &FormPlotCorrection::sendSin);
+    connect(m_formArcSin,
+            &FormFittingArcSin::sendSerialArcSin,
+            this,
+            &FormPlotCorrection::sendSerialArcSin);
+    connect(m_formArcSin,
+            &FormFittingArcSin::sendParamsArcSin,
+            this,
+            &FormPlotCorrection::sendParamsArcSin);
 
     ui->tBtnShowCorrectionCurve->setCheckable(true);
 }

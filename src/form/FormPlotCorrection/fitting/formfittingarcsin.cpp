@@ -38,7 +38,7 @@ void FormFittingArcSin::init()
     m_modelThreshold = new QStandardItemModel(this);
     m_modelThreshold->setColumnCount(2);
     m_modelThreshold->setHeaderData(0, Qt::Horizontal, tr("index"));
-    m_modelThreshold->setHeaderData(1, Qt::Horizontal, tr("fitting curve Raw(14bit)"));
+    m_modelThreshold->setHeaderData(1, Qt::Horizontal, tr("fitting curve Raw(curve33)"));
     ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(
         QHeaderView::ResizeToContents);
     ui->tableViewFittingCurveData->setModel(m_modelThreshold);
@@ -51,7 +51,7 @@ void FormFittingArcSin::init()
     m_modelPoints = new QStandardItemModel(this);
     m_modelPoints->setColumnCount(2);
     m_modelPoints->setHeaderData(0, Qt::Horizontal, tr("lambda"));
-    m_modelPoints->setHeaderData(1, Qt::Horizontal, tr("14bit(raw)"));
+    m_modelPoints->setHeaderData(1, Qt::Horizontal, tr("curve33(raw)"));
     ui->tableViewPoints->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableViewPoints->setModel(m_modelPoints);
 
@@ -185,7 +185,7 @@ void FormFittingArcSin::on_btnSendR_clicked()
     LOG_INFO("send R = kx +b: {}", FORMAT_HEX(byteArray));
     LOG_INFO("k: {}", k);
     LOG_INFO("b: {}", b);
-    emit sendSin(byteArray);
+    emit sendSerialArcSin(byteArray);
 }
 
 void FormFittingArcSin::on_btnCalculate_k1b1k2b2_clicked()
@@ -329,7 +329,23 @@ void FormFittingArcSin::on_btnSendFormula_clicked()
     LOG_INFO("right alpha {}", m_formula_lambda_r.alpha);
     LOG_INFO("k2 {}", m_formula_y.k2);
     LOG_INFO("b2 {}", m_formula_y.b2);
-    emit sendSin(byteArray);
+
+    emit sendSerialArcSin(byteArray);
+
+    PARAMS_ARCSIN params;
+    params.t_k1 = m_formula_y.k1;
+    params.t_b1 = m_formula_y.b1;
+    params.l_k = m_formula_lambda_l.k;
+    params.l_b = m_formula_lambda_l.b;
+    params.l_d = m_formula_lambda_l.d;
+    params.l_alpha = m_formula_lambda_l.alpha;
+    params.r_k = m_formula_lambda_r.k;
+    params.r_b = m_formula_lambda_r.b;
+    params.r_d = m_formula_lambda_r.d;
+    params.r_alpha = m_formula_lambda_r.alpha;
+    params.t_k2 = m_formula_y.k2;
+    params.t_b2 = m_formula_y.b2;
+    emit sendParamsArcSin(params);
 }
 
 void FormFittingArcSin::on_btnSetTemperatureT_clicked()
@@ -493,7 +509,7 @@ void FormFittingArcSin::on_tBtnAdd_clicked()
     m_modelPoints->insertRow(row);
 
     m_modelPoints->setItem(row, 0, new QStandardItem("0.0")); // lambda
-    m_modelPoints->setItem(row, 1, new QStandardItem("0"));   // 14bit(raw)
+    m_modelPoints->setItem(row, 1, new QStandardItem("0"));   // curve33(raw)
 
     QModelIndex index = m_modelPoints->index(row, 0);
     ui->tableViewPoints->setCurrentIndex(index);

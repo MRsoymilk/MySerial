@@ -182,8 +182,11 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     curve33.x_min = 0;
     curve33.x_max = v_voltage33.size();
 
-    if (m_use_loaded_threshold) {
-        applyThreshold(m_threshold, raw31, raw33, 0);
+    if (!m_autoupdate_threshold) {
+        applyThreshold(m_threshold, raw31, raw33, temperature);
+    } else {
+        calculateArcSinThreshold(temperature);
+        applyThreshold(m_threshold, raw31, raw33, temperature);
     }
 
     emit plotReady4k(curve31, curve33, temperature);
@@ -235,7 +238,7 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
         curve33.x_max = numPoints;
     }
 
-    if (m_use_loaded_threshold) {
+    if (!m_autoupdate_threshold) {
         applyThreshold(m_threshold, raw31, raw33, temperature);
     }
 
@@ -344,8 +347,11 @@ void ThreadWorker::processDataLLC(const QByteArray &data31,
     curve33.x_min = 0;
     curve33.x_max = v_voltage33.size();
 
-    if (m_use_loaded_threshold) {
-        applyThreshold(m_threshold, raw31, raw33, 0);
+    if (!m_autoupdate_threshold) {
+        applyThreshold(m_threshold, raw31, raw33, temperature);
+    } else {
+        calculateArcSinThreshold(temperature);
+        applyThreshold(m_threshold, raw31, raw33, temperature);
     }
 
     emit plotReady4k(curve31, curve33, temperature);
@@ -419,16 +425,55 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
                              temperature);
 }
 
+void ThreadWorker::calculateArcSinThreshold(const double &temperature)
+{
+    QVector<double> threshod;
+    for (int i = 0; i < m_correction_count; ++i) {
+        double idx = i * m_correction_step + m_correction_offset;
+        double y_lambda = 0;
+        if (idx <= 1300) {
+            y_lambda = m_params_arcsin.l_k
+                           * (qAsin(idx / 1000.0
+                                    / (2 * m_params_arcsin.l_d
+                                       * qCos(M_PI / 180.0 * m_params_arcsin.l_alpha / 2)))
+                              - m_params_arcsin.l_alpha / 2)
+                       + m_params_arcsin.l_b;
+        } else {
+            y_lambda = m_params_arcsin.r_k
+                           * (qAsin(idx / 1000.0
+                                    / (2 * m_params_arcsin.r_d
+                                       * qCos(M_PI / 180.0 * m_params_arcsin.r_alpha / 2)))
+                              - m_params_arcsin.r_alpha / 2)
+                       + m_params_arcsin.r_b;
+        }
+        double y = (m_params_arcsin.t_k1 * temperature + m_params_arcsin.t_b1) / 8.5 / 1000
+                       * y_lambda
+                   + (m_params_arcsin.t_k2 * temperature + m_params_arcsin.t_b2) / 1000;
+        threshod.push_back(y);
+    }
+
+    m_threshold = threshod;
+}
+
 void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<double> threshold)
 {
-    m_use_loaded_threshold = isUse;
+    m_autoupdate_threshold = !isUse;
     m_threshold = threshold;
 }
 
-void ThreadWorker::onUseLoadedThreadsholdOption(const double &offset, const double &step)
+void ThreadWorker::onUseLoadedThreadsholdOption(const double &offset,
+                                                const double &step,
+                                                const int &count)
 {
     m_correction_offset = offset;
     m_correction_step = step;
+    m_correction_count = count;
+}
+
+void ThreadWorker::onParamsArcSin(const PARAMS_ARCSIN &params)
+{
+    m_params_arcsin = params;
+    m_autoupdate_threshold = true;
 }
 
 void ThreadWorker::processF30Curve31(const QByteArray &data31,

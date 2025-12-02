@@ -204,8 +204,8 @@ void CalculateKB::on_textEditInput_textChanged()
         if (cols.size() >= 5) {
             bool ok1 = false, ok2 = false, ok3 = false;
             double temp = cols[m_temp_column].toDouble(&ok1) * 1000;
-            double slope = cols[3].toDouble(&ok2);     // 第4列
-            double intercept = cols[4].toDouble(&ok3); // 第5列
+            double slope = cols[m_temp_column + 3].toDouble(&ok2);     // 第4列
+            double intercept = cols[m_temp_column + 4].toDouble(&ok3); // 第5列
             if (ok1 && ok2 && ok3) {
                 temperature.append(temp);
                 slopes.append(slope);

@@ -81,8 +81,10 @@ void ShowCorrectionCurve::init()
 
     int offset = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_OFFSET, "900").toInt();
     double step = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_STEP, "1").toDouble();
+    int count = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_COUNT, "800").toInt();
     ui->doubleSpinBoxOffset->setValue(offset);
     ui->doubleSpinBoxStep->setValue(step);
+    ui->spinBoxCount->setValue(count);
 
     m_load_data = false;
 
@@ -241,9 +243,11 @@ void ShowCorrectionCurve::on_btnApplyOption_clicked()
 {
     double step = ui->doubleSpinBoxStep->value();
     double offset = ui->doubleSpinBoxOffset->value();
-    emit useLoadedThreadsholdOption(offset, step);
+    int count = ui->spinBoxCount->value();
+    emit useLoadedThreadsholdOption(offset, step, count);
     SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_OFFSET, QString::number(offset));
     SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_STEP, QString::number(step));
+    SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_COUNT, QString::number(count));
 }
 
 void ShowCorrectionCurve::on_tBtnRangeY_clicked()
@@ -379,3 +383,4 @@ void ShowCorrectionCurve::on_tBtnExportRaw_clicked()
     file.close();
     SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Export finished: %1").arg(path));
 }
+
