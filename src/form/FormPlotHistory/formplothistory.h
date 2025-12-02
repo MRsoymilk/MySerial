@@ -27,13 +27,13 @@ signals:
                     const CURVE &curve33,
                     const double &temperature,
                     bool record = false);
-
-protected:
-    void closeEvent(QCloseEvent *event);
-
 public slots:
     void onHistoryRecv(const CURVE &curve31, const CURVE &curve33, const double &temperature);
     void onTemperature(double temperature);
+
+protected:
+    void closeEvent(QCloseEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
     void on_tBtnNext14_clicked();
@@ -47,6 +47,7 @@ private slots:
     void on_toolButtonDumpPlot_clicked();
     void on_toolButtonDumpData_clicked();
     void on_tBtnToPlot_clicked();
+    void onMenuRemove();
 
 private:
     void updatePlot31();

@@ -75,7 +75,7 @@
          <item>
           <widget class="QLabel" name="label14">
            <property name="text">
-            <string>curve 14bit</string>
+            <string>curve31</string>
            </property>
           </widget>
          </item>
@@ -129,7 +129,7 @@
          <item>
           <widget class="QLabel" name="label24">
            <property name="text">
-            <string>curve 24bit</string>
+            <string>curve33t</string>
            </property>
           </widget>
          </item>
@@ -228,9 +228,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBoxAll">
-       <property name="text">
-        <string>all</string>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Vertical</enum>
        </property>
       </widget>
      </item>
@@ -238,6 +238,13 @@
       <widget class="QToolButton" name="toolButtonDumpData">
        <property name="text">
         <string>dump data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxAll">
+       <property name="text">
+        <string>all</string>
        </property>
       </widget>
      </item>

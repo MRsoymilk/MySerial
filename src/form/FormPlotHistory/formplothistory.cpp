@@ -55,6 +55,8 @@ void FormPlotHistory::init()
     connect(shortcut_prev, &QShortcut::activated, this, &FormPlotHistory::on_tBtnPrev14_clicked);
     QShortcut *shortcut_next = new QShortcut(QKeySequence(Qt::Key_Right), this);
     connect(shortcut_next, &QShortcut::activated, this, &FormPlotHistory::on_tBtnNext14_clicked);
+    QShortcut *shortcut_delete = new QShortcut(QKeySequence(Qt::Key_Delete), this);
+    connect(shortcut_delete, &QShortcut::activated, this, &FormPlotHistory::onMenuRemove);
 
     m_chartMix = new QChart();
     m_chartMix->setTitle(tr("curve_mix"));
@@ -272,6 +274,32 @@ void FormPlotHistory::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
+void FormPlotHistory::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+    QAction *removeAction = new QAction("remove", &menu);
+    menu.addAction(removeAction);
+
+    connect(removeAction, &QAction::triggered, this, &FormPlotHistory::onMenuRemove);
+
+    menu.exec(event->globalPos());
+}
+
+void FormPlotHistory::onMenuRemove()
+{
+    if (m_index_31 > 0 && m_index_33 > 0) {
+        m_temperature.removeAt(m_index_33);
+        m_p31.removeAt(m_index_31);
+        m_p33.removeAt(m_index_33);
+        --m_index_31;
+        --m_index_33;
+        ui->labelStatus31->setText(QString("%1/%2").arg(m_index_31 + 1).arg(m_p31.size()));
+        ui->labelStatus33->setText(QString("%1/%2").arg(m_index_33 + 1).arg(m_p33.size()));
+        updatePlot31();
+        updatePlot33();
+    }
+}
+
 void FormPlotHistory::onHistoryRecv(const CURVE &data31,
                                     const CURVE &data33,
                                     const double &temperature)
@@ -385,7 +413,7 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
         out << "index";
         int groupCount = qMax(m_p31.size(), m_p33.size());
         for (int i = 0; i < groupCount; ++i) {
-            out << QString(",14bit%1,24bit%2").arg(i + 1).arg(i + 1);
+            out << QString(",curve31_%1,curve33_%2").arg(i + 1).arg(i + 1);
         }
         out << "\n";
 
@@ -432,7 +460,7 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
         }
 
         QTextStream out(&file);
-        out << "index,14bit,24bit\n";
+        out << "index,curve31,curve33\n";
 
         int size = qMax(m_p31.size() > m_index_31 ? m_p31[m_index_31].data.size() : 0,
                         m_p33.size() > m_index_33 ? m_p33[m_index_33].data.size() : 0);
