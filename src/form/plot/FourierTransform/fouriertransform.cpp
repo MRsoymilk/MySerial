@@ -170,10 +170,10 @@ QList<QPointF> FourierTransform::fftAmplitude(const QList<QPointF> &data, double
     return spectrum;
 }
 
-void FourierTransform::transform(const QList<QPointF> &data)
+QList<QPointF> FourierTransform::transform(const QList<QPointF> &data)
 {
     if (data.isEmpty())
-        return;
+        return {};
 
     if (m_enableAxisX) {
         int start = qMax(0, m_axisXStart);
@@ -192,7 +192,7 @@ void FourierTransform::transform(const QList<QPointF> &data)
     }
 
     if (m_enableRange) {
-        updateIFFT();
+        return updateIFFT();
     } else {
         m_lineIFFT->replace(m_currentData);
 
@@ -206,13 +206,14 @@ void FourierTransform::transform(const QList<QPointF> &data)
         }
         m_axisYIFFT->setRange(y_min, y_max);
     }
+    return {};
 }
 
-void FourierTransform::updateIFFT()
+QList<QPointF> FourierTransform::updateIFFT()
 {
     if (m_currentData.isEmpty())
-        return;
-    ifftBandLimited(m_currentData, m_sampleRate, m_start, m_end);
+        return {};
+    return ifftBandLimited(m_currentData, m_sampleRate, m_start, m_end);
 }
 
 void FourierTransform::init()

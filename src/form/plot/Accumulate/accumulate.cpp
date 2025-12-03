@@ -61,22 +61,25 @@ QList<QPointF> Accumulate::fitSingleCurve(const QList<QPointF> &points, int orde
 
 void Accumulate::updateAvgFittedCurve(const QList<QPointF> &newFitted)
 {
-    int n = newFitted.size();
-    if (m_avgFittedCurve.isEmpty()) {
+    if (m_avgFitCount == 0) {
         m_avgFittedCurve = newFitted;
-    } else {
-        int total = m_noiseBuffer.size();
-        for (int i = 0; i < n; ++i) {
-            m_avgFittedCurve[i].setY((m_avgFittedCurve[i].y() * (total - 1) + newFitted[i].y())
-                                     / total);
-        }
+        m_avgFitCount = 1;
+        return;
     }
+
+    int n = newFitted.size();
+    for (int i = 0; i < n; ++i) {
+        double old = m_avgFittedCurve[i].y();
+        double now = newFitted[i].y();
+        m_avgFittedCurve[i].setY((old * m_avgFitCount + now) / (m_avgFitCount + 1));
+    }
+    m_avgFitCount++;
 }
 
-void Accumulate::accumulate(const QList<QPointF> &v)
+QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
 {
     if (v.isEmpty())
-        return;
+        return {};
 
     if (m_enableNoise) {
         --m_count_noise_remain;
@@ -103,7 +106,7 @@ void Accumulate::accumulate(const QList<QPointF> &v)
 
         // 拟合新噪声并增量更新平均拟合曲线
         QList<QPointF> smoothed = gaussianSmooth(v, m_smooth_window);
-        QList<QPointF> newFitted = fitSingleCurve(v, m_poly_order);
+        QList<QPointF> newFitted = fitSingleCurve(smoothed, m_poly_order);
         updateAvgFittedCurve(newFitted);
 
         // 绘制平均拟合曲线
@@ -159,27 +162,53 @@ void Accumulate::accumulate(const QList<QPointF> &v)
             accumulated.append(QPointF(v[i].x(), y));
         }
         m_accumulatedCurve = accumulated;
-        m_lineAcc->replace(m_accumulatedCurve);
-
-        // 更新轴范围
-        double xMin = std::numeric_limits<double>::max();
-        double xMax = std::numeric_limits<double>::lowest();
-        double yMin = std::numeric_limits<double>::max();
-        double yMax = std::numeric_limits<double>::lowest();
-        for (auto &p : m_accumulatedCurve) {
-            xMin = qMin(xMin, p.x());
-            xMax = qMax(xMax, p.x());
-            yMin = qMin(yMin, p.y());
-            yMax = qMax(yMax, p.y());
-        }
-        m_axisXAcc->setRange(xMin, xMax);
-        m_axisYAcc->setRange(yMin, yMax);
+        return accumulated;
     }
+    return {};
 }
 
 void Accumulate::closeEvent(QCloseEvent *event)
 {
+    m_accumulatedCurve.clear();
+    m_accumulateNoise.clear();
+    m_enableAccumulate = false;
+    m_enableNoise = false;
+    ui->tBtnAccumulateEnable->setChecked(false);
+    ui->tBtnNoiseEnable->setChecked(false);
+    ui->labelCountStatus->setText("status");
     emit windowClose();
+}
+
+void Accumulate::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+    QAction *clearNoseAction = new QAction("Clear Noise", &menu);
+    QAction *clearAccumulateAction = new QAction("Clear Accumulate", &menu);
+    menu.addAction(clearNoseAction);
+    menu.addSeparator();
+    menu.addAction(clearAccumulateAction);
+
+    connect(clearNoseAction, &QAction::triggered, this, &Accumulate::onMenuClearNose);
+    connect(clearAccumulateAction, &QAction::triggered, this, &Accumulate::onMenuClearAccumulate);
+
+    menu.exec(event->globalPos());
+}
+
+void Accumulate::onMenuClearNose()
+{
+    m_noiseBuffer.clear();
+    m_avgFittedCurve.clear();
+    m_accumulateNoise.clear();
+    m_chartNoise->removeAllSeries();
+    m_lineNoiseGroups.clear();
+    m_lineNoiseFit = nullptr;
+    m_avgFitCount = 0;
+}
+
+void Accumulate::onMenuClearAccumulate()
+{
+    on_tBtnAccumulateEnable_clicked();
+    on_tBtnAccumulateEnable_clicked();
 }
 
 // 初始化
@@ -197,24 +226,6 @@ void Accumulate::init()
     m_chartViewNoise = new MyChartView(m_chartNoise);
     m_chartViewNoise->setRenderHint(QPainter::Antialiasing);
     ui->gLayNoise->addWidget(m_chartViewNoise);
-
-    m_chartAcc = new QChart();
-    m_chartAcc->setTitle(tr("Accumulate"));
-    m_chartAcc->legend()->hide();
-
-    m_axisXAcc = new QValueAxis();
-    m_axisYAcc = new QValueAxis();
-    m_chartAcc->addAxis(m_axisXAcc, Qt::AlignBottom);
-    m_chartAcc->addAxis(m_axisYAcc, Qt::AlignLeft);
-
-    m_lineAcc = new QLineSeries();
-    m_chartAcc->addSeries(m_lineAcc);
-    m_lineAcc->attachAxis(m_axisXAcc);
-    m_lineAcc->attachAxis(m_axisYAcc);
-
-    m_chartViewAcc = new MyChartView(m_chartAcc);
-    m_chartViewAcc->setRenderHint(QPainter::Antialiasing);
-    ui->gLayAccumulate->addWidget(m_chartViewAcc);
 
     ui->tBtnAccumulateEnable->setCheckable(true);
     ui->tBtnNoiseEnable->setCheckable(true);

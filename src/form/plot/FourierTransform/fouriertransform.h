@@ -21,7 +21,7 @@ public:
     explicit FourierTransform(QWidget *parent = nullptr);
     ~FourierTransform();
 
-    void transform(const QList<QPointF> &data);
+    QList<QPointF> transform(const QList<QPointF> &data);
     void setSampleRate(double rate);
 
 signals:
@@ -47,7 +47,7 @@ private:
                                    double freqStart,
                                    double freqEnd);
 
-    void updateIFFT();
+    QList<QPointF> updateIFFT();
 
 private:
     Ui::FourierTransform *ui;

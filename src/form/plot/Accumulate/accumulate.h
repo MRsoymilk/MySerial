@@ -17,13 +17,14 @@ class Accumulate : public QWidget
 public:
     explicit Accumulate(QWidget *parent = nullptr);
     ~Accumulate();
-    void accumulate(const QList<QPointF> &v);
+    QList<QPointF> accumulate(const QList<QPointF> &v);
 
 signals:
     void windowClose();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private slots:
     void on_tBtnNoiseEnable_clicked();
@@ -34,6 +35,8 @@ private:
     QList<QPointF> fitSingleCurve(const QList<QPointF> &points, int order);
     void updateAvgFittedCurve(const QList<QPointF> &newFitted);
     QList<QPointF> gaussianSmooth(const QList<QPointF> &points, int window);
+    void onMenuClearNose();
+    void onMenuClearAccumulate();
 
 private:
     Ui::Accumulate *ui;
@@ -47,18 +50,13 @@ private:
     QLineSeries *m_lineNoiseFit = nullptr;
     QList<QPointF> m_avgFittedCurve;
 
-    QChart *m_chartAcc = nullptr;
-    MyChartView *m_chartViewAcc = nullptr;
-    QLineSeries *m_lineAcc = nullptr;
-    QValueAxis *m_axisXAcc = nullptr;
-    QValueAxis *m_axisYAcc = nullptr;
-
     int m_smooth_window = 0;
     int m_poly_order = 0;
     int m_count_noise = 0;
     int m_count_noise_remain = 0;
     bool m_enableNoise = false;
     bool m_enableAccumulate = false;
+    int m_avgFitCount = 0;
     QList<QPointF> m_accumulatedCurve;
     QList<QPointF> m_accumulateNoise;
     int m_count_acc = 0;

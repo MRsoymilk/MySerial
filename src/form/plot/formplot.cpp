@@ -381,7 +381,10 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     }
 
     if (m_enableFourier) {
-        m_fourierTransform->transform(plot31.data);
+        auto data = m_fourierTransform->transform(plot31.data);
+        if (!data.isEmpty()) {
+            plot31.data = data;
+        }
     }
 
     if (m_enableDerivation) {
@@ -389,7 +392,10 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     }
 
     if (m_enableAccumulate) {
-        m_accumulate->accumulate(plot31.data);
+        auto data = m_accumulate->accumulate(plot31.data);
+        if (!data.isEmpty()) {
+            plot31.data = data;
+        }
     }
 
     if (m_enableSNR) {

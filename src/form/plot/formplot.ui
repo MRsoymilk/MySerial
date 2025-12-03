@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>887</width>
+    <width>922</width>
     <height>530</height>
    </rect>
   </property>
@@ -204,16 +204,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnAccumulate">
+      <widget class="QToolButton" name="tBtnFourier">
        <property name="text">
-        <string>Accumulate</string>
+        <string>Fourier</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnDerivation">
+      <widget class="QToolButton" name="tBtnAccumulate">
        <property name="text">
-        <string>Derivation</string>
+        <string>Accumulate</string>
        </property>
       </widget>
      </item>
@@ -231,9 +231,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnFourier">
+      <widget class="QToolButton" name="tBtnDerivation">
        <property name="text">
-        <string>Fourier</string>
+        <string>Derivation</string>
        </property>
       </widget>
      </item>
