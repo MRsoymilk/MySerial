@@ -136,6 +136,8 @@ void FormPlot::init2d()
     m_series33->attachAxis(m_axisY);
     m_series31->setColor(Qt::blue);
     m_series33->setColor(Qt::magenta);
+    m_series31->setName(tr("curve31"));
+    m_series33->setName(tr("curve33"));
 
     m_peaks->attachAxis(m_axisX);
     m_peaks->attachAxis(m_axisY);
@@ -305,12 +307,38 @@ void FormPlot::onDataReceivedF15(const QByteArray &data31,
     }
 }
 
-void FormPlot::updatePlot2d(const QList<QPointF> &data31,
-                            const QList<QPointF> &data33,
-                            const double &xMin,
-                            const double &xMax,
-                            const double &yMin,
-                            const double &yMax)
+void FormPlot::updateAxis()
+{
+    double xMin = m_offset;
+    double xMax = std::numeric_limits<double>::min();
+    double yMin = std::numeric_limits<double>::max();
+    double yMax = std::numeric_limits<double>::min();
+    if (ui->tBtnRangeX->isChecked()) {
+        m_axisX->setRange(ui->spinBoxStartX->value(), ui->spinBoxEndX->value());
+    } else {
+        xMax = std::max(m_series31->count(), m_series33->count());
+        m_axisX->setRange(xMin, m_offset + xMax);
+    }
+    if (m_autoZoom) {
+        for (int i = 0; i < m_series31->count(); ++i) {
+            yMin = std::min(yMin, m_series31->at(i).y());
+            yMax = std::max(yMax, m_series31->at(i).y());
+        }
+        for (int i = 0; i < m_series33->count(); ++i) {
+            yMin = std::min(yMin, m_series33->at(i).y());
+            yMax = std::max(yMax, m_series33->at(i).y());
+        }
+        double padding = (yMax - yMin) * 0.1;
+        if (padding == 0) {
+            padding = 0.1;
+        }
+        m_axisY->setRange(yMin - padding, yMax + padding);
+    } else {
+        m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
+    }
+}
+
+void FormPlot::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33)
 {
     static bool flip = false;
     flip = !flip;
@@ -320,24 +348,8 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data31,
         ui->labelUpdateSign->setStyleSheet("background-color: blue; color: white;");
     }
     m_series31->replace(data31);
-    m_series31->setName(tr("curve31"));
     m_series33->replace(data33);
-    m_series33->setName(tr("curve33"));
-
-    if (ui->tBtnRangeX->isChecked()) {
-        m_axisX->setRange(ui->spinBoxStartX->value(), ui->spinBoxEndX->value());
-    } else {
-        m_axisX->setRange(xMin, xMax);
-    }
-    if (m_autoZoom) {
-        double padding = (yMax - yMin) * 0.1;
-        if (padding == 0) {
-            padding = 0.1;
-        }
-        m_axisY->setRange(yMin - padding, yMax + padding);
-    } else {
-        m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
-    }
+    updateAxis();
 }
 
 void FormPlot::updatePlot4k(const CURVE &curve31,
@@ -350,57 +362,48 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     }
     ui->labelTemperature->setText(QString("%1 ℃").arg(temperature, 0, 'f', 4));
 
-    int offset = 0;
-    if (ui->tBtnOffset->isChecked()) {
-        offset = ui->spinBoxOffset->value();
-    }
+    CURVE plot31 = curve31;
+    CURVE plot33 = curve33;
 
-    QList<QPointF> offsetData31 = curve31.data;
-    QList<QPointF> offsetData33 = curve33.data;
-    for (int i = 0; i < curve31.data.size(); ++i) {
-        offsetData31[i].setX(offset + i * m_step);
-        offsetData31[i].setY(curve31.data[i].y());
+    if (m_offset != 0) {
+        for (int i = 0; i < curve31.data.size(); ++i) {
+            plot31.data[i].setX(m_offset + i * m_step);
+            plot31.data[i].setY(curve31.data[i].y());
+        }
+        for (int i = 0; i < curve33.data.size(); ++i) {
+            plot33.data[i].setX(m_offset + i * m_step);
+            plot33.data[i].setY(curve33.data[i].y());
+        }
     }
-    for (int i = 0; i < curve33.data.size(); ++i) {
-        offsetData33[i].setX(offset + i * m_step);
-        offsetData33[i].setY(curve33.data[i].y());
-    }
-
-    double yMin = std::min(curve31.y_min, curve33.y_min);
-    double yMax = std::max(curve31.y_max, curve33.y_max);
-    updatePlot2d(offsetData31,
-                 offsetData33,
-                 offset,
-                 offset + std::max(curve31.data.size(), curve33.data.size()) * m_step,
-                 yMin,
-                 yMax);
-
-    callFindPeak();
-    callCalcFWHM();
 
     if (record) {
         emit toHistory(curve31, curve33, temperature);
     }
 
     if (m_enableFourier) {
-        m_fourierTransform->transform(offsetData31);
+        m_fourierTransform->transform(plot31.data);
     }
 
     if (m_enableDerivation) {
-        m_derivation->derivation(offsetData31, offsetData33);
+        m_derivation->derivation(plot31.data, plot33.data);
     }
 
     if (m_enableAccumulate) {
-        m_accumulate->accumulate(offsetData31);
+        m_accumulate->accumulate(plot31.data);
     }
 
     if (m_enableSNR) {
-        m_snr->calculate(offsetData31);
+        m_snr->calculate(plot31.data);
     }
 
     if (m_enableTemperature) {
         m_temperature->appendTemperature(temperature);
     }
+
+    callFindPeak();
+    callCalcFWHM();
+
+    updatePlot2d(plot31.data, plot33.data);
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -464,6 +467,10 @@ void FormPlot::on_tBtnZoom_clicked()
 {
     m_autoZoom = !m_autoZoom;
     ui->tBtnZoom->setChecked(m_autoZoom);
+    if (m_autoZoom) {
+        ui->tBtnRangeY->setChecked(false);
+        updateAxis();
+    }
 }
 
 void FormPlot::on_spinBox31Offset_valueChanged(int val)
@@ -776,9 +783,12 @@ void FormPlot::on_tBtnPause_clicked()
 void FormPlot::on_tBtnOffset_clicked()
 {
     if (ui->tBtnOffset->isChecked()) {
+        m_offset = ui->spinBoxOffset->value();
         SETTING_CONFIG_SET(CFG_GROUP_PLOT,
                            CFG_PLOT_OFFSET,
                            QString::number(ui->spinBoxOffset->value()));
+    } else {
+        m_offset = 0;
     }
 }
 
@@ -847,6 +857,8 @@ void FormPlot::on_tBtnRangeY_clicked()
 {
     if (ui->tBtnRangeY->isChecked()) {
         m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
+        ui->tBtnZoom->setChecked(false);
+        m_autoZoom = false;
     }
 }
 

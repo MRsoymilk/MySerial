@@ -277,16 +277,32 @@ void FormPlotHistory::closeEvent(QCloseEvent *event)
 void FormPlotHistory::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
-    QAction *removeAction = new QAction("remove", &menu);
+    QAction *clearAction = new QAction("Clear", &menu);
+    QAction *removeAction = new QAction("Remove", &menu);
+    menu.addAction(clearAction);
+    menu.addSeparator();
     menu.addAction(removeAction);
 
+    connect(clearAction, &QAction::triggered, this, &FormPlotHistory::onMenuClear);
     connect(removeAction, &QAction::triggered, this, &FormPlotHistory::onMenuRemove);
 
     menu.exec(event->globalPos());
 }
 
+void FormPlotHistory::onMenuClear()
+{
+    LOG_INFO("History clear");
+    m_index_31 = 0;
+    m_index_33 = 0;
+    m_p31.clear();
+    m_p33.clear();
+    ui->labelStatus31->setText(QString("%1/%2").arg(m_index_31).arg(m_p31.size()));
+    ui->labelStatus33->setText(QString("%1/%2").arg(m_index_33).arg(m_p33.size()));
+}
+
 void FormPlotHistory::onMenuRemove()
 {
+    LOG_INFO("History remove index 31: {}, 33: {}", m_index_31, m_index_33);
     if (m_index_31 > 0 && m_index_33 > 0) {
         m_temperature.removeAt(m_index_33);
         m_p31.removeAt(m_index_31);

@@ -96,17 +96,13 @@ private:
     void initToolButtons();
     void getINI();
     void setINI();
-    void updatePlot2d(const QList<QPointF> &data31,
-                      const QList<QPointF> &data33,
-                      const double &xMin,
-                      const double &xMax,
-                      const double &yMin,
-                      const double &yMax);
+    void updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33);
     void saveChartAsImage(const QString &filePath);
     QVector<QPointF> findPeak(int window, double thresholdFactor, double minDist);
     void callFindPeak();
     void callCalcFWHM();
     void peakTrajectory(const QVector<QPointF> &peaks);
+    void updateAxis();
 
 private:
     Ui::FormPlot *ui;
@@ -122,6 +118,7 @@ private:
     double m_fixedYMin = -2.5;
     double m_fixedYMax = 2.5;
     double m_step = 1;
+    int m_offset = 0;
 
     MyChartView *m_chartView = nullptr;
     bool m_findPeak = false;

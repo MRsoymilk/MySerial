@@ -48,6 +48,7 @@ private slots:
     void on_toolButtonDumpData_clicked();
     void on_tBtnToPlot_clicked();
     void onMenuRemove();
+    void onMenuClear();
 
 private:
     void updatePlot31();
