@@ -379,7 +379,7 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
         }
     }
     if (idx_min < idx_max) {
-        idx_max = 0;
+        std::swap(idx_min, idx_max);
     }
 
     double x_max_correction = m_correction_offset;
@@ -389,31 +389,19 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     QList<int> v_idx;
     int start_idx = idx_max;
     for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
-        int best_idx = -1;
-        int best_diff = INT_MAX;
+        for (int j = start_idx; j < raw33.size() - 1; ++j) {
+            if (threshold[idx_threshold] < raw33[j] && threshold[idx_threshold] >= raw33[j + 1]) {
+                v_idx.push_back(j);
+                start_idx = j;
+                double x = m_correction_offset + idx_threshold * m_correction_step;
+                double y = raw31[j];
+                out_correction.push_back(QPointF(x, y));
 
-        for (int j = start_idx; j < raw33.size(); ++j) {
-            int diff = std::abs(raw33[j] - threshold[idx_threshold]);
-            if (diff < best_diff) {
-                best_diff = diff;
-                best_idx = j;
-            }
-            if (raw33[j] < threshold[idx_threshold] && diff > best_diff) {
+                x_max_correction = std::max(x_max_correction, x);
+                y_min_correction = std::min(y_min_correction, y);
+                y_max_correction = std::max(y_max_correction, y);
                 break;
             }
-        }
-
-        if (best_idx >= 0 && best_idx < raw31.size()) {
-            v_idx.push_back(best_idx);
-            double x = m_correction_offset + idx_threshold * m_correction_step;
-            double y = raw31[best_idx];
-            out_correction.push_back(QPointF(x, y));
-
-            x_max_correction = std::max(x_max_correction, x);
-            y_min_correction = std::min(y_min_correction, y);
-            y_max_correction = std::max(y_max_correction, y);
-
-            start_idx = best_idx + 1;
         }
     }
 
