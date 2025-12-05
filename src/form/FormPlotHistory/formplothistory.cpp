@@ -500,9 +500,8 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
     }
 }
 
-void FormPlotHistory::on_tBtnToPlot_clicked()
+void FormPlotHistory::toPlot()
 {
-    getFittingChart();
     CURVE curve31;
     CURVE curve33;
     double temperature = 0;
@@ -539,4 +538,23 @@ void FormPlotHistory::on_tBtnToPlot_clicked()
     double yMax = axisY->max();
 
     emit sendToPlot(curve31, curve33, temperature, false);
+}
+
+void FormPlotHistory::on_tBtnToPlot_clicked()
+{
+    getFittingChart();
+    if (ui->checkBoxSendRange->isChecked()) {
+        int start = ui->spinBoxRangeStart->value();
+        int end = ui->spinBoxRangeEnd->value();
+        for (int i = start; i <= end; ++i) {
+            if (i > 0 && i <= m_p31.size()) {
+                m_index_31 = i - 1;
+                m_index_33 = i - 1;
+                updatePlot(INDEX_31);
+                toPlot();
+            }
+        }
+    } else {
+        toPlot();
+    }
 }

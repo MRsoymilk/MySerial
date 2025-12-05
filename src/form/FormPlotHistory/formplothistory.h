@@ -79,6 +79,7 @@ private:
     QValueAxis *m_axisSplit31Y;
     QValueAxis *m_axisSplit33X;
     QValueAxis *m_axisSplit33Y;
+    void toPlot();
 };
 
 #endif // FORMPLOTHISTORY_H
