@@ -299,6 +299,7 @@ void Accumulate::on_tBtnNoiseEnable_clicked()
         m_chartNoise->removeAllSeries();
         m_lineNoiseGroups.clear();
         m_lineNoiseFit = nullptr;
+        m_avgFitCount = 0;
     }
 }
 
