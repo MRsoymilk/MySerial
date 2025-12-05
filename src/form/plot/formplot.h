@@ -143,6 +143,7 @@ private:
     DraggableLine *m_lineRight = nullptr;
     int m_trajectory_start;
     int m_trajectory_end;
+    bool m_enablePeakTrajectory = false;
 };
 
 #endif // FORMPLOT_H

@@ -150,7 +150,7 @@ void FormPlot::init2d()
     m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
     m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
 
-    m_axisX->setTitleText(tr("Time (s)"));
+    m_axisX->setTitleText(tr("index"));
     m_axisX->setRange(0, 0.2);
     m_axisY->setTitleText(tr("Voltage (V)"));
     m_axisY->setRange(m_fixedYMin, m_fixedYMax);
@@ -406,10 +406,9 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
         m_temperature->appendTemperature(temperature);
     }
 
+    updatePlot2d(plot31.data, plot33.data);
     callFindPeak();
     callCalcFWHM();
-
-    updatePlot2d(plot31.data, plot33.data);
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -725,8 +724,8 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
     } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
         // 在曲线33中找到与该 X 坐标最接近的点
         double y = 0;
-        if (m_series33->count() > xPeak) {
-            y = m_series33->at(xPeak).y();
+        if (m_series33->count() + m_offset > xPeak) {
+            y = m_series33->at(xPeak - m_offset).y();
         }
 
         // 转换为 raw 值
@@ -745,18 +744,20 @@ void FormPlot::callFindPeak()
         }
 
         QVector<QPointF> peaks31 = findPeak(3, 1.0, 5.0);
-        if (ui->checkBoxTrajectory->isChecked()) {
+        if (m_enablePeakTrajectory) {
             peakTrajectory(peaks31);
         }
         m_peaks->clear();
+        auto test_31 = m_series31->points();
+        auto test_33 = m_series33->points();
         for (const auto &pt : peaks31) {
             m_peaks->append(pt);
             const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
             if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
                 // 在曲线33中找到与该 X 坐标最接近的点
                 double y = 0;
-                if (m_series33->count() > pt.x()) {
-                    y = m_series33->at(pt.x()).y();
+                if (m_series33->count() > pt.x() - m_offset) {
+                    y = m_series33->at(pt.x() - m_offset).y();
                 }
 
                 // 转换为 raw 值
@@ -790,10 +791,14 @@ void FormPlot::on_tBtnOffset_clicked()
 {
     if (ui->tBtnOffset->isChecked()) {
         m_offset = ui->spinBoxOffset->value();
+        m_trajectory_start += m_offset;
+        m_trajectory_end += m_offset;
         SETTING_CONFIG_SET(CFG_GROUP_PLOT,
                            CFG_PLOT_OFFSET,
                            QString::number(ui->spinBoxOffset->value()));
     } else {
+        m_trajectory_start -= ui->spinBoxOffset->value();
+        m_trajectory_end -= ui->spinBoxOffset->value();
         m_offset = 0;
     }
 }
@@ -807,6 +812,7 @@ void FormPlot::on_tBtnFWHM_clicked()
 void FormPlot::on_checkBoxTrajectory_clicked()
 {
     if (ui->checkBoxTrajectory->isChecked()) {
+        m_enablePeakTrajectory = true;
         m_trajectory_start = m_axisX->min();
         m_trajectory_end = m_axisX->max();
 
@@ -833,6 +839,7 @@ void FormPlot::on_checkBoxTrajectory_clicked()
         chart->scene()->addItem(m_lineRight);
         m_trajectory->show();
     } else {
+        m_enablePeakTrajectory = false;
         if (ui->tBtnFindPeak->isChecked() == true) {
             on_tBtnFindPeak_clicked();
         }
