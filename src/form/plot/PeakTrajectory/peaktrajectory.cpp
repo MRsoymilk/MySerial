@@ -77,7 +77,11 @@ void PeakTrajectory::appendPeak(const int &value)
         minY -= 1;
         maxY += 1;
     }
-    m_axisY->setRange(minY, maxY);
+    if (m_enableAxisY) {
+        m_axisY->setRange(m_y_start, m_y_end);
+    } else {
+        m_axisY->setRange(minY, maxY);
+    }
 
     m_axisX->setTickInterval(1);
     m_axisX->setMinorTickCount(0);
@@ -128,4 +132,32 @@ void PeakTrajectory::init()
     ui->gridLayout->addWidget(m_chartView);
     m_history_min = INT_MAX;
     m_history_max = INT_MIN;
+    ui->tBtnAxisY->setCheckable(true);
+}
+
+void PeakTrajectory::on_tBtnAxisY_clicked()
+{
+    m_enableAxisY = !m_enableAxisY;
+    ui->tBtnAxisY->setChecked(m_enableAxisY);
+    if (m_enableAxisY) {
+        m_y_start = ui->spinBoxStartY->value();
+        m_y_end = ui->spinBoxEndY->value();
+        m_axisY->setRange(m_y_start, m_y_end);
+    }
+}
+
+void PeakTrajectory::on_spinBoxStartY_valueChanged(int val)
+{
+    m_y_start = val;
+    if (m_enableAxisY) {
+        m_axisY->setRange(m_y_start, m_y_end);
+    }
+}
+
+void PeakTrajectory::on_spinBoxEndY_valueChanged(int val)
+{
+    m_y_end = val;
+    if (m_enableAxisY) {
+        m_axisY->setRange(m_y_start, m_y_end);
+    }
 }

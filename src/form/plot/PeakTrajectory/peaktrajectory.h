@@ -31,6 +31,11 @@ protected:
 public slots:
     void contextMenuEvent(QContextMenuEvent *event) override;
 
+private slots:
+    void on_tBtnAxisY_clicked();
+    void on_spinBoxStartY_valueChanged(int arg1);
+    void on_spinBoxEndY_valueChanged(int arg1);
+
 private:
     void init();
 
@@ -45,6 +50,9 @@ private:
     int m_range = 100;
     int m_history_min;
     int m_history_max;
+    bool m_enableAxisY = false;
+    int m_y_start = 0;
+    int m_y_end = 0;
 };
 
 #endif // PEAKTRAJECTORY_H
