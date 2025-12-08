@@ -389,6 +389,7 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     QList<int> v_idx;
     int start_idx = idx_max;
     for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
+        bool isFind = false;
         for (int j = start_idx; j < raw33.size() - 1; ++j) {
             if (threshold[idx_threshold] < raw33[j] && threshold[idx_threshold] >= raw33[j + 1]) {
                 v_idx.push_back(j);
@@ -400,8 +401,14 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
                 x_max_correction = std::max(x_max_correction, x);
                 y_min_correction = std::min(y_min_correction, y);
                 y_max_correction = std::max(y_max_correction, y);
+                isFind = true;
                 break;
             }
+        }
+        if (!isFind) {
+            double x = m_correction_offset + idx_threshold * m_correction_step;
+            double y = 0;
+            out_correction.push_back(QPointF(x, y));
         }
     }
 
