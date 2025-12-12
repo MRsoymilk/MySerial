@@ -22,60 +22,109 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
         return;
     }
 
-    QVector<double> yValues;
-    yValues.reserve(data.size());
+    QVector<double> y;
+    y.reserve(data.size());
     for (const auto &p : data)
-        yValues.append(p.y());
+        y.append(p.y());
 
-    double signalValue = 0.0;
     int signalIndex = 0;
+    double signalValue = 0.0;
+
     if (m_enableIdx) {
-        signalIndex = qBound(0, m_idx, yValues.size() - 1);
-        signalValue = yValues[signalIndex];
+        signalIndex = qBound(0, m_idx, y.size() - 1);
+        signalValue = y[signalIndex];
     } else {
-        auto itMax = std::max_element(yValues.begin(), yValues.end());
+        auto itMax = std::max_element(y.begin(), y.end());
         signalValue = *itMax;
-        signalIndex = std::distance(yValues.begin(), itMax);
+        signalIndex = std::distance(y.begin(), itMax);
     }
 
-    const int excludeRadius = 5;
-
+    const int excludeRadius = 10;
     QVector<double> noise;
-    noise.reserve(yValues.size());
-    for (int i = 0; i < yValues.size(); ++i) {
+    noise.reserve(y.size());
+
+    for (int i = 0; i < y.size(); i++) {
         if (qAbs(i - signalIndex) > excludeRadius)
-            noise.append(yValues[i]);
+            noise.append(y[i]);
     }
 
-    double mean = 0;
-    for (double v : noise)
-        mean += v;
-    mean /= noise.size();
+    if (noise.size() < 2) {
+        ui->lineEditSNRLinear->setText("Noise insufficient");
+        return;
+    }
 
-    double variance = 0;
-    for (double v : noise)
-        variance += (v - mean) * (v - mean);
-    variance /= noise.size();
+    double meanNoise = std::accumulate(noise.begin(), noise.end(), 0.0) / noise.size();
 
-    double noiseStd = qSqrt(variance);
-    if (noiseStd <= 0.0)
+    double variance = 0.0;
+    for (double v : noise)
+        variance += (v - meanNoise) * (v - meanNoise);
+
+    variance /= (noise.size() - 1);
+    double noiseStd = std::sqrt(variance);
+    if (noiseStd <= 0)
         noiseStd = 1e-12;
 
     double snrLinear = signalValue / noiseStd;
-    double snrDb = 20.0 * qLn(snrLinear) / qLn(10.0);
+    double snrDb = 20.0 * std::log10(snrLinear);
 
     ui->lineEditPeakValue->setText(
-        QString("Index: %1, Value: %2").arg(signalIndex).arg(signalValue, 0, 'f', 4));
+        QString("Index=%1, Value=%2").arg(signalIndex).arg(signalValue, 0, 'f', 4));
     ui->lineEditNoiseValue->setText(QString::number(noiseStd, 'f', 4));
-    ui->lineEditSNRLinear->setText(QString::number(snrLinear, 'f', 4));
+    ui->lineEditSNRLinear->setText(QString::number(snrLinear, 'f', 2));
     ui->lineEditSNRdB->setText(QString::number(snrDb, 'f', 2) + " dB");
 
-    m_data.push_back(signalValue);
-    m_line->append(m_data.size(), signalValue);
-    m_axisX->setRange(0, m_data.size());
-    double ymin = std::min(m_axisY->min(), signalValue);
-    double ymax = std::max(m_axisY->max(), signalValue);
-    m_axisY->setRange(ymin, ymax);
+    m_dataSignal.push_back(signalValue);
+    m_dataNoise.push_back(noiseStd);
+    {
+        // ========== 计算平均 Signal ==========
+        double meanSignal = 0.0;
+        double meanNoise = 0.0;
+
+        double sumSig = 0, sumNoise = 0;
+        for (int i = 0; i < m_dataSignal.size(); i++) {
+            sumSig += m_dataSignal[i];
+            sumNoise += m_dataNoise[i];
+        }
+        meanSignal = sumSig / m_dataSignal.size();
+        meanNoise = sumNoise / m_dataNoise.size();
+
+        // ========== 计算 Signal 标准差 ==========
+        double varSignal = 0.0;
+        for (double v : m_dataSignal)
+            varSignal += (v - meanSignal) * (v - meanSignal);
+        varSignal /= qMax(1, m_dataSignal.size() - 1);
+        double stdSignal = std::sqrt(varSignal);
+
+        // ========== 计算 Noise 标准差 ==========
+        double varNoise = 0.0;
+        for (double v : m_dataNoise)
+            varNoise += (v - meanNoise) * (v - meanNoise);
+        varNoise /= qMax(1, m_dataNoise.size() - 1);
+        double stdNoise = std::sqrt(varNoise);
+
+        // ========== 计算平均 SNR ==========
+        double avgSNR = 0.0;
+        for (int i = 0; i < m_dataSignal.size(); i++)
+            avgSNR += m_dataSignal[i] / m_dataNoise[i];
+        avgSNR /= m_dataSignal.size();
+        double avgSNRdB = 20.0 * std::log10(avgSNR);
+
+        ui->labelAvgInfo->setText(QString("Count: %1\n"
+                                          "Avg Signal: %2 (Std: %3)\n"
+                                          "Avg Noise : %4 (Std: %5)\n"
+                                          "Avg SNR   : %6\n"
+                                          "SNR: %7")
+                                      .arg(m_dataSignal.size())
+                                      .arg(meanSignal, 0, 'f', 4)
+                                      .arg(stdSignal, 0, 'f', 4)
+                                      .arg(meanNoise, 0, 'f', 4)
+                                      .arg(stdNoise, 0, 'f', 4)
+                                      .arg(avgSNR, 0, 'f', 2)
+                                      .arg(meanSignal / stdNoise));
+    }
+    m_line->append(m_dataSignal.size(), signalValue);
+    m_axisX->setRange(0, m_dataSignal.size());
+    m_axisY->setRange(std::min(m_axisY->min(), signalValue), std::max(m_axisY->max(), signalValue));
 }
 
 void SignalNoiseRatio::closeEvent(QCloseEvent *event)
@@ -128,10 +177,11 @@ void SignalNoiseRatio::contextMenuEvent(QContextMenuEvent *event)
         return;
 
     if (selectedAction == clearChartAction) {
-        m_data.clear();
+        m_dataSignal.clear();
+        m_dataNoise.clear();
         m_line->clear();
 
-        m_axisX->setRange(0, m_data.size() + 100);
+        m_axisX->setRange(0, m_dataSignal.size() + 100);
         m_axisY->setRange(0, 0);
     }
 }

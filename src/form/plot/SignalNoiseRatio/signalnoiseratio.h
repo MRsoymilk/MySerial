@@ -43,7 +43,8 @@ private:
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
     QLineSeries *m_line;
-    QVector<double> m_data = {};
+    QVector<double> m_dataSignal = {};
+    QVector<double> m_dataNoise = {};
 };
 
 #endif // SIGNALNOISERATIO_H
