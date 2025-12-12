@@ -8,6 +8,7 @@ class FormFittingKB;
 class FormFittingSin;
 class FormFittingSelf;
 class FormFittingArcSin;
+class ShowCorrectionCurve;
 
 namespace Ui {
 class FormPlotCorrection;
@@ -61,6 +62,9 @@ private:
     FormFittingArcSin *m_formArcSin;
     bool m_start;
     bool m_show = false;
+
+    ShowCorrectionCurve *sinShow;
+    ShowCorrectionCurve *arcSinShow;
 };
 
 #endif // FORMPLOTCORRECTION_H

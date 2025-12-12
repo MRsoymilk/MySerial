@@ -107,6 +107,34 @@ void FormPlotCorrection::init()
             &FormPlotCorrection::sendParamsArcSin);
 
     ui->tBtnShowCorrectionCurve->setCheckable(true);
+
+    sinShow = new ShowCorrectionCurve;
+    connect(this,
+            &FormPlotCorrection::onShowCorrectionCurve,
+            sinShow,
+            &ShowCorrectionCurve::updatePlot);
+    connect(sinShow, &ShowCorrectionCurve::windowClose, this, [&]() {
+        m_show = false;
+        ui->tBtnShowCorrectionCurve->setChecked(false);
+    });
+    connect(this, &FormPlotCorrection::windowClose, this, [&]() { sinShow->close(); });
+    arcSinShow = new ShowCorrectionCurve;
+    connect(this,
+            &FormPlotCorrection::onShowCorrectionCurve,
+            arcSinShow,
+            &ShowCorrectionCurve::updatePlot);
+    connect(arcSinShow, &ShowCorrectionCurve::windowClose, this, [=]() {
+        m_show = false;
+        ui->tBtnShowCorrectionCurve->setChecked(false);
+    });
+    connect(arcSinShow,
+            &ShowCorrectionCurve::useLoadedThreshold,
+            this,
+            &FormPlotCorrection::useLoadedThreshold);
+    connect(arcSinShow,
+            &ShowCorrectionCurve::useLoadedThreadsholdOption,
+            this,
+            &FormPlotCorrection::useLoadedThreadsholdOption);
 }
 
 void FormPlotCorrection::on_btnStart_clicked()
@@ -136,38 +164,11 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
         QString txt = ui->comboBoxAlgorithm->currentText();
         if (txt == "fitting_sin") {
             m_formSin->updateParams();
-
-            ShowCorrectionCurve *sinShow = new ShowCorrectionCurve;
-            connect(this,
-                    &FormPlotCorrection::onShowCorrectionCurve,
-                    sinShow,
-                    &ShowCorrectionCurve::updatePlot);
-            connect(sinShow, &ShowCorrectionCurve::windowClose, this, [&]() {
-                m_show = false;
-                ui->tBtnShowCorrectionCurve->setChecked(false);
-            });
-            connect(this, &FormPlotCorrection::windowClose, this, [&]() { sinShow->close(); });
+            // sinShow = new ShowCorrectionCurve;
             sinShow->show();
         } else if (txt == "fitting_arcsin") {
             m_formArcSin->updateParams();
-
-            ShowCorrectionCurve *arcSinShow = new ShowCorrectionCurve;
-            connect(this,
-                    &FormPlotCorrection::onShowCorrectionCurve,
-                    arcSinShow,
-                    &ShowCorrectionCurve::updatePlot);
-            connect(arcSinShow, &ShowCorrectionCurve::windowClose, this, [=]() {
-                m_show = false;
-                ui->tBtnShowCorrectionCurve->setChecked(false);
-            });
-            connect(arcSinShow,
-                    &ShowCorrectionCurve::useLoadedThreshold,
-                    this,
-                    &FormPlotCorrection::useLoadedThreshold);
-            connect(arcSinShow,
-                    &ShowCorrectionCurve::useLoadedThreadsholdOption,
-                    this,
-                    &FormPlotCorrection::useLoadedThreadsholdOption);
+            // arcSinShow = new ShowCorrectionCurve;
             connect(this, &FormPlotCorrection::windowClose, this, [=]() { arcSinShow->close(); });
             arcSinShow->show();
 
