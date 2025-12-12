@@ -84,6 +84,7 @@ void FormPlotHistory::init()
 
     // ------------------ 31 ------------------
     m_splitLine31 = new QLineSeries;
+    m_splitLine31->setColor(Qt::blue);
     m_chart31 = new QChart();
     m_chart31->addSeries(m_splitLine31);
 
@@ -99,6 +100,7 @@ void FormPlotHistory::init()
 
     // ------------------ 33 ------------------
     m_splitLine33 = new QLineSeries;
+    m_splitLine33->setColor(Qt::magenta);
     m_chart33 = new QChart();
     m_chart33->addSeries(m_splitLine33);
 
@@ -543,11 +545,28 @@ void FormPlotHistory::toPlot()
 void FormPlotHistory::on_tBtnToPlot_clicked()
 {
     getFittingChart();
+    toPlot();
+}
+
+void FormPlotHistory::on_tBtnToPlotWith_clicked()
+{
+    getFittingChart();
     if (ui->checkBoxSendRange->isChecked()) {
         int start = ui->spinBoxRangeStart->value();
         int end = ui->spinBoxRangeEnd->value();
+        bool enable_temperature = false;
+        double target_temperature = 0;
+        if (ui->checkBoxTemperature->isChecked()) {
+            enable_temperature = true;
+            target_temperature = ui->doubleSpinBoxTemperature->value();
+        }
         for (int i = start; i <= end; ++i) {
             if (i > 0 && i <= m_p31.size()) {
+                if (enable_temperature) {
+                    double diff = std::fabs(m_temperature[i - 1] - target_temperature);
+                    if (diff > 1e-2)
+                        continue;
+                }
                 m_index_31 = i - 1;
                 m_index_33 = i - 1;
                 updatePlot(INDEX_31);

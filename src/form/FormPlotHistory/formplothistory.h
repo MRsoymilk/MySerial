@@ -50,6 +50,8 @@ private slots:
     void onMenuRemove();
     void onMenuClear();
 
+    void on_tBtnToPlotWith_clicked();
+
 private:
     void updatePlot31();
     void updatePlot33();

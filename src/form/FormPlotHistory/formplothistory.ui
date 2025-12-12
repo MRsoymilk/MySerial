@@ -17,6 +17,13 @@
    <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="hLayOpt">
      <item>
+      <widget class="QToolButton" name="tBtnToPlot">
+       <property name="text">
+        <string>To Plot</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>
@@ -194,9 +201,9 @@
    <item row="2" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QToolButton" name="tBtnToPlot">
+      <widget class="QToolButton" name="tBtnToPlotWith">
        <property name="text">
-        <string>To Plot</string>
+        <string>To Plot With</string>
        </property>
       </widget>
      </item>
@@ -228,6 +235,20 @@
       <widget class="QSpinBox" name="spinBoxRangeEnd">
        <property name="maximum">
         <number>999999</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBoxTemperature">
+       <property name="text">
+        <string>temperature</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperature">
+       <property name="maximum">
+        <double>999999.989999999990687</double>
        </property>
       </widget>
      </item>
