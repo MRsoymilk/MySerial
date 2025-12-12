@@ -153,15 +153,27 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         ui->labelAccStatus->setText(QString("acc %1").arg(m_count_acc));
         QList<QPointF> accumulated;
         int n = v.size();
+        if (m_accumulatedCurve.isEmpty()) {
+            for (int i = 0; i < n; ++i) {
+                m_accumulatedCurve.append({v[i].x(), 0});
+            }
+        }
         for (int i = 0; i < n; ++i) {
-            double y = v[i].y();
-            if (i < m_avgFittedCurve.size())
-                y -= m_avgFittedCurve[i].y();
-            if (i < m_accumulatedCurve.size())
-                y += m_accumulatedCurve[i].y();
+            double y = v[i].y() - m_avgFittedCurve[i].y();
+            y += m_accumulatedCurve[i].y();
             accumulated.append(QPointF(v[i].x(), y));
         }
         m_accumulatedCurve = accumulated;
+        return accumulated;
+    }
+    // 基线扣除
+    if (m_enableBaselineDeduction) {
+        QList<QPointF> accumulated;
+        int n = v.size();
+        for (int i = 0; i < n; ++i) {
+            double y = v[i].y() - m_avgFittedCurve[i].y();
+            accumulated.append(QPointF(v[i].x(), y));
+        }
         return accumulated;
     }
     return {};
@@ -172,7 +184,9 @@ void Accumulate::closeEvent(QCloseEvent *event)
     m_accumulatedCurve.clear();
     m_accumulateNoise.clear();
     m_enableAccumulate = false;
+    m_enableBaselineDeduction = false;
     m_enableNoise = false;
+    ui->tBtnBaselineDeductionEnable->setChecked(false);
     ui->tBtnAccumulateEnable->setChecked(false);
     ui->tBtnNoiseEnable->setChecked(false);
     ui->labelCountStatus->setText("status");
@@ -227,6 +241,7 @@ void Accumulate::init()
     m_chartViewNoise->setRenderHint(QPainter::Antialiasing);
     ui->gLayNoise->addWidget(m_chartViewNoise);
 
+    ui->tBtnBaselineDeductionEnable->setCheckable(true);
     ui->tBtnAccumulateEnable->setCheckable(true);
     ui->tBtnNoiseEnable->setCheckable(true);
 
@@ -308,8 +323,20 @@ void Accumulate::on_tBtnAccumulateEnable_clicked()
     m_enableAccumulate = !m_enableAccumulate;
     ui->tBtnAccumulateEnable->setChecked(m_enableAccumulate);
     if (m_enableAccumulate) {
+        m_enableBaselineDeduction = false;
+        ui->tBtnBaselineDeductionEnable->setChecked(false);
         m_accumulatedCurve.clear();
         m_count_acc = 0;
         ui->labelAccStatus->setText(QString("acc %1").arg(m_count_acc));
+    }
+}
+
+void Accumulate::on_tBtnBaselineDeductionEnable_clicked()
+{
+    m_enableBaselineDeduction = !m_enableBaselineDeduction;
+    ui->tBtnBaselineDeductionEnable->setChecked(m_enableBaselineDeduction);
+    if (m_enableBaselineDeduction) {
+        m_enableAccumulate = false;
+        ui->tBtnAccumulateEnable->setChecked(false);
     }
 }

@@ -29,6 +29,7 @@ protected:
 private slots:
     void on_tBtnNoiseEnable_clicked();
     void on_tBtnAccumulateEnable_clicked();
+    void on_tBtnBaselineDeductionEnable_clicked();
 
 private:
     void init();
@@ -56,6 +57,7 @@ private:
     int m_count_noise_remain = 0;
     bool m_enableNoise = false;
     bool m_enableAccumulate = false;
+    bool m_enableBaselineDeduction = false;
     int m_avgFitCount = 0;
     QList<QPointF> m_accumulatedCurve;
     QList<QPointF> m_accumulateNoise;
