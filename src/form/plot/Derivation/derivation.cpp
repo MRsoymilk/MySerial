@@ -278,7 +278,7 @@ void Derivation::callFindPeak(const QList<QPointF> &points31, const QList<QPoint
                                            .arg(maxIdx)
                                            .arg(maxVal)
                                            .arg(corresponding33)
-                                           .arg(corresponding33 * 0x8000 / 2.5));
+                                           .arg(corresponding33 * 0x8000 / 3.3));
 }
 
 void Derivation::on_tBtnFindPeak_clicked()

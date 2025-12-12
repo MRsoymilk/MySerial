@@ -729,7 +729,7 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
         }
 
         // 转换为 raw 值
-        int raw = y * 0x8000 / 2.5;
+        int raw = y * 0x8000 / 3.3;
         if (m_trajectory) {
             m_trajectory->appendPeak(raw);
         }
@@ -761,7 +761,7 @@ void FormPlot::callFindPeak()
                 }
 
                 // 转换为 raw 值
-                int raw = y * 0x8000 / 2.5;
+                int raw = y * 0x8000 / 3.3;
                 ui->textBrowser->append(
                     QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y).arg(raw));
             }
@@ -891,6 +891,8 @@ void FormPlot::on_tBtnDerivation_clicked()
     ui->tBtnDerivation->setChecked(m_enableDerivation);
     if (m_enableDerivation) {
         m_derivation->show();
+    } else {
+        m_derivation->hide();
     }
 }
 
@@ -900,6 +902,8 @@ void FormPlot::on_tBtnAccumulate_clicked()
     ui->tBtnAccumulate->setChecked(m_enableAccumulate);
     if (m_enableAccumulate) {
         m_accumulate->show();
+    } else {
+        m_accumulate->hide();
     }
 }
 
@@ -909,6 +913,8 @@ void FormPlot::on_tBtnSNR_clicked()
     ui->tBtnSNR->setChecked(m_enableSNR);
     if (m_enableSNR) {
         m_snr->show();
+    } else {
+        m_snr->hide();
     }
 }
 
@@ -918,5 +924,7 @@ void FormPlot::on_tBtnTemperature_clicked()
     ui->tBtnTemperature->setChecked(m_enableTemperature);
     if (m_enableTemperature) {
         m_temperature->show();
+    } else {
+        m_temperature->hide();
     }
 }
