@@ -290,7 +290,7 @@ void FormFittingArcSin::on_btnFittingArcSin_clicked()
 void FormFittingArcSin::on_btnSendFormula_clicked()
 {
     QByteArray byteArray;
-    const QByteArray header = QByteArray::fromHex("DD3C006351");
+    const QByteArray header = QByteArray::fromHex("DD3C006348");
     const QByteArray tail = QByteArray::fromHex("CDFF");
 
     auto appendScaled = [&](QByteArray &arr, double value) {
