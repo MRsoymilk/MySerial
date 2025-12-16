@@ -2,6 +2,7 @@
 
 #include <QEventLoop>
 #include <QJsonObject>
+#include <QTimer>
 
 HttpClient::HttpClient(QObject *parent)
     : QObject(parent)
@@ -90,19 +91,31 @@ void HttpClient::downloadBinary(const QString &url,
             [reply, onError](QNetworkReply::NetworkError) { onError(reply->errorString()); });
 }
 
-QJsonObject HttpClient::get_sync(const QString &url)
+QJsonObject HttpClient::get_sync(const QString &url, int timeoutMs)
 {
     QUrl qurl(url);
     QNetworkRequest request(qurl);
+
     QNetworkReply *reply = m_manager->get(request);
 
     QEventLoop loop;
+    QTimer timer;
+    timer.setSingleShot(true);
+
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec(); // 等待请求完成
+
+    connect(&timer, &QTimer::timeout, [&]() {
+        qWarning() << "[MyHttp] GET timeout:" << url;
+        reply->abort();
+        loop.quit();
+    });
+
+    timer.start(timeoutMs);
+    loop.exec();
 
     QJsonObject result;
 
-    if (reply->error() == QNetworkReply::NoError) {
+    if (timer.isActive() && reply->error() == QNetworkReply::NoError) {
         QByteArray data = reply->readAll();
 
         QJsonParseError err;
@@ -112,6 +125,8 @@ QJsonObject HttpClient::get_sync(const QString &url)
         } else {
             qWarning() << "[MyHttp] JSON parse error:" << err.errorString();
         }
+    } else if (!timer.isActive()) {
+        qWarning() << "[MyHttp] GET aborted due to timeout";
     } else {
         qWarning() << "[MyHttp] GET Error:" << reply->errorString();
     }

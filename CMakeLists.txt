@@ -68,9 +68,6 @@ set(FORM_SETTING
     src/form/setting/formtip.h
     src/form/setting/formtip.cpp
     src/form/setting/formtip.ui
-    src/form/setting/ExternalControl/externalcontrol.h
-    src/form/setting/ExternalControl/externalcontrol.cpp
-    src/form/setting/ExternalControl/externalcontrol.ui
 )
 
 set(SRC_ENHANCE
@@ -81,8 +78,6 @@ set(SRC_ENHANCE
 )
 
 set(SRC_MODULE
-    src/module/server/server.h
-    src/module/server/server.cpp
     src/module/httpclient/httpclient.h
     src/module/httpclient/httpclient.cpp
 )
@@ -126,6 +121,12 @@ set(FORM_PLAY
     src/form/play/formplaympu6050.h
     src/form/play/formplaympu6050.cpp
     src/form/play/formplaympu6050.ui
+)
+
+set(FORM_EXTERNAL
+    src/form/FormExternal/formexternal.h
+    src/form/FormExternal/formexternal.cpp
+    src/form/FormExternal/formexternal.ui
 )
 
 set(PLOT_HISTORY
@@ -184,6 +185,7 @@ set(PROJECT_SOURCES
         ${PLOT_CORRECTION}
         ${PLOT_HISTORY}
         ${PLOT_SIMULATE}
+        ${FORM_EXTERNAL}
         res.qrc
 )
 
@@ -192,6 +194,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     src/form/plot/TemperatureView/temperatureview.h src/form/plot/TemperatureView/temperatureview.cpp src/form/plot/TemperatureView/temperatureview.ui
+    src/form/plot/TemperatureConversion/temperatureconversion.h src/form/plot/TemperatureConversion/temperatureconversion.cpp src/form/plot/TemperatureConversion/temperatureconversion.ui
   )
 
 target_include_directories(MySerial PUBLIC
@@ -199,7 +202,6 @@ target_include_directories(MySerial PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src/common"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/enhance"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/ThreadWorker"
-  "${CMAKE_CURRENT_SOURCE_DIR}/src/module/server"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/module/httpclient"
 )
 
@@ -314,3 +316,7 @@ if (WIN32)
 
     target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON_RC})
 endif()
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/cpp-httplib-0.28.0
+)

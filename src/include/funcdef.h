@@ -104,6 +104,9 @@
         }); \
     } while (0)
 
+#define TO_STR(obj) QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Compact))
+#define TO_STR_INDENTED(obj) QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Indented))
+
 // FUNCTION ===================================================================
 
 #endif

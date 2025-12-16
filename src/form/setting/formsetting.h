@@ -6,7 +6,6 @@
 class Server;
 class AutoUpdate;
 class Calculate;
-class ExternalControl;
 class FrameSetting;
 
 namespace Ui {
@@ -26,8 +25,6 @@ private:
 
 private:
     Ui::FormSetting *ui;
-
-    ExternalControl *m_externalControl;
 };
 
 #endif // FORMSETTING_H

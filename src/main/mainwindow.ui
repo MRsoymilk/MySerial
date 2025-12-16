@@ -119,6 +119,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QToolButton" name="btnExternal">
+            <property name="text">
+             <string>external</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QToolButton" name="btnLog">
             <property name="text">
              <string>Log</string>

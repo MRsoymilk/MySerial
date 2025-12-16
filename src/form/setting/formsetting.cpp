@@ -8,7 +8,6 @@
 #include <QNetworkRequest>
 #include <QOperatingSystemVersion>
 #include <QProcess>
-#include "ExternalControl/externalcontrol.h"
 
 FormSetting::FormSetting(QWidget *parent)
     : QWidget(parent)
@@ -27,14 +26,8 @@ FormSetting::~FormSetting()
 void FormSetting::retranslateUI()
 {
     ui->retranslateUi(this);
-
-    if (m_externalControl) {
-        m_externalControl->retranslateUI();
-    }
 }
 
 void FormSetting::init()
 {
-    m_externalControl = new ExternalControl;
-    ui->vLay->addWidget(m_externalControl);
 }

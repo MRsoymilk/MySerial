@@ -17,6 +17,7 @@ class FormPlotSimulate;
 class FormPlotData;
 class FormPlotHistory;
 class FormPlotCorrection;
+class FormExternal;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -45,6 +46,7 @@ private slots:
     void on_btnLog_clicked();
     void on_btnSetting_clicked();
     void on_btnUpdate_clicked();
+    void on_btnExternal_clicked();
 
     void on_tBtnData_clicked();
     void on_tBtnHistory_clicked();
@@ -87,6 +89,7 @@ private:
     FormLog *formLog;
     FormSetting *formSetting;
     FormPlayMPU6050 *playMPU6050;
+    FormExternal *formExternal;
     AutoUpdate *formAutoUpdate;
     QThread *m_workerThread;
     ThreadWorker *m_worker;

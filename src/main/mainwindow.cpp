@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "../form/AutoUpdate/autoupdate.h"
+#include "../form/FormExternal/formexternal.h"
 #include "../form/FormPlotCorrection/formplotcorrection.h"
 #include "../form/FormPlotData/formplotdata.h"
 #include "../form/FormPlotHistory/formplothistory.h"
@@ -86,6 +87,9 @@ void MainWindow::initStackWidget()
     formSetting = new FormSetting(this);
     ui->stackedWidget->addWidget(formSetting);
 
+    formExternal = new FormExternal(this);
+    ui->stackedWidget->addWidget(formExternal);
+
     formAutoUpdate = new AutoUpdate(this);
     ui->stackedWidget->addWidget(formAutoUpdate);
 
@@ -111,6 +115,7 @@ void MainWindow::initStackWidget()
     QShortcut *shortcut_Log = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_4), this);
     QShortcut *shortcut_Setting = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_5), this);
     QShortcut *shortcut_Play = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_6), this);
+    QShortcut *shortcut_External = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_7), this);
     connect(shortcut_Serial, &QShortcut::activated, this, [this]() {
         ui->stackedWidget->setCurrentWidget(formSerial);
     });
@@ -129,6 +134,9 @@ void MainWindow::initStackWidget()
     connect(shortcut_Play, &QShortcut::activated, this, [this]() {
         ui->stackedWidget->setCurrentWidget(playMPU6050);
     });
+    connect(shortcut_External, &QShortcut::activated, this, [this]() {
+        ui->stackedWidget->setCurrentWidget(formExternal);
+    });
 }
 
 void MainWindow::initToolbar()
@@ -140,6 +148,7 @@ void MainWindow::initToolbar()
         ui->btnPlot,
         ui->btnUpdate,
         ui->btnSetting,
+        ui->btnExternal,
     };
 
     QMap<QToolButton *, QString> onIcons = {
@@ -149,6 +158,7 @@ void MainWindow::initToolbar()
         {ui->btnPlot, "plot-on"},
         {ui->btnUpdate, "update-on"},
         {ui->btnSetting, "setting-on"},
+        {ui->btnExternal, "external-on"},
     };
 
     QMap<QToolButton *, QString> offIcons = {
@@ -158,6 +168,7 @@ void MainWindow::initToolbar()
         {ui->btnPlot, "plot-off"},
         {ui->btnUpdate, "update-off"},
         {ui->btnSetting, "setting-off"},
+        {ui->btnExternal, "external-off"},
     };
 
     for (QToolButton *btn : buttonList) {
@@ -411,6 +422,11 @@ void MainWindow::init()
     });
     connect(formPlot, &FormPlot::sendOffset31, this, [&](int val) { m_worker->setOffset31(val); });
     connect(formPlot, &FormPlot::sendOffset33, this, [&](int val) { m_worker->setOffset33(val); });
+    connect(formPlot,
+            &FormPlot::toExternalSpectral,
+            formExternal,
+            &FormExternal::onExternalSpectral);
+    connect(formExternal, &FormExternal::toExternalControl, formPlot, &FormPlot::onExteranlControl);
 }
 
 void MainWindow::on_btnSerial_clicked()
@@ -436,6 +452,11 @@ void MainWindow::on_btnLog_clicked()
 void MainWindow::on_btnUpdate_clicked()
 {
     ui->stackedWidget->setCurrentWidget(formAutoUpdate);
+}
+
+void MainWindow::on_btnExternal_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(formExternal);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -484,6 +505,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     formData->close();
     formLog->close();
     formAutoUpdate->close();
+    formExternal->close();
     formSerial->close();
     formSetting->close();
     event->accept();
@@ -529,6 +551,9 @@ void MainWindow::setLanguage(const QString &language)
         }
         if (formAutoUpdate) {
             formAutoUpdate->retranslateUI();
+        }
+        if (formExternal) {
+            formExternal->retranslateUI();
         }
     }
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);

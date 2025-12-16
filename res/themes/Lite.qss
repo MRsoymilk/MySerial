@@ -1155,6 +1155,10 @@ QToolButton#update-off {
   qproperty-icon: url(:/res/icons/update-off.png);
 }
 
+QToolButton#external-off {
+  qproperty-icon: url(:/res/icons/external-off.png);
+}
+
 QToolButton#usb-on {
   qproperty-icon: url(:/res/icons/usb-on.png);
 }
@@ -1177,6 +1181,10 @@ QToolButton#setting-on {
 
 QToolButton#update-on {
   qproperty-icon: url(:/res/icons/update-on.png);
+}
+
+QToolButton#external-on {
+  qproperty-icon: url(:/res/icons/external-on.png);
 }
 
 QToolButton#crop {

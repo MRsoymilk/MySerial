@@ -20,7 +20,7 @@ public:
                         std::function<void(QByteArray)> onSuccess,
                         std::function<void(QString)> onError,
                         std::function<void(qint64, qint64)> onProgress);
-    QJsonObject get_sync(const QString &url);
+    QJsonObject get_sync(const QString &url, int timeoutMs = 3000);
 
 signals:
     void success(const QJsonDocument &response);
