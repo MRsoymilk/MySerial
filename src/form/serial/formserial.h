@@ -141,10 +141,6 @@ private:
     FormSerial::FRAME m_frame;
     long long m_recv_count;
 
-    // bool m_toPeek = false;
-    // bool m_waitting_byte = false;
-    // bool m_need_after = false;
-
     QVector<LineSend *> m_lineSends;
     int m_pageSize = 5;
     int m_currentPage = 0;
