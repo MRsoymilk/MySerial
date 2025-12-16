@@ -44,6 +44,7 @@ signals:
     void sendOffset33(int val);
     void changeFrameType(int index);
     void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0);
+    void toExternalSpectral(const QJsonObject &spectral);
 
 public slots:
     void onDataReceivedLLC(const QByteArray &data31,
@@ -59,6 +60,7 @@ public slots:
                       const CURVE &curve33,
                       const double &temperature,
                       bool record = false);
+    void onExteranlControl(bool enable);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
@@ -89,6 +91,7 @@ private slots:
     void on_tBtnAccumulate_clicked();
     void on_tBtnSNR_clicked();
     void on_tBtnTemperature_clicked();
+    void on_tBtnConversion_clicked();
 
 private:
     void init();
@@ -101,6 +104,7 @@ private:
     QVector<QPointF> findPeak(int window, double thresholdFactor, double minDist);
     void callFindPeak();
     void callCalcFWHM();
+    void callToExternal(const QList<QPointF> &data);
     void peakTrajectory(const QVector<QPointF> &peaks);
     void updateAxis();
 
@@ -144,6 +148,12 @@ private:
     int m_trajectory_start;
     int m_trajectory_end;
     bool m_enablePeakTrajectory = false;
+    bool m_enableExternal = false;
+    bool m_enableConversion = false;
+    bool m_enableControlY = false;
+    bool m_enableControlX = false;
+    double m_k = 0;
+    double m_b = 0;
 };
 
 #endif // FORMPLOT_H

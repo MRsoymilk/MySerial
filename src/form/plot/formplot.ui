@@ -393,14 +393,25 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="labelTemperature">
-       <property name="text">
-        <string>temperature</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="hLayTemperature">
+       <item>
+        <widget class="QLabel" name="labelTemperature">
+         <property name="text">
+          <string>temperature</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="tBtnConversion">
+         <property name="text">
+          <string>Conversion</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

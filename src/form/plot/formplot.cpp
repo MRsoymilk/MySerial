@@ -18,6 +18,7 @@
 #include "FourierTransform/fouriertransform.h"
 #include "PeakTrajectory/peaktrajectory.h"
 #include "SignalNoiseRatio/signalnoiseratio.h"
+#include "TemperatureConversion/temperatureconversion.h"
 #include "TemperatureView/temperatureview.h"
 #include "funcdef.h"
 #include "plot_algorithm.h"
@@ -246,6 +247,7 @@ void FormPlot::initToolButtons()
     ui->tBtnAccumulate->setCheckable(true);
     ui->tBtnDerivation->setCheckable(true);
     ui->tBtnTemperature->setCheckable(true);
+    ui->tBtnConversion->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -313,7 +315,7 @@ void FormPlot::updateAxis()
     double xMax = std::numeric_limits<double>::min();
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::min();
-    if (ui->tBtnRangeX->isChecked()) {
+    if (m_enableControlX) {
         m_axisX->setRange(ui->spinBoxStartX->value(), ui->spinBoxEndX->value());
     } else {
         xMax = std::max(m_series31->count(), m_series33->count());
@@ -334,7 +336,9 @@ void FormPlot::updateAxis()
         }
         m_axisY->setRange(yMin - padding, yMax + padding);
     } else {
-        m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
+        if (m_enableControlY) {
+            m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
+        }
     }
 }
 
@@ -360,7 +364,13 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     if (m_pause) {
         return;
     }
-    ui->labelTemperature->setText(QString("%1 ℃").arg(temperature, 0, 'f', 4));
+    if (m_enableConversion) {
+        ui->labelTemperature->setText(QString("%1 -> %2 ℃")
+                                          .arg(temperature, 0, 'f', 4)
+                                          .arg((temperature - m_b) / m_k, 0, 'f', 4));
+    } else {
+        ui->labelTemperature->setText(QString("%1 ℃").arg(temperature, 0, 'f', 4));
+    }
 
     CURVE plot31 = curve31;
     CURVE plot33 = curve33;
@@ -407,8 +417,35 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     }
 
     updatePlot2d(plot31.data, plot33.data);
+    if (m_enableExternal) {
+        callToExternal(plot31.data);
+    }
     callFindPeak();
     callCalcFWHM();
+}
+
+void FormPlot::onExteranlControl(bool enable)
+{
+    m_enableExternal = enable;
+}
+
+void FormPlot::callToExternal(const QList<QPointF> &data)
+{
+    QJsonArray spectrumArray;
+
+    for (const QPointF &pt : data) {
+        QJsonObject obj;
+
+        QString wavelengthKey = QString::number(pt.x(), 'f', 6);
+        obj.insert(wavelengthKey, pt.y());
+
+        spectrumArray.append(obj);
+    }
+
+    QJsonObject info;
+    info.insert("spectrum", spectrumArray);
+    info.insert("timestamp", TIMESTAMP());
+    emit toExternalSpectral(info);
 }
 
 void FormPlot::wheelEvent(QWheelEvent *event)
@@ -509,7 +546,7 @@ void FormPlot::on_tBtnImgSave_clicked()
 
 void FormPlot::on_spinBoxStartX_valueChanged(int val)
 {
-    if (ui->tBtnRangeX->isChecked()) {
+    if (m_enableControlX) {
         m_axisX->setRange(val, m_axisX->max());
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_X_START, QString::number(val));
     }
@@ -517,7 +554,7 @@ void FormPlot::on_spinBoxStartX_valueChanged(int val)
 
 void FormPlot::on_spinBoxEndX_valueChanged(int val)
 {
-    if (ui->tBtnRangeX->isChecked()) {
+    if (m_enableControlX) {
         m_axisX->setRange(m_axisX->min(), val);
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_X_END, QString::number(val));
     }
@@ -525,7 +562,7 @@ void FormPlot::on_spinBoxEndX_valueChanged(int val)
 
 void FormPlot::on_spinBoxStartY_valueChanged(int val)
 {
-    if (ui->tBtnRangeY->isChecked()) {
+    if (m_enableControlY) {
         m_axisY->setRange(val, m_axisY->max());
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_Y_START, QString::number(val));
     }
@@ -533,7 +570,7 @@ void FormPlot::on_spinBoxStartY_valueChanged(int val)
 
 void FormPlot::on_spinBoxEndY_valueChanged(int val)
 {
-    if (ui->tBtnRangeY->isChecked()) {
+    if (m_enableControlY) {
         m_axisY->setRange(m_axisY->min(), val);
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_Y_END, QString::number(val));
     }
@@ -861,14 +898,16 @@ void FormPlot::on_checkBoxTrajectory_clicked()
 
 void FormPlot::on_tBtnRangeX_clicked()
 {
-    if (ui->tBtnRangeX->isChecked()) {
+    m_enableControlX = !m_enableControlX;
+    if (m_enableControlX) {
         m_axisX->setRange(ui->spinBoxStartX->value(), ui->spinBoxEndX->value());
     }
 }
 
 void FormPlot::on_tBtnRangeY_clicked()
 {
-    if (ui->tBtnRangeY->isChecked()) {
+    m_enableControlY = !m_enableControlY;
+    if (m_enableControlY) {
         m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
         ui->tBtnZoom->setChecked(false);
         m_autoZoom = false;
@@ -926,5 +965,16 @@ void FormPlot::on_tBtnTemperature_clicked()
         m_temperature->show();
     } else {
         m_temperature->hide();
+    }
+}
+
+void FormPlot::on_tBtnConversion_clicked()
+{
+    m_enableConversion = !m_enableConversion;
+    if (m_enableConversion) {
+        TemperatureConversion conv;
+        conv.exec();
+        m_k = conv.k();
+        m_b = conv.b();
     }
 }
