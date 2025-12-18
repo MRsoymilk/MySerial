@@ -23,7 +23,7 @@
       <enum>QTabWidget::TabShape::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::TextElideMode::ElideLeft</enum>
@@ -148,6 +148,13 @@
           <widget class="QToolButton" name="tBtnClear">
            <property name="text">
             <string>clear</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnExternal">
+           <property name="text">
+            <string>to external</string>
            </property>
           </widget>
          </item>

@@ -23,6 +23,7 @@ public:
     void retranslateUI();
 
 signals:
+    void toExternalSpectral(const QJsonObject &spectrum);
     void windowClose();
     void sendKB(const QByteArray &bytes);
     void sendSin(const QByteArray &bytes);

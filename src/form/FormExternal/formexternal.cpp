@@ -36,7 +36,6 @@ void FormExternal::init()
 
     if (m_iniServer.enable == VAL_ENABLE) {
         startServer();
-        emit toExternalControl(true);
     }
 }
 
@@ -130,7 +129,6 @@ void FormExternal::on_checkBoxEnable_clicked()
         stopServer();
     }
 
-    emit toExternalControl(enable);
 }
 
 void FormExternal::on_checkBoxLog_clicked()

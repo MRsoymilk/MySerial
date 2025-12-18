@@ -146,9 +146,8 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
 
         ui->labelCountStatus->setText(QString("%1/%2").arg(m_count_noise_remain).arg(m_count_noise));
     }
-
     // 信号累加
-    if (m_enableAccumulate) {
+    else if (m_enableAccumulate) {
         ++m_count_acc;
         ui->labelAccStatus->setText(QString("acc %1").arg(m_count_acc));
         QList<QPointF> accumulated;
@@ -159,15 +158,26 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
             }
         }
         for (int i = 0; i < n; ++i) {
-            double y = v[i].y() - m_avgFittedCurve[i].y();
+            double y = v[i].y();
+            if (!m_avgFittedCurve.isEmpty()) {
+                y -= m_avgFittedCurve[i].y();
+            }
             y += m_accumulatedCurve[i].y();
             accumulated.append(QPointF(v[i].x(), y));
         }
         m_accumulatedCurve = accumulated;
+        if (m_target_count != 0) {
+            if (m_count_acc >= m_target_count) {
+                m_count_acc = 0;
+                m_accumulatedCurve.clear();
+            } else {
+                return {};
+            }
+        }
         return accumulated;
     }
     // 基线扣除
-    if (m_enableBaselineDeduction) {
+    else if (m_enableBaselineDeduction) {
         QList<QPointF> accumulated;
         int n = v.size();
         for (int i = 0; i < n; ++i) {
@@ -176,7 +186,7 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         }
         return accumulated;
     }
-    return {};
+    return v;
 }
 
 void Accumulate::closeEvent(QCloseEvent *event)
@@ -339,4 +349,9 @@ void Accumulate::on_tBtnBaselineDeductionEnable_clicked()
         m_enableAccumulate = false;
         ui->tBtnAccumulateEnable->setChecked(false);
     }
+}
+
+void Accumulate::on_spinBoxCount_valueChanged(int count)
+{
+    m_target_count = count;
 }

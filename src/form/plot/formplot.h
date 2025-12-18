@@ -60,7 +60,6 @@ public slots:
                       const CURVE &curve33,
                       const double &temperature,
                       bool record = false);
-    void onExteranlControl(bool enable);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
@@ -92,6 +91,7 @@ private slots:
     void on_tBtnSNR_clicked();
     void on_tBtnTemperature_clicked();
     void on_tBtnConversion_clicked();
+    void on_tBtnToExternal_clicked();
 
 private:
     void init();

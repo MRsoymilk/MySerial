@@ -41,6 +41,8 @@ set(FORM_PLOT
     src/form/plot/Accumulate/accumulate.h
     src/form/plot/Accumulate/accumulate.cpp
     src/form/plot/Accumulate/accumulate.ui
+    src/form/plot/TemperatureView/temperatureview.h src/form/plot/TemperatureView/temperatureview.cpp src/form/plot/TemperatureView/temperatureview.ui
+    src/form/plot/TemperatureConversion/temperatureconversion.h src/form/plot/TemperatureConversion/temperatureconversion.cpp src/form/plot/TemperatureConversion/temperatureconversion.ui
 )
 
 set(FORM_LOG
@@ -193,8 +195,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(MySerial
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    src/form/plot/TemperatureView/temperatureview.h src/form/plot/TemperatureView/temperatureview.cpp src/form/plot/TemperatureView/temperatureview.ui
-    src/form/plot/TemperatureConversion/temperatureconversion.h src/form/plot/TemperatureConversion/temperatureconversion.cpp src/form/plot/TemperatureConversion/temperatureconversion.ui
+    src/mode/FormEasy/formeasy.h src/mode/FormEasy/formeasy.cpp src/mode/FormEasy/formeasy.ui
+    src/mode/FormExpert/formexpert.h src/mode/FormExpert/formexpert.cpp src/mode/FormExpert/formexpert.ui
   )
 
 target_include_directories(MySerial PUBLIC

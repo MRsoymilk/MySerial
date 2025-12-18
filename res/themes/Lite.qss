@@ -1223,6 +1223,10 @@ QToolButton#Temperature {
   qproperty-icon: url(:/res/icons/temperature.png);
 }
 
+QToolButton#ToExternal {
+  qproperty-icon: url(:/res/icons/to_external.png);
+}
+
 QToolButton#tBtnSwitch {
   qproperty-icon: url(:/res/icons/start.png);
   qproperty-iconSize: 48px 48px;
@@ -1280,6 +1284,11 @@ QToolButton#tBtnSNR {
 
 QToolButton#tBtnTemperature {
   qproperty-icon: url(:/res/icons/temperature.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnToExternal {
+  qproperty-icon: url(:/res/icons/to_external.png);
   qproperty-iconSize: 48px 48px;
 }
 

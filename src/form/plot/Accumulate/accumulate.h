@@ -30,6 +30,7 @@ private slots:
     void on_tBtnNoiseEnable_clicked();
     void on_tBtnAccumulateEnable_clicked();
     void on_tBtnBaselineDeductionEnable_clicked();
+    void on_spinBoxCount_valueChanged(int arg1);
 
 private:
     void init();
@@ -62,6 +63,7 @@ private:
     QList<QPointF> m_accumulatedCurve;
     QList<QPointF> m_accumulateNoise;
     int m_count_acc = 0;
+    int m_target_count = 0;
 };
 
 #endif // ACCUMULATE_H

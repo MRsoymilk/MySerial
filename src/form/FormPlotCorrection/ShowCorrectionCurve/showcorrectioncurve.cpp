@@ -39,6 +39,28 @@ void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
     m_data.push_back(data);
     m_current_page = m_data.size() - 1;
     ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
+    if (m_enableExternal) {
+        callToExternal(data);
+    }
+}
+
+void ShowCorrectionCurve::callToExternal(const QList<QPointF> &data)
+{
+    QJsonArray spectrumArray;
+
+    for (const QPointF &pt : data) {
+        QJsonObject obj;
+
+        QString wavelengthKey = QString::number(pt.x(), 'f', 6);
+        obj.insert(wavelengthKey, pt.y());
+
+        spectrumArray.append(obj);
+    }
+
+    QJsonObject info;
+    info.insert("spectrum", spectrumArray);
+    info.insert("timestamp", TIMESTAMP());
+    emit toExternalSpectral(info);
 }
 
 void ShowCorrectionCurve::closeEvent(QCloseEvent *event)
@@ -98,6 +120,8 @@ void ShowCorrectionCurve::init()
     connect(shortcut_prev, &QShortcut::activated, this, &ShowCorrectionCurve::on_tBtnPrev_clicked);
     QShortcut *shortcut_next = new QShortcut(QKeySequence(Qt::Key_Right), this);
     connect(shortcut_next, &QShortcut::activated, this, &ShowCorrectionCurve::on_tBtnNext_clicked);
+
+    ui->tBtnExternal->setCheckable(true);
 }
 
 void ShowCorrectionCurve::on_tBtnPrev_clicked()
@@ -384,3 +408,8 @@ void ShowCorrectionCurve::on_tBtnExportRaw_clicked()
     SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Export finished: %1").arg(path));
 }
 
+void ShowCorrectionCurve::on_tBtnExternal_clicked()
+{
+    m_enableExternal = !m_enableExternal;
+    ui->tBtnExternal->setChecked(m_enableExternal);
+}

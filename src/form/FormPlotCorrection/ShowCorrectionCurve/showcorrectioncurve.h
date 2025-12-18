@@ -30,6 +30,7 @@ public:
                     const double &temperature);
 
 signals:
+    void toExternalSpectral(const QJsonObject &spectrum);
     void windowClose();
     void useLoadedThreshold(bool isUse, QVector<double> v);
     void useLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
@@ -52,10 +53,12 @@ private slots:
     void on_tBtnExportCurve_clicked();
     void on_tBtnClear_clicked();
     void on_tBtnExportRaw_clicked();
+    void on_tBtnExternal_clicked();
 
 private:
     void init();
     void updateIndex();
+    void callToExternal(const QList<QPointF> &data);
 
 private:
     Ui::ShowCorrectionCurve *ui;
@@ -68,6 +71,7 @@ private:
     int m_current_page;
     QStandardItemModel *m_model;
     bool m_load_data = false;
+    bool m_enableExternal = false;
 };
 
 #endif // SHOWCORRECTIONCURVE_H

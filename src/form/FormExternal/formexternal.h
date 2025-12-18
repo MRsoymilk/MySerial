@@ -22,9 +22,6 @@ public:
     ~FormExternal();
     void retranslateUI();
 
-signals:
-    void toExternalControl(bool enable);
-
 public slots:
     void onExternalSpectral(const QJsonObject &spectral);
 

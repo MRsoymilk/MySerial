@@ -135,6 +135,10 @@ void FormPlotCorrection::init()
             &ShowCorrectionCurve::useLoadedThreadsholdOption,
             this,
             &FormPlotCorrection::useLoadedThreadsholdOption);
+    connect(arcSinShow,
+            &ShowCorrectionCurve::toExternalSpectral,
+            this,
+            &FormPlotCorrection::toExternalSpectral);
 }
 
 void FormPlotCorrection::on_btnStart_clicked()

@@ -235,6 +235,11 @@ void FormPlot::initToolButtons()
     ui->tBtnTemperature->setToolTip(tr("Temperature"));
     ui->tBtnTemperature->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnToExternal->setObjectName("ToExternal");
+    ui->tBtnToExternal->setIconSize(QSize(24, 24));
+    ui->tBtnToExternal->setToolTip(tr("ToExternal"));
+    ui->tBtnToExternal->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);
@@ -248,6 +253,7 @@ void FormPlot::initToolButtons()
     ui->tBtnDerivation->setCheckable(true);
     ui->tBtnTemperature->setCheckable(true);
     ui->tBtnConversion->setCheckable(true);
+    ui->tBtnToExternal->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -386,10 +392,6 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
         }
     }
 
-    if (record) {
-        emit toHistory(curve31, curve33, temperature);
-    }
-
     if (m_enableFourier) {
         auto data = m_fourierTransform->transform(plot31.data);
         if (!data.isEmpty()) {
@@ -405,6 +407,8 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
         auto data = m_accumulate->accumulate(plot31.data);
         if (!data.isEmpty()) {
             plot31.data = data;
+        } else {
+            return;
         }
     }
 
@@ -416,17 +420,16 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
         m_temperature->appendTemperature(temperature);
     }
 
+    if (record) {
+        emit toHistory(plot31, plot33, temperature);
+    }
+
     updatePlot2d(plot31.data, plot33.data);
     if (m_enableExternal) {
         callToExternal(plot31.data);
     }
     callFindPeak();
     callCalcFWHM();
-}
-
-void FormPlot::onExteranlControl(bool enable)
-{
-    m_enableExternal = enable;
 }
 
 void FormPlot::callToExternal(const QList<QPointF> &data)
@@ -977,4 +980,10 @@ void FormPlot::on_tBtnConversion_clicked()
         m_k = conv.k();
         m_b = conv.b();
     }
+}
+
+void FormPlot::on_tBtnToExternal_clicked()
+{
+    m_enableExternal = !m_enableExternal;
+    ui->tBtnToExternal->setChecked(m_enableExternal);
 }
