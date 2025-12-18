@@ -426,7 +426,10 @@ void MainWindow::init()
             &FormPlot::toExternalSpectral,
             formExternal,
             &FormExternal::onExternalSpectral);
-    connect(formExternal, &FormExternal::toExternalControl, formPlot, &FormPlot::onExteranlControl);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::toExternalSpectral,
+            formExternal,
+            &FormExternal::onExternalSpectral);
 }
 
 void MainWindow::on_btnSerial_clicked()

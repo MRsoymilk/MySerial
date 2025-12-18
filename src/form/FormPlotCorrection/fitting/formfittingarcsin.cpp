@@ -317,18 +317,18 @@ void FormFittingArcSin::on_btnSendFormula_clicked()
     byteArray.append(tail);
 
     LOG_INFO("send formula: {}", FORMAT_HEX(byteArray));
-    LOG_INFO("k1 {}", m_formula_y.k1);
-    LOG_INFO("b1 {}", m_formula_y.b1);
-    LOG_INFO("left k {}", m_formula_lambda_l.k);
-    LOG_INFO("left b {}", m_formula_lambda_l.b);
-    LOG_INFO("left d {}", m_formula_lambda_l.d);
-    LOG_INFO("left alpha {}", m_formula_lambda_l.alpha);
-    LOG_INFO("right k {}", m_formula_lambda_r.k);
-    LOG_INFO("right b {}", m_formula_lambda_r.b);
-    LOG_INFO("right d {}", m_formula_lambda_r.d);
-    LOG_INFO("right alpha {}", m_formula_lambda_r.alpha);
-    LOG_INFO("k2 {}", m_formula_y.k2);
-    LOG_INFO("b2 {}", m_formula_y.b2);
+    LOG_INFO("v_k1 {:.2f}", m_formula_y.k1);
+    LOG_INFO("v_b1 {:.2f}", m_formula_y.b1);
+    LOG_INFO("v_l_k {:.2f}", m_formula_lambda_l.k);
+    LOG_INFO("v_l_b {:.2f}", m_formula_lambda_l.b);
+    LOG_INFO("v_l_d {:.2f}", m_formula_lambda_l.d);
+    LOG_INFO("v_l_alpha {:.2f}", m_formula_lambda_l.alpha);
+    LOG_INFO("v_r_k {:.2f}", m_formula_lambda_r.k);
+    LOG_INFO("v_r_b {:.2f}", m_formula_lambda_r.b);
+    LOG_INFO("v_r_d {:.2f}", m_formula_lambda_r.d);
+    LOG_INFO("v_r_alpha {:.2f}", m_formula_lambda_r.alpha);
+    LOG_INFO("v_k2 {:.2f}", m_formula_y.k2);
+    LOG_INFO("v_b2 {:.2f}", m_formula_y.b2);
 
     emit sendSerialArcSin(byteArray);
 
@@ -364,19 +364,20 @@ void FormFittingArcSin::on_btnSetTemperatureR_clicked()
 void FormFittingArcSin::updateFormulaLambda()
 {
     if (ui->radioButtonLeft->isChecked()) {
-        ui->lineEdit_k_lambda->setText(QString::number(m_formula_lambda_l.k));
-        ui->lineEdit_b_lambda->setText(QString::number(m_formula_lambda_l.b));
-        ui->lineEdit_d->setText(QString::number(m_formula_lambda_l.d));
-        ui->lineEdit_alpha->setText(QString::number(m_formula_lambda_l.alpha));
-        ui->lineEdit_alpha_->setText(QString::number(m_formula_lambda_l.alpha));
+        ui->lineEdit_k_lambda->setText(QString::number(m_formula_lambda_l.k, 'f', 3));
+        ui->lineEdit_b_lambda->setText(QString::number(m_formula_lambda_l.b, 'f', 3));
+        ui->lineEdit_d->setText(QString::number(m_formula_lambda_l.d, 'f', 3));
+        ui->lineEdit_alpha->setText(QString::number(m_formula_lambda_l.alpha, 'f', 3));
+        ui->lineEdit_alpha_->setText(QString::number(m_formula_lambda_l.alpha, 'f', 3));
     } else {
-        ui->lineEdit_k_lambda->setText(QString::number(m_formula_lambda_r.k));
-        ui->lineEdit_b_lambda->setText(QString::number(m_formula_lambda_r.b));
-        ui->lineEdit_d->setText(QString::number(m_formula_lambda_r.d));
-        ui->lineEdit_alpha->setText(QString::number(m_formula_lambda_r.alpha));
-        ui->lineEdit_alpha_->setText(QString::number(m_formula_lambda_r.alpha));
+        ui->lineEdit_k_lambda->setText(QString::number(m_formula_lambda_r.k, 'f', 3));
+        ui->lineEdit_b_lambda->setText(QString::number(m_formula_lambda_r.b, 'f', 3));
+        ui->lineEdit_d->setText(QString::number(m_formula_lambda_r.d, 'f', 3));
+        ui->lineEdit_alpha->setText(QString::number(m_formula_lambda_r.alpha, 'f', 3));
+        ui->lineEdit_alpha_->setText(QString::number(m_formula_lambda_r.alpha, 'f', 3));
     }
 }
+
 void FormFittingArcSin::on_btnUpdateFormula_clicked()
 {
     QString params = ui->lineEditFormula->text();
@@ -434,21 +435,25 @@ void FormFittingArcSin::on_btnUpdateFormula_clicked()
                  m_formula_y.k2,
                  m_formula_y.b2);
 
-        ui->lineEdit_k1->setText(QString::number(m_formula_y.k1));
-        ui->lineEdit_b1->setText(QString::number(m_formula_y.b1));
+        ui->lineEdit_k1->setText(QString::number(m_formula_y.k1, 'f', 3));
+        ui->lineEdit_b1->setText(QString::number(m_formula_y.b1, 'f', 3));
         updateFormulaLambda();
-        ui->lineEdit_k2->setText(QString::number(m_formula_y.k2));
-        ui->lineEdit_b2->setText(QString::number(m_formula_y.b2));
+        ui->lineEdit_k2->setText(QString::number(m_formula_y.k2, 'f', 3));
+        ui->lineEdit_b2->setText(QString::number(m_formula_y.b2, 'f', 3));
 
     } else {
-        m_formula_lambda_l.k = ui->lineEdit_k_lambda->text().toDouble();
-        m_formula_lambda_l.b = ui->lineEdit_b_lambda->text().toDouble();
-        m_formula_lambda_l.d = ui->lineEdit_d->text().toDouble();
-        m_formula_lambda_l.alpha = ui->lineEdit_alpha->text().toDouble();
-        m_formula_lambda_r.k = ui->lineEdit_k_lambda->text().toDouble();
-        m_formula_lambda_r.b = ui->lineEdit_b_lambda->text().toDouble();
-        m_formula_lambda_r.d = ui->lineEdit_d->text().toDouble();
-        m_formula_lambda_r.alpha = ui->lineEdit_alpha->text().toDouble();
+        if (ui->radioButtonLeft->isChecked()) {
+            m_formula_lambda_l.k = ui->lineEdit_k_lambda->text().toDouble();
+            m_formula_lambda_l.b = ui->lineEdit_b_lambda->text().toDouble();
+            m_formula_lambda_l.d = ui->lineEdit_d->text().toDouble();
+            m_formula_lambda_l.alpha = ui->lineEdit_alpha->text().toDouble();
+        }
+        if (ui->radioButtonRight->isChecked()) {
+            m_formula_lambda_r.k = ui->lineEdit_k_lambda->text().toDouble();
+            m_formula_lambda_r.b = ui->lineEdit_b_lambda->text().toDouble();
+            m_formula_lambda_r.d = ui->lineEdit_d->text().toDouble();
+            m_formula_lambda_r.alpha = ui->lineEdit_alpha->text().toDouble();
+        }
 
         m_formula_y.k1 = ui->lineEdit_k1->text().toDouble();
         m_formula_y.k2 = ui->lineEdit_k2->text().toDouble();
