@@ -1223,6 +1223,10 @@ QToolButton#Temperature {
   qproperty-icon: url(:/res/icons/temperature.png);
 }
 
+QToolButton#ToVoltage {
+  qproperty-icon: url(:/res/icons/to_voltage.png);
+}
+
 QToolButton#ToExternal {
   qproperty-icon: url(:/res/icons/to_external.png);
 }
@@ -1284,6 +1288,11 @@ QToolButton#tBtnSNR {
 
 QToolButton#tBtnTemperature {
   qproperty-icon: url(:/res/icons/temperature.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnToVoltage {
+  qproperty-icon: url(:/res/icons/to_voltage.png);
   qproperty-iconSize: 48px 48px;
 }
 

@@ -167,6 +167,11 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     QList<QPointF> out31, out33;
     CURVE curve31;
     CURVE curve33;
+    for (int i = 0; i < raw31.size(); ++i) {
+        curve31.raw.data.push_back({static_cast<double>(i), raw31.at(i)});
+        curve31.raw.y_min = std::min(curve31.raw.y_min, raw31.at(i));
+        curve31.raw.y_max = std::max(curve31.raw.y_max, raw31.at(i));
+    }
     for (int i = 0; i < v_voltage31.size(); ++i) {
         curve31.data.push_back({static_cast<double>(i), v_voltage31.at(i)});
         curve31.y_min = std::min(curve31.y_min, v_voltage31.at(i));
@@ -174,6 +179,13 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     }
     curve31.x_min = 0;
     curve31.x_max = v_voltage31.size();
+    curve31.raw.x_min = 0;
+    curve31.raw.x_max = raw31.size();
+    for (int i = 0; i < raw33.size(); ++i) {
+        curve33.raw.data.push_back({static_cast<double>(i), raw33.at(i)});
+        curve33.raw.y_min = std::min(curve33.raw.y_min, raw33.at(i));
+        curve33.raw.y_max = std::max(curve33.raw.y_max, raw33.at(i));
+    }
     for (int i = 0; i < v_voltage33.size(); ++i) {
         curve33.data.push_back({static_cast<double>(i), v_voltage33.at(i)});
         curve33.y_min = std::min(curve33.y_min, v_voltage33.at(i));
@@ -181,6 +193,8 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     }
     curve33.x_min = 0;
     curve33.x_max = v_voltage33.size();
+    curve33.raw.x_min = 0;
+    curve33.raw.x_max = raw33.size();
 
     if (!m_autoupdate_threshold) {
         applyThreshold(m_threshold, raw31, raw33, temperature);
@@ -389,12 +403,28 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     QList<int> v_idx;
     int start_idx = idx_max;
     for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
+#ifdef ALGORITHM_1
         bool isFind = false;
+        double x = m_correction_offset + idx_threshold * m_correction_step;
+        double current_threshold = threshold[idx_threshold];
+        // if (static_cast<int>(x) == 234) {
+        //     qDebug() << "check 234";
+        // }
+        // if (static_cast<int>(x) == 1150) {
+        //     qDebug() << "check 1150";
+        // }
+        // if (static_cast<int>(x) == 1295) {
+        //     qDebug() << "check 1295";
+        // }
         for (int j = start_idx; j < raw33.size() - 1; ++j) {
-            if (threshold[idx_threshold] < raw33[j] && threshold[idx_threshold] >= raw33[j + 1]) {
+            double raw33_left = raw33[j];
+            double raw33_right = raw33[j + 1];
+            // if (current_threshold >= raw33_left && current_threshold >= raw33_right) {
+            //     break;
+            // }
+            if (current_threshold < raw33_left && current_threshold >= raw33_right) {
                 v_idx.push_back(j);
-                start_idx = j;
-                double x = m_correction_offset + idx_threshold * m_correction_step;
+                start_idx = j + 1;
                 double y = raw31[j];
                 out_correction.push_back(QPointF(x, y));
 
@@ -402,16 +432,49 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
                 y_min_correction = std::min(y_min_correction, y);
                 y_max_correction = std::max(y_max_correction, y);
                 isFind = true;
+                // qDebug() << QString("idx: %3> found: [%1] -> [%2]")
+                //                 .arg(current_threshold)
+                //                 .arg(raw33[j])
+                //                 .arg(x);
                 break;
             }
         }
         if (!isFind) {
-            double x = m_correction_offset + idx_threshold * m_correction_step;
-            double y = 0;
+            // double y = raw31[start_idx];
+            double y = -1;
+            // qDebug() << QString("idx: %3> not found: [%1] -> [%2]")
+            //                 .arg(current_threshold)
+            //                 .arg(raw33[start_idx])
+            //                 .arg(x);
+            // start_idx += 1;
             out_correction.push_back(QPointF(x, y));
         }
     }
-
+    for (int i = 1; i < out_correction.size() - 1; ++i) {
+        if (out_correction[i].y() == -1) {
+            out_correction[i].setY((out_correction[i - 1].y() + out_correction[i + 1].y()) / 2.0);
+        }
+#endif
+        double distance = 99999;
+        double target_idx = 0;
+        double x = m_correction_offset + idx_threshold * m_correction_step;
+        double current_threshold = threshold[idx_threshold];
+        for (int j = idx_max; j < idx_min; ++j) {
+            double _distance = std::abs(current_threshold - raw33[j]);
+            if (distance > _distance) {
+                distance = _distance;
+                target_idx = j;
+            }
+        }
+        qDebug() << QString("idx: %3> found: [%1] -> [%2]")
+                        .arg(current_threshold)
+                        .arg(raw33[target_idx])
+                        .arg(x);
+        out_correction.push_back(QPointF(x, raw31[target_idx]));
+        x_max_correction = std::max(x_max_correction, x);
+        y_min_correction = std::min(y_min_correction, raw33[target_idx]);
+        y_max_correction = std::max(y_max_correction, raw33[target_idx]);
+    }
     emit showCorrectionCurve(out_correction,
                              m_correction_offset,
                              x_max_correction,

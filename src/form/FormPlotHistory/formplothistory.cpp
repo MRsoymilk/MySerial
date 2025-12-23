@@ -113,6 +113,8 @@ void FormPlotHistory::init()
     m_splitLine33->attachAxis(m_axisSplit33Y);
 
     m_chartView33Split->setChart(m_chart33);
+
+    ui->tBtnToVoltage->setCheckable(true);
 }
 
 void FormPlotHistory::on_tBtnNext14_clicked()
@@ -218,12 +220,23 @@ void FormPlotHistory::updatePlot(int index)
         }
         ui->labelTemperature->setText(QString("%1 ℃").arg(m_temperature.at(m_index_33)));
 
-        m_lineMix31->replace(m_p31[m_index_31].data);
-        m_lineMix33->replace(m_p33[m_index_33].data);
+        if (m_enableToVoltage) {
+            m_lineMix31->replace(m_p31[m_index_31].data);
+            m_lineMix33->replace(m_p33[m_index_33].data);
 
-        m_axisMixX->setRange(0, std::max(m_p31[m_index_31].x_max, m_p33[m_index_33].x_max));
-        m_axisMixY->setRange(std::min(m_p31[m_index_31].y_min, m_p33[m_index_33].y_min),
-                             std::max(m_p31[m_index_31].y_max, m_p33[m_index_33].y_max));
+            m_axisMixX->setRange(0, std::max(m_p31[m_index_31].x_max, m_p33[m_index_33].x_max));
+            m_axisMixY->setRange(std::min(m_p31[m_index_31].y_min, m_p33[m_index_33].y_min),
+                                 std::max(m_p31[m_index_31].y_max, m_p33[m_index_33].y_max));
+        } else {
+            m_lineMix31->replace(m_p31[m_index_31].raw.data);
+            m_lineMix33->replace(m_p33[m_index_33].raw.data);
+
+            m_axisMixX->setRange(0,
+                                 std::max(m_p31[m_index_31].raw.x_max, m_p33[m_index_33].raw.x_max));
+            m_axisMixY->setRange(std::min(m_p31[m_index_31].raw.y_min, m_p33[m_index_33].raw.y_min),
+                                 std::max(m_p31[m_index_31].raw.y_max, m_p33[m_index_33].raw.y_max));
+        }
+
         ui->stackedWidget->setCurrentWidget(ui->pageMix);
     } else {
         if (isSplit) {
@@ -243,15 +256,31 @@ void FormPlotHistory::updatePlot(int index)
 
             if (index == INDEX_31) {
                 if (m_index_31 < m_p31.size()) {
-                    m_splitLine31->replace(m_p31[m_index_31].data);
-                    m_axisSplit31X->setRange(m_p31[m_index_31].x_min, m_p31[m_index_31].x_max);
-                    m_axisSplit31Y->setRange(m_p31[m_index_31].y_min, m_p31[m_index_31].y_max);
+                    if (m_enableToVoltage) {
+                        m_splitLine31->replace(m_p31[m_index_31].data);
+                        m_axisSplit31X->setRange(m_p31[m_index_31].x_min, m_p31[m_index_31].x_max);
+                        m_axisSplit31Y->setRange(m_p31[m_index_31].y_min, m_p31[m_index_31].y_max);
+                    } else {
+                        m_splitLine31->replace(m_p31[m_index_31].raw.data);
+                        m_axisSplit31X->setRange(m_p31[m_index_31].raw.x_min,
+                                                 m_p31[m_index_31].raw.x_max);
+                        m_axisSplit31Y->setRange(m_p31[m_index_31].raw.y_min,
+                                                 m_p31[m_index_31].raw.y_max);
+                    }
                 }
             } else {
                 if (m_index_33 < m_p33.size()) {
-                    m_splitLine33->replace(m_p33[m_index_33].data);
-                    m_axisSplit33X->setRange(m_p33[m_index_33].x_min, m_p33[m_index_33].x_max);
-                    m_axisSplit33Y->setRange(m_p33[m_index_33].y_min, m_p33[m_index_33].y_max);
+                    if (m_enableToVoltage) {
+                        m_splitLine33->replace(m_p33[m_index_33].data);
+                        m_axisSplit33X->setRange(m_p33[m_index_33].x_min, m_p33[m_index_33].x_max);
+                        m_axisSplit33Y->setRange(m_p33[m_index_33].y_min, m_p33[m_index_33].y_max);
+                    } else {
+                        m_splitLine33->replace(m_p33[m_index_33].raw.data);
+                        m_axisSplit33X->setRange(m_p33[m_index_33].raw.x_min,
+                                                 m_p33[m_index_33].raw.x_max);
+                        m_axisSplit33Y->setRange(m_p33[m_index_33].raw.y_min,
+                                                 m_p33[m_index_33].raw.y_max);
+                    }
                 }
             }
 
@@ -576,4 +605,10 @@ void FormPlotHistory::on_tBtnToPlotWith_clicked()
     } else {
         toPlot();
     }
+}
+
+void FormPlotHistory::on_tBtnToVoltage_clicked()
+{
+    m_enableToVoltage = !m_enableToVoltage;
+    ui->tBtnToVoltage->setChecked(m_enableToVoltage);
 }

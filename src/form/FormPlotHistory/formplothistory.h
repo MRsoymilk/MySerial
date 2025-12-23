@@ -52,6 +52,8 @@ private slots:
 
     void on_tBtnToPlotWith_clicked();
 
+    void on_tBtnToVoltage_clicked();
+
 private:
     void updatePlot31();
     void updatePlot33();
@@ -82,6 +84,7 @@ private:
     QValueAxis *m_axisSplit33X;
     QValueAxis *m_axisSplit33Y;
     void toPlot();
+    bool m_enableToVoltage = false;
 };
 
 #endif // FORMPLOTHISTORY_H

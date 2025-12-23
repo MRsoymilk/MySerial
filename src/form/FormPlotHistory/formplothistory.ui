@@ -37,6 +37,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="tBtnToVoltage">
+       <property name="text">
+        <string>to_voltage</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QRadioButton" name="radioButtonSplit">
        <property name="text">
         <string>Split</string>

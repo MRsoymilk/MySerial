@@ -117,5 +117,6 @@
         <file>res/icons/external-off.png</file>
         <file>res/icons/external-on.png</file>
         <file>res/icons/to_external.png</file>
+        <file>res/icons/to_voltage.png</file>
     </qresource>
 </RCC>

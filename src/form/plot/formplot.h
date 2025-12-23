@@ -93,6 +93,8 @@ private slots:
     void on_tBtnConversion_clicked();
     void on_tBtnToExternal_clicked();
 
+    void on_tBtnToVoltage_clicked();
+
 private:
     void init();
     void init2d();
@@ -152,6 +154,7 @@ private:
     bool m_enableConversion = false;
     bool m_enableControlY = false;
     bool m_enableControlX = false;
+    bool m_enableVoltage = false;
     double m_k = 0;
     double m_b = 0;
 };

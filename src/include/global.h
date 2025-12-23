@@ -5,6 +5,15 @@
 #include <QPointF>
 #include <limits>
 
+struct RAW
+{
+    QList<QPointF> data;
+    double x_min = std::numeric_limits<double>::max();
+    double x_max = std::numeric_limits<double>::min();
+    double y_min = std::numeric_limits<double>::max();
+    double y_max = std::numeric_limits<double>::min();
+};
+
 struct CURVE
 {
     QList<QPointF> data;
@@ -12,6 +21,8 @@ struct CURVE
     double x_max = std::numeric_limits<double>::min();
     double y_min = std::numeric_limits<double>::max();
     double y_max = std::numeric_limits<double>::min();
+
+    RAW raw;
 };
 
 struct PARAMS_ARCSIN

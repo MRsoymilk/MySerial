@@ -240,6 +240,11 @@ void FormPlot::initToolButtons()
     ui->tBtnToExternal->setToolTip(tr("ToExternal"));
     ui->tBtnToExternal->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
+    ui->tBtnToVoltage->setObjectName("ToVoltage");
+    ui->tBtnToVoltage->setIconSize(QSize(24, 24));
+    ui->tBtnToVoltage->setToolTip(tr("ToVoltage"));
+    ui->tBtnToVoltage->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
     ui->tBtnOffset->setCheckable(true);
     ui->tBtnStep->setCheckable(true);
     ui->tBtnFindPeak->setCheckable(true);
@@ -254,6 +259,7 @@ void FormPlot::initToolButtons()
     ui->tBtnTemperature->setCheckable(true);
     ui->tBtnConversion->setCheckable(true);
     ui->tBtnToExternal->setCheckable(true);
+    ui->tBtnToVoltage->setCheckable(true);
 }
 
 void FormPlot::init()
@@ -382,38 +388,73 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     CURVE plot33 = curve33;
 
     if (m_offset != 0) {
-        for (int i = 0; i < curve31.data.size(); ++i) {
-            plot31.data[i].setX(m_offset + i * m_step);
-            plot31.data[i].setY(curve31.data[i].y());
-        }
-        for (int i = 0; i < curve33.data.size(); ++i) {
-            plot33.data[i].setX(m_offset + i * m_step);
-            plot33.data[i].setY(curve33.data[i].y());
+        if (m_enableVoltage) {
+            for (int i = 0; i < curve31.data.size(); ++i) {
+                plot31.data[i].setX(m_offset + i * m_step);
+                plot31.data[i].setY(curve31.data[i].y());
+            }
+            for (int i = 0; i < curve33.data.size(); ++i) {
+                plot33.data[i].setX(m_offset + i * m_step);
+                plot33.data[i].setY(curve33.data[i].y());
+            }
+        } else {
+            for (int i = 0; i < curve31.raw.data.size(); ++i) {
+                plot31.raw.data[i].setX(m_offset + i * m_step);
+                plot31.raw.data[i].setY(curve31.raw.data[i].y());
+            }
+            for (int i = 0; i < curve33.raw.data.size(); ++i) {
+                plot33.raw.data[i].setX(m_offset + i * m_step);
+                plot33.raw.data[i].setY(curve33.raw.data[i].y());
+            }
         }
     }
 
     if (m_enableFourier) {
-        auto data = m_fourierTransform->transform(plot31.data);
-        if (!data.isEmpty()) {
-            plot31.data = data;
+        if (m_enableVoltage) {
+            auto data = m_fourierTransform->transform(plot31.data);
+            if (!data.isEmpty()) {
+                plot31.data = data;
+            }
+        } else {
+            auto data = m_fourierTransform->transform(plot31.raw.data);
+            if (!data.isEmpty()) {
+                plot31.raw.data = data;
+            }
         }
     }
 
     if (m_enableDerivation) {
-        m_derivation->derivation(plot31.data, plot33.data);
+        if (m_enableVoltage) {
+            m_derivation->derivation(plot31.data, plot33.data);
+        } else {
+            m_derivation->derivation(plot31.raw.data, plot33.raw.data);
+        }
     }
 
     if (m_enableAccumulate) {
-        auto data = m_accumulate->accumulate(plot31.data);
-        if (!data.isEmpty()) {
-            plot31.data = data;
+        if (m_enableVoltage) {
+            auto data = m_accumulate->accumulate(plot31.data);
+            if (!data.isEmpty()) {
+                plot31.data = data;
+            } else {
+                return;
+            }
         } else {
-            return;
+            auto data = m_accumulate->accumulate(plot31.raw.data);
+            if (!data.isEmpty()) {
+                plot31.raw.data = data;
+            } else {
+                return;
+            }
         }
     }
 
     if (m_enableSNR) {
-        m_snr->calculate(plot31.data);
+        if (m_enableVoltage) {
+            m_snr->calculate(plot31.data);
+        } else {
+            m_snr->calculate(plot31.raw.data);
+        }
     }
 
     if (m_enableTemperature) {
@@ -424,9 +465,17 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
         emit toHistory(plot31, plot33, temperature);
     }
 
-    updatePlot2d(plot31.data, plot33.data);
+    if (m_enableVoltage) {
+        updatePlot2d(plot31.data, plot33.data);
+    } else {
+        updatePlot2d(plot31.raw.data, plot33.raw.data);
+    }
     if (m_enableExternal) {
-        callToExternal(plot31.data);
+        if (m_enableVoltage) {
+            callToExternal(plot31.data);
+        } else {
+            callToExternal(plot31.raw.data);
+        }
     }
     callFindPeak();
     callCalcFWHM();
@@ -800,10 +849,14 @@ void FormPlot::callFindPeak()
                     y = m_series33->at(pt.x() - m_offset).y();
                 }
 
-                // 转换为 raw 值
-                int raw = y * 0x8000 / 3.3;
-                ui->textBrowser->append(
-                    QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y).arg(raw));
+                if (m_enableVoltage) {
+                    // 转换为 raw 值
+                    int raw = y * 0x8000 / 3.3;
+                    ui->textBrowser->append(
+                        QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y).arg(raw));
+                } else {
+                    ui->textBrowser->append(QString("peak[%1]-> V: %2").arg(pt.x()).arg(y));
+                }
             }
         }
 
@@ -986,4 +1039,10 @@ void FormPlot::on_tBtnToExternal_clicked()
 {
     m_enableExternal = !m_enableExternal;
     ui->tBtnToExternal->setChecked(m_enableExternal);
+}
+
+void FormPlot::on_tBtnToVoltage_clicked()
+{
+    m_enableVoltage = !m_enableVoltage;
+    ui->tBtnToVoltage->setChecked(m_enableVoltage);
 }

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>946</width>
+    <width>1008</width>
     <height>530</height>
    </rect>
   </property>
@@ -313,6 +313,13 @@
       <widget class="QToolButton" name="tBtnImgSave">
        <property name="text">
         <string>img_save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnToVoltage">
+       <property name="text">
+        <string>to_Voltage</string>
        </property>
       </widget>
      </item>
