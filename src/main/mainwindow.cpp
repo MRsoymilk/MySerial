@@ -116,27 +116,15 @@ void MainWindow::initStackWidget()
     QShortcut *shortcut_Setting = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_5), this);
     QShortcut *shortcut_Play = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_6), this);
     QShortcut *shortcut_External = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_7), this);
-    connect(shortcut_Serial, &QShortcut::activated, this, [this]() {
-        ui->stackedWidget->setCurrentWidget(formSerial);
-    });
-    connect(shortcut_Data, &QShortcut::activated, this, [this]() {
-        ui->stackedWidget->setCurrentWidget(formData);
-    });
-    connect(shortcut_Plot, &QShortcut::activated, this, [this]() {
-        ui->stackedWidget->setCurrentWidget(formPlot);
-    });
-    connect(shortcut_Log, &QShortcut::activated, this, [this]() {
-        ui->stackedWidget->setCurrentWidget(formLog);
-    });
-    connect(shortcut_Setting, &QShortcut::activated, this, [this]() {
-        ui->stackedWidget->setCurrentWidget(formSetting);
-    });
+    connect(shortcut_Serial, &QShortcut::activated, this, [this]() { ui->btnSerial->click(); });
+    connect(shortcut_Data, &QShortcut::activated, this, [this]() { ui->btnData->click(); });
+    connect(shortcut_Plot, &QShortcut::activated, this, [this]() { ui->btnPlot->click(); });
+    connect(shortcut_Log, &QShortcut::activated, this, [this]() { ui->btnLog->click(); });
+    connect(shortcut_Setting, &QShortcut::activated, this, [this]() { ui->btnSetting->click(); });
     connect(shortcut_Play, &QShortcut::activated, this, [this]() {
         ui->stackedWidget->setCurrentWidget(playMPU6050);
     });
-    connect(shortcut_External, &QShortcut::activated, this, [this]() {
-        ui->stackedWidget->setCurrentWidget(formExternal);
-    });
+    connect(shortcut_External, &QShortcut::activated, this, [this]() { ui->btnExternal->click(); });
 }
 
 void MainWindow::initToolbar()
