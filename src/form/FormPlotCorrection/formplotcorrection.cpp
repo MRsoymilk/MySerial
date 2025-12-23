@@ -69,6 +69,13 @@ void FormPlotCorrection::onTemperature(double temperature)
     m_formSin->setTemperature(temperature);
 }
 
+void FormPlotCorrection::onThresholdStatus(const QString &status)
+{
+    if (arcSinShow) {
+        arcSinShow->updateThresholdStatus(status);
+    }
+}
+
 void FormPlotCorrection::init()
 {
     m_start = false;

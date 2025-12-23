@@ -21,6 +21,11 @@ void ShowCorrectionCurve::retranslateUI()
     ui->retranslateUi(this);
 }
 
+void ShowCorrectionCurve::updateThresholdStatus(const QString &status)
+{
+    ui->labelWhereThreshold->setText(status);
+}
+
 void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
                                      const double &xMin,
                                      const double &xMax,

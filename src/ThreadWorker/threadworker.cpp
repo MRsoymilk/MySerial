@@ -517,6 +517,7 @@ void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<double> threshold)
 {
     m_autoupdate_threshold = !isUse;
     m_threshold = threshold;
+    emit changeThresholdStatus("use loaded threshold");
 }
 
 void ThreadWorker::onUseLoadedThreadsholdOption(const double &offset,
@@ -532,6 +533,7 @@ void ThreadWorker::onParamsArcSin(const PARAMS_ARCSIN &params)
 {
     m_params_arcsin = params;
     m_autoupdate_threshold = true;
+    emit changeThresholdStatus("use auto update threshold");
 }
 
 void ThreadWorker::processF30Curve31(const QByteArray &data31,

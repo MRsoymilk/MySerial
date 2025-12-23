@@ -36,17 +36,76 @@
        <string>Curve</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QStackedWidget" name="stackedWidget"/>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="labelTemperature">
-         <property name="text">
-          <string>Temperature</string>
-         </property>
-        </widget>
+       <item row="5" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QToolButton" name="tBtnClear">
+           <property name="text">
+            <string>clear</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnExternal">
+           <property name="text">
+            <string>to external</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnExportCurve">
+           <property name="text">
+            <string>export curve</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnExportRaw">
+           <property name="text">
+            <string>export  raw</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="1" column="0">
+       <item row="4" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QToolButton" name="tBtnPrev">
+           <property name="text">
+            <string>prev</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelPage">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>page</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tBtnNext">
+           <property name="text">
+            <string>next</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
         <layout class="QHBoxLayout" name="hLayCurveOptions">
          <item>
           <spacer name="horizontalSpacer">
@@ -108,67 +167,19 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="hLayStatus">
          <item>
-          <widget class="QToolButton" name="tBtnPrev">
+          <widget class="QLabel" name="labelTemperature">
            <property name="text">
-            <string>prev</string>
+            <string>Temperature</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="labelPage">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+          <widget class="QLabel" name="labelWhereThreshold">
            <property name="text">
-            <string>page</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnNext">
-           <property name="text">
-            <string>next</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="4" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QToolButton" name="tBtnClear">
-           <property name="text">
-            <string>clear</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnExternal">
-           <property name="text">
-            <string>to external</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnExportCurve">
-           <property name="text">
-            <string>export curve</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnExportRaw">
-           <property name="text">
-            <string>export  raw</string>
+            <string>where Threshold</string>
            </property>
           </widget>
          </item>

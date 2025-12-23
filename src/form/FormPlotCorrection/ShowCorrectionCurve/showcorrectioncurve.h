@@ -20,6 +20,7 @@ public:
     explicit ShowCorrectionCurve(QWidget *parent = nullptr);
     ~ShowCorrectionCurve();
     void retranslateUI();
+    void updateThresholdStatus(const QString &status);
 
 public:
     void updatePlot(const QList<QPointF> &data,

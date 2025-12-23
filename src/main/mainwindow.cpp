@@ -418,6 +418,10 @@ void MainWindow::init()
             &FormPlotCorrection::toExternalSpectral,
             formExternal,
             &FormExternal::onExternalSpectral);
+    connect(m_worker,
+            &ThreadWorker::changeThresholdStatus,
+            m_plotCorrection,
+            &FormPlotCorrection::onThresholdStatus);
 }
 
 void MainWindow::on_btnSerial_clicked()

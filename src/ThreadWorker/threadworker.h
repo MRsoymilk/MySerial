@@ -30,6 +30,7 @@ public slots:
     void onParamsArcSin(const PARAMS_ARCSIN &params);
 
 signals:
+    void changeThresholdStatus(const QString &status);
     void dataReady4k(const QVector<double> &v31,
                      const QVector<double> &v33,
                      const QVector<double> &raw31,
