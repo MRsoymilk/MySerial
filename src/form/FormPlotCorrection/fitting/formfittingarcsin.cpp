@@ -67,6 +67,29 @@ void FormFittingArcSin::init()
         "y_lambda = arcsin(&lambda; / (2 &middot; d &middot; cos(&alpha; / 2))) - &alpha;/2");
     ui->labelFormula_y->setTextFormat(Qt::RichText);
     ui->labelFormula_y->setText("y = k &middot; y<sub>&lambda;</sub> + b");
+
+    QString temperature_R = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
+                                               CFG_FITTING_ARCSIN_TEMPERATURE_R,
+                                               "0");
+    ui->doubleSpinBoxTemperatureR->setValue(temperature_R.toDouble());
+    QString temperature_T = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
+                                               CFG_FITTING_ARCSIN_TEMPERATURE_T,
+                                               "0");
+    ui->doubleSpinBoxTemperatureT->setValue(temperature_T.toDouble());
+    QString formula = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_FORMULA);
+    ui->lineEditFormula->setText(formula);
+    QString threshold_num = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
+                                               CFG_FITTING_ARCSIN_THRESHOLD_NUM,
+                                               "800");
+    ui->spinBoxNum->setValue(threshold_num.toInt());
+    QString threshold_offset = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
+                                                  CFG_FITTING_ARCSIN_THRESHOLD_OFFSET,
+                                                  "900");
+    ui->doubleSpinBoxStart->setValue(threshold_offset.toInt());
+    QString threshold_step = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
+                                                CFG_FITTING_ARCSIN_THRESHOLD_STEP,
+                                                "1");
+    ui->doubleSpinBoxStep->setValue(threshold_step.toInt());
 }
 void FormFittingArcSin::showContextMenu(const QPoint &pos)
 {
@@ -353,6 +376,9 @@ void FormFittingArcSin::on_btnSetTemperatureT_clicked()
     m_formula_y.T = ui->doubleSpinBoxTemperatureT->value();
     ui->lineEdit_T->setText(QString::number(m_formula_y.T));
     ui->lineEdit_T_->setText(QString::number(m_formula_y.T));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
+                       CFG_FITTING_ARCSIN_TEMPERATURE_T,
+                       QString::number(m_formula_y.T));
 }
 
 void FormFittingArcSin::on_btnSetTemperatureR_clicked()
@@ -360,6 +386,9 @@ void FormFittingArcSin::on_btnSetTemperatureR_clicked()
     m_formula_y.T = ui->doubleSpinBoxTemperatureR->value();
     ui->lineEdit_T->setText(QString::number(m_formula_y.T));
     ui->lineEdit_T_->setText(QString::number(m_formula_y.T));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
+                       CFG_FITTING_ARCSIN_TEMPERATURE_R,
+                       QString::number(m_formula_y.T));
 }
 void FormFittingArcSin::updateFormulaLambda()
 {
@@ -441,6 +470,7 @@ void FormFittingArcSin::on_btnUpdateFormula_clicked()
         ui->lineEdit_k2->setText(QString::number(m_formula_y.k2, 'f', 3));
         ui->lineEdit_b2->setText(QString::number(m_formula_y.b2, 'f', 3));
 
+        SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_FORMULA, params);
     } else {
         if (ui->radioButtonLeft->isChecked()) {
             m_formula_lambda_l.k = ui->lineEdit_k_lambda->text().toDouble();
@@ -503,6 +533,16 @@ void FormFittingArcSin::on_btnGenerateThreshold_clicked()
         m_modelThreshold->appendRow(rowItems);
     }
     ui->tabWidget->setCurrentWidget(ui->tabFittingCurveData);
+
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
+                       CFG_FITTING_ARCSIN_THRESHOLD_NUM,
+                       QString::number(num));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
+                       CFG_FITTING_ARCSIN_THRESHOLD_OFFSET,
+                       QString::number(start));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
+                       CFG_FITTING_ARCSIN_THRESHOLD_STEP,
+                       QString::number(step));
 }
 
 void FormFittingArcSin::on_tBtnAdd_clicked()

@@ -78,5 +78,12 @@ const QString CFG_GROUP_AUTOUPDATE = "AutoUpdate";
 const QString CFG_AUTOUPDATE_URL = "url";
 const QString CFG_GROUP_FOURIER = "Fourier";
 const QString CFG_FOURIER_SAMPLE_RATE = "sample_rate";
+const QString CFG_GROUP_FITTING_ARCSIN = "FittingArcsin";
+const QString CFG_FITTING_ARCSIN_TEMPERATURE_T = "temperature_t";
+const QString CFG_FITTING_ARCSIN_TEMPERATURE_R = "temperature_r";
+const QString CFG_FITTING_ARCSIN_FORMULA = "formula";
+const QString CFG_FITTING_ARCSIN_THRESHOLD_NUM = "threshold_num";
+const QString CFG_FITTING_ARCSIN_THRESHOLD_OFFSET = "threshold_offset";
+const QString CFG_FITTING_ARCSIN_THRESHOLD_STEP = "threshold_step";
 
 #endif
