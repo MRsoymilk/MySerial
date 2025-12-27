@@ -168,6 +168,11 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         m_accumulatedCurve = accumulated;
         if (m_target_count != 0) {
             if (m_count_acc >= m_target_count) {
+                if (m_enableDiv) {
+                    for (int i = 0; i < accumulated.size(); ++i) {
+                        accumulated[i].setY(accumulated[i].y() / m_count_acc);
+                    }
+                }
                 m_count_acc = 0;
                 m_accumulatedCurve.clear();
             } else {
@@ -258,6 +263,8 @@ void Accumulate::init()
     ui->spinBoxNoseCount->setValue(50);
     ui->spinBoxPolyOrder->setValue(3);
     ui->spinBoxSmoothWindow->setValue(10);
+
+    ui->tBtnEnableDiv->setCheckable(true);
 }
 
 QList<QPointF> Accumulate::gaussianSmooth(const QList<QPointF> &points, int window)
@@ -354,4 +361,10 @@ void Accumulate::on_tBtnBaselineDeductionEnable_clicked()
 void Accumulate::on_spinBoxCount_valueChanged(int count)
 {
     m_target_count = count;
+}
+
+void Accumulate::on_tBtnEnableDiv_clicked()
+{
+    m_enableDiv = !m_enableDiv;
+    ui->tBtnEnableDiv->setChecked(m_enableDiv);
 }

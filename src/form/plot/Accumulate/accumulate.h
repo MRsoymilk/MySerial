@@ -32,6 +32,8 @@ private slots:
     void on_tBtnBaselineDeductionEnable_clicked();
     void on_spinBoxCount_valueChanged(int arg1);
 
+    void on_tBtnEnableDiv_clicked();
+
 private:
     void init();
     QList<QPointF> fitSingleCurve(const QList<QPointF> &points, int order);
@@ -64,6 +66,7 @@ private:
     QList<QPointF> m_accumulateNoise;
     int m_count_acc = 0;
     int m_target_count = 0;
+    bool m_enableDiv = false;
 };
 
 #endif // ACCUMULATE_H
