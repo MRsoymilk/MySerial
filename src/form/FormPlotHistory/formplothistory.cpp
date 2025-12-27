@@ -115,6 +115,7 @@ void FormPlotHistory::init()
     m_chartView33Split->setChart(m_chart33);
 
     ui->tBtnToVoltage->setCheckable(true);
+    ui->progressBarToPlot->setVisible(false);
 }
 
 void FormPlotHistory::on_tBtnNext14_clicked()
@@ -589,6 +590,7 @@ void FormPlotHistory::on_tBtnToPlotWith_clicked()
             enable_temperature = true;
             target_temperature = ui->doubleSpinBoxTemperature->value();
         }
+        ui->progressBarToPlot->setVisible(true);
         for (int i = start; i <= end; ++i) {
             if (i > 0 && i <= m_p31.size()) {
                 if (enable_temperature) {
@@ -601,7 +603,10 @@ void FormPlotHistory::on_tBtnToPlotWith_clicked()
                 updatePlot(INDEX_31);
                 toPlot();
             }
+            ui->progressBarToPlot->setValue((i - start) * 100.0 / (end - start));
+            QCoreApplication::processEvents();
         }
+        ui->progressBarToPlot->setVisible(false);
     } else {
         toPlot();
     }
