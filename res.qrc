@@ -118,5 +118,27 @@
         <file>res/icons/external-on.png</file>
         <file>res/icons/to_external.png</file>
         <file>res/icons/to_voltage.png</file>
+        <file>res/icons/blue/3d.png</file>
+        <file>res/icons/blue/correction.png</file>
+        <file>res/icons/blue/crop.png</file>
+        <file>res/icons/blue/data-off.png</file>
+        <file>res/icons/blue/data.png</file>
+        <file>res/icons/blue/fwhm.png</file>
+        <file>res/icons/blue/go-next.png</file>
+        <file>res/icons/blue/go-prev.png</file>
+        <file>res/icons/blue/history.png</file>
+        <file>res/icons/blue/img_save.png</file>
+        <file>res/icons/blue/log-off.png</file>
+        <file>res/icons/blue/pause.png</file>
+        <file>res/icons/blue/peaks.png</file>
+        <file>res/icons/blue/plot-off.png</file>
+        <file>res/icons/blue/refresh.png</file>
+        <file>res/icons/blue/send-off.png</file>
+        <file>res/icons/blue/setting-off.png</file>
+        <file>res/icons/blue/simulate.png</file>
+        <file>res/icons/blue/usb-off.png</file>
+        <file>res/icons/blue/yes.png</file>
+        <file>res/icons/blue/zoom.png</file>
+        <file>res/themes/Blue.qss</file>
     </qresource>
 </RCC>
