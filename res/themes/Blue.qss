@@ -142,8 +142,8 @@ QToolButton:on {
 }
 
 QToolButton:hover {
-    background-color: #dff4ff;
-    border: 1px solid #dff4ff;
+    background-color: #badcff;
+    border: 1px solid #badcff;
 }
 
 QToolButton:pressed {
@@ -1226,31 +1226,31 @@ QToolButton#external-off {
 }
 
 QToolButton#usb-on {
-  qproperty-icon: url(:/res/icons/blue/usb-on.png);
+  qproperty-icon: url(:/res/icons/usb-on.png);
 }
 
 QToolButton#data-on {
-  qproperty-icon: url(:/res/icons/blue/data-on.png);
+  qproperty-icon: url(:/res/icons/data-on.png);
 }
 
 QToolButton#log-on {
-  qproperty-icon: url(:/res/icons/blue/log-on.png);
+  qproperty-icon: url(:/res/icons/log-on.png);
 }
 
 QToolButton#plot-on {
-  qproperty-icon: url(:/res/icons/blue/plot-on.png);
+  qproperty-icon: url(:/res/icons/plot-on.png);
 }
 
 QToolButton#setting-on {
-  qproperty-icon: url(:/res/icons/blue/setting-on.png);
+  qproperty-icon: url(:/res/icons/setting-on.png);
 }
 
 QToolButton#update-on {
-  qproperty-icon: url(:/res/icons/blue/update-on.png);
+  qproperty-icon: url(:/res/icons/update-on.png);
 }
 
 QToolButton#external-on {
-  qproperty-icon: url(:/res/icons/blue/external-on.png);
+  qproperty-icon: url(:/res/icons/external-on.png);
 }
 
 QToolButton#crop {
@@ -1307,13 +1307,13 @@ QToolButton#tBtnPause {
   qproperty-iconSize: 48px 48px;
 }
 
-QToolButton#tBtnCrop {
-  qproperty-icon: url(:/res/icons/blue/crop.png);
+QToolButton#tBtnZoom {
+  qproperty-icon: url(:/res/icons/blue/zoom.png);
   qproperty-iconSize: 48px 48px;
 }
 
-QToolButton#tBtnZoom {
-  qproperty-icon: url(:/res/icons/blue/zoom.png);
+QToolButton#tBtnCrop {
+  qproperty-icon: url(:/res/icons/blue/crop.png);
   qproperty-iconSize: 48px 48px;
 }
 
@@ -1332,13 +1332,18 @@ QToolButton#tBtnImg {
   qproperty-iconSize: 48px 48px;
 }
 
-QToolButton#tBtnFourier {
-  qproperty-icon: url(:/res/icons/blue/fourier.png);
+QToolButton#tBtnSimulate {
+  qproperty-icon: url(:/res/icons/blue/simulate.png);
   qproperty-iconSize: 48px 48px;
 }
 
-QToolButton#tBtnDerivation {
-  qproperty-icon: url(:/res/icons/blue/derivation.png);
+QToolButton#tBtnHistory {
+  qproperty-icon: url(:/res/icons/blue/history.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnFourier {
+  qproperty-icon: url(:/res/icons/blue/fourier.png);
   qproperty-iconSize: 48px 48px;
 }
 
@@ -1352,18 +1357,13 @@ QToolButton#tBtnSNR {
   qproperty-iconSize: 48px 48px;
 }
 
-QToolButton#tBtnTemperature {
-  qproperty-icon: url(:/res/icons/blue/temperature.png);
+QToolButton#tBtnSetting {
+  qproperty-icon: url(:/res/icons/blue/setting-off.png);
   qproperty-iconSize: 48px 48px;
 }
 
 QToolButton#tBtnToVoltage {
   qproperty-icon: url(:/res/icons/blue/to_voltage.png);
-  qproperty-iconSize: 48px 48px;
-}
-
-QToolButton#tBtnToExternal {
-  qproperty-icon: url(:/res/icons/blue/to_external.png);
   qproperty-iconSize: 48px 48px;
 }
 

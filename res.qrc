@@ -1,35 +1,20 @@
 <RCC>
     <qresource prefix="/">
         <file>res/icons/connectd.png</file>
-        <file>res/icons/data-off.png</file>
         <file>res/icons/data-on.png</file>
         <file>res/icons/disconnected.png</file>
-        <file>res/icons/plot-off.png</file>
         <file>res/icons/plot-on.png</file>
-        <file>res/icons/usb-off.png</file>
         <file>res/icons/usb-on.png</file>
-        <file>res/icons/log-off.png</file>
         <file>res/icons/log-on.png</file>
-        <file>res/icons/send-off.png</file>
         <file>res/icons/send-on.png</file>
         <file>res/icons/icon.png</file>
-        <file>res/icons/zoom.png</file>
-        <file>res/icons/data.png</file>
-        <file>res/icons/setting-off.png</file>
         <file>res/icons/setting-on.png</file>
-        <file>res/icons/3d.png</file>
-        <file>res/icons/history.png</file>
-        <file>res/icons/go-next.png</file>
-        <file>res/icons/go-prev.png</file>
-        <file>res/icons/simulate.png</file>
         <file>res/i18n/en.ts</file>
         <file>res/i18n/zh_simple.qm</file>
         <file>res/i18n/zh_simple.ts</file>
         <file>res/i18n/zh_traditional.qm</file>
         <file>res/i18n/zh_traditional.ts</file>
-        <file>res/icons/yes.png</file>
         <file>res/i18n/en.qm</file>
-        <file>res/icons/correction.png</file>
         <file>res/themes/Dark.qss</file>
         <file>res/themes/Lite.qss</file>
         <file>res/themes/OSX_Dark.qss</file>
@@ -50,9 +35,6 @@
         <file>res/themes/icons/radio_check_lite.svg</file>
         <file>res/themes/icons/toolbar_ext.svg</file>
         <file>res/themes/icons/yes.svg</file>
-        <file>res/icons/img_save.png</file>
-        <file>res/icons/refresh.png</file>
-        <file>res/icons/crop.png</file>
         <file>res/models/airplane.gltf</file>
         <file>res/models/airplane.bin</file>
         <file>res/themes/HelloKitty.qss</file>
@@ -96,28 +78,13 @@
         <file>res/icons/icon.ico</file>
         <file>res/icons/pink/peaks.png</file>
         <file>res/icons/white/peaks.png</file>
-        <file>res/icons/peaks.png</file>
         <file>res/icons/pink/pause.png</file>
         <file>res/icons/white/pause.png</file>
-        <file>res/icons/pause.png</file>
-        <file>res/icons/fwhm.png</file>
         <file>res/icons/pink/fwhm.png</file>
         <file>res/icons/white/fwhm.png</file>
-        <file>res/icons/measure_x.png</file>
-        <file>res/icons/measure_y.png</file>
-        <file>res/icons/start.png</file>
         <file>res/icons/start.gif</file>
-        <file>res/icons/fourier.png</file>
-        <file>res/icons/accumulate.png</file>
-        <file>res/icons/derivation.png</file>
-        <file>res/icons/snr.png</file>
         <file>res/icons/update-on.png</file>
-        <file>res/icons/update-off.png</file>
-        <file>res/icons/temperature.png</file>
-        <file>res/icons/external-off.png</file>
         <file>res/icons/external-on.png</file>
-        <file>res/icons/to_external.png</file>
-        <file>res/icons/to_voltage.png</file>
         <file>res/icons/blue/3d.png</file>
         <file>res/icons/blue/correction.png</file>
         <file>res/icons/blue/crop.png</file>
@@ -140,5 +107,65 @@
         <file>res/icons/blue/yes.png</file>
         <file>res/icons/blue/zoom.png</file>
         <file>res/themes/Blue.qss</file>
+        <file>res/icons/black/3d.png</file>
+        <file>res/icons/black/accumulate.png</file>
+        <file>res/icons/black/correction.png</file>
+        <file>res/icons/black/crop.png</file>
+        <file>res/icons/black/data-off.png</file>
+        <file>res/icons/black/data.png</file>
+        <file>res/icons/black/derivation.png</file>
+        <file>res/icons/black/external-off.png</file>
+        <file>res/icons/black/fourier.png</file>
+        <file>res/icons/black/fwhm.png</file>
+        <file>res/icons/black/go-next.png</file>
+        <file>res/icons/black/go-prev.png</file>
+        <file>res/icons/black/history.png</file>
+        <file>res/icons/black/img_save.png</file>
+        <file>res/icons/black/log-off.png</file>
+        <file>res/icons/black/measure_x.png</file>
+        <file>res/icons/black/measure_y.png</file>
+        <file>res/icons/black/pause.png</file>
+        <file>res/icons/black/peaks.png</file>
+        <file>res/icons/black/plot-off.png</file>
+        <file>res/icons/black/refresh.png</file>
+        <file>res/icons/black/send-off.png</file>
+        <file>res/icons/black/setting-off.png</file>
+        <file>res/icons/black/simulate.png</file>
+        <file>res/icons/black/snr.png</file>
+        <file>res/icons/black/start.png</file>
+        <file>res/icons/black/temperature.png</file>
+        <file>res/icons/black/to_external.png</file>
+        <file>res/icons/black/to_voltage.png</file>
+        <file>res/icons/black/update-off.png</file>
+        <file>res/icons/black/usb-off.png</file>
+        <file>res/icons/black/yes.png</file>
+        <file>res/icons/black/zoom.png</file>
+        <file>res/icons/blue/external-off.png</file>
+        <file>res/icons/blue/update-off.png</file>
+        <file>res/icons/blue/accumulate.png</file>
+        <file>res/icons/blue/derivation.png</file>
+        <file>res/icons/blue/fourier.png</file>
+        <file>res/icons/blue/snr.png</file>
+        <file>res/icons/blue/temperature.png</file>
+        <file>res/icons/blue/to_external.png</file>
+        <file>res/icons/blue/to_voltage.png</file>
+        <file>res/icons/white/accumulate.png</file>
+        <file>res/icons/white/derivation.png</file>
+        <file>res/icons/white/external-off.png</file>
+        <file>res/icons/white/fourier.png</file>
+        <file>res/icons/white/snr.png</file>
+        <file>res/icons/white/temperature.png</file>
+        <file>res/icons/white/to_external.png</file>
+        <file>res/icons/white/to_voltage.png</file>
+        <file>res/icons/white/update-off.png</file>
+        <file>res/icons/pink/accumulate.png</file>
+        <file>res/icons/pink/derivation.png</file>
+        <file>res/icons/pink/external-off.png</file>
+        <file>res/icons/pink/fourier.png</file>
+        <file>res/icons/pink/snr.png</file>
+        <file>res/icons/pink/temperature.png</file>
+        <file>res/icons/pink/to_external.png</file>
+        <file>res/icons/pink/to_voltage.png</file>
+        <file>res/icons/pink/update-off.png</file>
     </qresource>
 </RCC>

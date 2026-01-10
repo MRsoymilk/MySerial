@@ -1176,6 +1176,14 @@ QToolButton#setting-on {
   qproperty-icon: url(:/res/icons/setting-on.png);
 }
 
+QToolButton#update-on {
+  qproperty-icon: url(:/res/icons/update-on.png);
+}
+
+QToolButton#external-on {
+  qproperty-icon: url(:/res/icons/external-on.png);
+}
+
 QToolButton#crop {
   qproperty-icon: url(:/res/icons/white/crop.png);
 }
@@ -1190,6 +1198,104 @@ QToolButton#pause {
 
 QToolButton#FWHM {
   qproperty-icon: url(:/res/icons/white/fwhm.png);
+}
+
+QToolButton#Fourier {
+  qproperty-icon: url(:/res/icons/white/fourier.png);
+}
+
+QToolButton#Derivation {
+  qproperty-icon: url(:/res/icons/white/derivation.png);
+}
+
+QToolButton#Accumulate {
+  qproperty-icon: url(:/res/icons/white/accumulate.png);
+}
+
+QToolButton#SNR {
+  qproperty-icon: url(:/res/icons/white/snr.png);
+}
+
+QToolButton#Temperature {
+  qproperty-icon: url(:/res/icons/white/temperature.png);
+}
+
+QToolButton#ToVoltage {
+  qproperty-icon: url(:/res/icons/white/to_voltage.png);
+}
+
+QToolButton#ToExternal {
+  qproperty-icon: url(:/res/icons/white/to_external.png);
+}
+
+QToolButton#tBtnSwitch {
+  qproperty-icon: url(:/res/icons/white/start.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPause {
+  qproperty-icon: url(:/res/icons/white/pause.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnZoom {
+  qproperty-icon: url(:/res/icons/white/zoom.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnCrop {
+  qproperty-icon: url(:/res/icons/white/crop.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPeak {
+  qproperty-icon: url(:/res/icons/white/peaks.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnFWHM {
+  qproperty-icon: url(:/res/icons/white/fwhm.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnImg {
+  qproperty-icon: url(:/res/icons/white/img_save.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnSimulate {
+  qproperty-icon: url(:/res/icons/white/simulate.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnHistory {
+  qproperty-icon: url(:/res/icons/white/history.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnFourier {
+  qproperty-icon: url(:/res/icons/white/fourier.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnAccumulate {
+  qproperty-icon: url(:/res/icons/white/accumulate.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnSNR {
+  qproperty-icon: url(:/res/icons/white/snr.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnSetting {
+  qproperty-icon: url(:/res/icons/white/setting-off.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnToVoltage {
+  qproperty-icon: url(:/res/icons/white/to_voltage.png);
+  qproperty-iconSize: 48px 48px;
 }
 
 /*# sourceMappingURL=Dark.qss.map */

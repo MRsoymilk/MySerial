@@ -1100,31 +1100,31 @@ QToolButton#refresh {
 }
 
 QToolButton#zoom {
-  qproperty-icon: url(:/res/icons/pink/zoom.png);
+    qproperty-icon: url(:/res/icons/pink/zoom.png);
 }
 
 QToolButton#data {
-  qproperty-icon: url(:/res/icons/pink/data.png);
+    qproperty-icon: url(:/res/icons/pink/data.png);
 }
 
 QToolButton#3d {
-  qproperty-icon: url(:/res/icons/pink/3d.png);
+    qproperty-icon: url(:/res/icons/pink/3d.png);
 }
 
 QToolButton#history {
-  qproperty-icon: url(:/res/icons/pink/history.png);
+    qproperty-icon: url(:/res/icons/pink/history.png);
 }
 
 QToolButton#simulate {
-  qproperty-icon: url(:/res/icons/pink/simulate.png);
+    qproperty-icon: url(:/res/icons/pink/simulate.png);
 }
 
 QToolButton#correction {
-  qproperty-icon: url(:/res/icons/pink/correction.png);
+    qproperty-icon: url(:/res/icons/pink/correction.png);
 }
 
 QToolButton#img_save {
-  qproperty-icon: url(:/res/icons/pink/img_save.png);
+    qproperty-icon: url(:/res/icons/pink/img_save.png);
 }
 
 QToolButton#go-prev {
@@ -1155,6 +1155,14 @@ QToolButton#setting-off {
   qproperty-icon: url(:/res/icons/pink/setting-off.png);
 }
 
+QToolButton#update-off {
+  qproperty-icon: url(:/res/icons/pink/update-off.png);
+}
+
+QToolButton#external-off {
+  qproperty-icon: url(:/res/icons/pink/external-off.png);
+}
+
 QToolButton#usb-on {
   qproperty-icon: url(:/res/icons/usb-on.png);
 }
@@ -1175,6 +1183,14 @@ QToolButton#setting-on {
   qproperty-icon: url(:/res/icons/setting-on.png);
 }
 
+QToolButton#update-on {
+  qproperty-icon: url(:/res/icons/update-on.png);
+}
+
+QToolButton#external-on {
+  qproperty-icon: url(:/res/icons/external-on.png);
+}
+
 QToolButton#crop {
   qproperty-icon: url(:/res/icons/pink/crop.png);
 }
@@ -1189,4 +1205,102 @@ QToolButton#pause {
 
 QToolButton#FWHM {
   qproperty-icon: url(:/res/icons/pink/fwhm.png);
+}
+
+QToolButton#Fourier {
+  qproperty-icon: url(:/res/icons/pink/fourier.png);
+}
+
+QToolButton#Derivation {
+  qproperty-icon: url(:/res/icons/pink/derivation.png);
+}
+
+QToolButton#Accumulate {
+  qproperty-icon: url(:/res/icons/pink/accumulate.png);
+}
+
+QToolButton#SNR {
+  qproperty-icon: url(:/res/icons/pink/snr.png);
+}
+
+QToolButton#Temperature {
+  qproperty-icon: url(:/res/icons/pink/temperature.png);
+}
+
+QToolButton#ToVoltage {
+  qproperty-icon: url(:/res/icons/pink/to_voltage.png);
+}
+
+QToolButton#ToExternal {
+  qproperty-icon: url(:/res/icons/pink/to_external.png);
+}
+
+QToolButton#tBtnSwitch {
+  qproperty-icon: url(:/res/icons/pink/start.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPause {
+  qproperty-icon: url(:/res/icons/pink/pause.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnZoom {
+  qproperty-icon: url(:/res/icons/pink/zoom.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnCrop {
+  qproperty-icon: url(:/res/icons/pink/crop.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPeak {
+  qproperty-icon: url(:/res/icons/pink/peaks.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnFWHM {
+  qproperty-icon: url(:/res/icons/pink/fwhm.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnImg {
+  qproperty-icon: url(:/res/icons/pink/img_save.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnSimulate {
+  qproperty-icon: url(:/res/icons/pink/simulate.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnHistory {
+  qproperty-icon: url(:/res/icons/pink/history.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnFourier {
+  qproperty-icon: url(:/res/icons/pink/fourier.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnAccumulate {
+  qproperty-icon: url(:/res/icons/pink/accumulate.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnSNR {
+  qproperty-icon: url(:/res/icons/pink/snr.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnSetting {
+  qproperty-icon: url(:/res/icons/pink/setting-off.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnToVoltage {
+  qproperty-icon: url(:/res/icons/pink/to_voltage.png);
+  qproperty-iconSize: 48px 48px;
 }
