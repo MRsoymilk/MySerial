@@ -167,5 +167,7 @@
         <file>res/icons/pink/to_external.png</file>
         <file>res/icons/pink/to_voltage.png</file>
         <file>res/icons/pink/update-off.png</file>
+        <file>res/icons/blue/start.png</file>
+        <file>res/icons/blue/stop.png</file>
     </qresource>
 </RCC>
