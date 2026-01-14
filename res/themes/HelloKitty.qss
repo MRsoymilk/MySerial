@@ -1236,8 +1236,13 @@ QToolButton#ToExternal {
 }
 
 QToolButton#tBtnSwitch {
-  qproperty-icon: url(:/res/icons/pink/start.png);
-  qproperty-iconSize: 48px 48px;
+  image: url(:/res/icons/pink/start.png);
+  width: 48px;
+  height: 48px;
+}
+
+QToolButton#tBtnSwitch:checked {
+  image: url(:/res/icons/pink/stop.png);
 }
 
 QToolButton#tBtnPause {
