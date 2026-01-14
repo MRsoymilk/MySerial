@@ -200,7 +200,7 @@ void FormSerial::updateFrameTypes(const QString &algorithm)
             }
         } else {
             m_frameTypes = {
-                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 6007},
+                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
             };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F15Single_SET(frame.name,
@@ -843,6 +843,9 @@ void FormSerial::loadPage(int page)
 
 void FormSerial::onReadyRead()
 {
+    if (!m_ready) {
+        return;
+    }
     QByteArray data = m_serial->readAll();
     doFrameExtra(data);
 }
