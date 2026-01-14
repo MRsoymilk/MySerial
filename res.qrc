@@ -169,5 +169,10 @@
         <file>res/icons/pink/update-off.png</file>
         <file>res/icons/blue/start.png</file>
         <file>res/icons/blue/stop.png</file>
+        <file>res/icons/black/stop.png</file>
+        <file>res/icons/white/start.png</file>
+        <file>res/icons/white/stop.png</file>
+        <file>res/icons/pink/start.png</file>
+        <file>res/icons/pink/stop.png</file>
     </qresource>
 </RCC>
