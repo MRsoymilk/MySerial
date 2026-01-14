@@ -146,6 +146,7 @@ private:
     int m_pageSize = 5;
     int m_currentPage = 0;
     bool m_acceptTemperature = false;
+    bool m_ready = false;
 };
 
 #endif // FORMSERIAL_H

@@ -65,12 +65,17 @@ bool FormSerial::startEasyConnect()
             LOG_ERROR("error: {}", m_serial->errorString());
             continue;
         }
+        connect(m_serial,
+                &QSerialPort::readyRead,
+                this,
+                &FormSerial::onReadyRead,
+                Qt::UniqueConnection);
         statusReport(100 * HANDSHAKE / FINISH, QString("%1 step [handshake]: start").arg(port));
-        m_serial->clear(QSerialPort::AllDirections);
+        m_serial->clear(QSerialPort::Input);
         send("DD3C000310CDFF");
         statusReport(100 * HANDSHAKE / FINISH,
                      QString("%1 step [handshake]: wait response").arg(port));
-        if (m_serial->waitForReadyRead(500)) {
+        if (m_serial->bytesAvailable() > 0 || m_serial->waitForReadyRead(500)) {
             QByteArray response_handshake = m_serial->readAll();
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
             LOG_INFO("cmd: DD3C000310CDFF -> {}", response_handshake.toHex().toUpper());
@@ -100,12 +105,14 @@ bool FormSerial::startEasyConnect()
                         m_serial->waitForReadyRead(500);
                         QByteArray response = m_serial->readAll();
                         LOG_INFO("cmd: DD3C000330CDFF -> {}", response.toHex().toUpper());
-                        if (!response.isEmpty()) {
+                        if (doFrameExtra(response)) {
                             break;
                         }
                     }
                 }
-                connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+                m_serial->readAll();
+                m_serial->clear(QSerialPort::Input);
+                m_ready = true;
                 return true;
             } else {
                 statusReport(100 * FRAME_CHECK / FINISH,
@@ -113,7 +120,9 @@ bool FormSerial::startEasyConnect()
                 if (doFrameExtra(response_handshake)) {
                     statusReport(100 * FRAME_CHECK / FINISH,
                                  QString("%1 step [frame check]: success.").arg(port));
-                    connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+                    m_serial->readAll();
+                    m_serial->clear(QSerialPort::Input);
+                    m_ready = true;
                     return true;
                 } else {
                     statusReport(100 * FRAME_CHECK / FINISH,
@@ -130,6 +139,7 @@ bool FormSerial::startEasyConnect()
 
 void FormSerial::stopEasyConnect()
 {
+    m_ready = false;
     send("DD3C000360CDFF");
     if (m_serial) {
         m_serial->flush();
@@ -641,9 +651,11 @@ void FormSerial::on_btnSerialSwitch_clicked()
     m_switch = !m_switch;
     if (m_switch) {
         // open serial
+        m_ready = true;
         openSerial();
     } else {
         // close serial
+        m_ready = false;
         closeSerial();
         ui->checkBoxScheduledDelivery->setChecked(false);
         on_checkBoxScheduledDelivery_clicked();
