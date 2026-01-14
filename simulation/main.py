@@ -69,7 +69,7 @@ def main():
                 print("[INFO] All packets sent.")
             elif recv == bytes([0xdd, 0x3c, 0x00, 0x03, 0x10, 0xcd, 0xff]):
                 print("shake hands")
-                ser.write(bytes([0xdd, 0x3c, 0x00, 0x03, 0x11, 0xcd, 0xff]))
+                ser.write(bytes([0xde, 0x3a, 0x00, 0x03, 0x11, 0xce, 0xff]))
             elif recv == cmd_trans:
                 print("start trans")
                 for i, packet in enumerate(spectrum_packets):
