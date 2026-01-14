@@ -65,7 +65,7 @@
          <item>
           <widget class="QToolButton" name="tBtnExportRaw">
            <property name="text">
-            <string>export  raw</string>
+            <string>export raw</string>
            </property>
           </widget>
          </item>

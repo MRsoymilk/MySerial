@@ -2,60 +2,98 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US" sourcelanguage="en_US">
 <context>
+    <name>Accumulate</name>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="14"/>
+        <source>Accumulate</source>
+        <translation>Accumulate</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="20"/>
+        <location filename="../../src/form/plot/Accumulate/accumulate.cpp" line="247"/>
+        <source>Noise</source>
+        <translation>Noise</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="46"/>
+        <source>smooth window</source>
+        <translation>smooth window</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="64"/>
+        <source>polynomial order</source>
+        <translation>polynomial order</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="80"/>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="147"/>
+        <source>count</source>
+        <translation>count</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="94"/>
+        <source>enable</source>
+        <translation>enable</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="103"/>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="135"/>
+        <source>status</source>
+        <translation>status</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="128"/>
+        <source>Enable Accumulate</source>
+        <translation>Enable Accumulate</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="161"/>
+        <source>enable div</source>
+        <translation>enable div</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="178"/>
+        <source>Enable Baseline Deduction</source>
+        <translation>Enable Baseline Deduction</translation>
+    </message>
+</context>
+<context>
     <name>AutoUpdate</name>
     <message>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="14"/>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="20"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="14"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="20"/>
         <source>AutoUpdate</source>
         <translation>AutoUpdate</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="40"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="40"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="57"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="57"/>
         <source>Target Version</source>
         <translation>Target Version</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="71"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="71"/>
         <source>Current Version</source>
         <translation>Current Version</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="83"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="83"/>
         <source>Update Check</source>
         <translation>Update Check</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="90"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="90"/>
         <source>Check</source>
         <translation>Check</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/AutoUpdate/autoupdate.ui" line="97"/>
+        <location filename="../../src/form/AutoUpdate/autoupdate.ui" line="97"/>
         <source>update history</source>
         <translation>update history</translation>
-    </message>
-</context>
-<context>
-    <name>Calculate</name>
-    <message>
-        <location filename="../../src/form/setting/Calculate/calculate.ui" line="14"/>
-        <source>Calculate</source>
-        <translation>Calculate</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/setting/Calculate/calculate.ui" line="20"/>
-        <source>Calculate Server</source>
-        <translation>Calculate Server</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/setting/Calculate/calculate.ui" line="43"/>
-        <source>URL</source>
-        <translation>URL</translation>
     </message>
 </context>
 <context>
@@ -76,14 +114,19 @@
         <translation>Input</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.ui" line="41"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.ui" line="42"/>
+        <source>temperature column</source>
+        <translation>temperature column</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.ui" line="55"/>
         <source>Processing</source>
         <translation>Processing</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="35"/>
-        <source>temperature (℃)</source>
-        <translation>temperature (℃)</translation>
+        <source>temperature (R)</source>
+        <translation>temperature (R)</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="36"/>
@@ -96,39 +139,39 @@
         <translation>intercept (mV)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="52"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="54"/>
         <source>Context Menu</source>
         <translation>Context Menu</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="54"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="56"/>
         <source>Display</source>
         <translation>Display</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="58"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="60"/>
         <source>Delete</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="83"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="104"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="85"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="106"/>
         <source>Slope (mV)</source>
         <translation>Slope (mV)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="85"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="108"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="87"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="110"/>
         <source>Intercept (mV)</source>
         <translation>Intercept (mV)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="96"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="98"/>
         <source>Temperature vs Slope &amp; Intercept</source>
         <translation>Temperature vs Slope &amp; Intercept</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="102"/>
         <source>Temperature (℃)</source>
         <translation>Temperature (℃)</translation>
     </message>
@@ -142,29 +185,62 @@
     </message>
 </context>
 <context>
+    <name>Derivation</name>
+    <message>
+        <location filename="../../src/form/plot/Derivation/derivation.ui" line="14"/>
+        <source>Derivation</source>
+        <translation>Derivation</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Derivation/derivation.ui" line="28"/>
+        <source>FindPeak</source>
+        <translation>FindPeak</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Derivation/derivation.ui" line="48"/>
+        <source>min length</source>
+        <translation>min length</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Derivation/derivation.ui" line="80"/>
+        <source>prev</source>
+        <translation>prev</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Derivation/derivation.ui" line="87"/>
+        <source>page</source>
+        <translation>page</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Derivation/derivation.ui" line="97"/>
+        <source>next</source>
+        <translation>next</translation>
+    </message>
+</context>
+<context>
     <name>ExternalControl</name>
     <message>
-        <location filename="../../src/form/setting/ExternalControl/externalcontrol.ui" line="14"/>
+        <location filename="../../src/form/FormExternal/formexternal.ui" line="14"/>
         <source>ExternalControl</source>
         <translation>ExternalControl</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/ExternalControl/externalcontrol.ui" line="20"/>
+        <location filename="../../src/form/FormExternal/formexternal.ui" line="20"/>
         <source>External Control</source>
         <translation>External Control</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/ExternalControl/externalcontrol.ui" line="40"/>
+        <location filename="../../src/form/FormExternal/formexternal.ui" line="40"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/ExternalControl/externalcontrol.ui" line="52"/>
+        <location filename="../../src/form/FormExternal/formexternal.ui" line="52"/>
         <source>enable</source>
         <translation>enable</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/ExternalControl/externalcontrol.ui" line="59"/>
+        <location filename="../../src/form/FormExternal/formexternal.ui" line="59"/>
         <source>log</source>
         <translation>log</translation>
     </message>
@@ -182,44 +258,259 @@
         <translation>data limit</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="72"/>
+        <location filename="../../src/form/data/formdata.cpp" line="93"/>
         <source>Context Menu</source>
         <translation>Context Menu</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="74"/>
+        <location filename="../../src/form/data/formdata.cpp" line="95"/>
         <source>Clear</source>
         <translation>Clear</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="78"/>
+        <location filename="../../src/form/data/formdata.cpp" line="99"/>
         <source>Export Selected to CSV</source>
         <translation>Export Selected to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="82"/>
+        <location filename="../../src/form/data/formdata.cpp" line="103"/>
         <source>Export All to CSV</source>
         <translation>Export All to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="110"/>
+        <location filename="../../src/form/data/formdata.cpp" line="131"/>
         <source>Save All to CSV</source>
         <translation>Save All to CSV</translation>
     </message>
     <message>
-        <source>Export to CSV</source>
-        <translation type="vanished">Export to CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="161"/>
+        <location filename="../../src/form/data/formdata.cpp" line="182"/>
         <source>Save CSV</source>
         <translation>Save CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/data/formdata.cpp" line="112"/>
-        <location filename="../../src/form/data/formdata.cpp" line="163"/>
+        <location filename="../../src/form/data/formdata.cpp" line="133"/>
+        <location filename="../../src/form/data/formdata.cpp" line="184"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV Files (*.csv)</translation>
+    </message>
+</context>
+<context>
+    <name>FormEasy</name>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="14"/>
+        <source>EasyMode</source>
+        <translation>EasyMode</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="32"/>
+        <source>pause</source>
+        <translation>pause</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="42"/>
+        <source>zoom</source>
+        <translation>zoom</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="52"/>
+        <source>crop</source>
+        <translation>crop</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="62"/>
+        <source>peak</source>
+        <translation>peak</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="72"/>
+        <source>FWHM</source>
+        <translation>FWHM</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="82"/>
+        <source>img</source>
+        <translation>图像</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="92"/>
+        <source>simulate</source>
+        <translation>simulate</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="102"/>
+        <source>history</source>
+        <translation>history</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="112"/>
+        <source>Fourier</source>
+        <translation>Fourier</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="122"/>
+        <source>Accumulate</source>
+        <translation>Accumulate</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="132"/>
+        <source>SNR</source>
+        <translation>SNR</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="142"/>
+        <source>to voltage</source>
+        <translation>to voltage</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="160"/>
+        <source>y axis</source>
+        <translation>y axis</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="179"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="217"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="205"/>
+        <source>x axis</source>
+        <translation>x axis</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="244"/>
+        <source>Setting</source>
+        <translation>Setting</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="296"/>
+        <source>Integration time</source>
+        <translation>Integration time</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="317"/>
+        <source>current value</source>
+        <translation>current value</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="326"/>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="339"/>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="346"/>
+        <source>nm</source>
+        <translation>nm</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="359"/>
+        <source>Min Intensity</source>
+        <translation>Min Intensity</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="366"/>
+        <source>Max Intensity</source>
+        <translation>Max Intensity</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="108"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="120"/>
+        <source>index</source>
+        <translation>index</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="109"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="121"/>
+        <source>intensity</source>
+        <translation>intensity</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="110"/>
+        <source>wavelength</source>
+        <translation>wavelength</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="122"/>
+        <source>raw</source>
+        <translation>raw</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="152"/>
+        <source>Peaks</source>
+        <translation>Peaks</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="350"/>
+        <source>Save Chart</source>
+        <translation>Save Chart</translation>
+    </message>
+</context>
+<context>
+    <name>FormExpert</name>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="14"/>
+        <source>ExpertMode</source>
+        <translation>ExpertMode</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="22"/>
+        <source>Serial</source>
+        <translation>Serial</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="29"/>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="77"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="137"/>
+        <source>Data</source>
+        <translation>Data</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="36"/>
+        <source>Plot</source>
+        <translation>Plot</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="56"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="158"/>
+        <source>Correction</source>
+        <translation>Correction</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="63"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="151"/>
+        <source>Simulate</source>
+        <translation>Simulate</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="70"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="144"/>
+        <source>History</source>
+        <translation>History</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="97"/>
+        <source>update</source>
+        <translation>update</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="104"/>
+        <source>external</source>
+        <translation>external</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="111"/>
+        <source>Log</source>
+        <translation>Log</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="118"/>
+        <source>Setting</source>
+        <translation>Setting</translation>
     </message>
 </context>
 <context>
@@ -235,270 +526,311 @@
         <translation>Process</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="30"/>
-        <source>Standard</source>
-        <translation>Standard</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="51"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="103"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="58"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="110"/>
         <source>Delete</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="67"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="60"/>
         <source>1. send R = kT + b</source>
         <translation>1. send R = kT + b</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="76"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="493"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="38"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="542"/>
         <source>k</source>
         <translation>k</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="83"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="538"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="45"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="587"/>
         <source>b</source>
         <translation>b</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="98"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="119"/>
         <source>3. fitting ArcSin</source>
         <translation>3. fitting ArcSin</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="108"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="87"/>
         <source>2. calculate k1, b1, k2, b2</source>
         <translation>2. calculate k1, b1, k2, b2</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="116"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="143"/>
         <source>Adjust</source>
         <translation>Adjust</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="127"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="223"/>
         <source>set temperature T</source>
         <translation>set temperature T</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="141"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="207"/>
         <source>update formula</source>
         <translation>update formula</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="154"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="30"/>
+        <source>Send R=kT+b</source>
+        <translation>Send R=kT+b</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="68"/>
+        <source>Calculate_k1b1k2b2</source>
+        <translation>Calculate_k1b1k2b2</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="95"/>
+        <source>Fitting ArcSin</source>
+        <translation>Fitting ArcSin</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="153"/>
         <source>num</source>
         <translation>num</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="168"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="167"/>
         <source>from</source>
         <translation>from</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="182"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="181"/>
         <source>step</source>
         <translation>step</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="194"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="193"/>
         <source>generate threshold</source>
         <translation>generate threshold</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="204"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="241"/>
+        <source>set temperature R</source>
+        <translation>set temperature R</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="253"/>
         <source>FittingCurveData</source>
         <translation>FittingCurveData</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="220"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="269"/>
         <source>Formula</source>
         <translation>Formula</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="228"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="302"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="277"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="351"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="235"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="292"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="284"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="341"/>
         <source>*</source>
         <translation>*</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="242"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="291"/>
         <source>) / 8.5</source>
         <translation>) / 8.5</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="249"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="328"/>
-        <source>T</source>
-        <translation>T</translation>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="298"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="377"/>
+        <source>T/R</source>
+        <translation>T/R</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="262"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="311"/>
         <source>b1</source>
         <translation>b1</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="272"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="321"/>
         <source> * y_lambda + </source>
         <translation> * y_lambda + </translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="279"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="328"/>
         <source>k1</source>
         <translation>k1</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="318"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="367"/>
         <source>k2</source>
         <translation>k2</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="338"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="387"/>
         <source>y = (</source>
         <translation>y = (</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="345"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="394"/>
         <source>b2</source>
         <translation>b2</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="359"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="373"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="408"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="422"/>
         <source>/ 1000</source>
         <translation>/ 1000</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="385"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="434"/>
         <source>Formula y</source>
         <translation>Formula y</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="394"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="414"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="443"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="463"/>
         <source>/ 2</source>
         <translation>/ 2</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="404"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="453"/>
         <source>) + </source>
         <translation>) + </translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="424"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="473"/>
         <source>*cos(</source>
         <translation>*cos(</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="434"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="483"/>
         <source>) -</source>
         <translation>) -</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="444"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="493"/>
         <source>* (arcsin(</source>
         <translation>* (arcsin(</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="457"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="506"/>
         <source>))</source>
         <translation>))</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="470"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="519"/>
         <source>y_lambda = </source>
         <translation>y_lambda = </translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="483"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="532"/>
         <source>λ / (2 *</source>
         <translation>λ / (2 *</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="503"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="552"/>
         <source>d</source>
         <translation>d</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="513"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="528"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="562"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="577"/>
         <source>α</source>
         <translation>α</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="550"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="599"/>
         <source>Formula y_lambda</source>
         <translation>Formula y_lambda</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="559"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="608"/>
         <source>left</source>
         <translation>left</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="569"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="618"/>
         <source>right</source>
         <translation>right</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="581"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="630"/>
         <source>Log</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="593"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="642"/>
         <source>Send Formula</source>
         <translation>Send Formula</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="60"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="40"/>
         <source>index</source>
         <translation>index</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="61"/>
-        <source>fitting curve Raw(14bit)</source>
-        <translation>fitting curve Raw(14bit)</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="73"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="53"/>
         <source>lambda</source>
         <translation>lambda</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="74"/>
-        <source>14bit(raw)</source>
-        <translation>14bit(raw)</translation>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="41"/>
+        <source>fitting curve Raw(curve33)</source>
+        <translation>fitting curve Raw(curve33)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="93"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="54"/>
+        <source>curve33(raw)</source>
+        <translation>curve33(raw)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="96"/>
         <source>Context Menu</source>
         <translation>Context Menu</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="95"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="98"/>
         <source>Export Threshold to CSV</source>
         <translation>Export Threshold to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="105"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="101"/>
+        <source>to Hex</source>
+        <translation>to Hex</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="104"/>
+        <source>to Array</source>
+        <translation>to Array</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="129"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="146"/>
+        <source>export success</source>
+        <translation>export success</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="129"/>
+        <source>hex add to clip board.</source>
+        <translation>hex add to clip board.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="146"/>
+        <source>array add to clip board.</source>
+        <translation>array add to clip board.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="152"/>
         <source>Export Threshold Data to CSV</source>
         <translation>Export Threshold Data to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="107"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="154"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV Files (*.csv)</translation>
     </message>
@@ -924,9 +1256,9 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="157"/>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="167"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="502"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="505"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="754"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="484"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="487"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="736"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
@@ -951,13 +1283,13 @@
         <translation>File saved successfully</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="502"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="505"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="484"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="487"/>
         <source>points can not be same!</source>
         <translation>points can not be same!</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="754"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="736"/>
         <source>Please finish step 1 and step 2!</source>
         <translation>Please finish step 1 and step 2!</translation>
     </message>
@@ -986,150 +1318,202 @@
         <translation>Plot</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="22"/>
+        <location filename="../../src/form/plot/formplot.ui" line="266"/>
+        <source>offset_31bit</source>
+        <translation>offset_31bit</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="287"/>
+        <source>offset_33bit</source>
+        <translation>offset_33bit</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="321"/>
+        <source>y axis</source>
+        <translation>y axis</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="368"/>
         <source>update sign</source>
         <translation>update sign</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="32"/>
+        <location filename="../../src/form/plot/formplot.ui" line="222"/>
+        <location filename="../../src/form/plot/formplot.ui" line="380"/>
         <source>temperature</source>
         <translation>temperature</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="48"/>
+        <location filename="../../src/form/plot/formplot.ui" line="390"/>
+        <source>Conversion</source>
+        <translation>Conversion</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="431"/>
         <source>x axis</source>
         <translation>x axis</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="69"/>
+        <location filename="../../src/form/plot/formplot.ui" line="342"/>
+        <location filename="../../src/form/plot/formplot.ui" line="452"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="108"/>
+        <location filename="../../src/form/plot/formplot.ui" line="409"/>
         <source>step</source>
         <translation>step</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="171"/>
+        <location filename="../../src/form/plot/formplot.ui" line="28"/>
         <source>offset</source>
         <translation>offset</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="189"/>
-        <source>algorithm</source>
-        <translation>algorithm</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/plot/formplot.ui" line="237"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="149"/>
+        <location filename="../../src/form/plot/formplot.ui" line="116"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="172"/>
         <source>crop</source>
         <translation>crop</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="244"/>
+        <location filename="../../src/form/plot/formplot.ui" line="123"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="204"/>
+        <source>Fourier</source>
+        <translation>Fourier</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="130"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="219"/>
+        <source>Accumulate</source>
+        <translation>Accumulate</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="143"/>
+        <source>SNR</source>
+        <translation>SNR</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="150"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="214"/>
+        <source>Derivation</source>
+        <translation>Derivation</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="165"/>
         <source>peak</source>
         <translation>peak</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="251"/>
+        <location filename="../../src/form/plot/formplot.ui" line="178"/>
+        <source>highest Trajectory</source>
+        <translation>highest Trajectory</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="195"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="199"/>
+        <source>FWHM</source>
+        <translation>FWHM</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="204"/>
+        <source>limit</source>
+        <translation>limit</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="229"/>
         <source>img_save</source>
         <translation>img_save</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="258"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="178"/>
+        <location filename="../../src/form/plot/formplot.ui" line="236"/>
+        <source>to_Voltage</source>
+        <translation>to_Voltage</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="243"/>
+        <source>to_external</source>
+        <translation>to_external</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.ui" line="250"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="194"/>
         <source>pause</source>
         <translation>pause</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.ui" line="127"/>
-        <source>offset_14bit</source>
-        <translation>offset_14bit</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/plot/formplot.ui" line="148"/>
-        <source>offset_24bit</source>
-        <translation>offset_24bit</translation>
-    </message>
-    <message>
-        <source>simulate</source>
-        <translation type="vanished">simulate</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/plot/formplot.ui" line="206"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="163"/>
-        <source>3D</source>
-        <translation>3D</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/plot/formplot.ui" line="213"/>
-        <source>measure x</source>
-        <translation>measure x</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/plot/formplot.ui" line="220"/>
-        <source>measure y</source>
-        <translation>measure y</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/plot/formplot.ui" line="227"/>
+        <location filename="../../src/form/plot/formplot.ui" line="106"/>
         <source>zoom</source>
         <translation>zoom</translation>
     </message>
     <message>
-        <source>data</source>
-        <translation type="vanished">data</translation>
+        <location filename="../../src/form/plot/formplot.cpp" line="129"/>
+        <source>curve31</source>
+        <translation>curve31</translation>
     </message>
     <message>
-        <source>history</source>
-        <translation type="vanished">history</translation>
+        <location filename="../../src/form/plot/formplot.cpp" line="130"/>
+        <source>curve33</source>
+        <translation>curve33</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="108"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="492"/>
-        <source>Series24 Peaks</source>
-        <translation>Series24 Peaks</translation>
+        <location filename="../../src/form/plot/formplot.cpp" line="135"/>
+        <source>Peaks</source>
+        <translation>Peaks</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="110"/>
-        <source>Time (s)</source>
-        <translation>Time (s)</translation>
+        <location filename="../../src/form/plot/formplot.cpp" line="143"/>
+        <source>index</source>
+        <translation>index</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="112"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="145"/>
         <source>Voltage (V)</source>
         <translation>Voltage (V)</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="126"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="159"/>
         <source>Live ADC Waveform</source>
         <translation>Live ADC Waveform</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="156"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="179"/>
         <source>Auto Zoom</source>
         <translation>Auto Zoom</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="168"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="184"/>
         <source>image save (ctrl+s)</source>
         <translation>image save (ctrl+s)</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="173"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="189"/>
         <source>find peaks</source>
         <translation>find peaks</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="223"/>
-        <source>curve14_bit</source>
-        <translation>curve14_bit</translation>
+        <location filename="../../src/form/plot/formplot.cpp" line="209"/>
+        <source>Signal-to-noise ratio</source>
+        <translation>Signal-to-noise ratio</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="225"/>
-        <source>curve24_bit</source>
-        <translation>curve24_bit</translation>
+        <location filename="../../src/form/plot/formplot.cpp" line="224"/>
+        <source>Temperature</source>
+        <translation>Temperature</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="229"/>
+        <source>ToExternal</source>
+        <translation>ToExternal</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="234"/>
+        <source>ToVoltage</source>
+        <translation>ToVoltage</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/formplot.cpp" line="574"/>
+        <source>Save Chart</source>
+        <translation>Save Chart</translation>
     </message>
 </context>
 <context>
@@ -1155,12 +1539,12 @@
         <translation>show correction curve</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="166"/>
+        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="188"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="167"/>
+        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="189"/>
         <source>only support fitting_sin or fitting_arcsin</source>
         <translation>only support fitting_sin or fitting_arcsin</translation>
     </message>
@@ -1173,99 +1557,105 @@
         <translation>PlotData</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="35"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="130"/>
         <source>Go</source>
         <translation>开始</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="45"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="140"/>
         <source>0/0</source>
         <translation>0/0</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="52"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="147"/>
         <source>prev</source>
         <translation>prev</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="59"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="154"/>
         <source>next</source>
         <translation>next</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="117"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="165"/>
+        <source>highlight MinMax</source>
+        <translation>highlight MinMax</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="172"/>
+        <source>Min Max info</source>
+        <translation>Min Max info</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="35"/>
         <source>v14</source>
         <translation>v14</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="124"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="42"/>
         <source>v24</source>
         <translation>v24</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="131"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="49"/>
         <source>raw14</source>
         <translation>raw14</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="138"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="56"/>
         <source>raw24</source>
         <translation>raw24</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="151"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="103"/>
         <source>choose group</source>
         <translation>choose group</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="112"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="163"/>
         <source>Context Menu</source>
         <translation>Context Menu</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="114"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="165"/>
         <source>Clear</source>
         <translation>Clear</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="118"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="169"/>
         <source>Export Current to CSV</source>
         <translation>Export Current to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="122"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="173"/>
         <source>Export All to CSV</source>
         <translation>Export All to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="171"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="222"/>
         <source>Export All Data to CSV</source>
         <translation>Export All Data to CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="273"/>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="312"/>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="334"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="324"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="363"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="385"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="312"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="363"/>
         <source>No data columns selected for export.</source>
         <translation>No data columns selected for export.</translation>
     </message>
     <message>
-        <source>Export to CSV</source>
-        <translation type="vanished">Export to CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="280"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="331"/>
         <source>Save CSV</source>
         <translation>Save CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="173"/>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="282"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="224"/>
+        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="333"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV Files (*.csv)</translation>
     </message>
@@ -1278,246 +1668,168 @@
         <translation>PlotHistory</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="174"/>
-        <source>curve 14bit</source>
-        <translation>curve 14bit</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="181"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="235"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="59"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="63"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="119"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="173"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="46"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="50"/>
         <source>prev</source>
         <translation>prev</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="188"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="242"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="61"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="65"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="126"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="180"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="48"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="52"/>
         <source>next</source>
         <translation>next</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="199"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="253"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="138"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="153"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="137"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="191"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="181"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="196"/>
         <source>status</source>
         <translation>status</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="208"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="262"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="146"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="200"/>
         <source>go:</source>
         <translation>go:</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="228"/>
-        <source>curve 24bit</source>
-        <translation>curve 24bit</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="295"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="35"/>
         <source>To Plot</source>
         <translation>To Plot</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="322"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="55"/>
+        <source>show data</source>
+        <translation>show data</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="62"/>
+        <source>to_voltage</source>
+        <translation>to_voltage</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="112"/>
+        <source>curve31</source>
+        <translation>curve31</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="166"/>
+        <source>curve33</source>
+        <translation>curve33</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="220"/>
+        <source>To Plot With</source>
+        <translation>To Plot With</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="227"/>
+        <source>range</source>
+        <translation>range</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="241"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="258"/>
+        <source>temperature</source>
+        <translation>temperature</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="292"/>
         <source>dump plot</source>
         <translation>dump plot</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="329"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="313"/>
         <source>all</source>
         <translation>all</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="336"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="306"/>
         <source>dump data</source>
         <translation>dump data</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="46"/>
-        <source>FittingSin</source>
-        <translation>FittingSin</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="53"/>
-        <source>y0</source>
-        <translation>y0</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="63"/>
-        <source>xc</source>
-        <translation>xc</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="73"/>
-        <source>w</source>
-        <translation>w</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="83"/>
-        <source>A</source>
-        <translation>A</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="93"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="131"/>
-        <source>conversion</source>
-        <translation>conversion</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="104"/>
-        <source>FittingKB</source>
-        <translation>FittingKB</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="111"/>
-        <source>k</source>
-        <translation>k</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="121"/>
-        <source>b</source>
-        <translation>b</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="149"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="69"/>
         <source>Split</source>
         <translation>Split</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="156"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="76"/>
         <source>Mix</source>
         <translation>Mix</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="286"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="26"/>
         <source>Temperature</source>
         <translation>Temperature</translation>
     </message>
     <message>
-        <source>mix</source>
-        <translation type="vanished">mix</translation>
-    </message>
-    <message>
-        <source>split</source>
-        <translation type="vanished">split</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="194"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="234"/>
-        <source>curve24</source>
-        <translation>curve24</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="199"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="228"/>
-        <source>curve14</source>
-        <translation>curve14</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="201"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="62"/>
         <source>curve_mix</source>
         <translation>curve_mix</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="229"/>
-        <source>curve_14bit</source>
-        <translation>curve_14bit</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="235"/>
-        <source>curve_24bit</source>
-        <translation>curve_24bit</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="356"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="420"/>
-        <source>Empty Params</source>
-        <translation>Empty Params</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="356"/>
-        <source>A, y0, w, and xc can not be empty!</source>
-        <translation>A, y0, w, and xc can not be empty!</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="376"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="381"/>
-        <source>Wrong Params</source>
-        <translation>Wrong Params</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="376"/>
-        <source>Invalid number format.</source>
-        <translation>Invalid number format.</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="381"/>
-        <source>w can not be 0!</source>
-        <translation>w can not be 0!</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="420"/>
-        <source>k and b can not be empty!</source>
-        <translation>k and b can not be empty!</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="480"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="507"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="416"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="443"/>
         <source>Export Failed</source>
         <translation>Export Failed</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="480"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="507"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="416"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="443"/>
         <source>Only support Mix!</source>
         <translation>Only support Mix!</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="501"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="556"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="594"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="437"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="492"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="530"/>
         <source>Export Successful</source>
         <translation>Export Successful</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="501"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="437"/>
         <source>Img exported to:
 %1</source>
         <translation>Img exported to:
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="511"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="561"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="447"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="497"/>
         <source>Save Curve Data</source>
         <translation>Save Curve Data</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="513"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="563"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="449"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="499"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV Files (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="519"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="570"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="455"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="506"/>
         <source>Failed to Open File</source>
         <translation>Failed to Open File</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="557"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="493"/>
         <source>All data exported to:
 %1</source>
         <translation>All data exported to:
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="595"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="531"/>
         <source>Data exported to:
 %1</source>
         <translation>Data exported to:
@@ -1532,65 +1844,29 @@
         <translation>PlotSimulate</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="61"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="37"/>
         <source>load file</source>
         <translation>load file</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="68"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="44"/>
         <source>re</source>
         <translation>re</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="79"/>
-        <source>correction</source>
-        <translation>correction</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="86"/>
-        <source>enable</source>
-        <translation>enable</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="34"/>
-        <source>head</source>
-        <translation>head</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.ui" line="44"/>
-        <source>tail</source>
-        <translation>tail</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="62"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="42"/>
         <source>choose file</source>
         <translation>choose file</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="120"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="85"/>
         <source>Error Read CSV</source>
         <translation>Error Read CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="120"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="85"/>
         <source>no data column found!</source>
         <translation>no data column found!</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="184"/>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="191"/>
-        <source>Simulate</source>
-        <translation>Simulate</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="184"/>
-        <source>no header found!</source>
-        <translation>no header found!</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="191"/>
-        <source>simulate finish</source>
-        <translation>simulate finish</translation>
     </message>
 </context>
 <context>
@@ -1687,26 +1963,6 @@
         <translation>next</translation>
     </message>
     <message>
-        <source>3</source>
-        <translation type="vanished">3</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="vanished">1</translation>
-    </message>
-    <message>
-        <source>4</source>
-        <translation type="vanished">4</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="vanished">2</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation type="vanished">0</translation>
-    </message>
-    <message>
         <location filename="../../src/form/serial/formserial.ui" line="380"/>
         <source>scheduled delivery</source>
         <translation>scheduled delivery</translation>
@@ -1762,50 +2018,50 @@
         <translation>Enhancement</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="107"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="363"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="107"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="363"/>
         <source>Serial not open!</source>
         <translation>Serial not open!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="180"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="527"/>
         <source>No available serial port found!</source>
         <translation>No available serial port found!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="180"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="231"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="695"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="527"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="573"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="964"/>
         <source>warning</source>
         <translation>warning</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="231"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="573"/>
         <source>serial not open!</source>
         <translation>serial not open!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="635"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="647"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="904"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="916"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="635"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="904"/>
         <source>Please open serial port!</source>
         <translation>Please open serial port!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="647"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="916"/>
         <source>Please set valid time(ms)!</source>
         <translation>Please set valid time(ms)!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="695"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="964"/>
         <source>No ports available!</source>
         <translation>No ports available!</translation>
     </message>
@@ -1817,38 +2073,6 @@
         <source>Setting</source>
         <translation>Setting</translation>
     </message>
-    <message>
-        <source>AutoUpdate</source>
-        <translation type="vanished">AutoUpdate</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="vanished">URL</translation>
-    </message>
-    <message>
-        <source>Start Checking for Updates</source>
-        <translation type="vanished">Start Checking for Updates</translation>
-    </message>
-    <message>
-        <source>Check</source>
-        <translation type="vanished">Check</translation>
-    </message>
-    <message>
-        <source>Server</source>
-        <translation type="vanished">Server</translation>
-    </message>
-    <message>
-        <source>Port</source>
-        <translation type="vanished">Port</translation>
-    </message>
-    <message>
-        <source>enable</source>
-        <translation type="vanished">enable</translation>
-    </message>
-    <message>
-        <source>log</source>
-        <translation type="vanished">log</translation>
-    </message>
 </context>
 <context>
     <name>FormTip</name>
@@ -1859,50 +2083,47 @@
     </message>
 </context>
 <context>
-    <name>FrameSetting</name>
+    <name>FourierTransform</name>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="14"/>
-        <source>FrameSetting</source>
-        <translation>FrameSetting</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="14"/>
+        <source>FourierTransform</source>
+        <translation>FourierTransform</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="20"/>
-        <source>frame 14bit</source>
-        <translation>frame 14bit</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="46"/>
+        <source>x axis</source>
+        <translation>x axis</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="26"/>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="95"/>
-        <source>head</source>
-        <translation>head</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="62"/>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="137"/>
+        <source>-</source>
+        <translation>-</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="36"/>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="72"/>
-        <source>length</source>
-        <translation>length</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="87"/>
+        <source>sample rate</source>
+        <translation>sample rate</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="49"/>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="82"/>
-        <source>foot</source>
-        <translation>foot</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="106"/>
+        <source>Hz</source>
+        <translation>Hz</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="56"/>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="102"/>
-        <source>calculate</source>
-        <translation>calculate</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="121"/>
+        <source>Range</source>
+        <translation>Range</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="66"/>
-        <source>frame 24bit</source>
-        <translation>frame 24bit</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="224"/>
+        <source>Frequency Spectrum (FFT)</source>
+        <translation>Frequency Spectrum (FFT)</translation>
     </message>
     <message>
-        <location filename="../../src/form/setting/FrameSetting/framesetting.ui" line="112"/>
-        <source>update</source>
-        <translation>update</translation>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="243"/>
+        <source>Filtered Signal (IFFT)</source>
+        <translation>Filtered Signal (IFFT)</translation>
     </message>
 </context>
 <context>
@@ -1911,34 +2132,6 @@
         <location filename="../../src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp" line="11"/>
         <source>image viewer</source>
         <translation>image viewer</translation>
-    </message>
-</context>
-<context>
-    <name>LengthCalc</name>
-    <message>
-        <location filename="../../src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui" line="14"/>
-        <source>LengthCalc</source>
-        <translation>LengthCalc</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui" line="20"/>
-        <source>Calculate</source>
-        <translation>Calculate</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui" line="30"/>
-        <source>data size</source>
-        <translation>data size</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui" line="40"/>
-        <source>length</source>
-        <translation>length</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/setting/FrameSetting/LengthCalc/lengthcalc.ui" line="47"/>
-        <source>length = head + data size * 3 + foot</source>
-        <translation>length = head + data size * 3 + foot</translation>
     </message>
 </context>
 <context>
@@ -1955,6 +2148,24 @@
     </message>
 </context>
 <context>
+    <name>LoadingOverLay</name>
+    <message>
+        <location filename="../../src/mode/FormEasy/LoadingOverLay/loadingoverlay.ui" line="14"/>
+        <source>LoadingOverLay</source>
+        <translation>LoadingOverLay</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/LoadingOverLay/loadingoverlay.ui" line="86"/>
+        <source>info</source>
+        <translation>info</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/LoadingOverLay/loadingoverlay.ui" line="96"/>
+        <source>try []:</source>
+        <translation>try []:</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="14"/>
@@ -1962,99 +2173,209 @@
         <translation>MySerial</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="38"/>
+        <location filename="../../src/main/mainwindow.ui" line="42"/>
         <source>Serial</source>
         <translation>Serial</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="45"/>
-        <location filename="../../src/main/mainwindow.ui" line="93"/>
-        <location filename="../../src/main/mainwindow.cpp" line="185"/>
+        <location filename="../../src/main/mainwindow.ui" line="49"/>
+        <location filename="../../src/main/mainwindow.ui" line="97"/>
         <source>Data</source>
         <translation>Data</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="52"/>
+        <location filename="../../src/main/mainwindow.ui" line="56"/>
         <source>Plot</source>
         <translation>Plot</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="72"/>
-        <location filename="../../src/main/mainwindow.cpp" line="206"/>
+        <location filename="../../src/main/mainwindow.ui" line="76"/>
         <source>Correction</source>
         <translation>Correction</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="79"/>
-        <location filename="../../src/main/mainwindow.cpp" line="199"/>
+        <location filename="../../src/main/mainwindow.ui" line="83"/>
         <source>Simulate</source>
         <translation>Simulate</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="86"/>
-        <location filename="../../src/main/mainwindow.cpp" line="192"/>
+        <location filename="../../src/main/mainwindow.ui" line="90"/>
         <source>History</source>
         <translation>History</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="100"/>
+        <location filename="../../src/main/mainwindow.ui" line="117"/>
+        <source>update</source>
+        <translation>update</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="124"/>
+        <source>external</source>
+        <translation>external</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="131"/>
         <source>Log</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="107"/>
+        <location filename="../../src/main/mainwindow.ui" line="138"/>
         <source>Setting</source>
         <translation>Setting</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="129"/>
+        <location filename="../../src/main/mainwindow.ui" line="164"/>
         <source>Language</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="137"/>
+        <location filename="../../src/main/mainwindow.ui" line="172"/>
         <source>Theme</source>
         <translation>Theme</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="151"/>
+        <location filename="../../src/main/mainwindow.ui" line="183"/>
+        <source>Mode</source>
+        <translation>Mode</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="190"/>
+        <source>Algorithm</source>
+        <translation>Algorithm</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="209"/>
         <source>en</source>
         <translation>en</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="156"/>
+        <location filename="../../src/main/mainwindow.ui" line="217"/>
         <source>zh_simple</source>
         <translation>zh_simple</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="161"/>
+        <location filename="../../src/main/mainwindow.ui" line="225"/>
         <source>zh_traditional</source>
         <translation>zh_traditional</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="166"/>
+        <location filename="../../src/main/mainwindow.ui" line="233"/>
         <source>Lite</source>
         <translation>Lite</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="171"/>
+        <location filename="../../src/main/mainwindow.ui" line="241"/>
         <source>Dark</source>
         <translation>Dark</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="176"/>
+        <location filename="../../src/main/mainwindow.ui" line="249"/>
         <source>OSX_Lite</source>
         <translation>OSX_Lite</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="181"/>
+        <location filename="../../src/main/mainwindow.ui" line="257"/>
         <source>OSX_Dark</source>
         <translation>OSX_Dark</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="186"/>
+        <location filename="../../src/main/mainwindow.ui" line="265"/>
         <source>HelloKitty</source>
         <translation>HelloKitty</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="273"/>
+        <source>Easy</source>
+        <translation>Easy</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="281"/>
+        <source>Expert</source>
+        <translation>Expert</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="289"/>
+        <source>Blue</source>
+        <translation>Blue</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="297"/>
+        <source>Freedom</source>
+        <translation>Freedom</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="305"/>
+        <source>F15_single</source>
+        <translation>F15_single</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="313"/>
+        <source>F15_curves</source>
+        <translation>F15_curves</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="321"/>
+        <source>F30_single</source>
+        <translation>F30_single</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="329"/>
+        <source>F30_curves</source>
+        <translation>F30_curves</translation>
+    </message>
+</context>
+<context>
+    <name>PeakTrajectory</name>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="14"/>
+        <source>PeakTrajectory</source>
+        <translation>PeakTrajectory</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="20"/>
+        <source>info</source>
+        <translation>info</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="35"/>
+        <source>axis y</source>
+        <translation>axis y</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="51"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="26"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="36"/>
+        <source>Set Range</source>
+        <translation>Set Range</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="27"/>
+        <source>Clear Chart</source>
+        <translation>Clear Chart</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="36"/>
+        <source>Range:</source>
+        <translation>Range:</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="127"/>
+        <source>index</source>
+        <translation>index</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="128"/>
+        <source>intensity</source>
+        <translation>intensity</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="129"/>
+        <source>peak trajectory</source>
+        <translation>peak trajectory</translation>
     </message>
 </context>
 <context>
@@ -2083,59 +2404,289 @@
         <translation>Curve</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="42"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="68"/>
+        <source>export raw</source>
+        <translation>export raw</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="175"/>
         <source>Temperature</source>
         <translation>Temperature</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="54"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="79"/>
         <source>prev</source>
         <translation>prev</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="67"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="47"/>
+        <source>clear</source>
+        <translation>clear</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="54"/>
+        <source>to external</source>
+        <translation>to external</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="61"/>
+        <source>export curve</source>
+        <translation>export curve</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="92"/>
         <source>page</source>
         <translation>page</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="77"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="102"/>
         <source>next</source>
         <translation>next</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="87"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="134"/>
+        <source>y axis</source>
+        <translation>y axis</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="150"/>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="182"/>
+        <source>where Threshold</source>
+        <translation>where Threshold</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="192"/>
         <source>Threshold</source>
         <translation>Threshold</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="98"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="203"/>
         <source>offset</source>
         <translation>offset</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="112"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="217"/>
         <source>step</source>
         <translation>step</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="139"/>
-        <source>load data</source>
-        <translation>load data</translation>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="227"/>
+        <source>count</source>
+        <translation>count</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="60"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="241"/>
+        <source>Apply Option</source>
+        <translation>Apply Option</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="265"/>
+        <source>load data from .csv</source>
+        <translation>load data from .csv</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="272"/>
+        <source>load data from input</source>
+        <translation>load data from input</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="93"/>
         <source>wavelength</source>
         <translation>wavelength</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="61"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="94"/>
         <source>intensity</source>
         <translation>intensity</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="62"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="95"/>
         <source>correction curve</source>
         <translation>correction curve</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="214"/>
+        <source>选择数据 CSV 文件</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="216"/>
+        <source>CSV Files (*.csv)</source>
+        <translation>CSV Files (*.csv)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="226"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="314"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="328"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="370"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="383"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="413"/>
+        <source>Error</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="226"/>
+        <source>can&apos;t open file %1</source>
+        <translation>can&apos;t open file %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="314"/>
+        <source>no curve data to export.</source>
+        <translation>no curve data to export.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="319"/>
+        <source>Export Curve to CSV</source>
+        <translation>Export Curve to CSV</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="328"/>
+        <source>Failed to open export file</source>
+        <translation>Failed to open export file</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="370"/>
+        <source>No raw data to export.</source>
+        <translation>No raw data to export.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="375"/>
+        <source>Export raw to txt</source>
+        <translation>Export raw to txt</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="383"/>
+        <source>Failed to open export file.</source>
+        <translation>Failed to open export file.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="413"/>
+        <source>Export finished: %1</source>
+        <translation>Export finished: %1</translation>
+    </message>
+</context>
+<context>
+    <name>SignalNoiseRatio</name>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="14"/>
+        <source>SignalNoiseRatio</source>
+        <translation>SignalNoiseRatio</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="22"/>
+        <source>use idx</source>
+        <translation>use idx</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="40"/>
+        <source>peak intensity</source>
+        <translation>peak intensity</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="47"/>
+        <source>Noise (Std)</source>
+        <translation>Noise (Std)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="54"/>
+        <source>Signal-to-noise ratio (linear)</source>
+        <translation>Signal-to-noise ratio (linear)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="61"/>
+        <source>Signal-to-noise ratio (dB)</source>
+        <translation>Signal-to-noise ratio (dB)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="85"/>
+        <source>avg info</source>
+        <translation>avg info</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="158"/>
+        <source>index</source>
+        <translation>index</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="159"/>
+        <source>intensity</source>
+        <translation>intensity</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="161"/>
+        <source>value trajectory</source>
+        <translation>value trajectory</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="173"/>
+        <source>Clear Chart</source>
+        <translation>Clear Chart</translation>
+    </message>
+</context>
+<context>
+    <name>TemperatureConversion</name>
+    <message>
+        <location filename="../../src/form/plot/TemperatureConversion/temperatureconversion.ui" line="14"/>
+        <source>TemperatureConversion</source>
+        <translation>TemperatureConversion</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureConversion/temperatureconversion.ui" line="22"/>
+        <source>R = temperature * </source>
+        <translation>R = temperature * </translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureConversion/temperatureconversion.ui" line="42"/>
+        <source> + </source>
+        <translation> + </translation>
+    </message>
+</context>
+<context>
+    <name>TemperatureView</name>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.ui" line="14"/>
+        <source>Temperature</source>
+        <translation>Temperature</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.ui" line="23"/>
+        <source>info</source>
+        <translation>info</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="22"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="32"/>
+        <source>Set Range</source>
+        <translation>Set Range</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="23"/>
+        <source>Clear Chart</source>
+        <translation>Clear Chart</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="32"/>
+        <source>Range:</source>
+        <translation>Range:</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="65"/>
+        <source>index</source>
+        <translation>index</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="66"/>
+        <source>degree</source>
+        <translation>degree</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="67"/>
+        <source>temperature</source>
+        <translation>temperature</translation>
     </message>
 </context>
 </TS>
