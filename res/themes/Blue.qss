@@ -1074,6 +1074,16 @@ QTableView::item {
     border: none;
 }
 
+QTableView::item:selected {
+    background-color: #298ce1;
+    color: white;
+}
+
+QTableView::item:selected:!active {
+    background-color: #A0A0A0;
+    color: white;
+}
+
 QScrollBar:vertical {
     background: transparent;
     width: 14px;
