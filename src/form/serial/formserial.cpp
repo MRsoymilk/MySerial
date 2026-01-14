@@ -4,13 +4,13 @@
 
 #include <QFile>
 #include <QFileDialog>
+#include <QThread>
 
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QToolButton>
 #include "LineSend/linesend.h"
 #include "funcdef.h"
-#include "plot_algorithm.h"
 
 FormSerial::FormSerial(QWidget *parent)
     : QWidget(parent)
@@ -31,6 +31,15 @@ void FormSerial::retranslateUI()
     ui->retranslateUi(this);
 }
 
+enum STEP_EASY_CONNECT {
+    CONNECT_PORT = 1,
+    HANDSHAKE,
+    SET_INTEGRATION_TIME,
+    DATA_REQUEST,
+    FRAME_CHECK,
+    FINISH
+};
+
 bool FormSerial::startEasyConnect()
 {
     QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
@@ -44,9 +53,9 @@ bool FormSerial::startEasyConnect()
 #endif
     for (const auto &port : ports) {
         LOG_INFO("test port: {}", port);
-        if (!m_serial) {
-            m_serial = new QSerialPort(this);
-        }
+        statusReport(100 * CONNECT_PORT / FINISH, QString("connect to port: %1").arg(port));
+        closeSerial();
+        m_serial = new QSerialPort(this);
         m_serial->setPortName(port);
         m_serial->setBaudRate(115200);
         m_serial->setDataBits(static_cast<QSerialPort::DataBits>(8));
@@ -56,30 +65,64 @@ bool FormSerial::startEasyConnect()
             LOG_ERROR("error: {}", m_serial->errorString());
             continue;
         }
+        statusReport(100 * HANDSHAKE / FINISH, QString("%1 step [handshake]: start").arg(port));
         m_serial->clear(QSerialPort::AllDirections);
         send("DD3C000310CDFF");
-        if (m_serial->waitForReadyRead(100)) {
-            QByteArray response = m_serial->readAll();
-
-            qint64 start = QDateTime::currentMSecsSinceEpoch();
-
-            while (true) {
-                response += m_serial->readAll();
-                if (QDateTime::currentMSecsSinceEpoch() - start > 500)
-                    break;
-                if (!m_serial->waitForReadyRead(50))
-                    break;
-            }
-
-            QByteArray expected = QByteArray::fromHex("DE3A000311CEFF");
-            if (response.contains(expected)) {
+        statusReport(100 * HANDSHAKE / FINISH,
+                     QString("%1 step [handshake]: wait response").arg(port));
+        if (m_serial->waitForReadyRead(500)) {
+            QByteArray response_handshake = m_serial->readAll();
+            QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
+            LOG_INFO("cmd: DD3C000310CDFF -> {}", response_handshake.toHex().toUpper());
+            statusReport(100 * HANDSHAKE / FINISH,
+                         QString("%1 step [handshake]: check excepted").arg(port));
+            if (response_handshake.contains(expected_handshake)) {
+                {
+                    while (true) {
+                        statusReport(100 * SET_INTEGRATION_TIME / FINISH,
+                                     QString("%1 step [set integration time]: check excepted")
+                                         .arg(port));
+                        send("DD3C000622000005CDFF");
+                        m_serial->waitForReadyRead(500);
+                        QByteArray response = m_serial->readAll();
+                        QByteArray except = QByteArray::fromHex("DE3A000323CEFF");
+                        LOG_INFO("cmd: DD3C000622000005CDFF -> {}", response.toHex().toUpper());
+                        if (response == except) {
+                            break;
+                        }
+                    }
+                }
+                {
+                    while (true) {
+                        statusReport(100 * DATA_REQUEST / FINISH,
+                                     QString("%1 step [data request]: start").arg(port));
+                        send("DD3C000330CDFF");
+                        m_serial->waitForReadyRead(500);
+                        QByteArray response = m_serial->readAll();
+                        LOG_INFO("cmd: DD3C000330CDFF -> {}", response.toHex().toUpper());
+                        if (!response.isEmpty()) {
+                            break;
+                        }
+                    }
+                }
                 connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
                 return true;
             } else {
-                closeSerial();
+                statusReport(100 * FRAME_CHECK / FINISH,
+                             QString("%1 step [frame check]: start").arg(port));
+                if (doFrameExtra(response_handshake)) {
+                    statusReport(100 * FRAME_CHECK / FINISH,
+                                 QString("%1 step [frame check]: success.").arg(port));
+                    connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+                    return true;
+                } else {
+                    statusReport(100 * FRAME_CHECK / FINISH,
+                                 QString("%1 step [frame check]: fail!").arg(port));
+                }
             }
         } else {
-            closeSerial();
+            statusReport(100 * HANDSHAKE / FINISH,
+                         QString("%1 step [handshake]: no response").arg(port));
         }
     }
     return false;
@@ -87,6 +130,12 @@ bool FormSerial::startEasyConnect()
 
 void FormSerial::stopEasyConnect()
 {
+    send("DD3C000360CDFF");
+    if (m_serial) {
+        m_serial->flush();
+        m_serial->waitForBytesWritten(200);
+    }
+
     closeSerial();
 }
 
@@ -95,18 +144,10 @@ void FormSerial::writeEasyData(const QString &value)
     send(value);
 }
 
-void FormSerial::setEasyFrame()
-{
-    m_frameTypes = {
-        {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
-    };
-    m_algorithm = static_cast<int>(SHOW_ALGORITHM::F15_SINGLE);
-}
-
-void FormSerial::updateFrameTypes(int idx)
+void FormSerial::updateFrameTypes(const QString &algorithm)
 {
     m_frameTypes.clear();
-    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
+    if (m_algorithm == "F15_curves") {
         QStringList groups = SETTING_FRAME_F15Curves_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -134,7 +175,7 @@ void FormSerial::updateFrameTypes(int idx)
                 SETTING_FRAME_F15Curves_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
+    } else if (m_algorithm == "F15_single") {
         QStringList groups = SETTING_FRAME_F15Single_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -161,7 +202,7 @@ void FormSerial::updateFrameTypes(int idx)
                 SETTING_FRAME_F15Single_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
+    } else if (m_algorithm == "Play_mpu6050") {
         QStringList groups = SETTING_FRAME_PLAY_MPU6050_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -190,7 +231,7 @@ void FormSerial::updateFrameTypes(int idx)
                                                QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+    } else if (m_algorithm == "F30_curves") {
         QStringList groups = SETTING_FRAME_F30Curves_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -218,7 +259,7 @@ void FormSerial::updateFrameTypes(int idx)
                 SETTING_FRAME_F30Curves_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
+    } else if (m_algorithm == "F30_single") {
         QStringList groups = SETTING_FRAME_F30Single_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -245,7 +286,7 @@ void FormSerial::updateFrameTypes(int idx)
                 SETTING_FRAME_F30Single_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::LLC_CURVES)) {
+    } else if (m_algorithm == "LLC_curves") {
         QStringList groups = SETTING_FRAME_LLC_GROUPS();
         for (const auto &g : groups) {
             FrameType frame;
@@ -279,10 +320,6 @@ void FormSerial::getINI()
     m_ini.cycle = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
     m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
-
-    int current_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
-    m_algorithm = current_algorithm;
-    updateFrameTypes(m_algorithm);
 
     initMultSend();
 }
@@ -322,13 +359,13 @@ void FormSerial::sendRaw(const QByteArray &bytes)
     }
 }
 
-void FormSerial::onChangeFrameType(int index)
+void FormSerial::onChangeFrameType(const QString &algorithm)
 {
-    m_algorithm = index;
+    m_algorithm = algorithm;
     updateFrameTypes(m_algorithm);
 }
 
-void FormSerial::doFrameExtra(const QByteArray &data)
+bool FormSerial::doFrameExtra(const QByteArray &data)
 {
     m_recv_count += data.size();
     ui->labelRecvCount->setText(QString("recv: %1").arg(m_recv_count));
@@ -346,7 +383,7 @@ void FormSerial::doFrameExtra(const QByteArray &data)
     while (true) {
         if (m_frameTypes.isEmpty()) {
             m_buffer.clear();
-            return;
+            return false;
         }
         int firstHeaderIdx = -1;
         FrameType current_frame;
@@ -390,6 +427,7 @@ void FormSerial::doFrameExtra(const QByteArray &data)
             LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
             handleFrame(current_frame.name, frame_candidate);
             m_buffer.remove(0, current_frame.length);
+            return true;
         } else {
             // 长度不固定：查找 footer 位置
             int footerIdx = m_buffer.indexOf(current_frame.footer, current_frame.header.size());
@@ -408,8 +446,10 @@ void FormSerial::doFrameExtra(const QByteArray &data)
             handleFrame(current_frame.name, frame_candidate);
 
             m_buffer.remove(0, frame_len);
+            return true;
         }
     }
+    return false;
 }
 
 void FormSerial::onSimulateRecv(const QByteArray &bytes)
@@ -696,7 +736,7 @@ void FormSerial::on_cBoxPortName_activated(int index)
 
 void FormSerial::handleFrame(const QString &type, const QByteArray &data, const QByteArray &temp)
 {
-    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+    if (m_algorithm == "F30_curves") {
         if (type == "F30_31") {
             m_frame.bit31 = data;
         } else if (type == "F30_33") {
@@ -729,10 +769,10 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
                 m_frame.bit31.clear();
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
+    } else if (m_algorithm == "F30_single") {
         emit recv2PlotF30(data, {});
         emit recv2DataF30(data, {});
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
+    } else if (m_algorithm == "F15_curves") {
         if (type == "F15_31") {
             m_frame.bit31 = data;
         } else if (type == "F15_33") {
@@ -744,14 +784,14 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
                 m_frame.bit33.clear();
             }
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
+    } else if (m_algorithm == "F15_single") {
         if (type == "F15_31") {
             emit recv2DataF15(data, {});
             emit recv2PlotF15(data, {});
         }
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::PLAY_MPU6050)) {
+    } else if (m_algorithm == "Play_mpu6050") {
         emit recv2MPU(data);
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::LLC_CURVES)) {
+    } else if (m_algorithm == "LLC_curves") {
         if (type == "F30_31") {
             m_frame.bit31 = data;
         } else if (type == "F30_33") {

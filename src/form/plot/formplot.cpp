@@ -21,7 +21,6 @@
 #include "TemperatureConversion/temperatureconversion.h"
 #include "TemperatureView/temperatureview.h"
 #include "funcdef.h"
-#include "plot_algorithm.h"
 
 void FormPlot::saveChartAsImage(const QString &filePath)
 {
@@ -58,6 +57,11 @@ void FormPlot::retranslateUI()
     ui->retranslateUi(this);
 }
 
+void FormPlot::setAlgorithm(const QString &algorithm)
+{
+    m_algorithm = algorithm;
+}
+
 void FormPlot::onDataReceivedLLC(const QByteArray &data31,
                                  const QByteArray &data33,
                                  const double temperature)
@@ -77,21 +81,6 @@ void FormPlot::getINI()
     if (offset33 != 0) {
         ui->spinBox33Offset->setValue(offset33);
     }
-
-    ui->comboBoxAlgorithm->blockSignals(true);
-    ui->comboBoxAlgorithm->addItems({
-        "Freedom",
-        "F15_curves",
-        "F15_single",
-        "play_mpu6050",
-        "F30_curves",
-        "F30_single",
-        "LLC_curves",
-    });
-    ui->comboBoxAlgorithm->blockSignals(false);
-
-    int algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
-    ui->comboBoxAlgorithm->setCurrentIndex(algorithm);
 
     double offset = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET, "0.0").toDouble();
     double step = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_STEP, "1.0").toDouble();
@@ -579,12 +568,6 @@ void FormPlot::on_spinBox33Offset_valueChanged(int val)
     setINI();
 }
 
-void FormPlot::on_comboBoxAlgorithm_currentIndexChanged(int index)
-{
-    SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, QString::number(index));
-    emit changeFrameType(index);
-}
-
 void FormPlot::on_tBtnImgSave_clicked()
 {
     QString filePath = QFileDialog::getSaveFileName(this,
@@ -793,8 +776,8 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
     }
 
     int xPeak = maxPeak.x();
-    const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
-    if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
+    // const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
+    if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F15_CURVES)*/ "F15_curves") {
         // 在曲线33中找到与该 X 坐标最接近的点
         double y = 0;
         if (m_series33->count() > xPeak) {
@@ -806,11 +789,11 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
         if (m_trajectory) {
             m_trajectory->appendPeak(raw);
         }
-    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
+    } else if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)*/ "F15_single") {
         m_trajectory->appendPeak(maxPeak.rx());
-    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)) {
+    } else if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)*/ "F30_single") {
         m_trajectory->appendPeak(maxPeak.rx());
-    } else if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+    } else if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F30_CURVES)*/ "F30_curves") {
         // 在曲线33中找到与该 X 坐标最接近的点
         double y = 0;
         if (m_series33->count() + m_offset > xPeak) {
@@ -841,8 +824,8 @@ void FormPlot::callFindPeak()
         auto test_33 = m_series33->points();
         for (const auto &pt : peaks31) {
             m_peaks->append(pt);
-            const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
-            if (idxAlgorithm == static_cast<int>(SHOW_ALGORITHM::F30_CURVES)) {
+            // const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
+            if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F30_CURVES)*/ "F30_curves") {
                 // 在曲线33中找到与该 X 坐标最接近的点
                 double y = 0;
                 if (m_series33->count() > pt.x() - m_offset) {

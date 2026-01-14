@@ -146,132 +146,6 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="pageEasy">
-       <layout class="QGridLayout" name="gridLayout_5" rowstretch="1,4,6" columnstretch="3,7">
-        <item row="0" column="0" colspan="2">
-         <layout class="QHBoxLayout" name="hLayOperation">
-          <item>
-           <widget class="QToolButton" name="tBtnSwitch">
-            <property name="text">
-             <string>start/stop</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="tBtnPause">
-            <property name="text">
-             <string>pause</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="tBtnZoom">
-            <property name="text">
-             <string>zoom</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="tBtnCrop">
-            <property name="text">
-             <string>crop</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="tBtnPeak">
-            <property name="text">
-             <string>peak</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="tBtnFWHM">
-            <property name="text">
-             <string>FWHM</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="tBtnImg">
-            <property name="text">
-             <string>img</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_Operation">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="0">
-         <layout class="QGridLayout" name="gLayInfo">
-          <item row="0" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="labelIntegrationTime">
-              <property name="text">
-               <string>Integration time</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="spinBox">
-              <property name="maximum">
-               <number>9999</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_ms">
-              <property name="text">
-               <string>ms</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="1" rowspan="2">
-         <layout class="QGridLayout" name="gLayPlot"/>
-        </item>
-        <item row="2" column="0">
-         <widget class="QTableView" name="tableViewValue"/>
-        </item>
-       </layout>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -302,6 +176,7 @@
     <addaction name="actionOSX_Lite"/>
     <addaction name="actionOSX_Dark"/>
     <addaction name="actionHelloKitty"/>
+    <addaction name="actionBlue"/>
    </widget>
    <widget class="QMenu" name="menuMode">
     <property name="title">
@@ -310,9 +185,20 @@
     <addaction name="actionEasy"/>
     <addaction name="actionExpert"/>
    </widget>
+   <widget class="QMenu" name="menuAlgorithm">
+    <property name="title">
+     <string>Algorithm</string>
+    </property>
+    <addaction name="actionFreedom"/>
+    <addaction name="actionF15_single"/>
+    <addaction name="actionF15_curve"/>
+    <addaction name="actionF30_single"/>
+    <addaction name="actionF30_curves"/>
+   </widget>
    <addaction name="menuLanguage"/>
    <addaction name="menuTheme"/>
    <addaction name="menuMode"/>
+   <addaction name="menuAlgorithm"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_en">
@@ -393,6 +279,54 @@
    </property>
    <property name="text">
     <string>Expert</string>
+   </property>
+  </action>
+  <action name="actionBlue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Blue</string>
+   </property>
+  </action>
+  <action name="actionFreedom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Freedom</string>
+   </property>
+  </action>
+  <action name="actionF15_single">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>F15_single</string>
+   </property>
+  </action>
+  <action name="actionF15_curve">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>F15_curves</string>
+   </property>
+  </action>
+  <action name="actionF30_single">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>F30_single</string>
+   </property>
+  </action>
+  <action name="actionF30_curves">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>F30_curves</string>
    </property>
   </action>
  </widget>

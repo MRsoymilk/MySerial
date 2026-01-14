@@ -50,6 +50,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="tBtnShowData">
+       <property name="text">
+        <string>show data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="tBtnToVoltage">
        <property name="text">
         <string>to_voltage</string>

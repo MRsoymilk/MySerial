@@ -6,64 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1008</width>
+    <width>1090</width>
     <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Plot</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0">
-   <item row="0" column="4">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <layout class="QHBoxLayout" name="hLay31">
-       <item>
-        <widget class="QLabel" name="label31">
-         <property name="text">
-          <string>offset_31bit</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="spinBox31Offset">
-         <property name="minimum">
-          <number>-10</number>
-         </property>
-         <property name="maximum">
-          <number>10</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="hLay33">
-       <item>
-        <widget class="QLabel" name="label33">
-         <property name="text">
-          <string>offset_33bit</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="spinBox33Offset">
-         <property name="minimum">
-          <number>-10</number>
-         </property>
-         <property name="maximum">
-          <number>10</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="7">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0">
+   <item row="0" column="6">
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QToolButton" name="tBtnOffset">
@@ -87,44 +38,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="8">
-    <layout class="QVBoxLayout" name="verticalLayout_4">
-     <item>
-      <widget class="QToolButton" name="tBtnStep">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>step</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="dSpinBoxStep"/>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0" colspan="9">
-    <widget class="QStackedWidget" name="stackedWidget"/>
-   </item>
-   <item row="0" column="3">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="labelAlgorithm">
-       <property name="text">
-        <string>algorithm</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBoxAlgorithm"/>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0" colspan="9">
+   <item row="2" column="0" colspan="8">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QScrollArea" name="scrollArea">
@@ -339,12 +253,64 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="6">
-    <layout class="QVBoxLayout" name="vLayRangeX">
+   <item row="0" column="3">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
-      <layout class="QHBoxLayout" name="hLayLabelX">
+      <layout class="QHBoxLayout" name="hLay31">
        <item>
-        <widget class="QToolButton" name="tBtnRangeX">
+        <widget class="QLabel" name="label31">
+         <property name="text">
+          <string>offset_31bit</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox31Offset">
+         <property name="minimum">
+          <number>-10</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="hLay33">
+       <item>
+        <widget class="QLabel" name="label33">
+         <property name="text">
+          <string>offset_33bit</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox33Offset">
+         <property name="minimum">
+          <number>-10</number>
+         </property>
+         <property name="maximum">
+          <number>10</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="8">
+    <widget class="QStackedWidget" name="stackedWidget"/>
+   </item>
+   <item row="0" column="4">
+    <layout class="QVBoxLayout" name="vLayRangeY">
+     <item>
+      <layout class="QHBoxLayout" name="hLayLabelY">
+       <item>
+        <widget class="QToolButton" name="tBtnRangeY">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -352,16 +318,16 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>x axis</string>
+          <string>y axis</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="hLayRangeX">
+      <layout class="QHBoxLayout" name="hLayRangeY">
        <item>
-        <widget class="QSpinBox" name="spinBoxStartX">
+        <widget class="QSpinBox" name="spinBoxStartY">
          <property name="minimum">
           <number>-999999</number>
          </property>
@@ -371,7 +337,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="labelTo">
+        <widget class="QLabel" name="label">
          <property name="text">
           <string>-</string>
          </property>
@@ -381,7 +347,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBoxEndX">
+        <widget class="QSpinBox" name="spinBoxEndY">
          <property name="minimum">
           <number>-999999</number>
          </property>
@@ -429,12 +395,32 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="5">
-    <layout class="QVBoxLayout" name="vLayRangeY">
+   <item row="0" column="7">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <layout class="QHBoxLayout" name="hLayLabelY">
+      <widget class="QToolButton" name="tBtnStep">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>step</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="dSpinBoxStep"/>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="5">
+    <layout class="QVBoxLayout" name="vLayRangeX">
+     <item>
+      <layout class="QHBoxLayout" name="hLayLabelX">
        <item>
-        <widget class="QToolButton" name="tBtnRangeY">
+        <widget class="QToolButton" name="tBtnRangeX">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -442,16 +428,16 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>y axis</string>
+          <string>x axis</string>
          </property>
         </widget>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="hLayRangeY">
+      <layout class="QHBoxLayout" name="hLayRangeX">
        <item>
-        <widget class="QSpinBox" name="spinBoxStartY">
+        <widget class="QSpinBox" name="spinBoxStartX">
          <property name="minimum">
           <number>-999999</number>
          </property>
@@ -461,7 +447,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="labelTo">
          <property name="text">
           <string>-</string>
          </property>
@@ -471,7 +457,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBoxEndY">
+        <widget class="QSpinBox" name="spinBoxEndX">
          <property name="minimum">
           <number>-999999</number>
          </property>

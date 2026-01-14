@@ -617,3 +617,5 @@ void FormPlotHistory::on_tBtnToVoltage_clicked()
     m_enableToVoltage = !m_enableToVoltage;
     ui->tBtnToVoltage->setChecked(m_enableToVoltage);
 }
+
+void FormPlotHistory::on_tBtnShowData_clicked() {}

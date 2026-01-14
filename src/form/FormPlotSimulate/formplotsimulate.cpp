@@ -1,7 +1,6 @@
 #include "formplotsimulate.h"
 #include <QFileDialog>
 #include "funcdef.h"
-#include "plot_algorithm.h"
 #include "ui_formplotsimulate.h"
 
 FormPlotSimulate::FormPlotSimulate(QWidget *parent)
@@ -22,16 +21,10 @@ void FormPlotSimulate::retranslateUI()
     ui->retranslateUi(this);
 }
 
-void FormPlotSimulate::onChangeFrameType(int index)
-{
-    m_algorithm = index;
-}
-
 void FormPlotSimulate::getINI()
 {
     m_ini.file = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);
     ui->lineEditPath->setText(m_ini.file);
-    m_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
 }
 
 void FormPlotSimulate::setINI()

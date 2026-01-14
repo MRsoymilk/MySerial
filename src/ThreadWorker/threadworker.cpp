@@ -2,14 +2,12 @@
 #include <QLineSeries>
 #include <QPointF>
 #include "funcdef.h"
-#include "plot_algorithm.h"
 
 ThreadWorker::ThreadWorker(QObject *parent)
     : QObject(parent)
 {
     m_offset31 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET31, "0").toInt();
     m_offset33 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET33, "0").toInt();
-    m_algorithm = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_ALGORITHM, "0").toInt();
 }
 
 ThreadWorker::~ThreadWorker() {}
@@ -24,7 +22,7 @@ void ThreadWorker::setOffset33(const int &offset)
     m_offset33 = offset;
 }
 
-void ThreadWorker::setAlgorithm(int algorithm)
+void ThreadWorker::setAlgorithm(const QString &algorithm)
 {
     m_algorithm = algorithm;
 }
@@ -218,17 +216,18 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
     QVector<double> raw31;
     QVector<double> raw33;
     int numPoints = 0;
+    int numPointsRaw = 0;
 
-    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_CURVES)) {
+    if (m_algorithm == "F15_curves") {
         processF15Curve31(data31, v_voltage31, raw31, yMin, yMax);
         processF15Curve33(data33, v_voltage33, raw33, yMin, yMax);
-    } else if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
-        processF15Curve33(data33, v_voltage33, raw33, yMin, yMax);
+    } else if (m_algorithm == "F15_single") {
+        processF15Curve31(data31, v_voltage31, raw31, yMin, yMax);
     }
 
     CURVE curve31;
     CURVE curve33;
-    if (m_algorithm == static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)) {
+    if (m_algorithm == "F15_single") {
         for (int i = 0; i < v_voltage31.size(); ++i) {
             curve31.data.push_back({static_cast<double>(i), v_voltage31[i]});
             curve31.y_min = std::min(curve31.y_min, v_voltage31[i]);
@@ -236,6 +235,13 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
         }
         curve31.x_min = 0;
         curve31.x_max = v_voltage31.size();
+        for (int i = 0; i < raw31.size(); ++i) {
+            curve31.raw.data.push_back({static_cast<double>(i), raw31[i]});
+            curve31.raw.y_min = std::min(curve31.raw.y_min, raw31[i]);
+            curve31.raw.y_max = std::max(curve31.raw.y_max, raw31[i]);
+        }
+        curve31.raw.x_min = 0;
+        curve31.raw.x_max = raw31.size();
     } else {
         numPoints = std::min(v_voltage31.size(), v_voltage33.size());
         for (int i = 0; i < numPoints; ++i) {
@@ -250,6 +256,20 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
         curve31.x_max = numPoints;
         curve33.x_min = 0;
         curve33.x_max = numPoints;
+
+        numPointsRaw = std::min(raw31.size(), raw33.size());
+        for (int i = 0; i < numPointsRaw; ++i) {
+            curve31.raw.data.push_back({static_cast<double>(i), raw31[i]});
+            curve31.raw.y_min = std::min(curve31.raw.y_min, raw31[i]);
+            curve31.raw.y_max = std::max(curve31.raw.y_max, raw31[i]);
+            curve33.raw.data.push_back({static_cast<double>(i), raw33[i]});
+            curve33.raw.y_min = std::min(curve33.raw.y_min, raw33[i]);
+            curve33.raw.y_max = std::max(curve33.raw.y_max, raw33[i]);
+        }
+        curve31.raw.x_min = 0;
+        curve31.raw.x_max = numPointsRaw;
+        curve33.raw.x_min = 0;
+        curve33.raw.x_max = numPointsRaw;
     }
 
     if (!m_autoupdate_threshold) {
@@ -455,15 +475,17 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
             out_correction[i].setY((out_correction[i - 1].y() + out_correction[i + 1].y()) / 2.0);
         }
 #endif
-        double distance = 99999;
+        double min_distance = std::numeric_limits<double>::max();
         double target_idx = 0;
         double x = m_correction_offset + idx_threshold * m_correction_step;
         double current_threshold = threshold[idx_threshold];
+        QVector<int> v_idx;
         for (int j = idx_max; j < idx_min; ++j) {
             double _distance = std::abs(current_threshold - raw33[j]);
-            if (distance > _distance) {
-                distance = _distance;
+            if (min_distance > _distance) {
+                min_distance = _distance;
                 target_idx = j;
+                v_idx.push_back(target_idx);
             }
         }
         qDebug() << QString("idx: %3> found: [%1] -> [%2]")

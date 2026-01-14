@@ -2,6 +2,7 @@
 #define FORMSERIAL_H
 
 #include <QMap>
+#include <QPointer>
 #include <QSerialPort>
 #include <QWidget>
 
@@ -53,7 +54,7 @@ public:
     bool startEasyConnect();
     void stopEasyConnect();
     void writeEasyData(const QString &value);
-    void setEasyFrame();
+    void updateFrameTypes(const QString &idx);
 
 signals:
     void recv2PlotLLC(const QByteArray &data31,
@@ -73,10 +74,11 @@ signals:
                       const QByteArray &temperature = "");
     void recv2MPU(const QByteArray &data);
     void recvTemperature(double temperature);
+    void statusReport(int progress, const QString &msg);
 
 public slots:
     void sendRaw(const QByteArray &bytes);
-    void onChangeFrameType(int index);
+    void onChangeFrameType(const QString &algorithm);
     void onSimulateRecv(const QByteArray &bytes);
 
 protected:
@@ -94,8 +96,7 @@ private:
                      const QByteArray &frame_candidate,
                      const QByteArray &temp = "");
     void loadPage(int page);
-    void updateFrameTypes(int idx);
-    void doFrameExtra(const QByteArray &data);
+    bool doFrameExtra(const QByteArray &data);
 
 private slots:
     void on_btnRecvSave_clicked();
@@ -121,7 +122,7 @@ private:
     Ui::FormSerial *ui;
     QMap<QString, SERIAL> m_mapSerial;
     bool m_switch;
-    QSerialPort *m_serial = nullptr;
+    QPointer<QSerialPort> m_serial;
     INI_SERIAL m_ini;
     QByteArray m_buffer;
     bool m_show_send;
@@ -137,7 +138,7 @@ private:
     };
 
     QList<FrameType> m_frameTypes = {};
-    int m_algorithm;
+    QString m_algorithm;
     FormSerial::FRAME m_frame;
     long long m_recv_count;
 

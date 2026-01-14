@@ -5,6 +5,8 @@
 #include "MyChartView/mychartview.h"
 #include "global.h"
 
+class FormPlotData;
+
 namespace Ui {
 class FormPlotHistory;
 }
@@ -49,10 +51,9 @@ private slots:
     void on_tBtnToPlot_clicked();
     void onMenuRemove();
     void onMenuClear();
-
     void on_tBtnToPlotWith_clicked();
-
     void on_tBtnToVoltage_clicked();
+    void on_tBtnShowData_clicked();
 
 private:
     void updatePlot31();
@@ -60,6 +61,7 @@ private:
     void updatePlot(int index = 0);
     void init();
     void getFittingChart();
+    void toPlot();
 
 private:
     Ui::FormPlotHistory *ui;
@@ -83,7 +85,6 @@ private:
     QValueAxis *m_axisSplit31Y;
     QValueAxis *m_axisSplit33X;
     QValueAxis *m_axisSplit33Y;
-    void toPlot();
     bool m_enableToVoltage = false;
 };
 

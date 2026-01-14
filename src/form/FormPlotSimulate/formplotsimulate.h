@@ -25,9 +25,6 @@ signals:
     void windowClose();
     void simulateDataReady(const QByteArray &data);
 
-public slots:
-    void onChangeFrameType(int index);
-
 protected:
     void closeEvent(QCloseEvent *event) override;
 
@@ -44,7 +41,6 @@ private:
 private:
     Ui::FormPlotSimulate *ui;
     INI_SIMULATE m_ini;
-    int m_algorithm;
 };
 
 #endif // FORMPLOTSIMULATE_H

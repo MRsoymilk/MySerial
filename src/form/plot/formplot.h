@@ -29,6 +29,7 @@ public:
     explicit FormPlot(QWidget *parent = nullptr);
     ~FormPlot();
     void retranslateUI();
+    void setAlgorithm(const QString &algorithm);
 
 signals:
     void newDataReceivedLLC(const QByteArray &data31,
@@ -42,7 +43,7 @@ signals:
                             const double &temperature);
     void sendOffset31(int val);
     void sendOffset33(int val);
-    void changeFrameType(int index);
+    // void changeFrameType(int index);
     void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0);
     void toExternalSpectral(const QJsonObject &spectral);
 
@@ -70,7 +71,7 @@ private slots:
     void on_tBtnZoom_clicked();
     void on_spinBox31Offset_valueChanged(int val);
     void on_spinBox33Offset_valueChanged(int val);
-    void on_comboBoxAlgorithm_currentIndexChanged(int index);
+    // void on_comboBoxAlgorithm_currentIndexChanged(int index);
     void on_tBtnImgSave_clicked();
     void on_spinBoxStartX_valueChanged(int val);
     void on_spinBoxEndX_valueChanged(int val);
@@ -157,6 +158,7 @@ private:
     bool m_enableVoltage = false;
     double m_k = 0;
     double m_b = 0;
+    QString m_algorithm;
 };
 
 #endif // FORMPLOT_H

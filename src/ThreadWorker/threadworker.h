@@ -13,7 +13,7 @@ public:
     ~ThreadWorker();
     void setOffset31(const int &offset);
     void setOffset33(const int &offset);
-    void setAlgorithm(int);
+    void setAlgorithm(const QString &algorithm);
 
 public slots:
     void processDataF30(const QByteArray &data31,
@@ -76,7 +76,7 @@ private:
 private:
     int m_offset33 = 0;
     int m_offset31 = 0;
-    int m_algorithm = 0;
+    QString m_algorithm = "";
     QLineSeries *m_series;
     double m_correction_offset = 900;
     double m_correction_step = 1;
