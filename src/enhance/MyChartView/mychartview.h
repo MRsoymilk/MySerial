@@ -120,6 +120,9 @@ public:
         setRubberBand(enabled ? QChartView::RectangleRubberBand : QChartView::NoRubberBand);
     }
 
+signals:
+    void toSelect(const QPointF &point);
+
 protected:
     void mouseMoveEvent(QMouseEvent *event) override
     {
@@ -147,7 +150,7 @@ protected:
         qreal y = value.y();
 
         // 找最近点
-        QPointF closestPoint;
+
         QString seriesName;
         qreal minXDist = std::numeric_limits<qreal>::max();
         qreal minYDist = std::numeric_limits<qreal>::max();
@@ -207,6 +210,12 @@ protected:
 
     void mouseReleaseEvent(QMouseEvent *event) override { QChartView::mouseReleaseEvent(event); }
 
+    void mousePressEvent(QMouseEvent *event) override
+    {
+        QChartView::mousePressEvent(event);
+        emit toSelect(closestPoint);
+    }
+
 private:
     void initHelpers()
     {
@@ -264,6 +273,7 @@ private:
     QRectF m_initialRange;
     bool m_enableBack;
     bool m_enableCrop;
+    QPointF closestPoint;
 };
 
 #endif // MYCHARTVIEW_H
