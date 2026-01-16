@@ -9,6 +9,16 @@ Serial port assistant based on Qt6
 - SerialPort
 - Network
 
+## mode
+
+### Easy
+
+![mode easy](README/mode_easy.jpg)
+
+### Expert
+
+![mode expert](README/mode_expert.jpg)
+
 ## Function
 
 ### Serial
