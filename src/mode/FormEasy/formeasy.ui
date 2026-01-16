@@ -204,12 +204,19 @@
          <property name="text">
           <string>x axis</string>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QSpinBox" name="spinBoxXStart"/>
+          <widget class="QSpinBox" name="spinBoxXStart">
+           <property name="maximum">
+            <number>999999</number>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_x">
@@ -219,7 +226,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBoxXEnd"/>
+          <widget class="QSpinBox" name="spinBoxXEnd">
+           <property name="maximum">
+            <number>999999</number>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

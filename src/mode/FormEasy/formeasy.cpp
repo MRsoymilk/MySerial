@@ -220,8 +220,10 @@ void FormEasy::init()
     });
 
     connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [this]() {
-        m_enableFourier = false;
-        ui->tBtnFourier->setChecked(false);
+        ui->tBtnSimulate->setChecked(false);
+    });
+    connect(m_plotHistory, &FormPlotHistory::windowClose, this, [this]() {
+        ui->tBtnHistory->setChecked(false);
     });
     connect(m_accumulate, &Accumulate::windowClose, this, [this]() {
         m_enableAccumulate = false;
@@ -230,6 +232,10 @@ void FormEasy::init()
     connect(m_snr, &SignalNoiseRatio::windowClose, this, [this]() {
         m_enableSNR = false;
         ui->tBtnSNR->setChecked(false);
+    });
+    connect(m_fourierTransform, &FourierTransform::windowClose, this, [this]() {
+        m_enableFourier = false;
+        ui->tBtnFourier->setChecked(false);
     });
 }
 
