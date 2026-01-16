@@ -85,5 +85,10 @@ const QString CFG_FITTING_ARCSIN_FORMULA = "formula";
 const QString CFG_FITTING_ARCSIN_THRESHOLD_NUM = "threshold_num";
 const QString CFG_FITTING_ARCSIN_THRESHOLD_OFFSET = "threshold_offset";
 const QString CFG_FITTING_ARCSIN_THRESHOLD_STEP = "threshold_step";
+const QString CFG_GROUP_MODE_EASY = "ModeEasy";
+const QString CFG_MODE_EASY_Y_START = "y_start";
+const QString CFG_MODE_EASY_Y_END = "y_end";
+const QString CFG_MODE_EASY_X_START = "x_start";
+const QString CFG_MODE_EASY_X_END = "x_end";
 
 #endif

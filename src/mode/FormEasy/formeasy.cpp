@@ -94,7 +94,17 @@ void FormEasy::on_tBtnSwitch_clicked()
 
 void FormEasy::init()
 {
+    int x_start = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_START, "0").toInt();
+    int x_end = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_END, "1").toInt();
+    int y_start = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_START, "0").toInt();
+    int y_end = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_END, "1").toInt();
+    ui->spinBoxXStart->setValue(x_start);
+    ui->spinBoxXEnd->setValue(x_end);
+    ui->spinBoxYStart->setValue(y_start);
+    ui->spinBoxYEnd->setValue(y_end);
+
     m_line = new QLineSeries();
+    m_line->setName(tr("curve"));
 
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
@@ -107,7 +117,7 @@ void FormEasy::init()
     m_line->attachAxis(m_axisY);
     m_axisX->setTitleText(tr("index"));
     m_axisY->setTitleText(tr("intensity"));
-    m_chart->setTitle(tr("wavelength"));
+    m_chart->setTitle(tr("Spectral"));
     m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->gLayPlot->addWidget(m_chartView);
@@ -129,18 +139,18 @@ void FormEasy::init()
 
     ui->spinBoxIntegrationTime->setValue(5);
 
-    ui->tBtnSwitch->setToolTip("switch");
-    ui->tBtnPause->setToolTip("pause");
-    ui->tBtnZoom->setToolTip("zoom");
-    ui->tBtnCrop->setToolTip("crop");
-    ui->tBtnPeak->setToolTip("find peak");
-    ui->tBtnFWHM->setToolTip("FWHM");
-    ui->tBtnImg->setToolTip("save image");
-    ui->tBtnSimulate->setToolTip("simulate");
-    ui->tBtnHistory->setToolTip("history");
-    ui->tBtnFourier->setToolTip("fourier");
-    ui->tBtnAccumulate->setToolTip("accumulate");
-    ui->tBtnSNR->setToolTip("signal noise ratio");
+    ui->tBtnSwitch->setToolTip(tr("switch"));
+    ui->tBtnPause->setToolTip(tr("pause"));
+    ui->tBtnZoom->setToolTip(tr("zoom"));
+    ui->tBtnCrop->setToolTip(tr("crop"));
+    ui->tBtnPeak->setToolTip(tr("find peak"));
+    ui->tBtnFWHM->setToolTip(tr("FWHM"));
+    ui->tBtnImg->setToolTip(tr("save image"));
+    ui->tBtnSimulate->setToolTip(tr("simulate"));
+    ui->tBtnHistory->setToolTip(tr("history"));
+    ui->tBtnFourier->setToolTip(tr("fourier"));
+    ui->tBtnAccumulate->setToolTip(tr("accumulate"));
+    ui->tBtnSNR->setToolTip(tr("signal noise ratio"));
 
     ui->tBtnZoom->setChecked(true);
 
@@ -156,6 +166,7 @@ void FormEasy::init()
     m_peaks->setPointLabelsColor(Qt::red);
     m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
     m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
+    m_peaks->setVisible(false);
 
     formSerial = new FormSerial;
     m_workerThread = new QThread(this);
@@ -334,6 +345,7 @@ void FormEasy::on_tBtnPeak_clicked()
 {
     m_findPeak = !m_findPeak;
     ui->tBtnPeak->setChecked(m_findPeak);
+    m_peaks->setVisible(m_findPeak);
     callFindPeak();
 }
 
@@ -432,15 +444,28 @@ void FormEasy::updatePlot(const CURVE &curve31,
 
     if (m_autoZoom) {
         if (m_toVoltage) {
-            m_axisX->setRange(curve31.x_min + 900, curve31.x_max + 900);
             m_axisY->setRange(curve31.y_min, curve31.y_max);
         } else {
-            m_axisX->setRange(curve31.raw.x_min + 900, curve31.raw.x_max + 900);
             m_axisY->setRange(curve31.raw.y_min, curve31.raw.y_max);
         }
     } else {
         m_axisY->setRange(m_y_start, m_y_end);
     }
+
+    if (m_enableAxisX) {
+        if (m_toVoltage) {
+            m_axisX->setRange(m_x_start, m_x_end);
+        } else {
+            m_axisX->setRange(m_x_start, m_x_end);
+        }
+    } else {
+        if (m_toVoltage) {
+            m_axisX->setRange(curve31.x_min + 900, curve31.x_max + 900);
+        } else {
+            m_axisX->setRange(curve31.raw.x_min + 900, curve31.raw.x_max + 900);
+        }
+    }
+
     callFindPeak();
     callCalcFWHM();
 }
@@ -678,9 +703,37 @@ void FormEasy::on_tBtnToVoltage_clicked()
 void FormEasy::on_spinBoxYStart_valueChanged(int val)
 {
     m_y_start = val;
+    if (m_enableAxisY) {
+        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_START, QString::number(val));
+    }
 }
 
 void FormEasy::on_spinBoxYEnd_valueChanged(int val)
 {
     m_y_end = val;
+    if (m_enableAxisY) {
+        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_END, QString::number(val));
+    }
+}
+
+void FormEasy::on_spinBoxXStart_valueChanged(int val)
+{
+    m_x_start = val;
+    if (m_enableAxisX) {
+        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_START, QString::number(val));
+    }
+}
+
+void FormEasy::on_spinBoxXEnd_valueChanged(int val)
+{
+    m_x_end = val;
+    if (m_enableAxisX) {
+        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_END, QString::number(val));
+    }
+}
+
+void FormEasy::on_tBtnAxisX_clicked()
+{
+    m_enableAxisX = !m_enableAxisX;
+    ui->tBtnAxisX->setChecked(m_enableAxisX);
 }

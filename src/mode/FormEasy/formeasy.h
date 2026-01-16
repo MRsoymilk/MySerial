@@ -59,9 +59,11 @@ private slots:
     void on_tBtnAxisY_clicked();
     void on_tBtnToVoltage_clicked();
 
-    void on_spinBoxYStart_valueChanged(int arg1);
-
-    void on_spinBoxYEnd_valueChanged(int arg1);
+    void on_spinBoxYStart_valueChanged(int val);
+    void on_spinBoxYEnd_valueChanged(int val);
+    void on_spinBoxXStart_valueChanged(int val);
+    void on_spinBoxXEnd_valueChanged(int val);
+    void on_tBtnAxisX_clicked();
 
 private:
     void init();
@@ -95,12 +97,15 @@ private:
     bool m_enableCrop = false;
     bool m_autoZoom = true;
     bool m_enableAxisY = false;
+    bool m_enableAxisX = false;
     bool m_pause = false;
     bool m_findPeak = false;
     bool m_calcFWHM = false;
     bool m_toVoltage = false;
     int m_y_start = 0;
     int m_y_end = 0;
+    int m_x_start = 0;
+    int m_x_end = 0;
     QScatterSeries *m_peaks;
     QList<QLineSeries *> m_fwhmLines;
     QList<QGraphicsSimpleTextItem *> m_fwhmLabels;
