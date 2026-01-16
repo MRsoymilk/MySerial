@@ -52,21 +52,23 @@ bool FormEasy::connectEasyMode()
     formSerial->updateFrameTypes(algorithm);
     m_worker->setAlgorithm(algorithm);
     bool isConnect = false;
-    int connect_count = 0;
-    for (;;) {
-        overlay->updateTry(++connect_count);
-        isConnect = formSerial->startEasyConnect();
-        if (isConnect) {
-            LOG_INFO("connect [{}] success.", connect_count);
-            break;
-        } else {
-            LOG_WARN("connect [{}] failed!", connect_count);
-        }
-    }
 
-    overlay->hide();
-    overlay->deleteLater();
-    return isConnect;
+    int *connect_count = new int(0);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [=]() mutable {
+        overlay->updateTry(++(*connect_count));
+
+        if (formSerial->startEasyConnect()) {
+            LOG_INFO("connect [{}] success.", *connect_count);
+            timer->stop();
+            overlay->deleteLater();
+            timer->deleteLater();
+            delete connect_count;
+        }
+    });
+    timer->start(500);
+    return true;
 }
 
 void FormEasy::closeEasyMode()
@@ -449,11 +451,7 @@ void FormEasy::updatePlot(const CURVE &curve31,
     m_line->replace(v);
 
     if (m_autoZoom) {
-        if (m_toVoltage) {
-            m_axisY->setRange(curve31.y_min, curve31.y_max);
-        } else {
-            m_axisY->setRange(curve31.raw.y_min, curve31.raw.y_max);
-        }
+        m_axisY->setRange(val_min, val_max);
     } else {
         m_axisY->setRange(m_y_start, m_y_end);
     }
