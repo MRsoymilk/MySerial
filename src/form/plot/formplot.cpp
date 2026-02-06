@@ -783,11 +783,11 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
         if (m_series33->count() > xPeak) {
             y = m_series33->at(xPeak).y();
         }
-
-        // 转换为 raw 值
-        int raw = static_cast<int>((1 << 13) * 1.0 * y / 3.3);
+        if (m_enableVoltage) {
+            y = static_cast<int>((1 << 13) * 1.0 * y / 3.3);
+        }
         if (m_trajectory) {
-            m_trajectory->appendPeak(raw);
+            m_trajectory->appendPeak(y);
         }
     } else if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)*/ "F15_single") {
         m_trajectory->appendPeak(maxPeak.rx());
@@ -799,11 +799,11 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
         if (m_series33->count() + m_offset > xPeak) {
             y = m_series33->at(xPeak - m_offset).y();
         }
-
-        // 转换为 raw 值
-        int raw = y * 0x8000 / 3.3;
+        if (m_enableVoltage) {
+            y = y * 0x8000 / 3.3;
+        }
         if (m_trajectory) {
-            m_trajectory->appendPeak(raw);
+            m_trajectory->appendPeak(y);
         }
     }
 }
