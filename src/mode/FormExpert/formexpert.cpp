@@ -313,6 +313,7 @@ void FormExpert::init()
             formSerial,
             &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
+    connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData);
 
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     connect(formPlot,

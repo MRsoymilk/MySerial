@@ -1,13 +1,26 @@
 #include "formplotsimulate.h"
-#include <QFileDialog>
-#include "funcdef.h"
 #include "ui_formplotsimulate.h"
+
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QRegularExpression>
+#include <QTextStream>
+
+#include "funcdef.h"
 
 FormPlotSimulate::FormPlotSimulate(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::FormPlotSimulate)
 {
     ui->setupUi(this);
+
+    // ===== 初始化 Timer =====
+    m_timer = new QTimer(this);
+    m_timer->setInterval(5); // 5ms 一包，可调
+
+    connect(m_timer, &QTimer::timeout, this, &FormPlotSimulate::sendChunk);
+
     init();
 }
 
@@ -21,9 +34,15 @@ void FormPlotSimulate::retranslateUI()
     ui->retranslateUi(this);
 }
 
+void FormPlotSimulate::init()
+{
+    getINI();
+}
+
 void FormPlotSimulate::getINI()
 {
     m_ini.file = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);
+
     ui->lineEditPath->setText(m_ini.file);
 }
 
@@ -32,20 +51,25 @@ void FormPlotSimulate::setINI()
     SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE, m_ini.file);
 }
 
-void FormPlotSimulate::init()
-{
-    getINI();
-}
-
 void FormPlotSimulate::on_btnLoadFile_clicked()
 {
-    QString filePath = QFileDialog::getOpenFileName(this, tr("choose file"), "", "(*.*)");
-    if (filePath.isEmpty())
+    QString path = QFileDialog::getOpenFileName(this, tr("choose file"), "", "(*.*)");
+
+    if (path.isEmpty())
         return;
 
-    ui->lineEditPath->setText(filePath);
+    ui->lineEditPath->setText(path);
 
-    m_ini.file = filePath;
+    m_ini.file = path;
+
+    simulate4k();
+    setINI();
+}
+
+void FormPlotSimulate::on_toolButtonRe_clicked()
+{
+    m_ini.file = ui->lineEditPath->text();
+
     simulate4k();
     setINI();
 }
@@ -56,32 +80,33 @@ void FormPlotSimulate::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
-void FormPlotSimulate::on_toolButtonRe_clicked()
-{
-    m_ini.file = ui->lineEditPath->text();
-    simulate4k();
-    setINI();
-}
-
 void FormPlotSimulate::simulate4k()
 {
-    QFile file(m_ini.file);
-    QString data;
+    if (m_timer->isActive())
+        m_timer->stop();
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    emit simulateReset();
+
+    QFile file(m_ini.file);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
-    }
+
+    QString data;
 
     QString suffix = QFileInfo(file).suffix().toLower();
 
     if (suffix == "csv") {
         QTextStream in(&file);
-        QString headerLine = in.readLine();
-        QStringList headers = headerLine.split(',');
 
-        int dataIndex = headers.indexOf("data");
-        if (dataIndex == -1) {
+        QString header = in.readLine();
+        QStringList headers = header.split(',');
+
+        int index = headers.indexOf("data");
+
+        if (index < 0) {
             file.close();
+
             SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error Read CSV"), tr("no data column found!"));
             return;
         }
@@ -89,34 +114,60 @@ void FormPlotSimulate::simulate4k()
         while (!in.atEnd()) {
             QString line = in.readLine();
             QStringList fields = line.split(',');
-            if (fields.size() > dataIndex) {
-                QString value = fields[dataIndex];
+
+            if (fields.size() > index) {
+                QString value = fields[index];
+
                 value.replace("0x", "");
-                value.remove(QRegularExpression("[\\s\r\n\t]"));
+                value.remove(QRegularExpression("\\s+"));
+
                 data += value;
             }
         }
-    } else {
+
+    }
+    else {
         data = file.readAll();
+
         data.replace("0x", "");
-        data.remove(QRegularExpression("[\\s\r\n\t]"));
+        data.remove(QRegularExpression("\\s+"));
     }
 
     file.close();
 
-    QByteArray dataBytes = QByteArray::fromHex(data.toUtf8());
+    m_sendData = QByteArray::fromHex(data.toUtf8());
 
-    const int chunkSize = 1024 * 10;
-    long long total = dataBytes.size();
-    long long sent = 0;
+    m_offset = 0;
 
-    for (; sent < total; sent += chunkSize) {
-        long long len = qMin(chunkSize, total - sent);
-        QByteArray chunk = dataBytes.mid(sent, len);
+    ui->progressBar->setValue(0);
 
-        emit simulateDataReady(chunk);
+    if (m_sendData.isEmpty())
+        return;
 
-        ui->progressBar->setValue((sent + len) * 100 / total);
-        QCoreApplication::processEvents();
+    m_timer->start();
+}
+
+void FormPlotSimulate::sendChunk()
+{
+    const int chunkSize = 1024 * 10; // 10KB
+
+    if (m_offset >= m_sendData.size()) {
+        m_timer->stop();
+
+        ui->progressBar->setValue(100);
+
+        return;
     }
+
+    int len = qMin(chunkSize, m_sendData.size() - m_offset);
+
+    QByteArray chunk = m_sendData.mid(m_offset, len);
+
+    emit simulateDataReady(chunk);
+
+    m_offset += len;
+
+    int percent = (int) (m_offset * 100 / m_sendData.size());
+
+    ui->progressBar->setValue(percent);
 }

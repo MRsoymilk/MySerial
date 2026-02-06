@@ -80,6 +80,7 @@ public slots:
     void sendRaw(const QByteArray &bytes);
     void onChangeFrameType(const QString &algorithm);
     void onSimulateRecv(const QByteArray &bytes);
+    void clearData();
 
 protected:
     void closeEvent(QCloseEvent *event) override;

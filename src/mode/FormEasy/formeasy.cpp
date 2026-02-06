@@ -201,6 +201,7 @@ void FormEasy::init()
             formSerial,
             &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
+    connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData);
 
     connect(m_worker,
             &ThreadWorker::plotReady4k,

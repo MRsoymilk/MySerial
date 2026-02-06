@@ -467,6 +467,11 @@ void FormSerial::onSimulateRecv(const QByteArray &bytes)
     doFrameExtra(bytes);
 }
 
+void FormSerial::clearData()
+{
+    m_buffer.clear();
+}
+
 void FormSerial::closeEvent(QCloseEvent *event)
 {
     closeSerial();

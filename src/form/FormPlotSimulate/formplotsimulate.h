@@ -1,6 +1,7 @@
 #ifndef FORMPLOTSIMULATE_H
 #define FORMPLOTSIMULATE_H
 
+#include <QTimer>
 #include <QWidget>
 
 namespace Ui {
@@ -10,20 +11,17 @@ class FormPlotSimulate;
 class FormPlotSimulate : public QWidget
 {
     Q_OBJECT
-public:
-    struct INI_SIMULATE
-    {
-        QString file;
-    };
 
 public:
     explicit FormPlotSimulate(QWidget *parent = nullptr);
     ~FormPlotSimulate();
+
     void retranslateUI();
 
 signals:
-    void windowClose();
     void simulateDataReady(const QByteArray &data);
+    void simulateReset(); // ⭐清空信号
+    void windowClose();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -32,15 +30,26 @@ private slots:
     void on_btnLoadFile_clicked();
     void on_toolButtonRe_clicked();
 
+    void sendChunk();
+
 private:
     void init();
     void getINI();
     void setINI();
+
     void simulate4k();
 
 private:
     Ui::FormPlotSimulate *ui;
-    INI_SIMULATE m_ini;
+
+    struct
+    {
+        QString file;
+    } m_ini;
+
+    QTimer *m_timer = nullptr;
+    QByteArray m_sendData;
+    qint64 m_offset = 0;
 };
 
 #endif // FORMPLOTSIMULATE_H
