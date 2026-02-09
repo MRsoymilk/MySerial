@@ -33,4 +33,13 @@ struct PARAMS_ARCSIN
     double r_k, r_b, r_d, r_alpha;
 };
 
+struct COLLECTION_FITTING_POINTS
+{
+    bool m_enable = false;
+    int count = 0;
+    int current_idx = 0;
+    QString dir;
+    QString file;
+};
+
 #endif  // GLOBAL_H

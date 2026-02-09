@@ -121,6 +121,9 @@ set(PLOT_CORRECTION
     src/form/FormPlotCorrection/fitting/formfittingarcsin.h
     src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp
     src/form/FormPlotCorrection/fitting/formfittingarcsin.ui
+    src/form/FormPlotCorrection/fitting/formfittingpoints.h
+    src/form/FormPlotCorrection/fitting/formfittingpoints.cpp
+    src/form/FormPlotCorrection/fitting/formfittingpoints.ui
 )
 
 set(FORM_PLAY

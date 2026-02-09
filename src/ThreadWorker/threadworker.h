@@ -28,6 +28,7 @@ public slots:
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
     void onUseLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
     void onParamsArcSin(const PARAMS_ARCSIN &params);
+    void onCollectionFittingPoints(const QString &dir, const QString &file, const int &count);
 
 signals:
     void changeThresholdStatus(const QString &status);
@@ -45,6 +46,7 @@ signals:
                              const double &yMin,
                              const double &yMax,
                              const double &temperature);
+    void collectionFitingPointsFinish(bool status);
 
 private:
     void processF30Curve31(const QByteArray &data31,
@@ -84,6 +86,7 @@ private:
     QVector<double> m_threshold;
     bool m_autoupdate_threshold = false;
     PARAMS_ARCSIN m_params_arcsin;
+    COLLECTION_FITTING_POINTS m_collection_fitting_points;
 };
 
 #endif // THREADWORKER_H

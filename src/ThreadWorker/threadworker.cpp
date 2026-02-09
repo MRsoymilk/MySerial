@@ -1,4 +1,5 @@
 #include "threadworker.h"
+#include <QDir>
 #include <QLineSeries>
 #include <QPointF>
 #include "funcdef.h"
@@ -203,6 +204,44 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
 
     emit plotReady4k(curve31, curve33, temperature);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
+    if (m_collection_fitting_points.m_enable) {
+        QString path = QString("%1/%2").arg(m_collection_fitting_points.dir,
+                                            m_collection_fitting_points.file);
+        QDir dir(m_collection_fitting_points.dir);
+        if (!dir.exists()) {
+            dir.mkpath(".");
+        }
+
+        QFile file(path);
+        QIODevice::OpenMode mode;
+
+        if (m_collection_fitting_points.current_idx == 0) {
+            mode = QIODevice::WriteOnly | QIODevice::Truncate;
+        } else {
+            mode = QIODevice::WriteOnly | QIODevice::Append;
+        }
+
+        if (!file.open(mode)) {
+            m_collection_fitting_points.m_enable = false;
+            emit collectionFitingPointsFinish(false);
+            return;
+        }
+
+        QByteArray hex31 = data31.toHex(' ').toUpper();
+        QByteArray hex33 = data33.toHex(' ').toUpper();
+        file.write(hex31);
+        file.write("\n");
+        file.write(hex33);
+        file.write("\n");
+        file.flush();
+        file.close();
+
+        ++m_collection_fitting_points.current_idx;
+        if (m_collection_fitting_points.current_idx >= m_collection_fitting_points.count) {
+            m_collection_fitting_points.m_enable = false;
+            emit collectionFitingPointsFinish(true);
+        }
+    }
 }
 
 void ThreadWorker::processDataF15(const QByteArray &data31,
@@ -403,10 +442,10 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     int raw_max = INT_MIN;
     int raw_min = INT_MAX;
     for (int i = 0; i < raw33.size(); ++i) {
-        if (raw_max < raw33[i]) {
-            raw_max = raw33[i];
-            idx_max = i;
-        }
+        // if (raw_max < raw33[i]) {
+        //     raw_max = raw33[i];
+        //     idx_max = i;
+        // }
         if (raw_min > raw33[i]) {
             raw_min = raw33[i];
             idx_min = i;
@@ -419,79 +458,20 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     double x_max_correction = m_correction_offset;
     double y_min_correction = std::numeric_limits<double>::max();
     double y_max_correction = std::numeric_limits<double>::lowest();
-
-    QList<int> v_idx;
-    int start_idx = idx_max;
+    int step = 500;
     for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
-#ifdef ALGORITHM_1
-        bool isFind = false;
-        double x = m_correction_offset + idx_threshold * m_correction_step;
-        double current_threshold = threshold[idx_threshold];
-        // if (static_cast<int>(x) == 234) {
-        //     qDebug() << "check 234";
-        // }
-        // if (static_cast<int>(x) == 1150) {
-        //     qDebug() << "check 1150";
-        // }
-        // if (static_cast<int>(x) == 1295) {
-        //     qDebug() << "check 1295";
-        // }
-        for (int j = start_idx; j < raw33.size() - 1; ++j) {
-            double raw33_left = raw33[j];
-            double raw33_right = raw33[j + 1];
-            // if (current_threshold >= raw33_left && current_threshold >= raw33_right) {
-            //     break;
-            // }
-            if (current_threshold < raw33_left && current_threshold >= raw33_right) {
-                v_idx.push_back(j);
-                start_idx = j + 1;
-                double y = raw31[j];
-                out_correction.push_back(QPointF(x, y));
-
-                x_max_correction = std::max(x_max_correction, x);
-                y_min_correction = std::min(y_min_correction, y);
-                y_max_correction = std::max(y_max_correction, y);
-                isFind = true;
-                // qDebug() << QString("idx: %3> found: [%1] -> [%2]")
-                //                 .arg(current_threshold)
-                //                 .arg(raw33[j])
-                //                 .arg(x);
-                break;
-            }
-        }
-        if (!isFind) {
-            // double y = raw31[start_idx];
-            double y = -1;
-            // qDebug() << QString("idx: %3> not found: [%1] -> [%2]")
-            //                 .arg(current_threshold)
-            //                 .arg(raw33[start_idx])
-            //                 .arg(x);
-            // start_idx += 1;
-            out_correction.push_back(QPointF(x, y));
-        }
-    }
-    for (int i = 1; i < out_correction.size() - 1; ++i) {
-        if (out_correction[i].y() == -1) {
-            out_correction[i].setY((out_correction[i - 1].y() + out_correction[i + 1].y()) / 2.0);
-        }
-#endif
         double min_distance = std::numeric_limits<double>::max();
-        double target_idx = 0;
+        int target_idx = 0;
         double x = m_correction_offset + idx_threshold * m_correction_step;
         double current_threshold = threshold[idx_threshold];
-        QVector<int> v_idx;
-        for (int j = idx_max; j < idx_min; ++j) {
+        for (int j = idx_max; j < idx_max + step; ++j) {
             double _distance = std::abs(current_threshold - raw33[j]);
             if (min_distance > _distance) {
                 min_distance = _distance;
                 target_idx = j;
-                v_idx.push_back(target_idx);
+                idx_max = j;
             }
         }
-        qDebug() << QString("idx: %3> found: [%1] -> [%2]")
-                        .arg(current_threshold)
-                        .arg(raw33[target_idx])
-                        .arg(x);
         out_correction.push_back(QPointF(x, raw31[target_idx]));
         x_max_correction = std::max(x_max_correction, x);
         y_min_correction = std::min(y_min_correction, raw33[target_idx]);
@@ -556,6 +536,17 @@ void ThreadWorker::onParamsArcSin(const PARAMS_ARCSIN &params)
     m_params_arcsin = params;
     m_autoupdate_threshold = true;
     emit changeThresholdStatus("use auto update threshold");
+}
+
+void ThreadWorker::onCollectionFittingPoints(const QString &dir,
+                                             const QString &file,
+                                             const int &count)
+{
+    m_collection_fitting_points.count = count;
+    m_collection_fitting_points.current_idx = 0;
+    m_collection_fitting_points.dir = dir;
+    m_collection_fitting_points.file = file;
+    m_collection_fitting_points.m_enable = true;
 }
 
 void ThreadWorker::processF30Curve31(const QByteArray &data31,

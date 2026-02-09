@@ -5,6 +5,7 @@
 #include "ShowCorrectionCurve/showcorrectioncurve.h"
 #include "fitting/formfittingarcsin.h"
 #include "fitting/formfittingkb.h"
+#include "fitting/formfittingpoints.h"
 #include "fitting/formfittingself.h"
 #include "fitting/formfittingsin.h"
 
@@ -35,6 +36,9 @@ void FormPlotCorrection::retranslateUI()
     }
     if (m_formArcSin) {
         m_formArcSin->retranslateUI();
+    }
+    if (m_formPoints) {
+        m_formPoints->retranslateUI();
     }
 }
 
@@ -76,6 +80,13 @@ void FormPlotCorrection::onThresholdStatus(const QString &status)
     }
 }
 
+void FormPlotCorrection::onCollectionFitingPointsFinish(bool status)
+{
+    if (m_formPoints) {
+        m_formPoints->updateCollectionStatus(status);
+    }
+}
+
 void FormPlotCorrection::init()
 {
     m_start = false;
@@ -83,14 +94,17 @@ void FormPlotCorrection::init()
     m_formSin = new FormFittingSin;
     m_formSelf = new FormFittingSelf;
     m_formArcSin = new FormFittingArcSin;
+    m_formPoints = new FormFittingPoints;
 
     ui->stackedWidget->addWidget(m_formKB);
     ui->stackedWidget->addWidget(m_formSin);
     ui->stackedWidget->addWidget(m_formSelf);
     ui->stackedWidget->addWidget(m_formArcSin);
+    ui->stackedWidget->addWidget(m_formPoints);
 
     QStringList algorithms;
-    algorithms << "fitting_arcsin" << "fitting_sin" << "fitting_self" << "fitting_kb";
+    algorithms << "fitting_points" << "fitting_arcsin" << "fitting_sin" << "fitting_self"
+               << "fitting_kb";
     ui->comboBoxAlgorithm->addItems(algorithms);
 
     QString txt = ui->comboBoxAlgorithm->currentText();
@@ -102,6 +116,8 @@ void FormPlotCorrection::init()
         ui->stackedWidget->setCurrentWidget(m_formKB);
     } else if (txt == "fitting_self") {
         ui->stackedWidget->setCurrentWidget(m_formSelf);
+    } else if (txt == "fitting_points") {
+        ui->stackedWidget->setCurrentWidget(m_formPoints);
     }
     connect(m_formSin, &FormFittingSin::sendSin, this, &FormPlotCorrection::sendSin);
     connect(m_formArcSin,
@@ -146,6 +162,11 @@ void FormPlotCorrection::init()
             &ShowCorrectionCurve::toExternalSpectral,
             this,
             &FormPlotCorrection::toExternalSpectral);
+
+    connect(m_formPoints,
+            &FormFittingPoints::toCollectionFittingPoints,
+            this,
+            &FormPlotCorrection::toCollectionFittingPoints);
 }
 
 void FormPlotCorrection::on_btnStart_clicked()
@@ -164,6 +185,8 @@ void FormPlotCorrection::on_comboBoxAlgorithm_currentTextChanged(const QString &
         ui->stackedWidget->setCurrentWidget(m_formSelf);
     } else if (algorithm == "fitting_arcsin") {
         ui->stackedWidget->setCurrentWidget(m_formArcSin);
+    } else if (algorithm == "fitting_points") {
+        ui->stackedWidget->setCurrentWidget(m_formPoints);
     }
 }
 
@@ -182,7 +205,9 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
             // arcSinShow = new ShowCorrectionCurve;
             connect(this, &FormPlotCorrection::windowClose, this, [=]() { arcSinShow->close(); });
             arcSinShow->show();
-
+        } else if (txt == "fitting_points") {
+            connect(this, &FormPlotCorrection::windowClose, this, [=]() { arcSinShow->close(); });
+            arcSinShow->show();
         } else {
             SHOW_AUTO_CLOSE_MSGBOX(this,
                                    tr("Warning"),

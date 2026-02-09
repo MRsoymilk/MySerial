@@ -8,6 +8,7 @@ class FormFittingKB;
 class FormFittingSin;
 class FormFittingSelf;
 class FormFittingArcSin;
+class FormFittingPoints;
 class ShowCorrectionCurve;
 
 namespace Ui {
@@ -38,6 +39,7 @@ signals:
     void useLoadedThreshold(bool isUse, QVector<double> v);
     void useLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
     void useAutoUpdateThreshold(bool isUse);
+    void toCollectionFittingPoints(const QString &dir, const QString &file, const int &count);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -46,6 +48,7 @@ public slots:
     void onEpochCorrection(const QVector<double> &v14, const QVector<double> &v24);
     void onTemperature(double temperature);
     void onThresholdStatus(const QString &status);
+    void onCollectionFitingPointsFinish(bool status);
 
 private slots:
     void on_btnStart_clicked();
@@ -62,6 +65,7 @@ private:
     FormFittingSin *m_formSin;
     FormFittingSelf *m_formSelf;
     FormFittingArcSin *m_formArcSin;
+    FormFittingPoints *m_formPoints;
     bool m_start;
     bool m_show = false;
 

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FormFittingPoints</class>
+ <widget class="QWidget" name="FormFittingPoints">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>842</width>
+    <height>586</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="hLayDir">
+     <item>
+      <widget class="QLabel" name="labelDir">
+       <property name="text">
+        <string>dir</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEditDir"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnSelectDir">
+       <property name="text">
+        <string>select</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="1">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1">
+      <widget class="QLabel" name="labelWavelengthEnd">
+       <property name="text">
+        <string>end</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="labelWavelengthStep">
+       <property name="text">
+        <string>step</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QSpinBox" name="spinBoxWavelengthStart">
+       <property name="maximum">
+        <number>9999</number>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelWavelengthStart">
+       <property name="text">
+        <string>start</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QDoubleSpinBox" name="doubleSpinBoxStep"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QSpinBox" name="spinBoxWavelengthEnd">
+       <property name="maximum">
+        <number>9999</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QPushButton" name="btnCollect">
+     <property name="text">
+      <string>collect</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QTableView" name="tableViewCollectStatus"/>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="hLayWaveLength">
+     <item>
+      <widget class="QLabel" name="labelWavelength">
+       <property name="text">
+        <string>wavelength</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEditWavelength">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelDataCount">
+       <property name="text">
+        <string>data count</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBoxDataCount"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="hLayOperate">
+     <item>
+      <widget class="QToolButton" name="tBtnRefresh">
+       <property name="text">
+        <string>refresh</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -338,6 +338,16 @@ void FormExpert::init()
             m_plotData,
             &FormPlotData::updateTable4k,
             Qt::QueuedConnection);
+    connect(m_worker,
+            &ThreadWorker::collectionFitingPointsFinish,
+            m_plotCorrection,
+            &FormPlotCorrection::onCollectionFitingPointsFinish,
+            Qt::QueuedConnection);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::toCollectionFittingPoints,
+            m_worker,
+            &ThreadWorker::onCollectionFittingPoints,
+            Qt::QueuedConnection);
 
     m_workerThread->start();
 
