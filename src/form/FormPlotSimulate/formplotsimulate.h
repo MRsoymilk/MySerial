@@ -20,7 +20,7 @@ public:
 
 signals:
     void simulateDataReady(const QByteArray &data);
-    void simulateReset(); // ⭐清空信号
+    void simulateReset();
     void windowClose();
 
 protected:
@@ -50,6 +50,8 @@ private:
     QTimer *m_timer = nullptr;
     QByteArray m_sendData;
     qint64 m_offset = 0;
+    QList<QByteArray> m_frames; // 每一帧
+    int m_frameIndex = 0;       // 当前发送索引
 };
 
 #endif // FORMPLOTSIMULATE_H
