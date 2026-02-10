@@ -87,6 +87,11 @@ void FormPlotCorrection::onCollectionFitingPointsFinish(bool status)
     }
 }
 
+void FormPlotCorrection::onBroadcast(const double &avg)
+{
+    m_formPoints->setTargetIntensity(avg);
+}
+
 void FormPlotCorrection::init()
 {
     m_start = false;

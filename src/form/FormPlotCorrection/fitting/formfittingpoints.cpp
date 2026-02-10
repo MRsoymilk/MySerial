@@ -3,6 +3,7 @@
 
 #include <QFileDialog>
 #include "funcdef.h"
+#include <qmenu.h>
 
 FormFittingPoints::FormFittingPoints(QWidget *parent)
     : QWidget(parent)
@@ -36,7 +37,8 @@ void FormFittingPoints::init()
     // QTableView
     m_collectModel = new QStandardItemModel(this);
     m_collectModel->setColumnCount(5);
-    m_collectModel->setHorizontalHeaderLabels({"波长", "文件名", "保存路径", "状态", "intensity"});
+    m_collectModel->setHorizontalHeaderLabels(
+        {tr("wavelength"), tr("file_name"), tr("file_path"), tr("status"), tr("intensity")});
     ui->tableViewCollectStatus->setModel(m_collectModel);
 
     // 自适应列宽
@@ -44,6 +46,65 @@ void FormFittingPoints::init()
     ui->tableViewCollectStatus->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableViewCollectStatus->setEditTriggers(QAbstractItemView::NoEditTriggers);
     refreshCollectTable();
+
+    ui->tableViewCollectStatus->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tableViewCollectStatus,
+            &QTableView::customContextMenuRequested,
+            this,
+            &FormFittingPoints::onTableContextMenu);
+}
+
+void FormFittingPoints::onTableContextMenu(const QPoint &pos)
+{
+    QModelIndex index = ui->tableViewCollectStatus->indexAt(pos);
+
+    if (!index.isValid())
+        return;
+
+    QMenu menu(this);
+
+    QAction *exportAction = menu.addAction("Export Wavelength and Intensity to CSV");
+
+    QAction *ret = menu.exec(ui->tableViewCollectStatus->viewport()->mapToGlobal(pos));
+
+    if (ret == exportAction) {
+        exportWavelengthIntensityToCsv();
+    }
+}
+
+void FormFittingPoints::exportWavelengthIntensityToCsv()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    "Export CSV",
+                                                    "collection.csv",
+                                                    "CSV Files (*.csv)");
+
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out.setEncoding(QStringConverter::Utf8);
+
+    out << "Wavelength,Intensity\n";
+    int rows = m_collectModel->rowCount();
+    for (int i = 0; i < rows; ++i) {
+        QString col_wavelength = m_collectModel->item(i, WAVELENGTH)
+                                     ? m_collectModel->item(i, WAVELENGTH)->text()
+                                     : "";
+        QString col_intensity = m_collectModel->item(i, INTENSITY)
+                                    ? m_collectModel->item(i, INTENSITY)->text()
+                                    : "";
+        out << col_wavelength << "," << col_intensity << "\n";
+    }
+
+    file.close();
+
+    QMessageBox::information(this, "Export", "CSV exported successfully.");
 }
 
 void FormFittingPoints::refreshCollectTable()
@@ -70,18 +131,16 @@ void FormFittingPoints::refreshCollectTable()
 
         bool exist = QFileInfo::exists(fullPath);
 
-        // ========= 创建 Item =========
         QStandardItem *itemWave = new QStandardItem(waveStr);
         QStandardItem *itemFile = new QStandardItem(fileName);
         QStandardItem *itemPath = new QStandardItem(fullPath);
         QStandardItem *itemStatus = new QStandardItem();
         QStandardItem *itemIntensity = new QStandardItem();
 
-        // ========= 状态 & 颜色 =========
         if (exist) {
-            itemStatus->setText("已采集");
+            itemStatus->setText(item_status[COLLECTED]);
 
-            QBrush green(Qt::green);
+            QBrush green(QColor(200, 255, 200));
 
             itemWave->setBackground(green);
             itemFile->setBackground(green);
@@ -90,7 +149,7 @@ void FormFittingPoints::refreshCollectTable()
             itemIntensity->setBackground(green);
 
         } else {
-            itemStatus->setText("未采集");
+            itemStatus->setText(item_status[NOT_COLLECTED]);
 
             QBrush red(QColor(255, 180, 180));
 
@@ -102,11 +161,11 @@ void FormFittingPoints::refreshCollectTable()
         }
 
         // ========= 加入模型 =========
-        m_collectModel->setItem(row, 0, itemWave);
-        m_collectModel->setItem(row, 1, itemFile);
-        m_collectModel->setItem(row, 2, itemPath);
-        m_collectModel->setItem(row, 3, itemStatus);
-        m_collectModel->setItem(row, 4, itemIntensity);
+        m_collectModel->setItem(row, WAVELENGTH, itemWave);
+        m_collectModel->setItem(row, FILE_NAME, itemFile);
+        m_collectModel->setItem(row, FILE_PATH, itemPath);
+        m_collectModel->setItem(row, STATUS, itemStatus);
+        m_collectModel->setItem(row, INTENSITY, itemIntensity);
 
         row++;
     }
@@ -124,14 +183,14 @@ void FormFittingPoints::updateCollectionStatus(bool status)
     int rows = m_collectModel->rowCount();
 
     for (int i = 0; i < rows; ++i) {
-        QStandardItem *statusItem = m_collectModel->item(i, 3); // 第3列：状态
+        QStandardItem *statusItem = m_collectModel->item(i, STATUS);
 
         if (!statusItem)
             continue;
 
-        if (statusItem->text() == "未采集") {
+        if (statusItem->text() == item_status[NOT_COLLECTED]) {
             // 第1列：文件名
-            QStandardItem *fileItem = m_collectModel->item(i, 1);
+            QStandardItem *fileItem = m_collectModel->item(i, FILE_NAME);
 
             if (!fileItem)
                 continue;
@@ -146,6 +205,18 @@ void FormFittingPoints::updateCollectionStatus(bool status)
             return; // 找到第一个就结束
         }
     }
+}
+
+void FormFittingPoints::setTargetIntensity(const double &avg)
+{
+    auto sel = ui->tableViewCollectStatus->selectionModel()->selectedRows();
+
+    if (sel.isEmpty())
+        return;
+
+    int row = sel.first().row();
+    QStandardItem *item = m_collectModel->item(row, INTENSITY);
+    item->setText(QString::number(avg, 'f', 3));
 }
 
 void FormFittingPoints::on_tBtnSelectDir_clicked()
@@ -181,7 +252,7 @@ void FormFittingPoints::on_tableViewCollectStatus_clicked(const QModelIndex &ind
 {
     int row = index.row();
 
-    QStandardItem *fileItem = m_collectModel->item(row, 1);
+    QStandardItem *fileItem = m_collectModel->item(row, FILE_NAME);
     if (!fileItem)
         return;
 
@@ -192,7 +263,7 @@ void FormFittingPoints::on_tableViewCollectStatus_doubleClicked(const QModelInde
 {
     int row = index.row();
 
-    QStandardItem *pathItem = m_collectModel->item(row, 2);
+    QStandardItem *pathItem = m_collectModel->item(row, FILE_PATH);
     if (!pathItem)
         return;
     QString path = pathItem->text();

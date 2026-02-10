@@ -290,6 +290,7 @@ void FormPlot::init()
         m_enableTemperature = false;
         ui->tBtnTemperature->setChecked(false);
     });
+    connect(m_trajectory, &PeakTrajectory::broadcast, this, &FormPlot::broadcast);
 }
 
 void FormPlot::onDataReceivedF30(const QByteArray &data31,

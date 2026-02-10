@@ -24,6 +24,7 @@ public:
 
 signals:
     void windowClose();
+    void broadcast(const double &avg);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -36,10 +37,12 @@ private slots:
     void on_spinBoxStartY_valueChanged(int arg1);
     void on_spinBoxEndY_valueChanged(int arg1);
     void getSelect(const QPointF &point);
+    void on_tBtnBroadcast_clicked();
 
 private:
     void init();
     void onRemoveCurrentPoint();
+    void clearChart();
 
 private:
     Ui::PeakTrajectory *ui;

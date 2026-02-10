@@ -46,11 +46,7 @@ void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event)
             }
         }
     } else if (selectedAction == clearChartAction) {
-        m_data.clear();
-        m_line->clear();
-
-        m_axisX->setRange(0, m_range);
-        m_axisY->setRange(0, 1);
+        clearChart();
     } else if (selectedAction == removeCurrentAction) {
         onRemoveCurrentPoint();
     }
@@ -224,5 +220,23 @@ void PeakTrajectory::on_spinBoxEndY_valueChanged(int val)
     m_y_end = val;
     if (m_enableAxisY) {
         m_axisY->setRange(m_y_start, m_y_end);
+    }
+}
+
+void PeakTrajectory::clearChart()
+{
+    m_data.clear();
+    m_line->clear();
+
+    m_axisX->setRange(0, m_range);
+    m_axisY->setRange(0, 1);
+}
+
+void PeakTrajectory::on_tBtnBroadcast_clicked()
+{
+    double avg = std::accumulate(m_data.begin(), m_data.end(), 0.0) / m_data.size();
+    emit broadcast(avg);
+    if (ui->checkBoxAutoClean->isChecked()) {
+        clearChart();
     }
 }

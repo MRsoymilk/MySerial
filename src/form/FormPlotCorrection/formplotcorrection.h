@@ -50,6 +50,7 @@ public slots:
     void onTemperature(double temperature);
     void onThresholdStatus(const QString &status);
     void onCollectionFitingPointsFinish(bool status);
+    void onBroadcast(const double &avg);
 
 private slots:
     void on_btnStart_clicked();

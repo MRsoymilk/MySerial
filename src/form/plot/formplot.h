@@ -46,6 +46,7 @@ signals:
     // void changeFrameType(int index);
     void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0);
     void toExternalSpectral(const QJsonObject &spectral);
+    void broadcast(const double &avg);
 
 public slots:
     void onDataReceivedLLC(const QByteArray &data31,

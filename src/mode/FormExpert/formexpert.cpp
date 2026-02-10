@@ -411,6 +411,11 @@ void FormExpert::init()
             formExternal,
             &FormExternal::onExternalSpectral,
             Qt::QueuedConnection);
+    connect(formPlot,
+            &FormPlot::broadcast,
+            m_plotCorrection,
+            &FormPlotCorrection::onBroadcast,
+            Qt::QueuedConnection);
     connect(m_plotCorrection,
             &FormPlotCorrection::toExternalSpectral,
             formExternal,
