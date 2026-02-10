@@ -35,9 +35,11 @@ private slots:
     void on_tBtnAxisY_clicked();
     void on_spinBoxStartY_valueChanged(int arg1);
     void on_spinBoxEndY_valueChanged(int arg1);
+    void getSelect(const QPointF &point);
 
 private:
     void init();
+    void onRemoveCurrentPoint();
 
 private:
     Ui::PeakTrajectory *ui;
@@ -53,6 +55,7 @@ private:
     bool m_enableAxisY = false;
     int m_y_start = 0;
     int m_y_end = 0;
+    QPointF m_point;
 };
 
 #endif // PEAKTRAJECTORY_H

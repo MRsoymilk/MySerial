@@ -25,6 +25,7 @@ void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event)
 
     QAction *setRangeAction = menu.addAction(tr("Set Range"));
     QAction *clearChartAction = menu.addAction(tr("Clear Chart"));
+    QAction *removeCurrentAction = menu.addAction(tr("Remove Current Point"));
 
     QAction *selectedAction = menu.exec(event->globalPos());
     if (!selectedAction)
@@ -48,6 +49,61 @@ void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event)
         m_data.clear();
         m_line->clear();
 
+        m_axisX->setRange(0, m_range);
+        m_axisY->setRange(0, 1);
+    } else if (selectedAction == removeCurrentAction) {
+        onRemoveCurrentPoint();
+    }
+}
+
+void PeakTrajectory::onRemoveCurrentPoint()
+{
+    if (m_data.isEmpty())
+        return;
+
+    // 用已选点的 x 作为 index
+    int index = qRound(m_point.x());
+
+    if (index < 0 || index >= m_data.size())
+        return;
+
+    // 删除
+    m_data.removeAt(index);
+
+    // 重建曲线
+    m_line->clear();
+
+    for (int i = 0; i < m_data.size(); ++i) {
+        m_line->append(i, m_data[i]);
+    }
+
+    // 重设坐标轴
+    if (!m_data.isEmpty()) {
+        auto [minIt, maxIt] = std::minmax_element(m_data.begin(), m_data.end());
+
+        int minY = *minIt;
+        int maxY = *maxIt;
+
+        if (minY == maxY) {
+            minY--;
+            maxY++;
+        }
+
+        if (m_enableAxisY) {
+            m_axisY->setRange(m_y_start, m_y_end);
+        } else {
+            m_axisY->setRange(minY, maxY);
+        }
+
+        int total = m_data.size();
+
+        if (total <= m_range) {
+            m_axisX->setRange(0, m_range);
+        } else {
+            m_axisX->setRange(total - m_range, total);
+        }
+
+    } else {
         m_axisX->setRange(0, m_range);
         m_axisY->setRange(0, 1);
     }
@@ -133,6 +189,15 @@ void PeakTrajectory::init()
     m_history_min = INT_MAX;
     m_history_max = INT_MIN;
     ui->tBtnAxisY->setCheckable(true);
+
+    connect(m_chartView, &MyChartView::toHover, this, &PeakTrajectory::getSelect);
+    QShortcut *shortcut_delete = new QShortcut(QKeySequence(Qt::Key_Delete), this);
+    connect(shortcut_delete, &QShortcut::activated, this, &PeakTrajectory::onRemoveCurrentPoint);
+}
+
+void PeakTrajectory::getSelect(const QPointF &point)
+{
+    m_point = point;
 }
 
 void PeakTrajectory::on_tBtnAxisY_clicked()
