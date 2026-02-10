@@ -35,18 +35,13 @@ void FormFittingPoints::init()
     ui->doubleSpinBoxStep->setValue(step);
     // QTableView
     m_collectModel = new QStandardItemModel(this);
-
-    m_collectModel->setColumnCount(4);
-
-    m_collectModel->setHorizontalHeaderLabels({"波长", "文件名", "保存路径", "状态"});
-
+    m_collectModel->setColumnCount(5);
+    m_collectModel->setHorizontalHeaderLabels({"波长", "文件名", "保存路径", "状态", "intensity"});
     ui->tableViewCollectStatus->setModel(m_collectModel);
 
     // 自适应列宽
     ui->tableViewCollectStatus->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
     ui->tableViewCollectStatus->setSelectionBehavior(QAbstractItemView::SelectRows);
-
     ui->tableViewCollectStatus->setEditTriggers(QAbstractItemView::NoEditTriggers);
     refreshCollectTable();
 }
@@ -77,12 +72,10 @@ void FormFittingPoints::refreshCollectTable()
 
         // ========= 创建 Item =========
         QStandardItem *itemWave = new QStandardItem(waveStr);
-
         QStandardItem *itemFile = new QStandardItem(fileName);
-
         QStandardItem *itemPath = new QStandardItem(fullPath);
-
         QStandardItem *itemStatus = new QStandardItem();
+        QStandardItem *itemIntensity = new QStandardItem();
 
         // ========= 状态 & 颜色 =========
         if (exist) {
@@ -94,6 +87,7 @@ void FormFittingPoints::refreshCollectTable()
             itemFile->setBackground(green);
             itemPath->setBackground(green);
             itemStatus->setBackground(green);
+            itemIntensity->setBackground(green);
 
         } else {
             itemStatus->setText("未采集");
@@ -104,6 +98,7 @@ void FormFittingPoints::refreshCollectTable()
             itemFile->setBackground(red);
             itemPath->setBackground(red);
             itemStatus->setBackground(red);
+            itemIntensity->setBackground(red);
         }
 
         // ========= 加入模型 =========
@@ -111,6 +106,7 @@ void FormFittingPoints::refreshCollectTable()
         m_collectModel->setItem(row, 1, itemFile);
         m_collectModel->setItem(row, 2, itemPath);
         m_collectModel->setItem(row, 3, itemStatus);
+        m_collectModel->setItem(row, 4, itemIntensity);
 
         row++;
     }
@@ -185,10 +181,20 @@ void FormFittingPoints::on_tableViewCollectStatus_clicked(const QModelIndex &ind
 {
     int row = index.row();
 
-    // 第 1 列：文件名
     QStandardItem *fileItem = m_collectModel->item(row, 1);
     if (!fileItem)
         return;
 
     ui->lineEditWavelength->setText(fileItem->text());
+}
+
+void FormFittingPoints::on_tableViewCollectStatus_doubleClicked(const QModelIndex &index)
+{
+    int row = index.row();
+
+    QStandardItem *pathItem = m_collectModel->item(row, 2);
+    if (!pathItem)
+        return;
+    QString path = pathItem->text();
+    emit doFile(path);
 }

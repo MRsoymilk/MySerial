@@ -37,9 +37,10 @@ signals:
                                const double &yMax,
                                const double &temperature);
     void useLoadedThreshold(bool isUse, QVector<double> v);
-    void useLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
+    void useLoadedThreadsholdOption(const QJsonObject &option);
     void useAutoUpdateThreshold(bool isUse);
     void toCollectionFittingPoints(const QString &dir, const QString &file, const int &count);
+    void doFile(const QString &path);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

@@ -34,7 +34,7 @@ signals:
     void toExternalSpectral(const QJsonObject &spectrum);
     void windowClose();
     void useLoadedThreshold(bool isUse, QVector<double> v);
-    void useLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
+    void useLoadedThreadsholdOption(const QJsonObject &option);
     void useAutoUpdateThreshold(bool isUse);
 
 protected:
@@ -55,6 +55,7 @@ private slots:
     void on_tBtnClear_clicked();
     void on_tBtnExportRaw_clicked();
     void on_tBtnExternal_clicked();
+    void on_tBtnInterpolation_clicked();
 
 private:
     void init();
@@ -73,6 +74,8 @@ private:
     QStandardItemModel *m_model;
     bool m_load_data = false;
     bool m_enableExternal = false;
+    bool m_enableRangeY = false;
+    bool m_enableInterpolation = false;
 };
 
 #endif // SHOWCORRECTIONCURVE_H

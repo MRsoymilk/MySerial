@@ -66,7 +66,11 @@ void FormExternal::startServer()
         LOG_INFO("http listen thread exited");
     });
 
-    connect(m_listenThread, &QThread::finished, m_listenThread, &QObject::deleteLater);
+    connect(m_listenThread,
+            &QThread::finished,
+            m_listenThread,
+            &QObject::deleteLater,
+            Qt::QueuedConnection);
 
     m_listenThread->start();
 }

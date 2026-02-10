@@ -26,7 +26,7 @@ public slots:
                         const QByteArray &data33,
                         const double &temperature);
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
-    void onUseLoadedThreadsholdOption(const double &offset, const double &step, const int &count);
+    void onUseLoadedThreadsholdOption(const QJsonObject &option);
     void onParamsArcSin(const PARAMS_ARCSIN &params);
     void onCollectionFittingPoints(const QString &dir, const QString &file, const int &count);
 
@@ -85,6 +85,7 @@ private:
     int m_correction_count = 800;
     QVector<double> m_threshold;
     bool m_autoupdate_threshold = false;
+    bool m_enable_interpolation = false;
     PARAMS_ARCSIN m_params_arcsin;
     COLLECTION_FITTING_POINTS m_collection_fitting_points;
 };

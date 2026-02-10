@@ -36,7 +36,7 @@ void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
     ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
     m_line->replace(data);
     m_axisX->setRange(xMin, xMax);
-    if (ui->tBtnRangeY->isChecked()) {
+    if (m_enableRangeY) {
         m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
     } else {
         m_axisY->setRange(yMin, yMax);
@@ -273,7 +273,11 @@ void ShowCorrectionCurve::on_btnApplyOption_clicked()
     double step = ui->doubleSpinBoxStep->value();
     double offset = ui->doubleSpinBoxOffset->value();
     int count = ui->spinBoxCount->value();
-    emit useLoadedThreadsholdOption(offset, step, count);
+    QJsonObject option;
+    option["step"] = step;
+    option["offset"] = offset;
+    option["count"] = count;
+    emit useLoadedThreadsholdOption(option);
     SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_OFFSET, QString::number(offset));
     SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_STEP, QString::number(step));
     SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_COUNT, QString::number(count));
@@ -282,6 +286,7 @@ void ShowCorrectionCurve::on_btnApplyOption_clicked()
 void ShowCorrectionCurve::on_tBtnRangeY_clicked()
 {
     if (ui->tBtnRangeY->isChecked()) {
+        m_enableRangeY = true;
         m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
         SETTING_CONFIG_SET(CFG_GROUP_CORRECTION,
                            CFG_CORRECTION_CURVE_Y_MIN,
@@ -289,6 +294,8 @@ void ShowCorrectionCurve::on_tBtnRangeY_clicked()
         SETTING_CONFIG_SET(CFG_GROUP_CORRECTION,
                            CFG_CORRECTION_CURVE_Y_MAX,
                            QString::number(ui->spinBoxEndY->value()));
+    } else {
+        m_enableRangeY = false;
     }
 }
 
@@ -417,4 +424,10 @@ void ShowCorrectionCurve::on_tBtnExternal_clicked()
 {
     m_enableExternal = !m_enableExternal;
     ui->tBtnExternal->setChecked(m_enableExternal);
+}
+
+void ShowCorrectionCurve::on_tBtnInterpolation_clicked()
+{
+    m_enableInterpolation = !m_enableInterpolation;
+    emit useLoadedThreadsholdOption({{"interpolation", m_enableInterpolation}});
 }

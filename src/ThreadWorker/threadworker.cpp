@@ -458,13 +458,14 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     double x_max_correction = m_correction_offset;
     double y_min_correction = std::numeric_limits<double>::max();
     double y_max_correction = std::numeric_limits<double>::lowest();
-    int step = 500;
+    int step = 1000;
     for (int idx_threshold = 0; idx_threshold < threshold.size(); ++idx_threshold) {
         double min_distance = std::numeric_limits<double>::max();
         int target_idx = 0;
         double x = m_correction_offset + idx_threshold * m_correction_step;
         double current_threshold = threshold[idx_threshold];
-        for (int j = idx_max; j < idx_max + step; ++j) {
+        int end_idx = std::min(idx_min, idx_max + step);
+        for (int j = idx_max; j < end_idx; ++j) {
             double _distance = std::abs(current_threshold - raw33[j]);
             if (min_distance > _distance) {
                 min_distance = _distance;
@@ -474,15 +475,73 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
         }
         out_correction.push_back(QPointF(x, raw31[target_idx]));
         x_max_correction = std::max(x_max_correction, x);
-        y_min_correction = std::min(y_min_correction, raw33[target_idx]);
-        y_max_correction = std::max(y_max_correction, raw33[target_idx]);
+        y_min_correction = std::min(y_min_correction, raw31[target_idx]);
+        y_max_correction = std::max(y_max_correction, raw31[target_idx]);
     }
-    emit showCorrectionCurve(out_correction,
-                             m_correction_offset,
-                             x_max_correction,
-                             y_min_correction,
-                             y_max_correction,
-                             temperature);
+    if (m_enable_interpolation) {
+        int n = out_correction.size();
+        if (n < 2)
+            return;
+
+        QList<QPointF> dense;
+        for (int i = 0; i < n - 1; ++i) {
+            const QPointF &p0 = out_correction[i];
+            const QPointF &p1 = out_correction[i + 1];
+            dense.append(p0);
+            double midX = (p0.x() + p1.x()) * 0.5;
+            double midY = (p0.y() + p1.y()) * 0.5;
+            dense.append(QPointF(midX, midY));
+        }
+        dense.append(out_correction.last());
+
+        QList<QPointF> out_interpolation;
+        int m = dense.size();
+        for (int i = 0; i < m;) {
+            int start = i;
+            double y0 = dense[i].y();
+
+            // 找平台
+            while (i + 1 < m && qFuzzyCompare(dense[i + 1].y(), y0)) {
+                i++;
+            }
+
+            int end = i;
+
+            // 非平台
+            if (start == end) {
+                out_interpolation.append(dense[start]);
+                i++;
+                continue;
+            }
+
+            // 平台段
+            double yStart = dense[start].y();
+            double yEnd = (end + 1 < m) ? dense[end + 1].y() : yStart;
+
+            int count = end - start + 1;
+
+            for (int k = 0; k < count; ++k) {
+                double t = double(k + 1) / (count + 1);
+                double y = yStart + t * (yEnd - yStart);
+                out_interpolation.append(QPointF(dense[start + k].x(), y));
+            }
+
+            i = end + 1;
+        }
+        emit showCorrectionCurve(out_interpolation,
+                                 m_correction_offset,
+                                 x_max_correction,
+                                 y_min_correction,
+                                 y_max_correction,
+                                 temperature);
+    } else {
+        emit showCorrectionCurve(out_correction,
+                                 m_correction_offset,
+                                 x_max_correction,
+                                 y_min_correction,
+                                 y_max_correction,
+                                 temperature);
+    }
 }
 
 void ThreadWorker::calculateArcSinThreshold(const double &temperature)
@@ -522,13 +581,20 @@ void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<double> threshold)
     emit changeThresholdStatus("use loaded threshold");
 }
 
-void ThreadWorker::onUseLoadedThreadsholdOption(const double &offset,
-                                                const double &step,
-                                                const int &count)
+void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option)
 {
-    m_correction_offset = offset;
-    m_correction_step = step;
-    m_correction_count = count;
+    if (option.contains("offset")) {
+        m_correction_offset = option["offset"].toDouble();
+    }
+    if (option.contains("step")) {
+        m_correction_step = option["step"].toDouble();
+    }
+    if (option.contains("count")) {
+        m_correction_count = option["count"].toDouble();
+    }
+    if (option.contains("interpolation")) {
+        m_enable_interpolation = option["interpolation"].toBool();
+    }
 }
 
 void ThreadWorker::onParamsArcSin(const PARAMS_ARCSIN &params)

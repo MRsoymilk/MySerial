@@ -23,6 +23,9 @@ signals:
     void simulateReset();
     void windowClose();
 
+public slots:
+    void onDoFile(const QString &path);
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 

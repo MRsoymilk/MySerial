@@ -34,6 +34,12 @@ void FormPlotSimulate::retranslateUI()
     ui->retranslateUi(this);
 }
 
+void FormPlotSimulate::onDoFile(const QString &path)
+{
+    ui->lineEditPath->setText(path);
+    on_toolButtonRe_clicked();
+}
+
 void FormPlotSimulate::init()
 {
     getINI();

@@ -185,13 +185,6 @@ void FormExpert::initStackWidget()
     playMPU6050 = new FormPlayMPU6050(this);
     ui->stackedWidget->addWidget(playMPU6050);
 
-    // QObject::connect(formSerial, &FormSerial::recv2PlotLLC, formPlot, &FormPlot::onDataReceivedLLC);
-    // QObject::connect(formSerial, &FormSerial::recv2PlotF30, formPlot, &FormPlot::onDataReceivedF30);
-    // QObject::connect(formSerial, &FormSerial::recv2DataF30, formData, &FormData::onDataReceivedF30);
-    // QObject::connect(formSerial, &FormSerial::recv2PlotF15, formPlot, &FormPlot::onDataReceivedF15);
-    // QObject::connect(formSerial, &FormSerial::recv2DataF15, formData, &FormData::onDataReceivedF15);
-    // QObject::connect(formSerial, &FormSerial::recv2MPU, playMPU6050, &FormPlayMPU6050::onRecvMPU);
-
     ui->stackedWidget->setCurrentWidget(formSerial);
 
     QShortcut *shortcut_Serial = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_1), this);
@@ -348,17 +341,39 @@ void FormExpert::init()
             m_worker,
             &ThreadWorker::onCollectionFittingPoints,
             Qt::QueuedConnection);
+    connect(m_plotCorrection,
+            &FormPlotCorrection::doFile,
+            m_plotSimulate,
+            &FormPlotSimulate::onDoFile,
+            Qt::QueuedConnection);
 
     m_workerThread->start();
 
-    connect(m_plotData, &FormPlotData::windowClose, this, &FormExpert::plotDataClose);
-    connect(m_plotHistory, &FormPlotHistory::windowClose, this, &FormExpert::plotHistoryClose);
-    connect(formPlot, &FormPlot::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv);
-    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormExpert::plotSimulateClose);
+    connect(m_plotData,
+            &FormPlotData::windowClose,
+            this,
+            &FormExpert::plotDataClose,
+            Qt::QueuedConnection);
+    connect(m_plotHistory,
+            &FormPlotHistory::windowClose,
+            this,
+            &FormExpert::plotHistoryClose,
+            Qt::QueuedConnection);
+    connect(formPlot,
+            &FormPlot::toHistory,
+            m_plotHistory,
+            &FormPlotHistory::onHistoryRecv,
+            Qt::QueuedConnection);
+    connect(m_plotSimulate,
+            &FormPlotSimulate::windowClose,
+            this,
+            &FormExpert::plotSimulateClose,
+            Qt::QueuedConnection);
     connect(m_plotCorrection,
             &FormPlotCorrection::windowClose,
             this,
-            &FormExpert::plotCorrectionClose);
+            &FormExpert::plotCorrectionClose,
+            Qt::QueuedConnection);
     connect(m_plotCorrection,
             &FormPlotCorrection::useLoadedThreshold,
             m_worker,
@@ -372,40 +387,71 @@ void FormExpert::init()
     connect(m_plotCorrection,
             &FormPlotCorrection::sendParamsArcSin,
             m_worker,
-            &ThreadWorker::onParamsArcSin);
+            &ThreadWorker::onParamsArcSin,
+            Qt::QueuedConnection);
     connect(formSerial,
             &FormSerial::recvTemperature,
             m_plotCorrection,
-            &FormPlotCorrection::onTemperature);
+            &FormPlotCorrection::onTemperature,
+            Qt::QueuedConnection);
     connect(m_worker,
             &ThreadWorker::showCorrectionCurve,
             m_plotCorrection,
-            &FormPlotCorrection::onShowCorrectionCurve);
+            &FormPlotCorrection::onShowCorrectionCurve,
+            Qt::QueuedConnection);
     connect(formSerial,
             &FormSerial::recvTemperature,
             m_plotHistory,
-            &FormPlotHistory::onTemperature);
+            &FormPlotHistory::onTemperature,
+            Qt::QueuedConnection);
     connect(formPlot, &FormPlot::sendOffset31, this, [&](int val) { m_worker->setOffset31(val); });
     connect(formPlot, &FormPlot::sendOffset33, this, [&](int val) { m_worker->setOffset33(val); });
     connect(formPlot,
             &FormPlot::toExternalSpectral,
             formExternal,
-            &FormExternal::onExternalSpectral);
+            &FormExternal::onExternalSpectral,
+            Qt::QueuedConnection);
     connect(m_plotCorrection,
             &FormPlotCorrection::toExternalSpectral,
             formExternal,
-            &FormExternal::onExternalSpectral);
+            &FormExternal::onExternalSpectral,
+            Qt::QueuedConnection);
     connect(m_worker,
             &ThreadWorker::changeThresholdStatus,
             m_plotCorrection,
-            &FormPlotCorrection::onThresholdStatus);
+            &FormPlotCorrection::onThresholdStatus,
+            Qt::QueuedConnection);
 
-    QObject::connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC);
-    QObject::connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30);
-    QObject::connect(formSerial, &FormSerial::recv2DataF30, formData, &FormData::onDataReceivedF30);
-    QObject::connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15);
-    QObject::connect(formSerial, &FormSerial::recv2DataF15, formData, &FormData::onDataReceivedF15);
-    QObject::connect(formSerial, &FormSerial::recv2MPU, playMPU6050, &FormPlayMPU6050::onRecvMPU);
+    QObject::connect(formSerial,
+                     &FormSerial::recv2PlotLLC,
+                     m_worker,
+                     &ThreadWorker::processDataLLC,
+                     Qt::QueuedConnection);
+    QObject::connect(formSerial,
+                     &FormSerial::recv2PlotF30,
+                     m_worker,
+                     &ThreadWorker::processDataF30,
+                     Qt::QueuedConnection);
+    QObject::connect(formSerial,
+                     &FormSerial::recv2DataF30,
+                     formData,
+                     &FormData::onDataReceivedF30,
+                     Qt::QueuedConnection);
+    QObject::connect(formSerial,
+                     &FormSerial::recv2PlotF15,
+                     m_worker,
+                     &ThreadWorker::processDataF15,
+                     Qt::QueuedConnection);
+    QObject::connect(formSerial,
+                     &FormSerial::recv2DataF15,
+                     formData,
+                     &FormData::onDataReceivedF15,
+                     Qt::QueuedConnection);
+    QObject::connect(formSerial,
+                     &FormSerial::recv2MPU,
+                     playMPU6050,
+                     &FormPlayMPU6050::onRecvMPU,
+                     Qt::QueuedConnection);
 }
 
 void FormExpert::on_btnSerial_clicked()

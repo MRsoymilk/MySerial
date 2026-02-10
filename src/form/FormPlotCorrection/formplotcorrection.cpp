@@ -167,6 +167,7 @@ void FormPlotCorrection::init()
             &FormFittingPoints::toCollectionFittingPoints,
             this,
             &FormPlotCorrection::toCollectionFittingPoints);
+    connect(m_formPoints, &FormFittingPoints::doFile, this, &FormPlotCorrection::doFile);
 }
 
 void FormPlotCorrection::on_btnStart_clicked()

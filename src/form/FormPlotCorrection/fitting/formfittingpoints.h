@@ -20,12 +20,14 @@ public:
     void updateCollectionStatus(bool status);
 signals:
     void toCollectionFittingPoints(const QString &dir, const QString &file, const int &count);
+    void doFile(const QString &path);
 
 private slots:
     void on_tBtnSelectDir_clicked();
     void on_btnCollect_clicked();
     void on_tBtnRefresh_clicked();
     void on_tableViewCollectStatus_clicked(const QModelIndex &index);
+    void on_tableViewCollectStatus_doubleClicked(const QModelIndex &index);
 
 private:
     void init();
