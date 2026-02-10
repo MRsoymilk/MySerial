@@ -122,6 +122,7 @@ public:
 
 signals:
     void toSelect(const QPointF &point);
+    void toHover(const QPointF &point);
 
 protected:
     void mouseMoveEvent(QMouseEvent *event) override
@@ -150,7 +151,6 @@ protected:
         qreal y = value.y();
 
         // 找最近点
-
         QString seriesName;
         qreal minXDist = std::numeric_limits<qreal>::max();
         qreal minYDist = std::numeric_limits<qreal>::max();
@@ -196,7 +196,7 @@ protected:
         if (!sceneRect.contains(textPos))
             textPos = closestScenePos + QPointF(-60, -30); // 避免超出边界
         m_coordText->setPos(textPos);
-
+        emit toHover(closestPoint);
         QChartView::mouseMoveEvent(event);
     }
 
