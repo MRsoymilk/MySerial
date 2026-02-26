@@ -19,8 +19,8 @@ void MyLog::init(const std::string &file_name, size_t max_size, size_t max_files
     logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
     logSinks.emplace_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>(file_name, max_size, max_files));
 
-    logSinks[0]->set_pattern("%^[%T] %n: %v%$");
-    logSinks[1]->set_pattern("[%T] [%l] %n: %v");
+    logSinks[0]->set_pattern("%^[%H:%M:%S.%e] [tid:%t] %n: %v%$");
+    logSinks[1]->set_pattern("[%H:%M:%S.%e] [%l] [tid:%t] %n: %v");
 
     s_logger = std::make_shared<spdlog::logger>("MySerial", begin(logSinks), end(logSinks));
     spdlog::register_logger(s_logger);
