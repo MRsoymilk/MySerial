@@ -32,14 +32,11 @@ public:
     void setAlgorithm(const QString &algorithm);
 
 signals:
-    void newDataReceivedLLC(const QByteArray &data31,
-                            const QByteArray &data33,
+    void newDataReceivedLLC(const FRAME& frame,
                             const double &temperature);
-    void newDataReceivedF30(const QByteArray &data31,
-                            const QByteArray &data33,
+    void newDataReceivedF30(const FRAME& frame,
                             const double &temperature);
-    void newDataReceivedF15(const QByteArray &data31,
-                            const QByteArray &data33,
+    void newDataReceivedF15(const FRAME& frame,
                             const double &temperature);
     void sendOffset31(int val);
     void sendOffset33(int val);
@@ -49,14 +46,11 @@ signals:
     void broadcast(const double &avg);
 
 public slots:
-    void onDataReceivedLLC(const QByteArray &data31,
-                           const QByteArray &data33,
+    void onDataReceivedLLC(const FRAME& frame,
                            const double temperature);
-    void onDataReceivedF30(const QByteArray &data31,
-                           const QByteArray &data33,
+    void onDataReceivedF30(const FRAME& frame,
                            const double &temperature);
-    void onDataReceivedF15(const QByteArray &data31,
-                           const QByteArray &data33,
+    void onDataReceivedF15(const FRAME& frame,
                            const double &temperature);
     void updatePlot4k(const CURVE &curve31,
                       const CURVE &curve33,
@@ -72,7 +66,6 @@ private slots:
     void on_tBtnZoom_clicked();
     void on_spinBox31Offset_valueChanged(int val);
     void on_spinBox33Offset_valueChanged(int val);
-    // void on_comboBoxAlgorithm_currentIndexChanged(int index);
     void on_tBtnImgSave_clicked();
     void on_spinBoxStartX_valueChanged(int val);
     void on_spinBoxEndX_valueChanged(int val);
@@ -94,7 +87,6 @@ private slots:
     void on_tBtnTemperature_clicked();
     void on_tBtnConversion_clicked();
     void on_tBtnToExternal_clicked();
-
     void on_tBtnToVoltage_clicked();
 
 private:

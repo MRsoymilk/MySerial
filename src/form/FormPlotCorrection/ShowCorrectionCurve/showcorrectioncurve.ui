@@ -193,6 +193,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxEnableThreshold">
+           <property name="text">
+            <string>enable threshold</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

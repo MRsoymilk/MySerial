@@ -410,7 +410,7 @@ void FormPlotHistory::getFittingChart()
     }
 }
 
-void FormPlotHistory::on_toolButtonDumpPlot_clicked()
+void FormPlotHistory::on_tBtnDumpPlot_clicked()
 {
     if (!ui->radioButtonMix->isChecked()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Failed"), tr("Only support Mix!"));
@@ -442,7 +442,7 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
     if (!ui->radioButtonMix->isChecked()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Failed"), tr("Only support Mix!"));
     }
-    if (ui->checkBoxAll->isChecked()) {
+    if (ui->checkBoxDataAll->isChecked()) {
         QString filePath = QFileDialog::getSaveFileName(this,
                                                         tr("Save Curve Data"),
                                                         "_all.csv",
@@ -564,11 +564,6 @@ void FormPlotHistory::toPlot()
         return;
     }
 
-    double xMin = axisX->min();
-    double xMax = axisX->max();
-    double yMin = axisY->min();
-    double yMax = axisY->max();
-
     emit sendToPlot(curve31, curve33, temperature, false);
 }
 
@@ -619,3 +614,8 @@ void FormPlotHistory::on_tBtnToVoltage_clicked()
 }
 
 void FormPlotHistory::on_tBtnShowData_clicked() {}
+
+void FormPlotHistory::on_tBtnDumpRaw_clicked()
+{
+
+}

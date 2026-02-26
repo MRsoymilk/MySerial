@@ -56,6 +56,7 @@ private slots:
     void on_tBtnExportRaw_clicked();
     void on_tBtnExternal_clicked();
     void on_tBtnInterpolation_clicked();
+    void on_checkBoxEnableThreshold_checkStateChanged(const Qt::CheckState &state);
 
 private:
     void init();

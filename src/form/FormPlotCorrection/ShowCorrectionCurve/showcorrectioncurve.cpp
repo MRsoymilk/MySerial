@@ -431,3 +431,10 @@ void ShowCorrectionCurve::on_tBtnInterpolation_clicked()
     m_enableInterpolation = !m_enableInterpolation;
     emit useLoadedThreadsholdOption({{"interpolation", m_enableInterpolation}});
 }
+
+void ShowCorrectionCurve::on_checkBoxEnableThreshold_checkStateChanged(const Qt::CheckState &state)
+{
+    bool enable = state == Qt::Checked ? true : false;
+    emit useLoadedThreadsholdOption({{"enable_threshold", enable}});
+}
+

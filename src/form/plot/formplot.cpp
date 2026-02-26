@@ -62,12 +62,11 @@ void FormPlot::setAlgorithm(const QString &algorithm)
     m_algorithm = algorithm;
 }
 
-void FormPlot::onDataReceivedLLC(const QByteArray &data31,
-                                 const QByteArray &data33,
+void FormPlot::onDataReceivedLLC(const FRAME& frame,
                                  const double temperature)
 {
     if (!m_pause) {
-        emit newDataReceivedLLC(data31, data33, temperature);
+        emit newDataReceivedLLC(frame, temperature);
     }
 }
 
@@ -293,21 +292,19 @@ void FormPlot::init()
     connect(m_trajectory, &PeakTrajectory::broadcast, this, &FormPlot::broadcast);
 }
 
-void FormPlot::onDataReceivedF30(const QByteArray &data31,
-                                 const QByteArray &data33,
+void FormPlot::onDataReceivedF30(const FRAME& frame,
                                  const double &temperature)
 {
     if (!m_pause) {
-        emit newDataReceivedF30(data31, data33, temperature);
+        emit newDataReceivedF30(frame, temperature);
     }
 }
 
-void FormPlot::onDataReceivedF15(const QByteArray &data31,
-                                 const QByteArray &data33,
+void FormPlot::onDataReceivedF15(const FRAME& frame,
                                  const double &temperature)
 {
     if (!m_pause) {
-        emit newDataReceivedF15(data31, data33, temperature);
+        emit newDataReceivedF15(frame, temperature);
     }
 }
 
@@ -777,8 +774,7 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
     }
 
     int xPeak = maxPeak.x();
-    // const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
-    if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F15_CURVES)*/ "F15_curves") {
+    if (m_algorithm == "F15_curves") {
         // 在曲线33中找到与该 X 坐标最接近的点
         double y = 0;
         if (m_series33->count() > xPeak) {
@@ -790,11 +786,11 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
         if (m_trajectory) {
             m_trajectory->appendPeak(y);
         }
-    } else if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F15_SINGLE)*/ "F15_single") {
+    } else if (m_algorithm == "F15_single") {
         m_trajectory->appendPeak(maxPeak.rx());
-    } else if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F30_SINGLE)*/ "F30_single") {
+    } else if (m_algorithm == "F30_single") {
         m_trajectory->appendPeak(maxPeak.rx());
-    } else if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F30_CURVES)*/ "F30_curves") {
+    } else if (m_algorithm == "F30_curves") {
         // 在曲线33中找到与该 X 坐标最接近的点
         double y = 0;
         if (m_series33->count() + m_offset > xPeak) {
@@ -825,8 +821,7 @@ void FormPlot::callFindPeak()
         auto test_33 = m_series33->points();
         for (const auto &pt : peaks31) {
             m_peaks->append(pt);
-            // const int idxAlgorithm = ui->comboBoxAlgorithm->currentIndex();
-            if (m_algorithm == /*static_cast<int>(SHOW_ALGORITHM::F30_CURVES)*/ "F30_curves") {
+            if (m_algorithm == "F30_curves") {
                 // 在曲线33中找到与该 X 坐标最接近的点
                 double y = 0;
                 if (m_series33->count() > pt.x() - m_offset) {

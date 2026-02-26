@@ -149,8 +149,7 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33,
     }
 }
 
-void ThreadWorker::processDataF30(const QByteArray &data31,
-                                  const QByteArray &data33,
+void ThreadWorker::processDataF30(const FRAME& frame,
                                   const double &temperature)
 {
     double yMin = std::numeric_limits<double>::max();
@@ -161,8 +160,11 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     QVector<double> raw31;
     QVector<double> raw33;
     int numPoints = 0;
-    processF30Curve31(data31, v_voltage31, raw31, yMin, yMax);
-    processF30Curve33(data33, v_voltage33, raw33, yMin, yMax);
+    LOG_INFO("process F30-Curves31");
+    processF30Curve31(frame.data31, v_voltage31, raw31, yMin, yMax);
+    LOG_INFO("process F30-Curves33");
+    processF30Curve33(frame.data33, v_voltage33, raw33, yMin, yMax);
+    LOG_INFO("process F30-Curves done");
     QList<QPointF> out31, out33;
     CURVE curve31;
     CURVE curve33;
@@ -195,11 +197,13 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     curve33.raw.x_min = 0;
     curve33.raw.x_max = raw33.size();
 
-    if (!m_autoupdate_threshold) {
-        applyThreshold(m_threshold, raw31, raw33, temperature);
-    } else {
-        calculateArcSinThreshold(temperature);
-        applyThreshold(m_threshold, raw31, raw33, temperature);
+    if(m_enable_threshold) {
+        if (!m_autoupdate_threshold) {
+            applyThreshold(m_threshold, raw31, raw33, temperature);
+        } else {
+            calculateArcSinThreshold(temperature);
+            applyThreshold(m_threshold, raw31, raw33, temperature);
+        }
     }
 
     emit plotReady4k(curve31, curve33, temperature);
@@ -227,8 +231,8 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
             return;
         }
 
-        QByteArray hex31 = data31.toHex(' ').toUpper();
-        QByteArray hex33 = data33.toHex(' ').toUpper();
+        QByteArray hex31 = frame.data31.toHex(' ').toUpper();
+        QByteArray hex33 = frame.data33.toHex(' ').toUpper();
         file.write(hex31);
         file.write("\n");
         file.write(hex33);
@@ -244,8 +248,7 @@ void ThreadWorker::processDataF30(const QByteArray &data31,
     }
 }
 
-void ThreadWorker::processDataF15(const QByteArray &data31,
-                                  const QByteArray &data33,
+void ThreadWorker::processDataF15(const FRAME& frame,
                                   const double &temperature)
 {
     double yMin = std::numeric_limits<double>::max();
@@ -258,10 +261,10 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
     int numPointsRaw = 0;
 
     if (m_algorithm == "F15_curves") {
-        processF15Curve31(data31, v_voltage31, raw31, yMin, yMax);
-        processF15Curve33(data33, v_voltage33, raw33, yMin, yMax);
+        processF15Curve31(frame.data31, v_voltage31, raw31, yMin, yMax);
+        processF15Curve33(frame.data33, v_voltage33, raw33, yMin, yMax);
     } else if (m_algorithm == "F15_single") {
-        processF15Curve31(data31, v_voltage31, raw31, yMin, yMax);
+        processF15Curve31(frame.data31, v_voltage31, raw31, yMin, yMax);
     }
 
     CURVE curve31;
@@ -311,16 +314,17 @@ void ThreadWorker::processDataF15(const QByteArray &data31,
         curve33.raw.x_max = numPointsRaw;
     }
 
-    if (!m_autoupdate_threshold) {
-        applyThreshold(m_threshold, raw31, raw33, temperature);
+    if(m_enable_threshold) {
+        if (!m_autoupdate_threshold) {
+            applyThreshold(m_threshold, raw31, raw33, temperature);
+        }
     }
 
     emit plotReady4k(curve31, curve33, temperature);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
 }
 
-void ThreadWorker::processDataLLC(const QByteArray &data31,
-                                  const QByteArray &data33,
+void ThreadWorker::processDataLLC(const FRAME& frame,
                                   const double &temperature)
 {
     double yMin = std::numeric_limits<double>::max();
@@ -334,7 +338,7 @@ void ThreadWorker::processDataLLC(const QByteArray &data31,
     // 31
     {
         // 长度字段（2字节，大端序）
-        QByteArray payload = data31.mid(5, data31.size() - 7);
+        QByteArray payload = frame.data31.mid(5, frame.data31.size() - 7);
         if (payload.size() % 4 != 0) {
             LOG_WARN("Invalid data length: {}", payload.size());
             return;
@@ -369,7 +373,7 @@ void ThreadWorker::processDataLLC(const QByteArray &data31,
     }
     // 33
     {
-        QByteArray payload = data33.mid(5, data33.size() - 7);
+        QByteArray payload = frame.data33.mid(5, frame.data33.size() - 7);
         if (payload.size() % 4 != 0) {
             LOG_WARN("Invalid data length: {}", payload.size());
             return;
@@ -420,12 +424,15 @@ void ThreadWorker::processDataLLC(const QByteArray &data31,
     curve33.x_min = 0;
     curve33.x_max = v_voltage33.size();
 
-    if (!m_autoupdate_threshold) {
-        applyThreshold(m_threshold, raw31, raw33, temperature);
-    } else {
-        calculateArcSinThreshold(temperature);
-        applyThreshold(m_threshold, raw31, raw33, temperature);
+    if(m_enable_threshold) {
+        if (!m_autoupdate_threshold) {
+            applyThreshold(m_threshold, raw31, raw33, temperature);
+        } else {
+            calculateArcSinThreshold(temperature);
+            applyThreshold(m_threshold, raw31, raw33, temperature);
+        }
     }
+
 
     emit plotReady4k(curve31, curve33, temperature);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
@@ -585,15 +592,23 @@ void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option)
 {
     if (option.contains("offset")) {
         m_correction_offset = option["offset"].toDouble();
+        LOG_INFO("Threshold Option: offset {}", m_correction_offset);
     }
     if (option.contains("step")) {
         m_correction_step = option["step"].toDouble();
+        LOG_INFO("Threshold Option: step {}", m_correction_step);
     }
     if (option.contains("count")) {
         m_correction_count = option["count"].toDouble();
+        LOG_INFO("Threshold Option: count {}", m_correction_count);
     }
     if (option.contains("interpolation")) {
         m_enable_interpolation = option["interpolation"].toBool();
+        LOG_INFO("Threshold Option: interpolation {}", m_enable_interpolation);
+    }
+    if(option.contains("enable_threshold")) {
+        m_enable_threshold = option["enable_threshold"].toBool();
+        LOG_INFO("Threshold Option: enable_threshold {}", m_enable_threshold);
     }
 }
 

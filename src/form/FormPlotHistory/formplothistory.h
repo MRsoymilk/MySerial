@@ -46,7 +46,7 @@ private slots:
     void on_lineEdit24Go_editingFinished();
     void on_radioButtonMix_clicked();
     void on_radioButtonSplit_clicked();
-    void on_toolButtonDumpPlot_clicked();
+    void on_tBtnDumpPlot_clicked();
     void on_toolButtonDumpData_clicked();
     void on_tBtnToPlot_clicked();
     void onMenuRemove();
@@ -54,6 +54,7 @@ private slots:
     void on_tBtnToPlotWith_clicked();
     void on_tBtnToVoltage_clicked();
     void on_tBtnShowData_clicked();
+    void on_tBtnDumpRaw_clicked();
 
 private:
     void updatePlot31();

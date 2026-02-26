@@ -5,6 +5,7 @@
 #include <QPointer>
 #include <QSerialPort>
 #include <QWidget>
+#include "global.h"
 
 class LineSend;
 
@@ -18,12 +19,6 @@ class FormSerial : public QWidget
 
 public:
     enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
-
-    struct FRAME
-    {
-        QByteArray bit31;
-        QByteArray bit33;
-    };
 
     struct SERIAL
     {
@@ -57,21 +52,12 @@ public:
     void updateFrameTypes(const QString &idx);
 
 signals:
-    void recv2PlotLLC(const QByteArray &data31,
-                      const QByteArray &data33,
+    void recv2PlotLLC(const FRAME& frame,
                       const double &temperature = 0.0);
-    void recv2PlotF30(const QByteArray &data31,
-                      const QByteArray &data33,
+    void recv2PlotF30(const FRAME& frame,
                       const double &temperature = 0.0);
-    void recv2DataF30(const QByteArray &data31,
-                      const QByteArray &data33,
-                      const QByteArray &temperature = "");
-    void recv2PlotF15(const QByteArray &data31,
-                      const QByteArray &data33,
+    void recv2PlotF15(const FRAME& frame,
                       const double &temperature = 0.0);
-    void recv2DataF15(const QByteArray &data31,
-                      const QByteArray &data33,
-                      const QByteArray &temperature = "");
     void recv2MPU(const QByteArray &data);
     void recvTemperature(double temperature);
     void statusReport(int progress, const QString &msg);
@@ -130,17 +116,10 @@ private:
     SEND_FORMAT m_send_format;
     bool m_hex_display;
     QTimer *m_send_timer;
-    struct FrameType
-    {
-        QString name;
-        QByteArray header;
-        QByteArray footer;
-        int length;
-    };
 
     QList<FrameType> m_frameTypes = {};
     QString m_algorithm;
-    FormSerial::FRAME m_frame;
+    FRAME m_frame;
     long long m_recv_count;
 
     QVector<LineSend *> m_lineSends;

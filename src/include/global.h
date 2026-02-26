@@ -5,6 +5,27 @@
 #include <QPointF>
 #include <limits>
 
+struct FrameType
+{
+    QString name;
+    QByteArray header;
+    QByteArray footer;
+    int length;
+};
+
+struct FRAME
+{
+    QByteArray data31;
+    QByteArray data33;
+    QByteArray temperature;
+
+    void clear() {
+        data31.clear();
+        data33.clear();
+        temperature.clear();
+    }
+};
+
 struct RAW
 {
     QList<QPointF> data;
@@ -23,6 +44,7 @@ struct CURVE
     double y_max = std::numeric_limits<double>::min();
 
     RAW raw;
+    QString frame;
 };
 
 struct PARAMS_ARCSIN

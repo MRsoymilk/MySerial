@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.4.0 LANGUAGES CXX)
+project(MySerial VERSION 1.4.1 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -55,12 +55,6 @@ set(FORM_LOG
     src/form/log/formlog.ui
 )
 
-set(FORM_DATA
-    src/form/data/formdata.h
-    src/form/data/formdata.cpp
-    src/form/data/formdata.ui
-)
-
 set(FORM_AUTOUPDATE
     src/form/AutoUpdate/autoupdate.h
     src/form/AutoUpdate/autoupdate.cpp
@@ -86,12 +80,6 @@ set(SRC_ENHANCE
 set(SRC_MODULE
     src/module/httpclient/httpclient.h
     src/module/httpclient/httpclient.cpp
-)
-
-set(PLOT_DATA
-    src/form/FormPlotData/formplotdata.h
-    src/form/FormPlotData/formplotdata.cpp
-    src/form/FormPlotData/formplotdata.ui
 )
 
 set(PLOT_CORRECTION
@@ -197,12 +185,10 @@ set(PROJECT_SOURCES
         ${SRC_INCLUDE}
         ${FORM_SERIAL}
         ${FORM_PLOT}
-        ${FORM_DATA}
         ${FORM_LOG}
         ${FORM_SETTING}
         ${FORM_AUTOUPDATE}
         ${FORM_PLAY}
-        ${PLOT_DATA}
         ${PLOT_CORRECTION}
         ${PLOT_HISTORY}
         ${PLOT_SIMULATE}

@@ -755,15 +755,15 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
 {
     if (m_algorithm == "F30_curves") {
         if (type == "F30_31") {
-            m_frame.bit31 = data;
+            m_frame.data31 = data;
         } else if (type == "F30_33") {
-            if (!m_frame.bit31.isEmpty()) {
+            if (!m_frame.data31.isEmpty()) {
                 double temperature = 0;
                 QByteArray frame_temperature = "";
 
                 if (m_acceptTemperature) {
                     QByteArray frame_data = data.left(data.size() - (2 + 4));
-                    m_frame.bit33 = frame_data;
+                    m_frame.data33 = frame_data;
                     frame_temperature = data.right(2 + 4);
                     if (frame_temperature.size() >= 4) {
                         long long raw_temperature = (static_cast<quint8>(frame_temperature[0])
@@ -777,47 +777,39 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
                         temperature = raw_temperature / 10000.0;
                     }
                 } else {
-                    m_frame.bit33 = data;
+                    m_frame.data33 = data;
                 }
-
-                emit recv2PlotF30(m_frame.bit31, m_frame.bit33, temperature);
-                emit recv2DataF30(m_frame.bit31, m_frame.bit33, frame_temperature);
-                m_frame.bit33.clear();
-                m_frame.bit31.clear();
+                m_frame.temperature = frame_temperature;
+                emit recv2PlotF30(m_frame, temperature);
+                m_frame.clear();
             }
         }
     } else if (m_algorithm == "F30_single") {
-        emit recv2PlotF30(data, {});
-        emit recv2DataF30(data, {});
+        emit recv2PlotF30(m_frame, {});
     } else if (m_algorithm == "F15_curves") {
         if (type == "F15_31") {
-            m_frame.bit31 = data;
+            m_frame.data31 = data;
         } else if (type == "F15_33") {
-            m_frame.bit33 = data;
-            if (!m_frame.bit31.isEmpty()) {
-                emit recv2DataF15(m_frame.bit31, m_frame.bit33);
-                emit recv2PlotF15(m_frame.bit31, m_frame.bit33);
-                m_frame.bit31.clear();
-                m_frame.bit33.clear();
+            m_frame.data33 = data;
+            if (!m_frame.data31.isEmpty()) {
+                emit recv2PlotF15(m_frame);
+                m_frame.clear();
             }
         }
     } else if (m_algorithm == "F15_single") {
         if (type == "F15_31") {
-            emit recv2DataF15(data, {});
-            emit recv2PlotF15(data, {});
+            emit recv2PlotF15(m_frame, {});
         }
     } else if (m_algorithm == "Play_mpu6050") {
         emit recv2MPU(data);
     } else if (m_algorithm == "LLC_curves") {
         if (type == "F30_31") {
-            m_frame.bit31 = data;
+            m_frame.data31 = data;
         } else if (type == "F30_33") {
-            m_frame.bit33 = data;
-            if (!m_frame.bit31.isEmpty()) {
-                // emit recv2DataLLC(m_frame.bit31, m_frame.bit33);
-                emit recv2PlotLLC(m_frame.bit31, m_frame.bit33);
-                m_frame.bit31.clear();
-                m_frame.bit33.clear();
+            m_frame.data33 = data;
+            if (!m_frame.data31.isEmpty()) {
+                emit recv2PlotLLC(m_frame);
+                m_frame.clear();
             }
         }
     }

@@ -45,7 +45,7 @@ void FormEasy::setAlgorithm(const QString &algorithm)
 bool FormEasy::connectEasyMode()
 {
     LoadingOverLay *overlay = new LoadingOverLay(this);
-    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo);
+    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     overlay->resize(this->size());
     overlay->show();
     QString algorithm = qApp->property("algorithm").toString();
@@ -201,7 +201,7 @@ void FormEasy::init()
             formSerial,
             &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
-    connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData);
+    connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData, Qt::QueuedConnection);
 
     connect(m_worker,
             &ThreadWorker::plotReady4k,
@@ -210,11 +210,11 @@ void FormEasy::init()
             Qt::QueuedConnection);
     connect(m_worker, &ThreadWorker::dataReady4k, this, &FormEasy::updateTable, Qt::QueuedConnection);
 
-    connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC);
-    connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30);
-    connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15);
+    connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC, Qt::QueuedConnection);
+    connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30, Qt::QueuedConnection);
+    connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15, Qt::QueuedConnection);
 
-    connect(this, &FormEasy::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv);
+    connect(this, &FormEasy::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv, Qt::QueuedConnection);
 
     connect(m_chartView, &MyChartView::toSelect, this, [&](const QPointF &point) {
         ui->lineEditCurrentX->setText(QString::number(point.x()));

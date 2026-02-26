@@ -16,14 +16,11 @@ public:
     void setAlgorithm(const QString &algorithm);
 
 public slots:
-    void processDataF30(const QByteArray &data31,
-                        const QByteArray &data33,
+    void processDataF30(const FRAME& frame,
                         const double &temperature);
-    void processDataF15(const QByteArray &data31,
-                        const QByteArray &data33,
+    void processDataF15(const FRAME& frame,
                         const double &temperature);
-    void processDataLLC(const QByteArray &data31,
-                        const QByteArray &data33,
+    void processDataLLC(const FRAME& frame,
                         const double &temperature);
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
     void onUseLoadedThreadsholdOption(const QJsonObject &option);
@@ -84,6 +81,7 @@ private:
     double m_correction_step = 1;
     int m_correction_count = 800;
     QVector<double> m_threshold;
+    bool m_enable_threshold = false;
     bool m_autoupdate_threshold = false;
     bool m_enable_interpolation = false;
     PARAMS_ARCSIN m_params_arcsin;
