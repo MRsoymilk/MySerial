@@ -350,12 +350,14 @@ void FormPlotHistory::onMenuRemove()
 
 void FormPlotHistory::onHistoryRecv(const CURVE &data31,
                                     const CURVE &data33,
-                                    const double &temperature)
+                                    const double &temperature,
+                                    const QString& frames)
 {
     if (this->isVisible()) {
         m_p31.append(data31);
         m_p33.append(data33);
         m_temperature.append(temperature);
+        m_frames.append(frames);
         m_index_31 = m_p31.size() - 1;
         m_index_33 = m_p33.size() - 1;
         ui->labelStatus31->setText(QString("%1/%2").arg(m_index_31 + 1).arg(m_p31.size()));

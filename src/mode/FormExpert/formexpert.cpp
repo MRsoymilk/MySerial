@@ -81,22 +81,22 @@ void FormExpert::initToolbar()
     };
 
     QMap<QToolButton *, QString> onIcons = {
-        {ui->btnSerial, "usb-on"},
-        {ui->btnLog, "log-on"},
-        {ui->btnPlot, "plot-on"},
-        {ui->btnUpdate, "update-on"},
-        {ui->btnSetting, "setting-on"},
-        {ui->btnExternal, "external-on"},
-    };
+                                            {ui->btnSerial, "usb-on"},
+                                            {ui->btnLog, "log-on"},
+                                            {ui->btnPlot, "plot-on"},
+                                            {ui->btnUpdate, "update-on"},
+                                            {ui->btnSetting, "setting-on"},
+                                            {ui->btnExternal, "external-on"},
+                                            };
 
     QMap<QToolButton *, QString> offIcons = {
-        {ui->btnSerial, "usb-off"},
-        {ui->btnLog, "log-off"},
-        {ui->btnPlot, "plot-off"},
-        {ui->btnUpdate, "update-off"},
-        {ui->btnSetting, "setting-off"},
-        {ui->btnExternal, "external-off"},
-    };
+                                             {ui->btnSerial, "usb-off"},
+                                             {ui->btnLog, "log-off"},
+                                             {ui->btnPlot, "plot-off"},
+                                             {ui->btnUpdate, "update-off"},
+                                             {ui->btnSetting, "setting-off"},
+                                             {ui->btnExternal, "external-off"},
+                                             };
 
     for (QToolButton *btn : buttonList) {
         btn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -340,20 +340,10 @@ void FormExpert::init()
             m_worker,
             &ThreadWorker::onParamsArcSin,
             Qt::QueuedConnection);
-    connect(formSerial,
-            &FormSerial::recvTemperature,
-            m_plotCorrection,
-            &FormPlotCorrection::onTemperature,
-            Qt::QueuedConnection);
     connect(m_worker,
             &ThreadWorker::showCorrectionCurve,
             m_plotCorrection,
             &FormPlotCorrection::onShowCorrectionCurve,
-            Qt::QueuedConnection);
-    connect(formSerial,
-            &FormSerial::recvTemperature,
-            m_plotHistory,
-            &FormPlotHistory::onTemperature,
             Qt::QueuedConnection);
     connect(formPlot,
             &FormPlot::sendOffset31,

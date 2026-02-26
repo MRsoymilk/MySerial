@@ -47,7 +47,6 @@ protected:
 
 public slots:
     void onEpochCorrection(const QVector<double> &v14, const QVector<double> &v24);
-    void onTemperature(double temperature);
     void onThresholdStatus(const QString &status);
     void onCollectionFitingPointsFinish(bool status);
     void onBroadcast(const double &avg);

@@ -59,7 +59,6 @@ signals:
     void recv2PlotF15(const FRAME& frame,
                       const double &temperature = 0.0);
     void recv2MPU(const QByteArray &data);
-    void recvTemperature(double temperature);
     void statusReport(int progress, const QString &msg);
 
 public slots:

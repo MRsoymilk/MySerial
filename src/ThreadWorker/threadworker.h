@@ -36,7 +36,8 @@ signals:
     void plotReady4k(const CURVE &curve31,
                      const CURVE &curve33,
                      const double &temperature = 0.0,
-                     bool record = true);
+                     bool record = true,
+                     const QString& frames = "");
     void showCorrectionCurve(const QList<QPointF> &data,
                              const double &xMin,
                              const double &xMax,

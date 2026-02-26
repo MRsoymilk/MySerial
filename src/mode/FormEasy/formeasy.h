@@ -34,7 +34,7 @@ public:
     void setAlgorithm(const QString &algorithm);
 
 signals:
-    void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0);
+    void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0, const QString& frames="");
 
 public slots:
     void updatePlot4k(const CURVE &curve31,

@@ -68,11 +68,6 @@ void FormPlotCorrection::onEpochCorrection(const QVector<double> &v14, const QVe
     QCoreApplication::processEvents();
 }
 
-void FormPlotCorrection::onTemperature(double temperature)
-{
-    m_formSin->setTemperature(temperature);
-}
-
 void FormPlotCorrection::onThresholdStatus(const QString &status)
 {
     if (arcSinShow) {

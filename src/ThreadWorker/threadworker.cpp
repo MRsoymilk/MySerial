@@ -433,7 +433,6 @@ void ThreadWorker::processDataLLC(const FRAME& frame,
         }
     }
 
-
     emit plotReady4k(curve31, curve33, temperature);
     emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
 }

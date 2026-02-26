@@ -358,7 +358,8 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &
 void FormPlot::updatePlot4k(const CURVE &curve31,
                             const CURVE &curve33,
                             const double &temperature,
-                            bool record)
+                            bool record,
+                            const QString& frames)
 {
     if (m_pause) {
         return;
@@ -449,7 +450,7 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     }
 
     if (record) {
-        emit toHistory(plot31, plot33, temperature);
+        emit toHistory(plot31, plot33, temperature, frames);
     }
 
     if (m_enableVoltage) {

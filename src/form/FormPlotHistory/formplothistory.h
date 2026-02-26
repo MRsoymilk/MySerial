@@ -28,9 +28,10 @@ signals:
     void sendToPlot(const CURVE &curve31,
                     const CURVE &curve33,
                     const double &temperature,
-                    bool record = false);
+                    bool record = false,
+                    const QString& frames="");
 public slots:
-    void onHistoryRecv(const CURVE &curve31, const CURVE &curve33, const double &temperature);
+    void onHistoryRecv(const CURVE &curve31, const CURVE &curve33, const double &temperature, const QString &frames);
     void onTemperature(double temperature);
 
 protected:
@@ -68,6 +69,7 @@ private:
     Ui::FormPlotHistory *ui;
     QList<CURVE> m_p31, m_p33;
     QList<double> m_temperature;
+    QList<QString> m_frames;
     int m_index_31 = 0, m_index_33 = 0;
     MyChartView *m_chartView31Split = nullptr;
     MyChartView *m_chartView33Split = nullptr;

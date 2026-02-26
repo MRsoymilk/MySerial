@@ -379,6 +379,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data)
 {
     m_recv_count += data.size();
     ui->labelRecvCount->setText(QString("recv: %1").arg(m_recv_count));
+    m_buffer.append(data);
 
     QString to_show = data;
     if (m_ini.hex_display) {
@@ -386,9 +387,14 @@ bool FormSerial::doFrameExtra(const QByteArray &data)
         for (int i = 0; i < data.length(); ++i) {
             to_show.append(QString("%1 ").arg((unsigned char) data[i], 2, 16, QChar('0')).toUpper());
         }
+        ui->txtRecv->setUpdatesEnabled(false);
+        ui->txtRecv->appendPlainText(to_show);
+        ui->txtRecv->setUpdatesEnabled(true);
+        if (ui->txtRecv->document()->characterCount() > 200000)
+        {
+            ui->txtRecv->clear();
+        }
     }
-    ui->txtRecv->appendPlainText(to_show);
-    m_buffer.append(data);
 
     while (true) {
         if (m_frameTypes.isEmpty()) {
@@ -566,7 +572,8 @@ void FormSerial::init()
 
     m_send_timer = new QTimer(this);
     connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
-    ui->txtRecv->setMaximumBlockCount(1000);
+    ui->txtRecv->document()->setMaximumBlockCount(1000);
+    ui->txtRecv->setUndoRedoEnabled(false);
     setINI();
     m_recv_count = 0;
 }
@@ -638,7 +645,9 @@ void FormSerial::send(const QString &text)
     }
     to_show = hexList.join(" ");
     if (m_ini.show_send) {
+        ui->txtRecv->setUpdatesEnabled(false);
         ui->txtRecv->appendPlainText(QString("[TX] %1:\n%2").arg(TIMESTAMP_0()).arg(to_show));
+        ui->txtRecv->setUpdatesEnabled(true);
     }
     LOG_INFO("{}: {}", flag, to_show);
 }
