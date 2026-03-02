@@ -6,6 +6,12 @@
 #include <QLineSeries>
 #include <QPixmap>
 #include <QValueAxis>
+#include <QMenu>
+#include <QShortcut>
+#include <QTextStream>
+#include <QPainter>
+#include <QCoreApplication>
+
 #include "funcdef.h"
 
 FormPlotHistory::FormPlotHistory(QWidget *parent)
@@ -28,279 +34,101 @@ void FormPlotHistory::retranslateUI()
 
 void FormPlotHistory::init()
 {
-    m_chartViewMix = new MyChartView(new QChart(), this);
-    m_chartViewMix->setRenderHint(QPainter::Antialiasing);
-    ui->gLayMix->addWidget(m_chartViewMix);
+    m_chart = new QChart();
+    m_chart->setTitle(tr("curve_mix"));
 
-    m_chartView31Split = new MyChartView(new QChart(), this);
-    m_chartView33Split = new MyChartView(new QChart(), this);
-    m_chartView31Split->setRenderHint(QPainter::Antialiasing);
-    m_chartView33Split->setRenderHint(QPainter::Antialiasing);
-    ui->gLay31->addWidget(m_chartView31Split);
-    ui->gLay33->addWidget(m_chartView33Split);
+    m_line31 = new QLineSeries;
+    m_line31->setColor(Qt::blue);
+    m_line31->setName("curve31");
+
+    m_line33 = new QLineSeries;
+    m_line33->setColor(Qt::magenta);
+    m_line33->setName("curve33");
+
+    m_chart->addSeries(m_line31);
+    m_chart->addSeries(m_line33);
+
+    m_axisX = new QValueAxis;
+    m_axisY = new QValueAxis;
+
+    m_chart->addAxis(m_axisX, Qt::AlignBottom);
+    m_chart->addAxis(m_axisY, Qt::AlignLeft);
+
+    m_line31->attachAxis(m_axisX);
+    m_line31->attachAxis(m_axisY);
+    m_line33->attachAxis(m_axisX);
+    m_line33->attachAxis(m_axisY);
+
+    m_chartView = new MyChartView(m_chart, this);
+    m_chartView->setRenderHint(QPainter::Antialiasing);
+    ui->gLayMix->addWidget(m_chartView);
+
     ui->stackedWidget->setCurrentWidget(ui->pageMix);
 
-    ui->radioButtonMix->setChecked(true);
-
-    ui->tBtnPrev14->setObjectName("go-prev");
-    ui->tBtnPrev14->setToolTip(tr("prev"));
-    ui->tBtnNext14->setObjectName("go-next");
-    ui->tBtnNext14->setToolTip(tr("next"));
-    ui->tBtnPrev24->setObjectName("go-prev");
-    ui->tBtnPrev24->setToolTip(tr("prev"));
-    ui->tBtnNext24->setObjectName("go-next");
-    ui->tBtnNext24->setToolTip(tr("next"));
-
     QShortcut *shortcut_prev = new QShortcut(QKeySequence(Qt::Key_Left), this);
-    connect(shortcut_prev, &QShortcut::activated, this, &FormPlotHistory::on_tBtnPrev14_clicked);
+    connect(shortcut_prev, &QShortcut::activated, this, &FormPlotHistory::on_tBtnPrev_clicked);
+
     QShortcut *shortcut_next = new QShortcut(QKeySequence(Qt::Key_Right), this);
-    connect(shortcut_next, &QShortcut::activated, this, &FormPlotHistory::on_tBtnNext14_clicked);
+    connect(shortcut_next, &QShortcut::activated, this, &FormPlotHistory::on_tBtnNext_clicked);
+
     QShortcut *shortcut_delete = new QShortcut(QKeySequence(Qt::Key_Delete), this);
     connect(shortcut_delete, &QShortcut::activated, this, &FormPlotHistory::onMenuRemove);
-
-    m_chartMix = new QChart();
-    m_chartMix->setTitle(tr("curve_mix"));
-
-    m_lineMix31 = new QLineSeries;
-    m_lineMix31->setColor(Qt::blue);
-    m_lineMix31->setName("curve31");
-
-    m_lineMix33 = new QLineSeries;
-    m_lineMix33->setColor(Qt::magenta);
-    m_lineMix33->setName("curve33");
-
-    m_chartMix->addSeries(m_lineMix31);
-    m_chartMix->addSeries(m_lineMix33);
-
-    m_axisMixX = new QValueAxis;
-    m_axisMixY = new QValueAxis;
-    m_chartMix->addAxis(m_axisMixX, Qt::AlignBottom);
-    m_chartMix->addAxis(m_axisMixY, Qt::AlignLeft);
-    m_lineMix31->attachAxis(m_axisMixX);
-    m_lineMix31->attachAxis(m_axisMixY);
-    m_lineMix33->attachAxis(m_axisMixX);
-    m_lineMix33->attachAxis(m_axisMixY);
-    m_chartViewMix->setChart(m_chartMix);
-
-    // ------------------ 31 ------------------
-    m_splitLine31 = new QLineSeries;
-    m_splitLine31->setColor(Qt::blue);
-    m_chart31 = new QChart();
-    m_chart31->addSeries(m_splitLine31);
-
-    m_axisSplit31X = new QValueAxis;
-    m_axisSplit31Y = new QValueAxis;
-
-    m_chart31->addAxis(m_axisSplit31X, Qt::AlignBottom);
-    m_chart31->addAxis(m_axisSplit31Y, Qt::AlignLeft);
-    m_splitLine31->attachAxis(m_axisSplit31X);
-    m_splitLine31->attachAxis(m_axisSplit31Y);
-
-    m_chartView31Split->setChart(m_chart31);
-
-    // ------------------ 33 ------------------
-    m_splitLine33 = new QLineSeries;
-    m_splitLine33->setColor(Qt::magenta);
-    m_chart33 = new QChart();
-    m_chart33->addSeries(m_splitLine33);
-
-    m_axisSplit33X = new QValueAxis;
-    m_axisSplit33Y = new QValueAxis;
-
-    m_chart33->addAxis(m_axisSplit33X, Qt::AlignBottom);
-    m_chart33->addAxis(m_axisSplit33Y, Qt::AlignLeft);
-    m_splitLine33->attachAxis(m_axisSplit33X);
-    m_splitLine33->attachAxis(m_axisSplit33Y);
-
-    m_chartView33Split->setChart(m_chart33);
 
     ui->tBtnToVoltage->setCheckable(true);
     ui->progressBarToPlot->setVisible(false);
 }
 
-void FormPlotHistory::on_tBtnNext14_clicked()
+void FormPlotHistory::updatePlot()
 {
-    if (m_p31.empty()) {
+    if (m_data.isEmpty() || m_index < 0 || m_index >= m_data.size())
         return;
-    }
-    if (m_index_31 + 1 < m_p31.size()) {
-        m_index_31++;
-    } else {
-        m_index_31 = m_p31.size() - 1;
-    }
-    updatePlot31();
+
+    const HISTORY_DATA &data = m_data[m_index];
+
+    ui->labelTemperature->setText(QString("%1 ℃").arg(data.temperature));
+
+    m_line31->replace(data.curve31.data);
+    m_line33->replace(data.curve33.data);
+
+    m_axisX->setRange(0,
+                      std::max(data.curve31.x_max,
+                               data.curve33.x_max));
+
+    m_axisY->setRange(std::min(data.curve31.y_min,
+                               data.curve33.y_min),
+                      std::max(data.curve31.y_max,
+                               data.curve33.y_max));
+
+    ui->labelStatus->setText(
+        QString("%1/%2").arg(m_index + 1).arg(m_data.size()));
 }
 
-void FormPlotHistory::on_tBtnPrev14_clicked()
+void FormPlotHistory::on_tBtnNext_clicked()
 {
-    if (m_p31.empty()) {
+    if (m_data.isEmpty())
         return;
-    }
-    if (m_index_31 - 1 >= 0) {
-        m_index_31--;
-    } else {
-        m_index_31 = 0;
-    }
-    updatePlot31();
+
+    if (m_index + 1 < m_data.size())
+        ++m_index;
+
+    updatePlot();
 }
 
-void FormPlotHistory::on_tBtnNext24_clicked()
+void FormPlotHistory::on_tBtnPrev_clicked()
 {
-    if (m_p33.empty()) {
+    if (m_data.isEmpty())
         return;
-    }
-    if (m_index_33 + 1 < m_p33.size()) {
-        m_index_33++;
-    } else {
-        m_index_33 = m_p33.size() - 1;
-    }
-    updatePlot33();
-}
 
-void FormPlotHistory::on_tBtnPrev24_clicked()
-{
-    if (m_p33.empty()) {
-        return;
-    }
-    if (m_index_33 - 1 >= 0) {
-        m_index_33--;
-    } else {
-        m_index_33 = 0;
-    }
-    updatePlot33();
-}
+    if (m_index - 1 >= 0)
+        --m_index;
 
-void FormPlotHistory::updatePlot31()
-{
-    if (m_index_31 >= m_p31.size() || m_p31.empty()) {
-        QChart *chart = m_chartView31Split->chart();
-        for (QAbstractSeries *series : chart->series()) {
-            chart->removeSeries(series);
-            delete series;
-        }
-        ui->labelStatus31->setText(tr("status"));
-        return;
-    }
-
-    updatePlot(INDEX_31);
-}
-
-void FormPlotHistory::updatePlot33()
-{
-    if (m_index_33 >= m_p33.size() || m_p33.empty()) {
-        QChart *chart = m_chartView33Split->chart();
-        for (QAbstractSeries *series : chart->series()) {
-            chart->removeSeries(series);
-            delete series;
-        }
-        ui->labelStatus33->setText(tr("status"));
-        return;
-    }
-
-    updatePlot(INDEX_33);
-}
-
-void FormPlotHistory::updatePlot(int index)
-{
-    bool isMix = ui->radioButtonMix->isChecked();
-    bool isSplit = ui->radioButtonSplit->isChecked();
-
-    if (isMix) {
-        if (index == INDEX_31) {
-            if (m_index_31 < m_p33.size()) {
-                m_index_33 = m_index_31;
-            } else {
-                return;
-            }
-        } else if (index == INDEX_33) {
-            if (m_index_33 < m_p31.size()) {
-                m_index_31 = m_index_33;
-            } else {
-                return;
-            }
-        }
-        ui->labelTemperature->setText(QString("%1 ℃").arg(m_temperature.at(m_index_33)));
-
-        if (m_enableToVoltage) {
-            m_lineMix31->replace(m_p31[m_index_31].data);
-            m_lineMix33->replace(m_p33[m_index_33].data);
-
-            m_axisMixX->setRange(0, std::max(m_p31[m_index_31].x_max, m_p33[m_index_33].x_max));
-            m_axisMixY->setRange(std::min(m_p31[m_index_31].y_min, m_p33[m_index_33].y_min),
-                                 std::max(m_p31[m_index_31].y_max, m_p33[m_index_33].y_max));
-        } else {
-            m_lineMix31->replace(m_p31[m_index_31].raw.data);
-            m_lineMix33->replace(m_p33[m_index_33].raw.data);
-
-            m_axisMixX->setRange(0,
-                                 std::max(m_p31[m_index_31].raw.x_max, m_p33[m_index_33].raw.x_max));
-            m_axisMixY->setRange(std::min(m_p31[m_index_31].raw.y_min, m_p33[m_index_33].raw.y_min),
-                                 std::max(m_p31[m_index_31].raw.y_max, m_p33[m_index_33].raw.y_max));
-        }
-
-        ui->stackedWidget->setCurrentWidget(ui->pageMix);
-    } else {
-        if (isSplit) {
-            if (index == INDEX_31) {
-                if (m_index_31 < m_p33.size()) {
-                    m_index_33 = m_index_31;
-                } else {
-                    return;
-                }
-            } else if (index == INDEX_33) {
-                if (m_index_33 < m_p31.size()) {
-                    m_index_31 = m_index_33;
-                } else {
-                    return;
-                }
-            }
-
-            if (index == INDEX_31) {
-                if (m_index_31 < m_p31.size()) {
-                    if (m_enableToVoltage) {
-                        m_splitLine31->replace(m_p31[m_index_31].data);
-                        m_axisSplit31X->setRange(m_p31[m_index_31].x_min, m_p31[m_index_31].x_max);
-                        m_axisSplit31Y->setRange(m_p31[m_index_31].y_min, m_p31[m_index_31].y_max);
-                    } else {
-                        m_splitLine31->replace(m_p31[m_index_31].raw.data);
-                        m_axisSplit31X->setRange(m_p31[m_index_31].raw.x_min,
-                                                 m_p31[m_index_31].raw.x_max);
-                        m_axisSplit31Y->setRange(m_p31[m_index_31].raw.y_min,
-                                                 m_p31[m_index_31].raw.y_max);
-                    }
-                }
-            } else {
-                if (m_index_33 < m_p33.size()) {
-                    if (m_enableToVoltage) {
-                        m_splitLine33->replace(m_p33[m_index_33].data);
-                        m_axisSplit33X->setRange(m_p33[m_index_33].x_min, m_p33[m_index_33].x_max);
-                        m_axisSplit33Y->setRange(m_p33[m_index_33].y_min, m_p33[m_index_33].y_max);
-                    } else {
-                        m_splitLine33->replace(m_p33[m_index_33].raw.data);
-                        m_axisSplit33X->setRange(m_p33[m_index_33].raw.x_min,
-                                                 m_p33[m_index_33].raw.x_max);
-                        m_axisSplit33Y->setRange(m_p33[m_index_33].raw.y_min,
-                                                 m_p33[m_index_33].raw.y_max);
-                    }
-                }
-            }
-
-            ui->stackedWidget->setCurrentWidget(ui->pageSplit);
-        }
-    }
-    ui->labelStatus31->setText(QString("%1/%2").arg(m_index_31 + 1).arg(m_p31.size()));
-    ui->labelStatus33->setText(QString("%1/%2").arg(m_index_33 + 1).arg(m_p33.size()));
+    updatePlot();
 }
 
 void FormPlotHistory::closeEvent(QCloseEvent *event)
 {
-    m_p31.clear();
-    QList<CURVE>().swap(m_p31);
-    m_p33.clear();
-    QList<CURVE>().swap(m_p33);
-    m_temperature.clear();
-    updatePlot31();
-    updatePlot33();
+    m_data.clear();
+    m_index = 0;
 
     emit windowClose();
     QWidget::closeEvent(event);
@@ -309,304 +137,199 @@ void FormPlotHistory::closeEvent(QCloseEvent *event)
 void FormPlotHistory::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
-    QAction *clearAction = new QAction("Clear", &menu);
-    QAction *removeAction = new QAction("Remove", &menu);
-    menu.addAction(clearAction);
-    menu.addSeparator();
-    menu.addAction(removeAction);
 
-    connect(clearAction, &QAction::triggered, this, &FormPlotHistory::onMenuClear);
-    connect(removeAction, &QAction::triggered, this, &FormPlotHistory::onMenuRemove);
+    QAction *clearAction = menu.addAction("Clear");
+    menu.addSeparator();
+    QAction *removeAction = menu.addAction("Remove");
+
+    connect(clearAction, &QAction::triggered,
+            this, &FormPlotHistory::onMenuClear);
+
+    connect(removeAction, &QAction::triggered,
+            this, &FormPlotHistory::onMenuRemove);
 
     menu.exec(event->globalPos());
 }
 
 void FormPlotHistory::onMenuClear()
 {
-    LOG_INFO("History clear");
-    m_index_31 = 0;
-    m_index_33 = 0;
-    m_p31.clear();
-    m_p33.clear();
-    ui->labelStatus31->setText(QString("%1/%2").arg(m_index_31).arg(m_p31.size()));
-    ui->labelStatus33->setText(QString("%1/%2").arg(m_index_33).arg(m_p33.size()));
+    m_data.clear();
+    m_index = 0;
+    ui->labelStatus->setText("0/0");
 }
 
 void FormPlotHistory::onMenuRemove()
 {
-    LOG_INFO("History remove index 31: {}, 33: {}", m_index_31, m_index_33);
-    if (m_index_31 > 0 && m_index_33 > 0) {
-        m_temperature.removeAt(m_index_33);
-        m_p31.removeAt(m_index_31);
-        m_p33.removeAt(m_index_33);
-        --m_index_31;
-        --m_index_33;
-        ui->labelStatus31->setText(QString("%1/%2").arg(m_index_31 + 1).arg(m_p31.size()));
-        ui->labelStatus33->setText(QString("%1/%2").arg(m_index_33 + 1).arg(m_p33.size()));
-        updatePlot31();
-        updatePlot33();
-    }
+    if (m_data.isEmpty())
+        return;
+
+    m_data.removeAt(m_index);
+
+    if (m_index >= m_data.size())
+        m_index = m_data.size() - 1;
+
+    if (m_index < 0)
+        m_index = 0;
+
+    updatePlot();
 }
 
-void FormPlotHistory::onHistoryRecv(const CURVE &data31,
-                                    const CURVE &data33,
+void FormPlotHistory::onHistoryRecv(const CURVE &curve31,
+                                    const CURVE &curve33,
                                     const double &temperature,
-                                    const QString& frames)
+                                    const QString &)
 {
-    if (this->isVisible()) {
-        m_p31.append(data31);
-        m_p33.append(data33);
-        m_temperature.append(temperature);
-        m_frames.append(frames);
-        m_index_31 = m_p31.size() - 1;
-        m_index_33 = m_p33.size() - 1;
-        ui->labelStatus31->setText(QString("%1/%2").arg(m_index_31 + 1).arg(m_p31.size()));
-        ui->labelStatus33->setText(QString("%1/%2").arg(m_index_33 + 1).arg(m_p33.size()));
-        updatePlot31();
-        updatePlot33();
-        ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
-    }
+    if (!this->isVisible())
+        return;
+
+    HISTORY_DATA data;
+    data.curve31 = curve31;
+    data.curve33 = curve33;
+    data.temperature = temperature;
+
+    m_data.append(data);
+    m_index = m_data.size() - 1;
+
+    updatePlot();
 }
 
 void FormPlotHistory::onTemperature(double temperature)
 {
-    if (this->isVisible()) {
-        ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
-    }
+    ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
 }
 
-void FormPlotHistory::on_lineEdit14Go_editingFinished()
+void FormPlotHistory::on_lineEditGo_editingFinished()
 {
-    int val = ui->lineEdit14Go->text().toInt();
-    if (val > 0 && val <= m_p31.size()) {
-        m_index_31 = val - 1;
-        updatePlot(INDEX_31);
-    }
-}
+    int val = ui->lineEditGo->text().toInt();
 
-void FormPlotHistory::on_lineEdit24Go_editingFinished()
-{
-    int val = ui->lineEdit24Go->text().toInt();
-    if (val > 0 && val <= m_p33.size()) {
-        m_index_33 = val - 1;
-        updatePlot(INDEX_33);
-    }
-}
-
-void FormPlotHistory::on_radioButtonMix_clicked()
-{
-    updatePlot(INDEX_31);
-}
-
-void FormPlotHistory::on_radioButtonSplit_clicked()
-{
-    updatePlot(INDEX_31);
-}
-
-void FormPlotHistory::getFittingChart()
-{
-    if (ui->radioButtonMix->isChecked()) {
-        m_chart = m_chartViewMix->chart();
-    } else if (ui->radioButtonSplit->isChecked()) {
-        m_chart = m_chartView31Split->chart();
+    if (val > 0 && val <= m_data.size()) {
+        m_index = val - 1;
+        updatePlot();
     }
 }
 
 void FormPlotHistory::on_tBtnDumpPlot_clicked()
 {
-    if (!ui->radioButtonMix->isChecked()) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Failed"), tr("Only support Mix!"));
-    }
-    QString dftName = QString("%1.png").arg(m_index_31 + 1);
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                                    "Save Chart",
-                                                    dftName,
-                                                    "PNG Image (*.png);;JPEG Image (*.jpg)");
-    if (!m_chartViewMix) {
+    QString filePath = QFileDialog::getSaveFileName(
+        this,
+        "Save Chart",
+        QString("%1.png").arg(m_index + 1),
+        "PNG Image (*.png);;JPEG Image (*.jpg)");
+
+    if (filePath.isEmpty())
         return;
-    }
 
-    QSize size = m_chartViewMix->size();
-
-    QImage image(size, QImage::Format_ARGB32);
+    QImage image(m_chartView->size(), QImage::Format_ARGB32);
     image.fill(Qt::white);
 
     QPainter painter(&image);
-    m_chartViewMix->render(&painter);
+    m_chartView->render(&painter);
     painter.end();
 
     image.save(filePath);
-    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Successful"), tr("Img exported to:\n%1").arg(filePath));
+
+    SHOW_AUTO_CLOSE_MSGBOX(this,
+                           tr("Export Successful"),
+                           tr("Img exported to:\n%1").arg(filePath));
 }
 
 void FormPlotHistory::on_toolButtonDumpData_clicked()
 {
-    if (!ui->radioButtonMix->isChecked()) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Failed"), tr("Only support Mix!"));
+    if (m_data.isEmpty())
+        return;
+
+    QString filePath = QFileDialog::getSaveFileName(
+        this,
+        tr("Save Curve Data"),
+        QString("%1.csv").arg(m_index + 1),
+        tr("CSV Files (*.csv)"));
+
+    if (filePath.isEmpty())
+        return;
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    out << "index,curve31,curve33\n";
+
+    const HISTORY_DATA &data = m_data[m_index];
+
+    const QList<QPointF> &list31 = data.curve31.data;
+    const QList<QPointF> &list33 = data.curve33.data;
+
+    int size = qMax(list31.size(), list33.size());
+
+    for (int i = 0; i < size; ++i) {
+        QString x = (i < list31.size())
+        ? QString::number(list31[i].x())
+        : "";
+
+        QString y31 = (i < list31.size())
+                          ? QString::number(list31[i].y())
+                          : "";
+
+        QString y33 = (i < list33.size())
+                          ? QString::number(list33[i].y())
+                          : "";
+
+        out << x << "," << y31 << "," << y33 << "\n";
     }
-    if (ui->checkBoxDataAll->isChecked()) {
-        QString filePath = QFileDialog::getSaveFileName(this,
-                                                        tr("Save Curve Data"),
-                                                        "_all.csv",
-                                                        tr("CSV Files (*.csv)"));
-        if (filePath.isEmpty()) {
-            return;
-        }
-        QFile file(filePath);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Failed to Open File"), file.errorString());
-            return;
-        }
 
-        QTextStream out(&file);
+    file.close();
 
-        out << "index";
-        int groupCount = qMax(m_p31.size(), m_p33.size());
-        for (int i = 0; i < groupCount; ++i) {
-            out << QString(",curve31_%1,curve33_%2").arg(i + 1).arg(i + 1);
-        }
-        out << "\n";
-
-        int maxPoints = 0;
-        for (int i = 0; i < groupCount; ++i) {
-            int len31 = (i < m_p31.size()) ? m_p31[i].data.size() : 0;
-            int len33 = (i < m_p33.size()) ? m_p33[i].data.size() : 0;
-            maxPoints = qMax(maxPoints, qMax(len31, len33));
-        }
-
-        for (int i = 0; i < maxPoints; ++i) {
-            out << QString::number(i);
-            for (int g = 0; g < groupCount; ++g) {
-                QString y31 = (g < m_p31.size() && i < m_p31[g].data.size())
-                                  ? QString::number(m_p31[g].data[i].y())
-                                  : "";
-                QString y33 = (g < m_p33.size() && i < m_p33[g].data.size())
-                                  ? QString::number(m_p33[g].data[i].y())
-                                  : "";
-                out << "," << y31 << "," << y33;
-            }
-            out << "\n";
-        }
-
-        file.close();
-
-        SHOW_AUTO_CLOSE_MSGBOX(this,
-                               tr("Export Successful"),
-                               tr("All data exported to:\n%1").arg(filePath));
-    } else {
-        QString dftName = QString("%1.csv").arg(m_index_31 + 1);
-        QString filePath = QFileDialog::getSaveFileName(this,
-                                                        tr("Save Curve Data"),
-                                                        dftName,
-                                                        tr("CSV Files (*.csv)"));
-        if (filePath.isEmpty()) {
-            return;
-        }
-
-        QFile file(filePath);
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            SHOW_AUTO_CLOSE_MSGBOX(this, tr("Failed to Open File"), file.errorString());
-            return;
-        }
-
-        QTextStream out(&file);
-        out << "index,curve31,curve33\n";
-
-        int size = qMax(m_p31.size() > m_index_31 ? m_p31[m_index_31].data.size() : 0,
-                        m_p33.size() > m_index_33 ? m_p33[m_index_33].data.size() : 0);
-
-        const QList<QPointF> &list31 = (m_index_31 < m_p31.size()) ? m_p31[m_index_31].data
-                                                                   : QList<QPointF>();
-        const QList<QPointF> &list33 = (m_index_33 < m_p33.size()) ? m_p33[m_index_33].data
-                                                                   : QList<QPointF>();
-
-        for (int i = 0; i < size; ++i) {
-            QString indexStr = (i < list33.size()) ? QString::number(list33[i].x()) : "";
-            QString y31Str = (i < list31.size()) ? QString::number(list31[i].y()) : "";
-            QString y33Str = (i < list33.size()) ? QString::number(list33[i].y()) : "";
-            out << indexStr << "," << y31Str << "," << y33Str << "\n";
-        }
-
-        file.close();
-        SHOW_AUTO_CLOSE_MSGBOX(this,
-                               tr("Export Successful"),
-                               tr("Data exported to:\n%1").arg(filePath));
-    }
+    SHOW_AUTO_CLOSE_MSGBOX(this,
+                           tr("Export Successful"),
+                           tr("Data exported to:\n%1").arg(filePath));
 }
 
 void FormPlotHistory::toPlot()
 {
-    CURVE curve31;
-    CURVE curve33;
-    double temperature = 0;
-    if (m_index_31 < m_p31.size()) {
-        curve31 = m_p31[m_index_31];
-    }
-    if (m_index_33 < m_p33.size()) {
-        curve33 = m_p33[m_index_33];
-    }
-    if (m_index_33 < m_temperature.size()) {
-        temperature = m_temperature[m_index_33];
-    }
-
-    QValueAxis *axisX = nullptr;
-    QValueAxis *axisY = nullptr;
-    auto axesX = m_chart->axes(Qt::Horizontal);
-    if (!axesX.isEmpty()) {
-        axisX = qobject_cast<QValueAxis *>(axesX.first());
-    }
-
-    auto axesY = m_chart->axes(Qt::Vertical);
-    if (!axesY.isEmpty()) {
-        axisY = qobject_cast<QValueAxis *>(axesY.first());
-    }
-
-    if (!axisX || !axisY) {
-        qWarning() << "No valid axes found!";
+    if (m_data.isEmpty())
         return;
-    }
 
-    emit sendToPlot(curve31, curve33, temperature, false);
+    const HISTORY_DATA &data = m_data[m_index];
+
+    emit sendToPlot(data.curve31,
+                    data.curve33,
+                    data.temperature,
+                    false);
 }
 
 void FormPlotHistory::on_tBtnToPlot_clicked()
 {
-    getFittingChart();
     toPlot();
 }
 
 void FormPlotHistory::on_tBtnToPlotWith_clicked()
 {
-    getFittingChart();
-    if (ui->checkBoxSendRange->isChecked()) {
-        int start = ui->spinBoxRangeStart->value();
-        int end = ui->spinBoxRangeEnd->value();
-        bool enable_temperature = false;
-        double target_temperature = 0;
-        if (ui->checkBoxTemperature->isChecked()) {
-            enable_temperature = true;
-            target_temperature = ui->doubleSpinBoxTemperature->value();
-        }
-        ui->progressBarToPlot->setVisible(true);
-        for (int i = start; i <= end; ++i) {
-            if (i > 0 && i <= m_p31.size()) {
-                if (enable_temperature) {
-                    double diff = std::fabs(m_temperature[i - 1] - target_temperature);
-                    if (diff > 1e-2)
-                        continue;
-                }
-                m_index_31 = i - 1;
-                m_index_33 = i - 1;
-                updatePlot(INDEX_31);
-                toPlot();
-            }
-            ui->progressBarToPlot->setValue((i - start) * 100.0 / (end - start));
-            QCoreApplication::processEvents();
-        }
-        ui->progressBarToPlot->setVisible(false);
-    } else {
+    if (!ui->checkBoxSendRange->isChecked()) {
         toPlot();
+        return;
     }
+
+    int start = ui->spinBoxRangeStart->value();
+    int end = ui->spinBoxRangeEnd->value();
+
+    ui->progressBarToPlot->setVisible(true);
+
+    for (int i = start; i <= end; ++i) {
+
+        if (i <= 0 || i > m_data.size())
+            continue;
+
+        m_index = i - 1;
+        updatePlot();
+        toPlot();
+
+        ui->progressBarToPlot->setValue(
+            (i - start) * 100.0 / (end - start));
+
+        QCoreApplication::processEvents();
+    }
+
+    ui->progressBarToPlot->setVisible(false);
 }
 
 void FormPlotHistory::on_tBtnToVoltage_clicked()
@@ -615,9 +338,10 @@ void FormPlotHistory::on_tBtnToVoltage_clicked()
     ui->tBtnToVoltage->setChecked(m_enableToVoltage);
 }
 
-void FormPlotHistory::on_tBtnShowData_clicked() {}
+void FormPlotHistory::on_tBtnShowData_clicked()
+{
+}
 
 void FormPlotHistory::on_tBtnDumpRaw_clicked()
 {
-
 }

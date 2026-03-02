@@ -15,27 +15,27 @@
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0,0,0" columnstretch="1,9,0">
    <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="9,9">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="9">
      <item>
-      <layout class="QVBoxLayout" name="vLay14">
+      <layout class="QVBoxLayout" name="vLayCurve">
        <item>
-        <layout class="QHBoxLayout" name="hLay14">
+        <layout class="QHBoxLayout" name="hLayOperate">
          <item>
-          <widget class="QLabel" name="label14">
+          <widget class="QLabel" name="labelCurve">
            <property name="text">
-            <string>curve31</string>
+            <string>curve</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="tBtnPrev14">
+          <widget class="QToolButton" name="tBtnPrev">
            <property name="text">
             <string>prev</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="tBtnNext14">
+          <widget class="QToolButton" name="tBtnNext">
            <property name="text">
             <string>next</string>
            </property>
@@ -44,79 +44,25 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="hLay14Status">
+        <layout class="QHBoxLayout" name="hLayStatus">
          <item>
-          <widget class="QLabel" name="labelStatus31">
+          <widget class="QLabel" name="labelStatus">
            <property name="text">
             <string>status</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="hLay14StatusGo">
+          <layout class="QHBoxLayout" name="hLayStatusGo">
            <item>
-            <widget class="QLabel" name="label14Go">
+            <widget class="QLabel" name="labelGo">
              <property name="text">
               <string>go:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit14Go"/>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="vLay24">
-       <item>
-        <layout class="QHBoxLayout" name="hLay24">
-         <item>
-          <widget class="QLabel" name="label24">
-           <property name="text">
-            <string>curve33</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnPrev24">
-           <property name="text">
-            <string>prev</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="tBtnNext24">
-           <property name="text">
-            <string>next</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="hLay24Status">
-         <item>
-          <widget class="QLabel" name="labelStatus33">
-           <property name="text">
-            <string>status</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="hLay24StatusGo">
-           <item>
-            <widget class="QLabel" name="label24Go">
-             <property name="text">
-              <string>go:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit24Go"/>
+            <widget class="QLineEdit" name="lineEditGo"/>
            </item>
           </layout>
          </item>
@@ -175,24 +121,6 @@
         <string>to_voltage</string>
        </property>
       </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="hLayDisplayFormat">
-       <item>
-        <widget class="QRadioButton" name="radioButtonSplit">
-         <property name="text">
-          <string>Split</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="radioButtonMix">
-         <property name="text">
-          <string>Mix</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item>
       <widget class="QToolButton" name="tBtnDumpPlot">

@@ -39,14 +39,9 @@ protected:
     void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
-    void on_tBtnNext14_clicked();
-    void on_tBtnPrev14_clicked();
-    void on_tBtnNext24_clicked();
-    void on_tBtnPrev24_clicked();
-    void on_lineEdit14Go_editingFinished();
-    void on_lineEdit24Go_editingFinished();
-    void on_radioButtonMix_clicked();
-    void on_radioButtonSplit_clicked();
+    void on_tBtnNext_clicked();
+    void on_tBtnPrev_clicked();
+    void on_lineEditGo_editingFinished();
     void on_tBtnDumpPlot_clicked();
     void on_toolButtonDumpData_clicked();
     void on_tBtnToPlot_clicked();
@@ -58,36 +53,27 @@ private slots:
     void on_tBtnDumpRaw_clicked();
 
 private:
-    void updatePlot31();
-    void updatePlot33();
-    void updatePlot(int index = 0);
+    void updatePlot();
     void init();
-    void getFittingChart();
     void toPlot();
 
 private:
     Ui::FormPlotHistory *ui;
-    QList<CURVE> m_p31, m_p33;
-    QList<double> m_temperature;
+    struct HISTORY_DATA {
+        CURVE curve31;
+        CURVE curve33;
+        double temperature;
+    };
+    QList<HISTORY_DATA> m_data;
+    int m_index = 0;
+
     QList<QString> m_frames;
-    int m_index_31 = 0, m_index_33 = 0;
-    MyChartView *m_chartView31Split = nullptr;
-    MyChartView *m_chartView33Split = nullptr;
-    MyChartView *m_chartViewMix = nullptr;
-    QLineSeries *m_lineMix31 = nullptr;
-    QLineSeries *m_lineMix33 = nullptr;
-    QLineSeries *m_splitLine31 = nullptr;
-    QLineSeries *m_splitLine33 = nullptr;
+    MyChartView *m_chartView = nullptr;
+    QLineSeries *m_line31 = nullptr;
+    QLineSeries *m_line33 = nullptr;
     QChart *m_chart = nullptr;
-    QChart *m_chartMix = nullptr;
-    QChart *m_chart31 = nullptr;
-    QChart *m_chart33 = nullptr;
-    QValueAxis *m_axisMixX;
-    QValueAxis *m_axisMixY;
-    QValueAxis *m_axisSplit31X;
-    QValueAxis *m_axisSplit31Y;
-    QValueAxis *m_axisSplit33X;
-    QValueAxis *m_axisSplit33Y;
+    QValueAxis *m_axisX;
+    QValueAxis *m_axisY;
     bool m_enableToVoltage = false;
 };
 
