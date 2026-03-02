@@ -19,7 +19,22 @@ struct FRAME
     QByteArray data33;
     QByteArray temperature;
 
-    void clear() {
+    QString ToFrameString() const
+    {
+        auto toHexLine = [](const QByteArray &ba) {
+            QByteArray hex = ba.toHex().toUpper();
+            QString line;
+            for (int i = 0; i < hex.size(); i += 2)
+                line += hex.mid(i, 2) + " ";
+            return line.trimmed();
+        };
+
+        return toHexLine(data31) + "\n"
+               + toHexLine(data33) + "\n"
+               + toHexLine(temperature);
+    }
+
+    void Clear() {
         data31.clear();
         data33.clear();
         temperature.clear();
@@ -44,6 +59,13 @@ struct CURVE
     double y_max = std::numeric_limits<double>::min();
 
     RAW raw;
+};
+
+struct MY_DATA {
+    CURVE curve31;
+    CURVE curve33;
+    double temperature;
+
     QString frame;
 };
 

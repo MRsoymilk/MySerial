@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.4.1 LANGUAGES CXX)
+project(MySerial VERSION 1.4.2 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -130,10 +130,13 @@ set(PLOT_HISTORY
     src/form/FormPlotHistory/formplothistory.h
     src/form/FormPlotHistory/formplothistory.cpp
     src/form/FormPlotHistory/formplothistory.ui
-    src/form/FormPlotSimulate/formplotsimulate.h
+    src/form/FormPlotHistory/ShowData/showdata.h
+    src/form/FormPlotHistory/ShowData/showdata.cpp
+    src/form/FormPlotHistory/ShowData/showdata.ui
 )
 
 set(PLOT_SIMULATE
+    src/form/FormPlotSimulate/formplotsimulate.h
     src/form/FormPlotSimulate/formplotsimulate.cpp
     src/form/FormPlotSimulate/formplotsimulate.ui
 )

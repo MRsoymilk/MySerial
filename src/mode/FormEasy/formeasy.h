@@ -34,12 +34,10 @@ public:
     void setAlgorithm(const QString &algorithm);
 
 signals:
-    void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0, const QString& frames="");
+    void toHistory(const MY_DATA &my_data);
 
 public slots:
-    void updatePlot4k(const CURVE &curve31,
-                      const CURVE &curve33,
-                      const double &temperature,
+    void updatePlot4k(const MY_DATA &my_data,
                       bool record);
 private slots:
     void on_tBtnSwitch_clicked();

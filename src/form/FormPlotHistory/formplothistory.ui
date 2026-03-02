@@ -109,13 +109,6 @@
    <item row="0" column="2">
     <layout class="QVBoxLayout" name="vLayOperation">
      <item>
-      <widget class="QToolButton" name="tBtnShowData">
-       <property name="text">
-        <string>show data</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="tBtnToVoltage">
        <property name="text">
         <string>to_voltage</string>
@@ -126,6 +119,13 @@
       <widget class="QToolButton" name="tBtnDumpPlot">
        <property name="text">
         <string>dump plot</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnShowData">
+       <property name="text">
+        <string>show data</string>
        </property>
       </widget>
      </item>

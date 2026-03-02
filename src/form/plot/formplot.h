@@ -40,7 +40,7 @@ signals:
                             const double &temperature);
     void sendOffset31(int val);
     void sendOffset33(int val);
-    void toHistory(const CURVE &data31, const CURVE &data33, const double &temperature = 0.0, const QString& frames = "");
+    void toHistory(const MY_DATA &data);
     void toExternalSpectral(const QJsonObject &spectral);
     void broadcast(const double &avg);
 
@@ -51,11 +51,8 @@ public slots:
                            const double &temperature);
     void onDataReceivedF15(const FRAME& frame,
                            const double &temperature);
-    void updatePlot4k(const CURVE &curve31,
-                      const CURVE &curve33,
-                      const double &temperature,
-                      bool record = false,
-                      const QString& frames="");
+    void updatePlot4k(const MY_DATA &my_data,
+                      bool record = false);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;

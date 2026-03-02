@@ -199,11 +199,9 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
         QString txt = ui->comboBoxAlgorithm->currentText();
         if (txt == "fitting_sin") {
             m_formSin->updateParams();
-            // sinShow = new ShowCorrectionCurve;
             sinShow->show();
         } else if (txt == "fitting_arcsin") {
             m_formArcSin->updateParams();
-            // arcSinShow = new ShowCorrectionCurve;
             connect(this, &FormPlotCorrection::windowClose, this, [=]() { arcSinShow->close(); });
             arcSinShow->show();
         } else if (txt == "fitting_points") {
@@ -211,7 +209,7 @@ void FormPlotCorrection::on_tBtnShowCorrectionCurve_clicked()
             arcSinShow->show();
         } else {
             SHOW_AUTO_CLOSE_MSGBOX(this,
-                                   tr("Warning"),
+                                   TITLE_WARNING,
                                    tr("only support fitting_sin or fitting_arcsin"));
         }
     } else {

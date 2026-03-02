@@ -355,44 +355,41 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &
     updateAxis();
 }
 
-void FormPlot::updatePlot4k(const CURVE &curve31,
-                            const CURVE &curve33,
-                            const double &temperature,
-                            bool record,
-                            const QString& frames)
+void FormPlot::updatePlot4k(const MY_DATA &my_data,
+                            bool record)
 {
     if (m_pause) {
         return;
     }
     if (m_enableConversion) {
         ui->labelTemperature->setText(QString("%1 -> %2 ℃")
-                                          .arg(temperature, 0, 'f', 4)
-                                          .arg((temperature - m_b) / m_k, 0, 'f', 4));
+                                          .arg(my_data.temperature, 0, 'f', 4)
+                                          .arg((my_data.temperature - m_b) / m_k, 0, 'f', 4));
     } else {
-        ui->labelTemperature->setText(QString("%1 ℃").arg(temperature, 0, 'f', 4));
+        ui->labelTemperature->setText(QString("%1 ℃").arg(my_data.temperature, 0, 'f', 4));
     }
 
-    CURVE plot31 = curve31;
-    CURVE plot33 = curve33;
+    CURVE plot31 = my_data.curve31;
+    CURVE plot33 = my_data.curve33;
 
     if (m_offset != 0) {
         if (m_enableVoltage) {
-            for (int i = 0; i < curve31.data.size(); ++i) {
+            for (int i = 0; i < my_data.curve31.data.size(); ++i) {
                 plot31.data[i].setX(m_offset + i * m_step);
-                plot31.data[i].setY(curve31.data[i].y());
+                plot31.data[i].setY(my_data.curve31.data[i].y());
             }
-            for (int i = 0; i < curve33.data.size(); ++i) {
+            for (int i = 0; i < my_data.curve33.data.size(); ++i) {
                 plot33.data[i].setX(m_offset + i * m_step);
-                plot33.data[i].setY(curve33.data[i].y());
+                plot33.data[i].setY(my_data.curve33.data[i].y());
             }
         } else {
-            for (int i = 0; i < curve31.raw.data.size(); ++i) {
+            for (int i = 0; i < my_data.curve31.raw.data.size(); ++i) {
                 plot31.raw.data[i].setX(m_offset + i * m_step);
-                plot31.raw.data[i].setY(curve31.raw.data[i].y());
+                plot31.raw.data[i].setY(my_data.curve31.raw.data[i].y());
             }
-            for (int i = 0; i < curve33.raw.data.size(); ++i) {
+            for (int i = 0; i < my_data.curve33.raw.data.size(); ++i) {
                 plot33.raw.data[i].setX(m_offset + i * m_step);
-                plot33.raw.data[i].setY(curve33.raw.data[i].y());
+                plot33.raw.data[i].setY(my_data.curve33.raw.data[i].y());
             }
         }
     }
@@ -446,11 +443,11 @@ void FormPlot::updatePlot4k(const CURVE &curve31,
     }
 
     if (m_enableTemperature) {
-        m_temperature->appendTemperature(temperature);
+        m_temperature->appendTemperature(my_data.temperature);
     }
 
     if (record) {
-        emit toHistory(plot31, plot33, temperature, frames);
+        emit toHistory(my_data);
     }
 
     if (m_enableVoltage) {

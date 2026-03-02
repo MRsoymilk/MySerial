@@ -198,10 +198,10 @@ void FormExpert::plotCorrectionClose()
 {
     m_showCorrection = false;
     ui->tBtnCorrection->setChecked(false);
-    disconnect(m_worker,
-               &ThreadWorker::dataReady4k,
-               m_plotCorrection,
-               &FormPlotCorrection::onEpochCorrection);
+    // disconnect(m_worker,
+    //            &ThreadWorker::dataReady4k,
+    //            m_plotCorrection,
+    //            &FormPlotCorrection::onEpochCorrection);
 }
 
 void FormExpert::on_tBtnHistory_clicked()
@@ -220,13 +220,13 @@ void FormExpert::on_tBtnCorrection_clicked()
 {
     m_showCorrection = !m_showCorrection;
     m_plotCorrection->setVisible(m_showCorrection);
-    if (m_showCorrection) {
-        connect(m_worker,
-                &ThreadWorker::dataReady4k,
-                m_plotCorrection,
-                &FormPlotCorrection::onEpochCorrection,
-                Qt::QueuedConnection);
-    }
+    // if (m_showCorrection) {
+    //     connect(m_worker,
+    //             &ThreadWorker::dataReady4k,
+    //             m_plotCorrection,
+    //             &FormPlotCorrection::onEpochCorrection,
+    //             Qt::QueuedConnection);
+    // }
 }
 
 void FormExpert::closeEvent(QCloseEvent *event)

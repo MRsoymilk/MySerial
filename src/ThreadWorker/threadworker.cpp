@@ -206,8 +206,12 @@ void ThreadWorker::processDataF30(const FRAME& frame,
         }
     }
 
-    emit plotReady4k(curve31, curve33, temperature);
-    emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
+    MY_DATA data;
+    data.curve31 = curve31;
+    data.curve33 = curve33;
+    data.temperature = temperature;
+    data.frame = frame.ToFrameString();
+    emit plotReady4k(data);
     if (m_collection_fitting_points.m_enable) {
         QString path = QString("%1/%2").arg(m_collection_fitting_points.dir,
                                             m_collection_fitting_points.file);
@@ -319,9 +323,12 @@ void ThreadWorker::processDataF15(const FRAME& frame,
             applyThreshold(m_threshold, raw31, raw33, temperature);
         }
     }
-
-    emit plotReady4k(curve31, curve33, temperature);
-    emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
+    MY_DATA data;
+    data.curve31 = curve31;
+    data.curve33 = curve33;
+    data.temperature = temperature;
+    data.frame = frame.ToFrameString();
+    emit plotReady4k(data);
 }
 
 void ThreadWorker::processDataLLC(const FRAME& frame,
@@ -432,9 +439,12 @@ void ThreadWorker::processDataLLC(const FRAME& frame,
             applyThreshold(m_threshold, raw31, raw33, temperature);
         }
     }
-
-    emit plotReady4k(curve31, curve33, temperature);
-    emit dataReady4k(v_voltage31, v_voltage33, raw31, raw33);
+    MY_DATA data;
+    data.curve31 = curve31;
+    data.curve33 = curve33;
+    data.temperature = temperature;
+    data.frame = frame.ToFrameString();
+    emit plotReady4k(data);
 }
 
 void ThreadWorker::applyThreshold(const QVector<double> &threshold,

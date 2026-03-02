@@ -208,7 +208,6 @@ void FormEasy::init()
             this,
             &FormEasy::updatePlot4k,
             Qt::QueuedConnection);
-    connect(m_worker, &ThreadWorker::dataReady4k, this, &FormEasy::updateTable, Qt::QueuedConnection);
 
     connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30, Qt::QueuedConnection);
@@ -267,15 +266,13 @@ void FormEasy::highlightRowByX(double x)
     table->scrollTo(m_modelValue->index(row, 0), QAbstractItemView::PositionAtCenter);
 }
 
-void FormEasy::updatePlot4k(const CURVE &curve31,
-                            const CURVE &curve33,
-                            const double &temperature,
+void FormEasy::updatePlot4k(const MY_DATA &my_data,
                             bool record)
 {
     if (m_pause) {
         return;
     }
-    CURVE plot31 = curve31;
+    CURVE plot31 = my_data.curve31;
 
     if (m_enableFourier) {
         if (m_toVoltage) {
@@ -318,10 +315,18 @@ void FormEasy::updatePlot4k(const CURVE &curve31,
     }
 
     if (record) {
-        emit toHistory(plot31, {}, temperature);
+        emit toHistory(my_data);
     }
 
-    updatePlot(plot31, {}, temperature, record);
+    updatePlot(plot31, {}, my_data.temperature, record);
+    QVector<double> v31, r31;
+    for(int i = 0; i < plot31.data.size(); ++i) {
+        v31.push_back(plot31.data.at(i).y());
+    }
+    for(int i = 0; i < plot31.raw.data.size(); ++i) {
+        r31.push_back(plot31.raw.data.at(i).y());
+    }
+    updateTable(v31, {}, r31, {});
 }
 
 void FormEasy::on_tBtnZoom_clicked()

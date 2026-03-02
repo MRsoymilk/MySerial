@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     if (!sharedMemory.create(1)) {
         QMessageBox::warning(nullptr,
-                             QObject::tr("Warning"),
+                             TITLE_WARNING,
                              QObject::tr("Application is already running!"));
 
         return 0;

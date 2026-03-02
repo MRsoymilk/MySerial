@@ -535,7 +535,7 @@ void FormSerial::init()
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
         LOG_WARN("No available serial port found!");
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("warning"), tr("No available serial port found!"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("No available serial port found!"));
         return;
     }
     QStringList port_names;
@@ -582,7 +582,7 @@ void FormSerial::send(const QString &text)
 {
     LOG_INFO("serial send: {}", text);
     if (!(m_serial && m_serial->isOpen())) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("warning"), tr("serial not open!"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("serial not open!"));
         LOG_ERROR("Serial not open!");
         return;
     }
@@ -790,7 +790,7 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
                 }
                 m_frame.temperature = frame_temperature;
                 emit recv2PlotF30(m_frame, temperature);
-                m_frame.clear();
+                m_frame.Clear();
             }
         }
     } else if (m_algorithm == "F30_single") {
@@ -802,7 +802,7 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
             m_frame.data33 = data;
             if (!m_frame.data31.isEmpty()) {
                 emit recv2PlotF15(m_frame);
-                m_frame.clear();
+                m_frame.Clear();
             }
         }
     } else if (m_algorithm == "F15_single") {
@@ -818,7 +818,7 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
             m_frame.data33 = data;
             if (!m_frame.data31.isEmpty()) {
                 emit recv2PlotLLC(m_frame);
-                m_frame.clear();
+                m_frame.Clear();
             }
         }
     }
@@ -907,7 +907,7 @@ void FormSerial::on_checkBoxScheduledDelivery_clicked()
 {
     if (ui->checkBoxScheduledDelivery->isChecked()) {
         if (!m_switch) {
-            QMessageBox::warning(this, tr("Warning"), tr("Please open serial port!"));
+            QMessageBox::warning(this, TITLE_WARNING, tr("Please open serial port!"));
             ui->checkBoxScheduledDelivery->setChecked(false);
             return;
         }
@@ -919,7 +919,7 @@ void FormSerial::on_checkBoxScheduledDelivery_clicked()
             m_send_timer->start(interval);
             onAutoSend();
         } else {
-            QMessageBox::warning(this, tr("Warning"), tr("Please set valid time(ms)!"));
+            QMessageBox::warning(this, TITLE_WARNING, tr("Please set valid time(ms)!"));
             ui->checkBoxScheduledDelivery->setChecked(false);
         }
     } else {
@@ -967,7 +967,7 @@ void FormSerial::on_tBtnRefresh_clicked()
     QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
 
     if (ports.isEmpty()) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("warning"), tr("No ports available!"));
+        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("No ports available!"));
     }
 
     for (const auto &port : ports) {

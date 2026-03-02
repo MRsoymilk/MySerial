@@ -8,9 +8,13 @@
 #include <QValueAxis>
 #include <QMenu>
 #include <QShortcut>
-#include <QTextStream>
 #include <QPainter>
 #include <QCoreApplication>
+#include <QFile>
+#include <QFileDialog>
+#include <QTextStream>
+#include <QMessageBox>
+#include "ShowData/showdata.h"
 
 #include "funcdef.h"
 
@@ -34,6 +38,9 @@ void FormPlotHistory::retranslateUI()
 
 void FormPlotHistory::init()
 {
+    m_showData = new ShowData;
+    m_showData->setVisible(false);
+
     m_chart = new QChart();
     m_chart->setTitle(tr("curve_mix"));
 
@@ -83,7 +90,7 @@ void FormPlotHistory::updatePlot()
     if (m_data.isEmpty() || m_index < 0 || m_index >= m_data.size())
         return;
 
-    const HISTORY_DATA &data = m_data[m_index];
+    const MY_DATA &data = m_data[m_index];
 
     ui->labelTemperature->setText(QString("%1 ℃").arg(data.temperature));
 
@@ -174,20 +181,12 @@ void FormPlotHistory::onMenuRemove()
     updatePlot();
 }
 
-void FormPlotHistory::onHistoryRecv(const CURVE &curve31,
-                                    const CURVE &curve33,
-                                    const double &temperature,
-                                    const QString &)
+void FormPlotHistory::onHistoryRecv(const MY_DATA &my_data)
 {
     if (!this->isVisible())
         return;
 
-    HISTORY_DATA data;
-    data.curve31 = curve31;
-    data.curve33 = curve33;
-    data.temperature = temperature;
-
-    m_data.append(data);
+    m_data.append(my_data);
     m_index = m_data.size() - 1;
 
     updatePlot();
@@ -235,8 +234,10 @@ void FormPlotHistory::on_tBtnDumpPlot_clicked()
 
 void FormPlotHistory::on_toolButtonDumpData_clicked()
 {
-    if (m_data.isEmpty())
+    if (m_data.isEmpty()) {
+        QMessageBox::warning(this, TITLE_WARNING, "No data to export.");
         return;
+    }
 
     QString filePath = QFileDialog::getSaveFileName(
         this,
@@ -252,29 +253,43 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
         return;
 
     QTextStream out(&file);
-    out << "index,curve31,curve33\n";
 
-    const HISTORY_DATA &data = m_data[m_index];
+    QList<MY_DATA> data_todo;
+    if (ui->checkBoxDataAll->isChecked())
+        data_todo = m_data;
+    else
+        data_todo = { m_data[m_index] };
 
-    const QList<QPointF> &list31 = data.curve31.data;
-    const QList<QPointF> &list33 = data.curve33.data;
+    out << "index";
+    for (int i = 0; i < data_todo.size(); ++i) {
+        out << ",g" << (i+1) << "_curve31"
+            << ",g" << (i+1) << "_curve33";
+    }
+    out << "\n";
 
-    int size = qMax(list31.size(), list33.size());
+    int maxSize = 0;
+    for (const auto &data : data_todo) {
+        maxSize = qMax(maxSize,
+                       qMax(data.curve31.data.size(),
+                            data.curve33.data.size()));
+    }
 
-    for (int i = 0; i < size; ++i) {
-        QString x = (i < list31.size())
-        ? QString::number(list31[i].x())
-        : "";
-
-        QString y31 = (i < list31.size())
-                          ? QString::number(list31[i].y())
-                          : "";
-
-        QString y33 = (i < list33.size())
-                          ? QString::number(list33[i].y())
-                          : "";
-
-        out << x << "," << y31 << "," << y33 << "\n";
+    // ===== 按行写入 =====
+    for (int row = 0; row < maxSize; ++row) {
+        out << row;
+        for (const auto &data : data_todo) {
+            const auto &list31 = data.curve31.data;
+            const auto &list33 = data.curve33.data;
+            QString y31 = (row < list31.size())
+                              ? QString::number(list31[row].y())
+                              : "";
+            QString y33 = (row < list33.size())
+                              ? QString::number(list33[row].y())
+                              : "";
+            out << "," << y31
+                << "," << y33;
+        }
+        out << "\n";
     }
 
     file.close();
@@ -286,15 +301,13 @@ void FormPlotHistory::on_toolButtonDumpData_clicked()
 
 void FormPlotHistory::toPlot()
 {
-    if (m_data.isEmpty())
+    if (m_data.isEmpty()) {
         return;
+    }
 
-    const HISTORY_DATA &data = m_data[m_index];
+    const MY_DATA &data = m_data[m_index];
 
-    emit sendToPlot(data.curve31,
-                    data.curve33,
-                    data.temperature,
-                    false);
+    emit sendToPlot(data, false);
 }
 
 void FormPlotHistory::on_tBtnToPlot_clicked()
@@ -340,8 +353,55 @@ void FormPlotHistory::on_tBtnToVoltage_clicked()
 
 void FormPlotHistory::on_tBtnShowData_clicked()
 {
+    m_enableShowData = !m_enableShowData;
+    m_showData->setVisible(m_enableShowData);
+    if(m_enableShowData) {
+        if(!m_data.empty()) {
+            m_showData->showData(m_data[m_index]);
+        }
+    }
 }
 
 void FormPlotHistory::on_tBtnDumpRaw_clicked()
 {
+    if (m_data.isEmpty()) {
+        QMessageBox::warning(this, TITLE_WARNING, "No data to export.");
+        return;
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Save Raw Data",
+        "",
+        "Text Files (*.txt)");
+
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, "Error", "Cannot open file.");
+        return;
+    }
+
+    QTextStream out(&file);
+
+    QList<MY_DATA> data_todo;
+    if(ui->checkBoxRawAll->isChecked()) {
+        data_todo = m_data;
+    }
+    else {
+        data_todo = {m_data.at(m_index)};
+    }
+
+    for (const MY_DATA &data : data_todo) {
+        if (data.frame.isEmpty())
+            continue;
+
+        out << data.frame << "\n";
+    }
+
+    file.close();
+
+    QMessageBox::information(this, "Done", "Export finished.");
 }

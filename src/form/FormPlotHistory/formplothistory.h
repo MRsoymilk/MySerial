@@ -6,6 +6,7 @@
 #include "global.h"
 
 class FormPlotData;
+class ShowData;
 
 namespace Ui {
 class FormPlotHistory;
@@ -25,13 +26,10 @@ public:
 
 signals:
     void windowClose();
-    void sendToPlot(const CURVE &curve31,
-                    const CURVE &curve33,
-                    const double &temperature,
-                    bool record = false,
-                    const QString& frames="");
+    void sendToPlot(const MY_DATA &data,
+                    bool record = false);
 public slots:
-    void onHistoryRecv(const CURVE &curve31, const CURVE &curve33, const double &temperature, const QString &frames);
+    void onHistoryRecv(const MY_DATA &my_data);
     void onTemperature(double temperature);
 
 protected:
@@ -59,12 +57,7 @@ private:
 
 private:
     Ui::FormPlotHistory *ui;
-    struct HISTORY_DATA {
-        CURVE curve31;
-        CURVE curve33;
-        double temperature;
-    };
-    QList<HISTORY_DATA> m_data;
+    QList<MY_DATA> m_data;
     int m_index = 0;
 
     QList<QString> m_frames;
@@ -75,6 +68,8 @@ private:
     QValueAxis *m_axisX;
     QValueAxis *m_axisY;
     bool m_enableToVoltage = false;
+    ShowData *m_showData;
+    bool m_enableShowData = false;
 };
 
 #endif // FORMPLOTHISTORY_H

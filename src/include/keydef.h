@@ -1,6 +1,7 @@
 #ifndef KEYDEF_H
 #define KEYDEF_H
 
+#include <QObject>
 #include <QString>
 
 const QString CFG_GROUP_PROGRAM = "Program";
@@ -96,5 +97,7 @@ const QString CFG_MODE_EASY_Y_START = "y_start";
 const QString CFG_MODE_EASY_Y_END = "y_end";
 const QString CFG_MODE_EASY_X_START = "x_start";
 const QString CFG_MODE_EASY_X_END = "x_end";
+
+const QString TITLE_WARNING = QObject::tr("Warning");
 
 #endif

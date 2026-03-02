@@ -29,15 +29,8 @@ public slots:
 
 signals:
     void changeThresholdStatus(const QString &status);
-    void dataReady4k(const QVector<double> &v31,
-                     const QVector<double> &v33,
-                     const QVector<double> &raw31,
-                     const QVector<double> &raw33);
-    void plotReady4k(const CURVE &curve31,
-                     const CURVE &curve33,
-                     const double &temperature = 0.0,
-                     bool record = true,
-                     const QString& frames = "");
+    void plotReady4k(const MY_DATA &my_data,
+                     bool record = true);
     void showCorrectionCurve(const QList<QPointF> &data,
                              const double &xMin,
                              const double &xMax,
