@@ -34,7 +34,7 @@ void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event)
     if (selectedAction == setRangeAction) {
         bool ok = false;
         int newRange
-            = QInputDialog::getInt(this, tr("Set Range"), tr("Range:"), m_range, 1, 10000, 1, &ok);
+            = QInputDialog::getInt(this, tr("Set Range"), tr("Range:"), m_range, 1, 999999, 1, &ok);
         if (ok) {
             m_range = newRange;
 
