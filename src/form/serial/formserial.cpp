@@ -731,7 +731,7 @@ void FormSerial::closeSerial()
 {
     LOG_INFO("close serial");
     if (m_serial) {
-        disconnect(m_serial, nullptr, this, nullptr);
+        m_serial->disconnect(this);
 
         if (m_serial->isOpen()) {
             m_serial->close();

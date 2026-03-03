@@ -198,10 +198,6 @@ void FormExpert::plotCorrectionClose()
 {
     m_showCorrection = false;
     ui->tBtnCorrection->setChecked(false);
-    // disconnect(m_worker,
-    //            &ThreadWorker::dataReady4k,
-    //            m_plotCorrection,
-    //            &FormPlotCorrection::onEpochCorrection);
 }
 
 void FormExpert::on_tBtnHistory_clicked()
