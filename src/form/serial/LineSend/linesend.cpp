@@ -7,6 +7,7 @@ LineSend::LineSend(int index, QWidget *parent)
     , ui(new Ui::LineSend)
 {
     ui->setupUi(this);
+    ui->tBtn->setObjectName("btn-LineSend");
 }
 
 LineSend::~LineSend()

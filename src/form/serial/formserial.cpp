@@ -576,6 +576,9 @@ void FormSerial::init()
     ui->txtRecv->setUndoRedoEnabled(false);
     setINI();
     m_recv_count = 0;
+
+    ui->tBtnNext->setObjectName("go-next");
+    ui->tBtnPrev->setObjectName("go-prev");
 }
 
 void FormSerial::send(const QString &text)

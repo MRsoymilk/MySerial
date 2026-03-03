@@ -87,6 +87,16 @@ void FormPlotHistory::init()
 
     ui->tBtnToVoltage->setCheckable(true);
     ui->progressBarToPlot->setVisible(false);
+
+    ui->tBtnNext->setObjectName("go-next");
+    ui->tBtnPrev->setObjectName("go-prev");
+    ui->tBtnDumpData->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->tBtnDumpPlot->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->tBtnDumpRaw->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->tBtnToPlot->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->tBtnToPlotWith->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->tBtnShowData->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ui->tBtnToVoltage->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 
 void FormPlotHistory::updatePlot()
@@ -252,7 +262,7 @@ void FormPlotHistory::on_tBtnDumpPlot_clicked()
                            tr("Img exported to:\n%1").arg(filePath));
 }
 
-void FormPlotHistory::on_toolButtonDumpData_clicked()
+void FormPlotHistory::on_tBtnDumpData_clicked()
 {
     if (m_data.isEmpty()) {
         QMessageBox::warning(this, TITLE_WARNING, "No data to export.");

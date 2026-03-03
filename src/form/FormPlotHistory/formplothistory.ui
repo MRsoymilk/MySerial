@@ -132,7 +132,7 @@
      <item>
       <layout class="QHBoxLayout" name="hLayDumpData">
        <item>
-        <widget class="QToolButton" name="toolButtonDumpData">
+        <widget class="QToolButton" name="tBtnDumpData">
          <property name="text">
           <string>dump data</string>
          </property>

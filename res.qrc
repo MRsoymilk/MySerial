@@ -174,5 +174,29 @@
         <file>res/icons/white/stop.png</file>
         <file>res/icons/pink/start.png</file>
         <file>res/icons/pink/stop.png</file>
+        <file>res/icons/black/dump_data.png</file>
+        <file>res/icons/black/dump_plot.png</file>
+        <file>res/icons/black/dump_raw.png</file>
+        <file>res/icons/black/show_data.png</file>
+        <file>res/icons/black/to_plot_with.png</file>
+        <file>res/icons/black/to_plot.png</file>
+        <file>res/icons/blue/dump_data.png</file>
+        <file>res/icons/blue/dump_plot.png</file>
+        <file>res/icons/blue/dump_raw.png</file>
+        <file>res/icons/blue/show_data.png</file>
+        <file>res/icons/blue/to_plot.png</file>
+        <file>res/icons/blue/to_plot_with.png</file>
+        <file>res/icons/pink/dump_data.png</file>
+        <file>res/icons/pink/dump_plot.png</file>
+        <file>res/icons/pink/dump_raw.png</file>
+        <file>res/icons/pink/show_data.png</file>
+        <file>res/icons/pink/to_plot.png</file>
+        <file>res/icons/pink/to_plot_with.png</file>
+        <file>res/icons/white/dump_data.png</file>
+        <file>res/icons/white/dump_plot.png</file>
+        <file>res/icons/white/dump_raw.png</file>
+        <file>res/icons/white/show_data.png</file>
+        <file>res/icons/white/to_plot.png</file>
+        <file>res/icons/white/to_plot_with.png</file>
     </qresource>
 </RCC>

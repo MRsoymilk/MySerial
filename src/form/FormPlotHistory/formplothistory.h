@@ -41,7 +41,7 @@ private slots:
     void on_tBtnPrev_clicked();
     void on_lineEditGo_editingFinished();
     void on_tBtnDumpPlot_clicked();
-    void on_toolButtonDumpData_clicked();
+    void on_tBtnDumpData_clicked();
     void on_tBtnToPlot_clicked();
     void onMenuRemove();
     void onMenuClear();

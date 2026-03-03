@@ -1306,4 +1306,38 @@ QToolButton#tBtnToVoltage {
   qproperty-iconSize: 48px 48px;
 }
 
+QToolButton#btn-LineSend {
+  min-width: 80px;
+}
+
+QToolButton#tBtnToPlot {
+  qproperty-icon: url(:/res/icons/black/to_plot.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnToPlotWith {
+  qproperty-icon: url(:/res/icons/black/to_plot_with.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnDumpPlot {
+  qproperty-icon: url(:/res/icons/black/dump_plot.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnDumpRaw {
+  qproperty-icon: url(:/res/icons/black/dump_raw.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnDumpData {
+  qproperty-icon: url(:/res/icons/black/dump_data.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnShowData {
+  qproperty-icon: url(:/res/icons/black/show_data.png);
+  qproperty-iconSize: 48px 48px;
+}
+
 /*# sourceMappingURL=Lite.qss.map */
