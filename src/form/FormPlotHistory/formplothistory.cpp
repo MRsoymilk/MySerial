@@ -70,6 +70,10 @@ void FormPlotHistory::init()
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->gLayMix->addWidget(m_chartView);
 
+    m_line31->setUseOpenGL(true);
+    m_line33->setUseOpenGL(true);
+    m_chartView->setRenderHint(QPainter::Antialiasing, false);
+
     ui->stackedWidget->setCurrentWidget(ui->pageMix);
 
     QShortcut *shortcut_prev = new QShortcut(QKeySequence(Qt::Key_Left), this);
@@ -94,17 +98,33 @@ void FormPlotHistory::updatePlot()
 
     ui->labelTemperature->setText(QString("%1 ℃").arg(data.temperature));
 
-    m_line31->replace(data.curve31.data);
-    m_line33->replace(data.curve33.data);
+    if(m_enableToVoltage) {
+        m_line31->replace(data.curve31.data);
+        m_line33->replace(data.curve33.data);
 
-    m_axisX->setRange(0,
-                      std::max(data.curve31.x_max,
-                               data.curve33.x_max));
+        m_axisX->setRange(0,
+                          std::max(data.curve31.x_max,
+                                   data.curve33.x_max));
 
-    m_axisY->setRange(std::min(data.curve31.y_min,
-                               data.curve33.y_min),
-                      std::max(data.curve31.y_max,
-                               data.curve33.y_max));
+        m_axisY->setRange(std::min(data.curve31.y_min,
+                                   data.curve33.y_min),
+                          std::max(data.curve31.y_max,
+                                   data.curve33.y_max));
+    }
+    else {
+        m_line31->replace(data.curve31.raw.data);
+        m_line33->replace(data.curve33.raw.data);
+
+        m_axisX->setRange(0,
+                          std::max(data.curve31.raw.x_max,
+                                   data.curve33.raw.x_max));
+
+        m_axisY->setRange(std::min(data.curve31.raw.y_min,
+                                   data.curve33.raw.y_min),
+                          std::max(data.curve31.raw.y_max,
+                                   data.curve33.raw.y_max));
+    }
+
 
     ui->labelStatus->setText(
         QString("%1/%2").arg(m_index + 1).arg(m_data.size()));
@@ -349,6 +369,7 @@ void FormPlotHistory::on_tBtnToVoltage_clicked()
 {
     m_enableToVoltage = !m_enableToVoltage;
     ui->tBtnToVoltage->setChecked(m_enableToVoltage);
+    updatePlot();
 }
 
 void FormPlotHistory::on_tBtnShowData_clicked()
