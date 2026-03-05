@@ -40,7 +40,7 @@ enum STEP_EASY_CONNECT {
     FINISH
 };
 
-bool FormSerial::startEasyConnect()
+bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
 {
     QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
     QStringList ports;
@@ -82,34 +82,51 @@ bool FormSerial::startEasyConnect()
             statusReport(100 * HANDSHAKE / FINISH,
                          QString("%1 step [handshake]: check excepted").arg(port));
             if (response_handshake.contains(expected_handshake)) {
-                {
-                    while (true) {
-                        statusReport(100 * SET_INTEGRATION_TIME / FINISH,
-                                     QString("%1 step [set integration time]: check excepted")
-                                         .arg(port));
-                        send("DD3C000622000005CDFF");
-                        m_serial->waitForReadyRead(500);
-                        QByteArray response = m_serial->readAll();
-                        QByteArray except = QByteArray::fromHex("DE3A000323CEFF");
-                        LOG_INFO("cmd: DD3C000622000005CDFF -> {}", response.toHex().toUpper());
-                        if (response == except) {
-                            break;
-                        }
-                    }
-                }
-                {
+                // QString F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
+                if(F30_shown_mode == CFG_F30_MODE_DOUBLE) {
                     while (true) {
                         statusReport(100 * DATA_REQUEST / FINISH,
-                                     QString("%1 step [data request]: start").arg(port));
-                        send("DD3C000330CDFF");
+                                     QString("%1 step [data 40 request]: start").arg(port));
+                        send("DD3C000340CDFF");
                         m_serial->waitForReadyRead(500);
                         QByteArray response = m_serial->readAll();
-                        LOG_INFO("cmd: DD3C000330CDFF -> {}", response.toHex().toUpper());
+                        LOG_INFO("cmd: DD3C000340CDFF -> {}", response.toHex().toUpper());
                         if (doFrameExtra(response)) {
                             break;
                         }
                     }
                 }
+                else if(F30_shown_mode == CFG_F30_MODE_SINGLE) {
+                    {
+                        while (true) {
+                            statusReport(100 * SET_INTEGRATION_TIME / FINISH,
+                                         QString("%1 step [set integration time]: check excepted")
+                                             .arg(port));
+                            send("DD3C000622000005CDFF");
+                            m_serial->waitForReadyRead(500);
+                            QByteArray response = m_serial->readAll();
+                            QByteArray except = QByteArray::fromHex("DE3A000323CEFF");
+                            LOG_INFO("cmd: DD3C000622000005CDFF -> {}", response.toHex().toUpper());
+                            if (response == except) {
+                                break;
+                            }
+                        }
+                    }
+                    {
+                        while (true) {
+                            statusReport(100 * DATA_REQUEST / FINISH,
+                                         QString("%1 step [data 30 request]: start").arg(port));
+                            send("DD3C000330CDFF");
+                            m_serial->waitForReadyRead(500);
+                            QByteArray response = m_serial->readAll();
+                            LOG_INFO("cmd: DD3C000330CDFF -> {}", response.toHex().toUpper());
+                            if (doFrameExtra(response)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 m_serial->readAll();
                 m_serial->clear(QSerialPort::Input);
                 m_ready = true;
@@ -140,10 +157,18 @@ bool FormSerial::startEasyConnect()
 void FormSerial::stopEasyConnect()
 {
     m_ready = false;
-    send("DD3C000360CDFF");
+
     if (m_serial) {
+        disconnect(m_serial, &QSerialPort::readyRead,
+                   this, &FormSerial::onReadyRead);
+        m_serial->clear(QSerialPort::AllDirections);
+        QThread::msleep(50);
+        send("DD3C000360CDFF");
+        if (!m_serial->waitForBytesWritten(500)) {
+            LOG_WARN("stop Easy connect: write timeout");
+        }
         m_serial->flush();
-        m_serial->waitForBytesWritten(200);
+        QThread::msleep(200);
     }
 
     closeSerial();

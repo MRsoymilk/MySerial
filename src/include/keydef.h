@@ -97,7 +97,14 @@ const QString CFG_MODE_EASY_Y_START = "y_start";
 const QString CFG_MODE_EASY_Y_END = "y_end";
 const QString CFG_MODE_EASY_X_START = "x_start";
 const QString CFG_MODE_EASY_X_END = "x_end";
+const QString CFG_GROUP_F30_SHOWN = "F30Shown";
+const QString CFG_F30_SHOWN_MODE = "mode";
+const QString CFG_F30_MODE_SINGLE = "single";
+const QString CFG_F30_MODE_DOUBLE = "double";
+const QString CFG_F30_MODE_DOUBLE_THRESHOLD = "threshold";
+const QString CFG_F30_MODE_DOUBLE_INTERPOLATION = "interpolation";
 
 const QString TITLE_WARNING = QObject::tr("Warning");
+const QString TITLE_ERROR = QObject::tr("Error");
 
 #endif

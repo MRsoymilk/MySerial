@@ -33,3 +33,9 @@ void LoadingOverLay::init()
     setAutoFillBackground(true);
     setStyleSheet("background-color: rgba(255, 255, 255, 120);");
 }
+
+void LoadingOverLay::on_btnStop_clicked()
+{
+    emit stopConnect();
+}
+

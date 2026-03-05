@@ -60,6 +60,9 @@ private:
                            QVector<double> &raw33,
                            double &yMin,
                            double &yMax);
+    void applyThresholdForModeEasy(CURVE &curve31,
+                                   CURVE &curve33,
+                                   const double& temperature);
     void applyThreshold(const QVector<double> &threshold,
                         const QVector<double> &raw31,
                         const QVector<double> &raw33,
@@ -78,8 +81,10 @@ private:
     bool m_enable_threshold = false;
     bool m_autoupdate_threshold = false;
     bool m_enable_interpolation = false;
+    bool m_enable_double = false;
     PARAMS_ARCSIN m_params_arcsin;
     COLLECTION_FITTING_POINTS m_collection_fitting_points;
+    void doInterpolation(QList<QPointF> &v);
 };
 
 #endif // THREADWORKER_H

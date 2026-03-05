@@ -46,7 +46,7 @@ public:
     explicit FormSerial(QWidget *parent = nullptr);
     ~FormSerial();
     void retranslateUI();
-    bool startEasyConnect();
+    bool startEasyConnect(const QString& F30_shown_mode);
     void stopEasyConnect();
     void writeEasyData(const QString &value);
     void updateFrameTypes(const QString &idx);

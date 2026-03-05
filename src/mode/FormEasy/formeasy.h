@@ -18,6 +18,7 @@ class FourierTransform;
 class Derivation;
 class SignalNoiseRatio;
 class Accumulate;
+class FormSetting;
 
 namespace Ui {
 class FormEasy;
@@ -115,11 +116,13 @@ private:
     Derivation *m_derivation = nullptr;
     SignalNoiseRatio *m_snr = nullptr;
     Accumulate *m_accumulate = nullptr;
+    FormSetting *m_setting = nullptr;
     // QWidget interface
     void highlightRowByX(double x);
     bool m_enableFourier = false;
     bool m_enableAccumulate = false;
     bool m_enableSNR = false;
+    bool m_enableSetting = false;
 
 protected:
     void closeEvent(QCloseEvent *event) override;

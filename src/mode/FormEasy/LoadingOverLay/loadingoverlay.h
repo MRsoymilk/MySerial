@@ -16,8 +16,15 @@ public:
     ~LoadingOverLay();
 
     void updateTry(int count);
+
+signals:
+    void stopConnect();
+
 public slots:
     void updateInfo(int progress, const QString &msg);
+
+private slots:
+    void on_btnStop_clicked();
 
 private:
     void init();

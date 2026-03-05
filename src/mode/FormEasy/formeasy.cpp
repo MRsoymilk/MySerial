@@ -8,6 +8,7 @@
 #include "../form/plot/FourierTransform/fouriertransform.h"
 #include "../form/plot/SignalNoiseRatio/signalnoiseratio.h"
 #include "../form/serial/formserial.h"
+#include "../form/setting/formsetting.h"
 #include "LoadingOverLay/loadingoverlay.h"
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
@@ -45,6 +46,7 @@ void FormEasy::setAlgorithm(const QString &algorithm)
 bool FormEasy::connectEasyMode()
 {
     LoadingOverLay *overlay = new LoadingOverLay(this);
+
     connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     overlay->resize(this->size());
     overlay->show();
@@ -56,10 +58,23 @@ bool FormEasy::connectEasyMode()
     int *connect_count = new int(0);
 
     QTimer *timer = new QTimer(this);
+    connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
+        LOG_INFO("connect stopped by user");
+        if(timer) {
+            timer->stop();
+            overlay->deleteLater();
+            timer->deleteLater();
+            delete connect_count;
+            closeEasyMode();
+        }
+    });
     connect(timer, &QTimer::timeout, this, [=]() mutable {
         overlay->updateTry(++(*connect_count));
 
-        if (formSerial->startEasyConnect()) {
+        QString F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
+        m_setting->initThreshold();
+
+        if (formSerial->startEasyConnect(F30_shown_mode)) {
             LOG_INFO("connect [{}] success.", *connect_count);
             timer->stop();
             overlay->deleteLater();
@@ -73,6 +88,8 @@ bool FormEasy::connectEasyMode()
 
 void FormEasy::closeEasyMode()
 {
+    m_isPlaying = false;
+    ui->tBtnSwitch->setChecked(false);
     formSerial->stopEasyConnect();
 }
 
@@ -88,8 +105,6 @@ void FormEasy::on_tBtnSwitch_clicked()
             ui->tBtnSwitch->setChecked(false);
         }
     } else {
-        m_isPlaying = false;
-        ui->tBtnSwitch->setChecked(false);
         closeEasyMode();
     }
 }
@@ -193,6 +208,9 @@ void FormEasy::init()
     m_accumulate = new Accumulate;
     m_accumulate->hide();
 
+    m_setting = new FormSetting;
+    m_setting->hide();
+
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     m_workerThread->start();
 
@@ -208,6 +226,14 @@ void FormEasy::init()
             this,
             &FormEasy::updatePlot4k,
             Qt::QueuedConnection);
+    connect(m_setting,
+            &FormSetting::sendThreshold,
+            m_worker,
+            &ThreadWorker::onUseLoadedThreshold);
+    connect(m_setting,
+            &FormSetting::sendThresholdOption,
+            m_worker,
+            &ThreadWorker::onUseLoadedThreadsholdOption);
 
     connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30, Qt::QueuedConnection);
@@ -238,6 +264,10 @@ void FormEasy::init()
     connect(m_fourierTransform, &FourierTransform::windowClose, this, [this]() {
         m_enableFourier = false;
         ui->tBtnFourier->setChecked(false);
+    });
+    connect(m_setting, &FormSetting::windowClose, this, [this]() {
+        m_enableSetting = false;
+        ui->tBtnSetting->setChecked(false);
     });
 }
 
@@ -440,13 +470,13 @@ void FormEasy::updatePlot(const CURVE &curve31,
 
     if (m_toVoltage) {
         for (int i = 0; i < curve31.data.size(); ++i) {
-            v.push_back(QPointF(curve31.data[i].x() + 900, curve31.data[i].y()));
+            v.push_back(QPointF(curve31.data[i].x(), curve31.data[i].y()));
             val_min = std::min(val_min, curve31.data[i].y());
             val_max = std::max(val_max, curve31.data[i].y());
         }
     } else {
         for (int i = 0; i < curve31.raw.data.size(); ++i) {
-            v.push_back(QPointF(curve31.raw.data[i].x() + 900, curve31.raw.data[i].y()));
+            v.push_back(QPointF(curve31.raw.data[i].x(), curve31.raw.data[i].y()));
             val_min = std::min(val_min, curve31.raw.data[i].y());
             val_max = std::max(val_max, curve31.raw.data[i].y());
         }
@@ -470,9 +500,9 @@ void FormEasy::updatePlot(const CURVE &curve31,
         }
     } else {
         if (m_toVoltage) {
-            m_axisX->setRange(curve31.x_min + 900, curve31.x_max + 900);
+            m_axisX->setRange(curve31.x_min, curve31.x_max);
         } else {
-            m_axisX->setRange(curve31.raw.x_min + 900, curve31.raw.x_max + 900);
+            m_axisX->setRange(curve31.raw.x_min, curve31.raw.x_max);
         }
     }
 
@@ -689,6 +719,8 @@ void FormEasy::on_tBtnSNR_clicked()
 
 void FormEasy::on_tBtnSetting_clicked()
 {
+    m_enableSetting = !m_enableSetting;
+    m_setting->setVisible(m_enableSetting);
 }
 
 void FormEasy::on_tBtnAxisY_clicked()

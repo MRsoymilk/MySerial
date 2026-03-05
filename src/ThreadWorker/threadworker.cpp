@@ -149,6 +149,81 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33,
     }
 }
 
+void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const double &temperature)
+{
+    QVector<int> v_idx;
+
+    int idx_max = 0;
+    int idx_min = 0;
+    int raw_max = INT_MIN;
+    int raw_min = INT_MAX;
+    for (int i = 0; i < curve33.raw.data.size(); ++i) {
+        if (raw_max < static_cast<int>(curve33.raw.data[i].y())) {
+            raw_max = curve33.raw.data[i].y();
+            idx_max = i;
+        }
+        if (raw_min > static_cast<int>(curve33.raw.data[i].y())) {
+            raw_min = curve33.raw.data[i].y();
+            idx_min = i;
+        }
+    }
+    if (idx_min < idx_max) {
+        std::swap(idx_min, idx_max);
+    }
+
+    int step = 1000;
+    for (int idx_threshold = 0; idx_threshold < m_threshold.size(); ++idx_threshold) {
+        double min_distance = std::numeric_limits<double>::max();
+        int target_idx = 0;
+        double x = m_correction_offset + idx_threshold * m_correction_step;
+        double current_threshold = m_threshold[idx_threshold];
+        int end_idx = std::min(idx_min, idx_max + step);
+        for (int j = idx_max; j < end_idx; ++j) {
+            double _distance = std::abs(current_threshold - curve33.raw.data[j].y());
+            if (min_distance > _distance) {
+                min_distance = _distance;
+                target_idx = j;
+                idx_max = j;
+            }
+        }
+        v_idx.push_back(target_idx);
+    }
+    {
+        double raw_y_min_correction = std::numeric_limits<double>::max();
+        double raw_y_max_correction = std::numeric_limits<double>::lowest();
+        double vol_y_min_correction = std::numeric_limits<double>::max();
+        double vol_y_max_correction = std::numeric_limits<double>::lowest();
+
+        QList<QPointF> list_raw, list_voltage;
+        for(int i = 0; i < v_idx.size(); ++i) {
+            int idx = v_idx[i];
+            list_raw.append({m_correction_offset + i, curve31.raw.data[idx].y()});
+            raw_y_min_correction = std::min(raw_y_min_correction, curve31.raw.data[idx].y());
+            raw_y_max_correction = std::max(raw_y_max_correction, curve31.raw.data[idx].y());
+            list_voltage.append({m_correction_offset + i, curve31.data[idx].y()});
+            vol_y_min_correction = std::min(vol_y_min_correction, curve31.data[idx].y());
+            vol_y_max_correction = std::max(vol_y_max_correction, curve31.data[idx].y());
+        }
+
+        if(m_enable_interpolation) {
+            doInterpolation(list_raw);
+            doInterpolation(list_voltage);
+        }
+        MY_DATA data;
+        data.curve31.data = list_voltage;
+        data.curve31.x_min = m_correction_offset;
+        data.curve31.x_max = m_correction_offset + m_correction_count;
+        data.curve31.y_min = vol_y_min_correction;
+        data.curve31.y_max = vol_y_max_correction;
+        data.curve31.raw.data = list_raw;
+        data.curve31.raw.x_min = m_correction_offset;
+        data.curve31.raw.x_max = m_correction_offset + m_correction_count;
+        data.curve33.raw.y_min = raw_y_min_correction;
+        data.curve33.raw.y_max = raw_y_max_correction;
+        emit plotReady4k(data);
+    }
+}
+
 void ThreadWorker::processDataF30(const FRAME& frame,
                                   const double &temperature)
 {
@@ -204,6 +279,10 @@ void ThreadWorker::processDataF30(const FRAME& frame,
             calculateArcSinThreshold(temperature);
             applyThreshold(m_threshold, raw31, raw33, temperature);
         }
+    }
+    if(m_enable_double) {
+        applyThresholdForModeEasy(curve31, curve33, temperature);
+        return;
     }
 
     MY_DATA data;
@@ -458,10 +537,10 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     int raw_max = INT_MIN;
     int raw_min = INT_MAX;
     for (int i = 0; i < raw33.size(); ++i) {
-        // if (raw_max < raw33[i]) {
-        //     raw_max = raw33[i];
-        //     idx_max = i;
-        // }
+        if (raw_max < raw33[i]) {
+            raw_max = raw33[i];
+            idx_max = i;
+        }
         if (raw_min > raw33[i]) {
             raw_min = raw33[i];
             idx_min = i;
@@ -495,69 +574,68 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
         y_max_correction = std::max(y_max_correction, raw31[target_idx]);
     }
     if (m_enable_interpolation) {
-        int n = out_correction.size();
-        if (n < 2)
-            return;
+        doInterpolation(out_correction);
 
-        QList<QPointF> dense;
-        for (int i = 0; i < n - 1; ++i) {
-            const QPointF &p0 = out_correction[i];
-            const QPointF &p1 = out_correction[i + 1];
-            dense.append(p0);
-            double midX = (p0.x() + p1.x()) * 0.5;
-            double midY = (p0.y() + p1.y()) * 0.5;
-            dense.append(QPointF(midX, midY));
-        }
-        dense.append(out_correction.last());
-
-        QList<QPointF> out_interpolation;
-        int m = dense.size();
-        for (int i = 0; i < m;) {
-            int start = i;
-            double y0 = dense[i].y();
-
-            // 找平台
-            while (i + 1 < m && qFuzzyCompare(dense[i + 1].y(), y0)) {
-                i++;
-            }
-
-            int end = i;
-
-            // 非平台
-            if (start == end) {
-                out_interpolation.append(dense[start]);
-                i++;
-                continue;
-            }
-
-            // 平台段
-            double yStart = dense[start].y();
-            double yEnd = (end + 1 < m) ? dense[end + 1].y() : yStart;
-
-            int count = end - start + 1;
-
-            for (int k = 0; k < count; ++k) {
-                double t = double(k + 1) / (count + 1);
-                double y = yStart + t * (yEnd - yStart);
-                out_interpolation.append(QPointF(dense[start + k].x(), y));
-            }
-
-            i = end + 1;
-        }
-        emit showCorrectionCurve(out_interpolation,
-                                 m_correction_offset,
-                                 x_max_correction,
-                                 y_min_correction,
-                                 y_max_correction,
-                                 temperature);
-    } else {
-        emit showCorrectionCurve(out_correction,
-                                 m_correction_offset,
-                                 x_max_correction,
-                                 y_min_correction,
-                                 y_max_correction,
-                                 temperature);
     }
+    emit showCorrectionCurve(out_correction,
+                             m_correction_offset,
+                             x_max_correction,
+                             y_min_correction,
+                             y_max_correction,
+                             temperature);
+}
+
+void ThreadWorker::doInterpolation(QList<QPointF> &v) {
+    int n = v.size();
+    if (n < 2)
+        return;
+
+    QList<QPointF> dense;
+    for (int i = 0; i < n - 1; ++i) {
+        const QPointF &p0 = v[i];
+        const QPointF &p1 = v[i + 1];
+        dense.append(p0);
+        double midX = (p0.x() + p1.x()) * 0.5;
+        double midY = (p0.y() + p1.y()) * 0.5;
+        dense.append(QPointF(midX, midY));
+    }
+    dense.append(v.last());
+
+    QList<QPointF> out_interpolation;
+    int m = dense.size();
+    for (int i = 0; i < m;) {
+        int start = i;
+        double y0 = dense[i].y();
+
+        // 找平台
+        while (i + 1 < m && qFuzzyCompare(dense[i + 1].y(), y0)) {
+            i++;
+        }
+
+        int end = i;
+
+        // 非平台
+        if (start == end) {
+            out_interpolation.append(dense[start]);
+            i++;
+            continue;
+        }
+
+        // 平台段
+        double yStart = dense[start].y();
+        double yEnd = (end + 1 < m) ? dense[end + 1].y() : yStart;
+
+        int count = end - start + 1;
+
+        for (int k = 0; k < count; ++k) {
+            double t = double(k + 1) / (count + 1);
+            double y = yStart + t * (yEnd - yStart);
+            out_interpolation.append(QPointF(dense[start + k].x(), y));
+        }
+
+        i = end + 1;
+    }
+    v = out_interpolation;
 }
 
 void ThreadWorker::calculateArcSinThreshold(const double &temperature)
@@ -618,6 +696,10 @@ void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option)
     if(option.contains("enable_threshold")) {
         m_enable_threshold = option["enable_threshold"].toBool();
         LOG_INFO("Threshold Option: enable_threshold {}", m_enable_threshold);
+    }
+    if(option.contains("enable_double")) {
+        m_enable_double = option["enable_double"].toBool();
+        LOG_INFO("Threshold Option: enable_double {}", m_enable_double);
     }
 }
 

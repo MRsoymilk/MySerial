@@ -19,12 +19,28 @@ public:
     explicit FormSetting(QWidget *parent = nullptr);
     ~FormSetting();
     void retranslateUI();
+    void initThreshold();
+
+signals:
+    void windowClose();
+    void sendThreshold(bool isUse, const QList<double> &values);
+    void sendThresholdOption(const QJsonObject &option);
+
+private slots:
+    void on_radioButtonUseSingle_clicked(bool checked);
+    void on_radioButtonUseDouble_clicked(bool checked);
+    void on_tBtnLoadThreshold_clicked();
+    void on_checkBoxEnableInterpolation_clicked();
 
 private:
     void init();
+    void readThresholdCSV(const QString &path);
 
 private:
     Ui::FormSetting *ui;
+
+protected:
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // FORMSETTING_H

@@ -223,7 +223,7 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
 
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("can't open file %1").arg(filePath));
+        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_ERROR, tr("can't open file: %1").arg(filePath));
         return;
     }
 
