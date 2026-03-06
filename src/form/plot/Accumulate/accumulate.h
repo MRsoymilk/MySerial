@@ -46,11 +46,11 @@ private:
     Ui::Accumulate *ui;
     QChart *m_chartNoise = nullptr;
     MyChartView *m_chartViewNoise = nullptr;
-    QLineSeries *m_lineNoise = nullptr;
-    QValueAxis *m_axisXNoise = nullptr;
+    QValueAxis *m_axisXNoiseMinMax = nullptr;
     QValueAxis *m_axisYNoise = nullptr;
+    QValueAxis *m_axisXNoiseFit = nullptr;
     QList<QList<QPointF>> m_noiseBuffer;
-    QList<QLineSeries *> m_lineNoiseGroups;
+    QList<QScatterSeries *> m_noiseMinMaxGroups;
     QLineSeries *m_lineNoiseFit = nullptr;
     QList<QPointF> m_avgFittedCurve;
 
