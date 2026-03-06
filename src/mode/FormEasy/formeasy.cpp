@@ -9,8 +9,10 @@
 #include "../form/plot/SignalNoiseRatio/signalnoiseratio.h"
 #include "../form/serial/formserial.h"
 #include "../form/setting/formsetting.h"
+#include "../form/plot/PeakTrajectory/peaktrajectory.h"
 #include "LoadingOverLay/loadingoverlay.h"
 #include "MyChartView/mychartview.h"
+#include "DraggableLine/draggableline.h"
 #include "funcdef.h"
 #include "ui_formeasy.h"
 
@@ -197,6 +199,7 @@ void FormEasy::init()
     m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
     m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
     m_peaks->setVisible(false);
+    m_trajectory = new PeakTrajectory;
 
     formSerial = new FormSerial;
     m_workerThread = new QThread(this);
@@ -259,7 +262,10 @@ void FormEasy::init()
         ui->lineEditCurrentY->setText(QString::number(point.y()));
         highlightRowByX(point.x());
     });
-
+    connect(m_trajectory, &PeakTrajectory::windowClose, this, [this]() {
+        ui->checkBoxPeakTrack->setChecked(false);
+        on_checkBoxPeakTrack_checkStateChanged(Qt::Unchecked);
+    });
     connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [this]() {
         ui->tBtnSimulate->setChecked(false);
     });
@@ -464,12 +470,14 @@ void FormEasy::closeEvent(QCloseEvent *event)
 {
     closeEasyMode();
 
+    m_trajectory->close();
     m_plotSimulate->close();
     m_plotHistory->close();
     m_fourierTransform->close();
     m_derivation->close();
     m_snr->close();
     m_accumulate->close();
+    m_setting->close();
 }
 
 void FormEasy::updatePlot(const CURVE &curve31,
@@ -520,6 +528,21 @@ void FormEasy::updatePlot(const CURVE &curve31,
     }
 
     callFindPeak();
+    if(m_enablePeakTrack) {
+        QPointF maxPoint;
+        qreal maxY = -std::numeric_limits<qreal>::max();
+
+        for (const QPointF &p : m_peaks->points()) {
+            if (p.x() < m_trajectory_start || p.x() > m_trajectory_end) {
+                continue;
+            }
+            if (p.y() > maxY) {
+                maxY = p.y();
+                maxPoint = p;
+            }
+        }
+        m_trajectory->appendPeak(maxPoint.rx());
+    }
     callCalcFWHM();
 }
 
@@ -790,3 +813,53 @@ void FormEasy::on_tBtnAxisX_clicked()
     m_enableAxisX = !m_enableAxisX;
     ui->tBtnAxisX->setChecked(m_enableAxisX);
 }
+
+void FormEasy::on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &state)
+{
+    if(state == Qt::Checked) {
+        m_enablePeakTrack = true;
+        m_findPeak = true;
+        ui->tBtnPeak->setChecked(true);
+        m_peaks->setVisible(true);
+        m_trajectory->show();
+
+        m_trajectory_start = m_axisX->min();
+        m_trajectory_end = m_axisX->max();
+        QChart *chart = m_chartView->chart();
+        QRectF plot = chart->plotArea();
+
+        qreal leftX = plot.left();
+        qreal rightX = plot.right();
+
+        m_lineLeft = new DraggableLine(chart, leftX, Qt::green);
+        m_lineRight = new DraggableLine(chart, rightX, Qt::darkGreen);
+        connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) {
+            m_trajectory_start = x;
+        });
+        connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) {
+            m_trajectory_end = x;
+        });
+
+        chart->scene()->addItem(m_lineLeft);
+        chart->scene()->addItem(m_lineRight);
+    }
+    else {
+        m_enablePeakTrack = false;
+        m_findPeak = false;
+        ui->tBtnPeak->setChecked(false);
+        m_peaks->setVisible(false);
+        m_trajectory->hide();
+
+        if (m_lineLeft) {
+            m_chartView->chart()->scene()->removeItem(m_lineLeft);
+            delete m_lineLeft;
+            m_lineLeft = nullptr;
+        }
+        if (m_lineRight) {
+            m_chartView->chart()->scene()->removeItem(m_lineRight);
+            delete m_lineRight;
+            m_lineRight = nullptr;
+        }
+    }
+}
+

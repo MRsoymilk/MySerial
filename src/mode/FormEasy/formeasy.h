@@ -19,6 +19,8 @@ class Derivation;
 class SignalNoiseRatio;
 class Accumulate;
 class FormSetting;
+class PeakTrajectory;
+class DraggableLine;
 
 namespace Ui {
 class FormEasy;
@@ -63,6 +65,8 @@ private slots:
     void on_spinBoxXStart_valueChanged(int val);
     void on_spinBoxXEnd_valueChanged(int val);
     void on_tBtnAxisX_clicked();
+
+    void on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &arg1);
 
 private:
     void init();
@@ -117,8 +121,14 @@ private:
     SignalNoiseRatio *m_snr = nullptr;
     Accumulate *m_accumulate = nullptr;
     FormSetting *m_setting = nullptr;
+    PeakTrajectory *m_trajectory;
+    DraggableLine *m_lineLeft = nullptr;
+    DraggableLine *m_lineRight = nullptr;
+    int m_trajectory_start;
+    int m_trajectory_end;
     // QWidget interface
     void highlightRowByX(double x);
+    bool m_enablePeakTrack = false;
     bool m_enableFourier = false;
     bool m_enableAccumulate = false;
     bool m_enableSNR = false;

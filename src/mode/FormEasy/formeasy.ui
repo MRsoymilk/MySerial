@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1154</width>
+    <width>1203</width>
     <height>590</height>
    </rect>
   </property>
@@ -57,14 +57,31 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnPeak">
-       <property name="text">
-        <string>peak</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="vLayPeak">
+       <item>
+        <widget class="QToolButton" name="tBtnPeak">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>peak</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxPeakTrack">
+         <property name="text">
+          <string>track</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QToolButton" name="tBtnFWHM">
