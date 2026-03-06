@@ -111,14 +111,27 @@ void FormEasy::on_tBtnSwitch_clicked()
 
 void FormEasy::init()
 {
-    int x_start = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_START, "0").toInt();
-    int x_end = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_END, "1").toInt();
+    int x_start = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_START, "900").toInt();
+    int x_end = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_END, "1700").toInt();
     int y_start = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_START, "0").toInt();
-    int y_end = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_END, "1").toInt();
+    int y_end = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_END, "65535").toInt();
     ui->spinBoxXStart->setValue(x_start);
     ui->spinBoxXEnd->setValue(x_end);
     ui->spinBoxYStart->setValue(y_start);
     ui->spinBoxYEnd->setValue(y_end);
+
+    const QString val_x_enable = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_ENABLE, VAL_DISABLE);
+    if(val_x_enable == VAL_ENABLE) {
+        m_enableAxisX = true;
+        ui->tBtnAxisX->setChecked(true);
+    }
+    const QString val_y_enable = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_ENABLE, VAL_DISABLE);
+    if(val_y_enable == VAL_ENABLE) {
+        m_enableAxisY = true;
+        ui->tBtnAxisY->setChecked(true);
+        m_autoZoom = false;
+        ui->tBtnZoom->setChecked(false);
+    }
 
     m_line = new QLineSeries();
     m_line->setName(tr("curve"));
@@ -730,9 +743,11 @@ void FormEasy::on_tBtnAxisY_clicked()
     if (m_enableAxisY) {
         m_autoZoom = false;
         ui->tBtnZoom->setChecked(false);
+        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_ENABLE, VAL_ENABLE);
     } else {
         m_autoZoom = true;
         ui->tBtnZoom->setChecked(true);
+        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_ENABLE, VAL_DISABLE);
     }
 }
 
@@ -745,17 +760,13 @@ void FormEasy::on_tBtnToVoltage_clicked()
 void FormEasy::on_spinBoxYStart_valueChanged(int val)
 {
     m_y_start = val;
-    if (m_enableAxisY) {
-        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_START, QString::number(val));
-    }
+    SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_START, QString::number(val));
 }
 
 void FormEasy::on_spinBoxYEnd_valueChanged(int val)
 {
     m_y_end = val;
-    if (m_enableAxisY) {
-        SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_END, QString::number(val));
-    }
+    SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_END, QString::number(val));
 }
 
 void FormEasy::on_spinBoxXStart_valueChanged(int val)
