@@ -175,9 +175,9 @@ void FormPlotHistory::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
 
-    QAction *clearAction = menu.addAction("Clear");
+    QAction *clearAction = menu.addAction(tr("Clear"));
     menu.addSeparator();
-    QAction *removeAction = menu.addAction("Remove");
+    QAction *removeAction = menu.addAction(tr("Remove"));
 
     connect(clearAction, &QAction::triggered,
             this, &FormPlotHistory::onMenuClear);
@@ -269,10 +269,14 @@ void FormPlotHistory::on_tBtnDumpData_clicked()
         return;
     }
 
+    QString fileName = QString("data_%1.csv").arg(m_index + 1);
+    if(ui->checkBoxDataAll->isChecked()) {
+        fileName = "data_all.csv";
+    }
     QString filePath = QFileDialog::getSaveFileName(
         this,
         tr("Save Curve Data"),
-        QString("%1.csv").arg(m_index + 1),
+        fileName,
         tr("CSV Files (*.csv)"));
 
     if (filePath.isEmpty())
@@ -396,22 +400,26 @@ void FormPlotHistory::on_tBtnShowData_clicked()
 void FormPlotHistory::on_tBtnDumpRaw_clicked()
 {
     if (m_data.isEmpty()) {
-        QMessageBox::warning(this, TITLE_WARNING, "No data to export.");
+        QMessageBox::warning(this, TITLE_WARNING, tr("No data to export."));
         return;
     }
 
-    QString fileName = QFileDialog::getSaveFileName(
+    QString fileName = QString("raw_%1.csv").arg(m_index + 1);
+    if(ui->checkBoxRawAll->isChecked()) {
+        fileName = "raw_all.csv";
+    }
+    QString filePath = QFileDialog::getSaveFileName(
         this,
         "Save Raw Data",
-        "",
+        fileName,
         "Text Files (*.txt)");
 
-    if (fileName.isEmpty())
+    if (filePath.isEmpty())
         return;
 
-    QFile file(fileName);
+    QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::critical(this, "Error", "Cannot open file.");
+        QMessageBox::critical(this, TITLE_ERROR, tr("Cannot open file."));
         return;
     }
 
@@ -434,5 +442,5 @@ void FormPlotHistory::on_tBtnDumpRaw_clicked()
 
     file.close();
 
-    QMessageBox::information(this, "Done", "Export finished.");
+    QMessageBox::information(this, TITLE_INFO, tr("Export finished."));
 }
