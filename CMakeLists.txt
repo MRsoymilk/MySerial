@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.4.4 LANGUAGES CXX)
+project(MySerial VERSION 1.4.5 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -47,6 +47,12 @@ set(FORM_PLOT
     src/form/plot/TemperatureConversion/temperatureconversion.h
     src/form/plot/TemperatureConversion/temperatureconversion.cpp
     src/form/plot/TemperatureConversion/temperatureconversion.ui
+    src/form/plot/DarkSpectrum/darkspectrum.h
+    src/form/plot/DarkSpectrum/darkspectrum.cpp
+    src/form/plot/DarkSpectrum/darkspectrum.ui
+    src/form/plot/PointsTracker/pointstracker.h
+    src/form/plot/PointsTracker/pointstracker.cpp
+    src/form/plot/PointsTracker/pointstracker.ui
 )
 
 set(FORM_LOG

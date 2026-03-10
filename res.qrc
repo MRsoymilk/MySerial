@@ -198,5 +198,8 @@
         <file>res/icons/white/show_data.png</file>
         <file>res/icons/white/to_plot.png</file>
         <file>res/icons/white/to_plot_with.png</file>
+        <file>res/icons/black/dark_spectrum.png</file>
+        <file>res/icons/black/info.png</file>
+        <file>res/icons/black/points_tracker.png</file>
     </qresource>
 </RCC>

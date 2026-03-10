@@ -10,6 +10,8 @@
 #include "../form/serial/formserial.h"
 #include "../form/setting/formsetting.h"
 #include "../form/plot/PeakTrajectory/peaktrajectory.h"
+#include "../form/plot/DarkSpectrum/darkspectrum.h"
+#include "../form/plot/PointsTracker/pointstracker.h"
 #include "LoadingOverLay/loadingoverlay.h"
 #include "MyChartView/mychartview.h"
 #include "DraggableLine/draggableline.h"
@@ -214,6 +216,18 @@ void FormEasy::initToolButton() {
     m_tBtnSNR->setCheckable(true);
     connect(m_tBtnSNR, &QToolButton::clicked, this, &FormEasy::doSNRClicked);
 
+    m_tBtnPointsTracker = new QToolButton;
+    m_tBtnPointsTracker->setObjectName("tBtnPointsTracker");
+    m_tBtnPointsTracker->setToolTip(tr("Points Tracker"));
+    m_tBtnPointsTracker->setCheckable(true);
+    connect(m_tBtnPointsTracker, &QToolButton::clicked, this, &FormEasy::doPointsTracker);
+
+    m_tBtnDarkSpectrum = new QToolButton;
+    m_tBtnDarkSpectrum->setObjectName("tBtnDarkSpectrum");
+    m_tBtnDarkSpectrum->setToolTip(tr("Dark Spectrum"));
+    m_tBtnDarkSpectrum->setCheckable(true);
+    connect(m_tBtnDarkSpectrum, &QToolButton::clicked, this, &FormEasy::doDarkSpectrum);
+
     connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [=]() {
         m_tBtnSimulate->setChecked(false);
     });
@@ -224,9 +238,19 @@ void FormEasy::initToolButton() {
         m_enableSNR = false;
         m_tBtnSNR->setChecked(false);
     });
+    connect(m_pointsTracker, &PointsTracker::windowClose, this, [=]() {
+        m_enablePointsTracker = false;
+        m_tBtnPointsTracker->setChecked(false);
+    });
+    connect(m_darkSpectrum, &DarkSpectrum::windowClose, this, [=]() {
+        m_enableDarkSpectrum = false;
+        m_tBtnDarkSpectrum->setChecked(false);
+    });
     layout->addWidget(m_tBtnSimulate);
     layout->addWidget(m_tBtnHistory);
     layout->addWidget(m_tBtnSNR);
+    layout->addWidget(m_tBtnDarkSpectrum);
+    layout->addWidget(m_tBtnPointsTracker);
 }
 
 void FormEasy::init()
@@ -256,6 +280,12 @@ void FormEasy::init()
     m_accumulate = new Accumulate;
     m_accumulate->hide();
 
+    m_pointsTracker = new PointsTracker;
+    m_pointsTracker->hide();
+
+    m_darkSpectrum = new DarkSpectrum;
+    m_darkSpectrum->hide();
+
     m_setting = new FormSetting;
     m_setting->hide();
 
@@ -278,7 +308,6 @@ void FormEasy::init()
     m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
     m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
     m_peaks->setVisible(false);
-
 
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     m_workerThread->start();
@@ -358,6 +387,34 @@ void FormEasy::highlightRowByX(double x)
     table->scrollTo(m_modelValue->index(row, 0), QAbstractItemView::PositionAtCenter);
 }
 
+static int findClosestIndex(const QVector<QPointF> &data, double pos)
+{
+    if (data.isEmpty())
+        return -1;
+
+    int left = 0;
+    int right = data.size() - 1;
+
+    while (left <= right) {
+        int mid = (left + right) / 2;
+
+        if (data[mid].x() < pos)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    if (left >= data.size())
+        return data.size() - 1;
+    if (left == 0)
+        return 0;
+
+    double d1 = std::abs(data[left].x() - pos);
+    double d2 = std::abs(data[left - 1].x() - pos);
+
+    return (d1 < d2) ? left : (left - 1);
+}
+
 void FormEasy::updatePlot4k(const MY_DATA &my_data,
                             bool record)
 {
@@ -380,22 +437,24 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data,
         }
     }
 
-    if (m_enableAccumulate) {
-        if (m_toVoltage) {
-            auto data = m_accumulate->accumulate(m_curve.data);
-            if (!data.isEmpty()) {
-                m_curve.data = data;
-            } else {
-                return;
-            }
-        } else {
-            auto data = m_accumulate->accumulate(m_curve.raw.data);
-            if (!data.isEmpty()) {
-                m_curve.raw.data = data;
-            } else {
-                return;
+    if (m_enablePointsTracker) {
+        QMap<QString,double> values;
+        for(double pos : m_vPointsTracker) {
+            int idx = findClosestIndex(
+                m_toVoltage ? m_curve.data : m_curve.raw.data,
+                pos
+                );
+
+            if(idx >= 0) {
+                double value = m_toVoltage ?
+                                   m_curve.data.at(idx).y() :
+                                   m_curve.raw.data.at(idx).y();
+                QString name = QString::number(pos,'f',2);
+                values[name] = value;
             }
         }
+
+        m_pointsTracker->addPoints(values);
     }
 
     if (m_enableSNR) {
@@ -521,6 +580,8 @@ void FormEasy::closeEvent(QCloseEvent *event)
     m_snr->close();
     m_accumulate->close();
     m_setting->close();
+    m_pointsTracker->close();
+    m_darkSpectrum->close();
 }
 
 void FormEasy::updatePlot(const CURVE &curve31,
@@ -801,6 +862,18 @@ void FormEasy::doSNRClicked()
     m_tBtnSNR->setChecked(m_enableSNR);
 }
 
+void FormEasy::doPointsTracker() {
+    m_enablePointsTracker = !m_enablePointsTracker;
+    m_pointsTracker->setVisible(m_enablePointsTracker);
+    m_tBtnPointsTracker->setChecked(m_enablePointsTracker);
+}
+
+void FormEasy::doDarkSpectrum() {
+    m_enableDarkSpectrum = !m_enableDarkSpectrum;
+    m_darkSpectrum->setVisible(m_enableDarkSpectrum);
+    m_tBtnDarkSpectrum->setChecked(m_enableDarkSpectrum);
+}
+
 void FormEasy::on_tBtnSetting_clicked()
 {
     m_enableSetting = !m_enableSetting;
@@ -916,8 +989,14 @@ void FormEasy::contextMenuEvent(QContextMenuEvent *event)
     QMenu menu(this);
 
     QAction *loadChartAction = menu.addAction(tr("Load Chart"));
-    menu.addSeparator();
     QAction *exportChartAction = menu.addAction(tr("Export Chart"));
+    menu.addSeparator();
+    QAction *pointsTrackerAction = nullptr;
+    QAction *pointsClearAction = nullptr;
+    if(m_enablePointsTracker) {
+        pointsTrackerAction = menu.addAction(tr("Add Points Tracker"));
+        pointsClearAction = menu.addAction(tr("Clear Tracker"));
+    }
 
     QAction *selectedAction = menu.exec(event->globalPos());
     if (!selectedAction)
@@ -927,7 +1006,37 @@ void FormEasy::contextMenuEvent(QContextMenuEvent *event)
         loadChart();
     } else if(selectedAction == exportChartAction) {
         exportChart();
+    } else if(selectedAction == pointsTrackerAction) {
+        addToPointsTracker();
+    } else if(selectedAction == pointsClearAction) {
+        clearPointsTracker();
     }
+}
+
+void FormEasy::clearPointsTracker() {
+    m_pointsTracker->clearPoints();
+    m_vPointsTracker.clear();
+}
+
+void FormEasy::addToPointsTracker()
+{
+    bool ok = false;
+
+    double pos = QInputDialog::getDouble(
+        this,
+        tr("Add Point"),
+        tr("Input position:"),
+        0.0,
+        900,
+        1700,
+        4,
+        &ok
+        );
+
+    if (!ok)
+        return;
+
+    m_vPointsTracker.append(pos);
 }
 
 void FormEasy::loadChart()
