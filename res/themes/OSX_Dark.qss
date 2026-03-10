@@ -1323,4 +1323,19 @@ QToolButton#tBtnShowData {
   qproperty-iconSize: 48px 48px;
 }
 
+QToolButton#tBtnInfo {
+  qproperty-icon: url(:/res/icons/white/info.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPointsTracker {
+  qproperty-icon: url(:/res/icons/white/points_tracker.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnDarkSpectrum {
+  qproperty-icon: url(:/res/icons/white/dark_spectrum.png);
+  qproperty-iconSize: 48px 48px;
+}
+
 /*# sourceMappingURL=OSX%20Dark.qss.map */

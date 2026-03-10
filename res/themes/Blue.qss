@@ -1411,4 +1411,19 @@ QToolButton#tBtnShowData {
   qproperty-iconSize: 48px 48px;
 }
 
+QToolButton#tBtnInfo {
+  qproperty-icon: url(:/res/icons/blue/info.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPointsTracker {
+  qproperty-icon: url(:/res/icons/blue/points_tracker.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnDarkSpectrum {
+  qproperty-icon: url(:/res/icons/blue/dark_spectrum.png);
+  qproperty-iconSize: 48px 48px;
+}
+
 /*# sourceMappingURL=Lite.qss.map */

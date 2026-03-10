@@ -201,5 +201,14 @@
         <file>res/icons/black/dark_spectrum.png</file>
         <file>res/icons/black/info.png</file>
         <file>res/icons/black/points_tracker.png</file>
+        <file>res/icons/blue/dark_spectrum.png</file>
+        <file>res/icons/blue/info.png</file>
+        <file>res/icons/blue/points_tracker.png</file>
+        <file>res/icons/pink/dark_spectrum.png</file>
+        <file>res/icons/pink/info.png</file>
+        <file>res/icons/pink/points_tracker.png</file>
+        <file>res/icons/white/dark_spectrum.png</file>
+        <file>res/icons/white/info.png</file>
+        <file>res/icons/white/points_tracker.png</file>
     </qresource>
 </RCC>

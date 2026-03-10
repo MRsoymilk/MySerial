@@ -1343,3 +1343,18 @@ QToolButton#tBtnShowData {
   qproperty-icon: url(:/res/icons/pink/show_data.png);
   qproperty-iconSize: 48px 48px;
 }
+
+QToolButton#tBtnInfo {
+  qproperty-icon: url(:/res/icons/pink/info.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnPointsTracker {
+  qproperty-icon: url(:/res/icons/pink/points_tracker.png);
+  qproperty-iconSize: 48px 48px;
+}
+
+QToolButton#tBtnDarkSpectrum {
+  qproperty-icon: url(:/res/icons/pink/dark_spectrum.png);
+  qproperty-iconSize: 48px 48px;
+}

@@ -1350,7 +1350,6 @@ QToolButton#tBtnPointsTracker {
   qproperty-iconSize: 48px 48px;
 }
 
-
 QToolButton#tBtnDarkSpectrum {
   qproperty-icon: url(:/res/icons/black/dark_spectrum.png);
   qproperty-iconSize: 48px 48px;
