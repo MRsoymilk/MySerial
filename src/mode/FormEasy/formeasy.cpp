@@ -321,34 +321,34 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data,
     if (m_pause) {
         return;
     }
-    CURVE plot31 = my_data.curve31;
+    m_curve = my_data.curve31;
 
     if (m_enableFourier) {
         if (m_toVoltage) {
-            auto data = m_fourierTransform->transform(plot31.data);
+            auto data = m_fourierTransform->transform(m_curve.data);
             if (!data.isEmpty()) {
-                plot31.data = data;
+                m_curve.data = data;
             }
         } else {
-            auto data = m_fourierTransform->transform(plot31.raw.data);
+            auto data = m_fourierTransform->transform(m_curve.raw.data);
             if (!data.isEmpty()) {
-                plot31.raw.data = data;
+                m_curve.raw.data = data;
             }
         }
     }
 
     if (m_enableAccumulate) {
         if (m_toVoltage) {
-            auto data = m_accumulate->accumulate(plot31.data);
+            auto data = m_accumulate->accumulate(m_curve.data);
             if (!data.isEmpty()) {
-                plot31.data = data;
+                m_curve.data = data;
             } else {
                 return;
             }
         } else {
-            auto data = m_accumulate->accumulate(plot31.raw.data);
+            auto data = m_accumulate->accumulate(m_curve.raw.data);
             if (!data.isEmpty()) {
-                plot31.raw.data = data;
+                m_curve.raw.data = data;
             } else {
                 return;
             }
@@ -357,9 +357,9 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data,
 
     if (m_enableSNR) {
         if (m_toVoltage) {
-            m_snr->calculate(plot31.data);
+            m_snr->calculate(m_curve.data);
         } else {
-            m_snr->calculate(plot31.raw.data);
+            m_snr->calculate(m_curve.raw.data);
         }
     }
 
@@ -367,13 +367,13 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data,
         emit toHistory(my_data);
     }
 
-    updatePlot(plot31, {}, my_data.temperature, record);
+    updatePlot(m_curve, {}, my_data.temperature, record);
     QVector<double> v31, r31;
-    for(int i = 0; i < plot31.data.size(); ++i) {
-        v31.push_back(plot31.data.at(i).y());
+    for(int i = 0; i < m_curve.data.size(); ++i) {
+        v31.push_back(m_curve.data.at(i).y());
     }
-    for(int i = 0; i < plot31.raw.data.size(); ++i) {
-        r31.push_back(plot31.raw.data.at(i).y());
+    for(int i = 0; i < m_curve.raw.data.size(); ++i) {
+        r31.push_back(m_curve.raw.data.at(i).y());
     }
     updateTable(v31, {}, r31, {});
 }
@@ -863,3 +863,116 @@ void FormEasy::on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &stat
     }
 }
 
+void FormEasy::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+
+    QAction *loadChartAction = menu.addAction(tr("Load Chart"));
+    menu.addSeparator();
+    QAction *exportChartAction = menu.addAction(tr("Export Chart"));
+
+    QAction *selectedAction = menu.exec(event->globalPos());
+    if (!selectedAction)
+        return;
+
+    if (selectedAction == loadChartAction) {
+        loadChart();
+    } else if(selectedAction == exportChartAction) {
+        exportChart();
+    }
+}
+
+void FormEasy::loadChart()
+{
+    QString path = QFileDialog::getOpenFileName(
+        this,
+        tr("choose file"),
+        "",
+        tr("CSV Files (*.csv)")
+        );
+
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, TITLE_ERROR, tr("Cannot open file."));
+        return;
+    }
+
+    QTextStream in(&file);
+
+    m_line->clear();
+
+    CURVE curve;
+    bool firstLine = true;
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty())
+            continue;
+
+        if (firstLine) {
+            firstLine = false;
+            continue;
+        }
+
+        QStringList parts = line.split(",");
+        if (parts.size() < 2)
+            continue;
+
+        double x = parts[0].toDouble();
+        double y_raw = parts[1].toDouble();
+        double y_voltage = parts[2].toDouble();
+        curve.data.push_back({x, y_voltage});
+        curve.x_min = std::min(curve.x_min, x);
+        curve.x_max = std::max(curve.x_max, x);
+        curve.y_min = std::min(curve.y_min, y_voltage);
+        curve.y_max = std::max(curve.y_max, y_voltage);
+        curve.raw.data.push_back({x, y_raw});
+        curve.raw.x_min = std::min(curve.raw.x_min, x);
+        curve.raw.x_max = std::max(curve.raw.x_max, x);
+        curve.raw.y_min = std::min(curve.raw.y_min, y_raw);
+        curve.raw.y_max = std::max(curve.raw.y_max, y_raw);
+    }
+
+    file.close();
+    MY_DATA data;
+    data.curve31 = curve;
+    updatePlot4k(data, false);
+
+    QMessageBox::information(this,
+                             TITLE_INFO,
+                             tr("CSV loaded successfully."));
+}
+
+void FormEasy::exportChart() {
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        tr("Export CSV"),
+        "spectral.csv",
+        tr("CSV Files (*.csv)")
+        );
+
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::critical(this, TITLE_ERROR, tr("Cannot open file."));
+        return;
+    }
+
+    QTextStream out(&file);
+    out << "Index,Intensity_Raw,Intensity_Voltage\n";
+    for (int i = 0; i < m_line->count(); ++i) {
+        out << QString::number(m_line->at(i).x()) << ","
+            << QString::number(m_curve.raw.data.at(i).y()) << ","
+            << QString::number(m_curve.data.at(i).y()) << "\n";
+    }
+    file.close();
+
+    QMessageBox::information(this,
+                             TITLE_INFO,
+                             tr("CSV exported successfully."));
+}

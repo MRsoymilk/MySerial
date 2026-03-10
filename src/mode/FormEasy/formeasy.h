@@ -42,6 +42,11 @@ signals:
 public slots:
     void updatePlot4k(const MY_DATA &my_data,
                       bool record);
+
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_tBtnSwitch_clicked();
     void on_tBtnCrop_clicked();
@@ -59,13 +64,11 @@ private slots:
     void on_tBtnSetting_clicked();
     void on_tBtnAxisY_clicked();
     void on_tBtnToVoltage_clicked();
-
     void on_spinBoxYStart_valueChanged(int val);
     void on_spinBoxYEnd_valueChanged(int val);
     void on_spinBoxXStart_valueChanged(int val);
     void on_spinBoxXEnd_valueChanged(int val);
     void on_tBtnAxisX_clicked();
-
     void on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &arg1);
 
 private:
@@ -85,6 +88,9 @@ private:
     bool connectEasyMode();
     void closeEasyMode();
     void saveChartAsImage(const QString &filePath);
+    void loadChart();
+    void exportChart();
+    void highlightRowByX(double x);
 
 private:
     Ui::FormEasy *ui;
@@ -95,6 +101,7 @@ private:
     QValueAxis *m_axisY;
     QLineSeries *m_line;
     QStandardItemModel *m_modelValue;
+    CURVE m_curve;
 
     bool m_isPlaying = false;
     bool m_enableCrop = false;
@@ -126,16 +133,12 @@ private:
     DraggableLine *m_lineRight = nullptr;
     int m_trajectory_start;
     int m_trajectory_end;
-    // QWidget interface
-    void highlightRowByX(double x);
     bool m_enablePeakTrack = false;
     bool m_enableFourier = false;
     bool m_enableAccumulate = false;
     bool m_enableSNR = false;
     bool m_enableSetting = false;
 
-protected:
-    void closeEvent(QCloseEvent *event) override;
 };
 
 #endif // FORMEASY_H
