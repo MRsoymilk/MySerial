@@ -246,6 +246,9 @@ void FormEasy::initToolButton() {
         m_enableDarkSpectrum = false;
         m_tBtnDarkSpectrum->setChecked(false);
     });
+    connect(m_darkSpectrum, &DarkSpectrum::doCalculate, this, [=](bool status) {
+        m_doDarkSpectrumCalc = status;
+    });
     layout->addWidget(m_tBtnSimulate);
     layout->addWidget(m_tBtnHistory);
     layout->addWidget(m_tBtnSNR);
@@ -478,6 +481,17 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data,
         r31.push_back(m_curve.raw.data.at(i).y());
     }
     updateTable(v31, {}, r31, {});
+
+    if(m_enableDarkSpectrum) {
+        if(m_doDarkSpectrumCalc) {
+            if(m_toVoltage) {
+                m_darkSpectrum->calculate(v31);
+            }
+            else {
+                m_darkSpectrum->calculate(r31);
+            }
+        }
+    }
 }
 
 void FormEasy::on_tBtnZoom_clicked()

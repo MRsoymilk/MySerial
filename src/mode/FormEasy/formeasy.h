@@ -103,6 +103,8 @@ private:
     void loadChart();
     void exportChart();
     void highlightRowByX(double x);
+    void addToPointsTracker();
+    void clearPointsTracker();
 
 private:
     Ui::FormEasy *ui;
@@ -156,14 +158,13 @@ private:
     bool m_enableHistory = false;
     bool m_enablePointsTracker = false;
     bool m_enableDarkSpectrum = false;
+    bool m_doDarkSpectrumCalc = true;
     QFrame *m_infoPopup = nullptr;
     QToolButton *m_tBtnSimulate = nullptr;
     QToolButton *m_tBtnHistory = nullptr;
     QToolButton *m_tBtnSNR = nullptr;
     QToolButton *m_tBtnPointsTracker = nullptr;
     QToolButton *m_tBtnDarkSpectrum = nullptr;
-    void addToPointsTracker();
-    void clearPointsTracker();
     QVector<double> m_vPointsTracker;
 };
 
