@@ -105,7 +105,11 @@ const QString CFG_F30_MODE_SINGLE = "single";
 const QString CFG_F30_MODE_DOUBLE = "double";
 const QString CFG_F30_MODE_DOUBLE_THRESHOLD = "threshold";
 const QString CFG_F30_MODE_DOUBLE_INTERPOLATION = "interpolation";
+const QString CFG_GROUP_SNR = "SNR";
+const QString CFG_SNR_TAB_IDX = "tab_idx";
+const QString CFG_SNR_EXCLUDE_RADIUS = "exclude_radius";
 
+const QString TITLE_INFO = QObject::tr("Info");
 const QString TITLE_WARNING = QObject::tr("Warning");
 const QString TITLE_ERROR = QObject::tr("Error");
 

@@ -6,15 +6,117 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>567</width>
-    <height>428</height>
+    <width>974</width>
+    <height>777</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SignalNoiseRatio</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,1,0">
-   <item row="0" column="0" rowspan="2">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,1,0,0">
+   <item row="3" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabSignalNoise">
+      <attribute name="title">
+       <string>signal / std(noise)</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <layout class="QFormLayout" name="formLayout_3">
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelNoiseStd">
+           <property name="text">
+            <string>Noise (Std)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEditSignalNoiseNoiseStd"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelSNR_linear">
+           <property name="text">
+            <string>Signal-to-noise ratio (linear)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="lineEditSignalNoiseSNRLinear"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="labelSNR_dB">
+           <property name="text">
+            <string>Signal-to-noise ratio (dB)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="lineEditSignalNoiseSNRdB"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelExcludeRadius">
+           <property name="text">
+            <string>ExcludeRadius</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="spinBoxExcludeRadius"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabSignalSignal">
+      <attribute name="title">
+       <string>mean(signal) / std(signal)</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QFormLayout" name="formLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>avg signal</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>std signal</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEditSignalSignalAvgSignal"/>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEditSignalSignalStdSignal"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>SNR</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="lineEditSignalSignalSNR"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gLayChart"/>
+   </item>
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="checkBoxUseIdx">
@@ -33,7 +135,7 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <layout class="QFormLayout" name="formLayout">
+    <layout class="QFormLayout" name="formLayout_2">
      <item row="0" column="0">
       <widget class="QLabel" name="labelPeakIntensity">
        <property name="text">
@@ -41,50 +143,10 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="labelNoiseStd">
-       <property name="text">
-        <string>Noise (Std)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="labelSNR_linear">
-       <property name="text">
-        <string>Signal-to-noise ratio (linear)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="labelSNR_dB">
-       <property name="text">
-        <string>Signal-to-noise ratio (dB)</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="lineEditPeakValue"/>
      </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEditNoiseValue"/>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="lineEditSNRLinear"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="QLineEdit" name="lineEditSNRdB"/>
-     </item>
     </layout>
-   </item>
-   <item row="3" column="0">
-    <layout class="QGridLayout" name="gLayChart"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="labelAvgInfo">
-     <property name="text">
-      <string>avg info</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
