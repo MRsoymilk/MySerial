@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1203</width>
+    <width>1219</width>
     <height>590</height>
    </rect>
   </property>
@@ -104,26 +104,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnSimulate">
-       <property name="text">
-        <string>simulate</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="tBtnHistory">
-       <property name="text">
-        <string>history</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="tBtnFourier">
        <property name="text">
         <string>Fourier</string>
@@ -137,16 +117,6 @@
       <widget class="QToolButton" name="tBtnAccumulate">
        <property name="text">
         <string>Accumulate</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="tBtnSNR">
-       <property name="text">
-        <string>SNR</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -265,6 +235,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnInfo">
+       <property name="text">
+        <string>info</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="tBtnSetting">

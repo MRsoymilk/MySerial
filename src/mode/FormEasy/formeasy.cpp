@@ -111,8 +111,7 @@ void FormEasy::on_tBtnSwitch_clicked()
     }
 }
 
-void FormEasy::init()
-{
+void FormEasy::initAxisControl() {
     int x_start = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_START, "900").toInt();
     int x_end = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_END, "1700").toInt();
     int y_start = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_START, "0").toInt();
@@ -134,7 +133,9 @@ void FormEasy::init()
         m_autoZoom = false;
         ui->tBtnZoom->setChecked(false);
     }
+}
 
+void FormEasy::initChart() {
     m_line = new QLineSeries();
     m_line->setName(tr("curve"));
 
@@ -153,10 +154,15 @@ void FormEasy::init()
     m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->gLayPlot->addWidget(m_chartView);
+}
 
+void FormEasy::initConnectInfo() {
     ui->comboBoxTimeUnit->addItems({"ms", "s"});
     ui->comboBoxTimeUnit->setCurrentIndex(0);
+    ui->spinBoxIntegrationTime->setValue(5);
+}
 
+void FormEasy::initTable() {
     m_modelValue = new QStandardItemModel(this);
     m_modelValue->setColumnCount(3);
     m_modelValue->setHeaderData(0, Qt::Horizontal, tr("index"));
@@ -168,9 +174,9 @@ void FormEasy::init()
     ui->tableViewValue->verticalHeader()->setVisible(false);
     ui->tableViewValue->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableViewValue->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
 
-    ui->spinBoxIntegrationTime->setValue(5);
-
+void FormEasy::initToolButton() {
     ui->tBtnSwitch->setToolTip(tr("switch"));
     ui->tBtnPause->setToolTip(tr("pause"));
     ui->tBtnZoom->setToolTip(tr("zoom"));
@@ -178,27 +184,53 @@ void FormEasy::init()
     ui->tBtnPeak->setToolTip(tr("find peak"));
     ui->tBtnFWHM->setToolTip(tr("FWHM"));
     ui->tBtnImg->setToolTip(tr("save image"));
-    ui->tBtnSimulate->setToolTip(tr("simulate"));
-    ui->tBtnHistory->setToolTip(tr("history"));
     ui->tBtnFourier->setToolTip(tr("fourier"));
     ui->tBtnAccumulate->setToolTip(tr("accumulate"));
-    ui->tBtnSNR->setToolTip(tr("signal noise ratio"));
 
     ui->tBtnZoom->setChecked(true);
 
-    m_peaks = new QScatterSeries();
-    m_chart->addSeries(m_peaks);
-    m_peaks->attachAxis(m_axisX);
-    m_peaks->attachAxis(m_axisY);
-    m_peaks->setColor(Qt::red);
-    m_peaks->setName(tr("Peaks"));
-    m_peaks->setMarkerSize(5.0);
-    m_peaks->setPointLabelsVisible(true);
-    m_peaks->setPointLabelsClipping(false);
-    m_peaks->setPointLabelsColor(Qt::red);
-    m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
-    m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
-    m_peaks->setVisible(false);
+    m_infoPopup = new QFrame(nullptr, Qt::Popup);
+    m_infoPopup->setFrameShape(QFrame::Box);
+
+    QVBoxLayout *layout = new QVBoxLayout(m_infoPopup);
+    layout->setContentsMargins(4,4,4,4);
+    layout->setSpacing(2);
+
+    m_tBtnSimulate = new QToolButton;
+    m_tBtnSimulate->setObjectName("tBtnSimulate");
+    m_tBtnSimulate->setToolTip(tr("simulate"));
+    m_tBtnSimulate->setCheckable(true);
+    connect(m_tBtnSimulate, &QToolButton::clicked, this, &FormEasy::doSimulateClicked);
+
+    m_tBtnHistory = new QToolButton;
+    m_tBtnHistory->setObjectName("tBtnHistory");
+    m_tBtnHistory->setToolTip(tr("history"));
+    m_tBtnHistory->setCheckable(true);
+    connect(m_tBtnHistory, &QToolButton::clicked, this, &FormEasy::doHistoryClicked);
+
+    m_tBtnSNR = new QToolButton;
+    m_tBtnSNR->setObjectName("tBtnSNR");
+    m_tBtnSNR->setToolTip(tr("signal noise ratio"));
+    m_tBtnSNR->setCheckable(true);
+    connect(m_tBtnSNR, &QToolButton::clicked, this, &FormEasy::doSNRClicked);
+
+    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [=]() {
+        m_tBtnSimulate->setChecked(false);
+    });
+    connect(m_plotHistory, &FormPlotHistory::windowClose, this, [=]() {
+        m_tBtnHistory->setChecked(false);
+    });
+    connect(m_snr, &SignalNoiseRatio::windowClose, this, [=]() {
+        m_enableSNR = false;
+        m_tBtnSNR->setChecked(false);
+    });
+    layout->addWidget(m_tBtnSimulate);
+    layout->addWidget(m_tBtnHistory);
+    layout->addWidget(m_tBtnSNR);
+}
+
+void FormEasy::init()
+{
     m_trajectory = new PeakTrajectory;
 
     formSerial = new FormSerial;
@@ -226,6 +258,27 @@ void FormEasy::init()
 
     m_setting = new FormSetting;
     m_setting->hide();
+
+    initAxisControl();
+    initChart();
+    initConnectInfo();
+    initTable();
+    initToolButton();
+
+    m_peaks = new QScatterSeries();
+    m_chart->addSeries(m_peaks);
+    m_peaks->attachAxis(m_axisX);
+    m_peaks->attachAxis(m_axisY);
+    m_peaks->setColor(Qt::red);
+    m_peaks->setName(tr("Peaks"));
+    m_peaks->setMarkerSize(5.0);
+    m_peaks->setPointLabelsVisible(true);
+    m_peaks->setPointLabelsClipping(false);
+    m_peaks->setPointLabelsColor(Qt::red);
+    m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
+    m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
+    m_peaks->setVisible(false);
+
 
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     m_workerThread->start();
@@ -266,19 +319,9 @@ void FormEasy::init()
         ui->checkBoxPeakTrack->setChecked(false);
         on_checkBoxPeakTrack_checkStateChanged(Qt::Unchecked);
     });
-    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [this]() {
-        ui->tBtnSimulate->setChecked(false);
-    });
-    connect(m_plotHistory, &FormPlotHistory::windowClose, this, [this]() {
-        ui->tBtnHistory->setChecked(false);
-    });
     connect(m_accumulate, &Accumulate::windowClose, this, [this]() {
         m_enableAccumulate = false;
         ui->tBtnAccumulate->setChecked(false);
-    });
-    connect(m_snr, &SignalNoiseRatio::windowClose, this, [this]() {
-        m_enableSNR = false;
-        ui->tBtnSNR->setChecked(false);
     });
     connect(m_fourierTransform, &FourierTransform::windowClose, this, [this]() {
         m_enableFourier = false;
@@ -725,14 +768,18 @@ QString FormEasy::calcIntegrationTime(int value)
     return cmd;
 }
 
-void FormEasy::on_tBtnSimulate_clicked()
+void FormEasy::doSimulateClicked()
 {
-    m_plotSimulate->setVisible(ui->tBtnSimulate->isChecked());
+    m_enableSimulate = !m_enableSimulate;
+    m_plotSimulate->setVisible(m_enableSimulate);
+    m_tBtnSimulate->setChecked(m_enableSimulate);
 }
 
-void FormEasy::on_tBtnHistory_clicked()
+void FormEasy::doHistoryClicked()
 {
-    m_plotHistory->setVisible(ui->tBtnHistory->isChecked());
+    m_enableHistory = !m_enableHistory;
+    m_plotHistory->setVisible(m_enableHistory);
+    m_tBtnHistory->setChecked(m_enableHistory);
 }
 
 void FormEasy::on_tBtnFourier_clicked()
@@ -747,10 +794,11 @@ void FormEasy::on_tBtnAccumulate_clicked()
     m_accumulate->setVisible(ui->tBtnAccumulate->isChecked());
 }
 
-void FormEasy::on_tBtnSNR_clicked()
+void FormEasy::doSNRClicked()
 {
     m_enableSNR = !m_enableSNR;
-    m_snr->setVisible(ui->tBtnSNR->isChecked());
+    m_snr->setVisible(m_enableSNR);
+    m_tBtnSNR->setChecked(m_enableSNR);
 }
 
 void FormEasy::on_tBtnSetting_clicked()
@@ -976,3 +1024,14 @@ void FormEasy::exportChart() {
                              TITLE_INFO,
                              tr("CSV exported successfully."));
 }
+
+void FormEasy::on_tBtnInfo_clicked()
+{
+    QPoint pos = ui->tBtnInfo->mapToGlobal(
+        QPoint(0, ui->tBtnInfo->height())
+        );
+
+    m_infoPopup->move(pos);
+    m_infoPopup->show();
+}
+

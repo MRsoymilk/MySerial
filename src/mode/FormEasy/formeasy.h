@@ -1,10 +1,12 @@
 #ifndef FORMEASY_H
 #define FORMEASY_H
 
+#include <QFrame>
 #include <QGraphicsLineItem>
 #include <QLineSeries>
 #include <QScatterSeries>
 #include <QStandardItem>
+#include <QToolButton>
 #include <QValueAxis>
 #include <QWidget>
 #include "global.h"
@@ -56,11 +58,11 @@ private slots:
     void on_tBtnImg_clicked();
     void on_tBtnPause_clicked();
     void on_spinBoxIntegrationTime_valueChanged(int val);
-    void on_tBtnSimulate_clicked();
-    void on_tBtnHistory_clicked();
+    void doSimulateClicked();
+    void doHistoryClicked();
     void on_tBtnFourier_clicked();
     void on_tBtnAccumulate_clicked();
-    void on_tBtnSNR_clicked();
+    void doSNRClicked();
     void on_tBtnSetting_clicked();
     void on_tBtnAxisY_clicked();
     void on_tBtnToVoltage_clicked();
@@ -70,8 +72,14 @@ private slots:
     void on_spinBoxXEnd_valueChanged(int val);
     void on_tBtnAxisX_clicked();
     void on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &arg1);
+    void on_tBtnInfo_clicked();
 
 private:
+    void initAxisControl();
+    void initChart();
+    void initConnectInfo();
+    void initTable();
+    void initToolButton();
     void init();
     void updatePlot(const CURVE &curve31,
                     const CURVE &curve33,
@@ -138,7 +146,12 @@ private:
     bool m_enableAccumulate = false;
     bool m_enableSNR = false;
     bool m_enableSetting = false;
-
+    bool m_enableSimulate = false;
+    bool m_enableHistory = false;
+    QFrame *m_infoPopup = nullptr;
+    QToolButton *m_tBtnSimulate = nullptr;
+    QToolButton *m_tBtnHistory = nullptr;
+    QToolButton *m_tBtnSNR = nullptr;
 };
 
 #endif // FORMEASY_H
