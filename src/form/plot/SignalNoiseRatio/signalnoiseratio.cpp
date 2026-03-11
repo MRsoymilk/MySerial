@@ -34,8 +34,13 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
 
     // ===== 找到信号峰值 =====
     if (m_enableIdx) {
-        signalIndex = qBound(0, m_idx, y.size() - 1);
-        signalValue = y[signalIndex];
+        auto it = std::min_element(data.begin(), data.end(),
+                                   [this](const QPointF &a, const QPointF &b) {
+                                       return std::abs(a.x() - m_idx) < std::abs(b.x() - m_idx);
+                                   });
+
+        signalIndex = std::distance(data.begin(), it);
+        signalValue = it->y();
     } else {
         auto itMax = std::max_element(y.begin(), y.end());
         signalValue = *itMax;
@@ -83,15 +88,14 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
         ui->lineEditSignalNoiseSNRdB->setText(QString::number(snrDb, 'f', 2) + " dB");
     }
     else if(m_tab_idx == MODE_SIGNAL_SIGNAL) {
-        double val_avg = 0;
-        for(auto val : m_vSignal) {
-            val_avg += val;
+        double val_avg = std::accumulate(m_vSignal.begin(), m_vSignal.end(), 0.0) / m_vSignal.size();
+        double sum = 0;
+        for(auto v : m_vSignal)
+        {
+            double d = v - val_avg;
+            sum += d * d;
         }
-        val_avg /= m_vSignal.size();
-        double val_std = 0;
-        for(int i = 0; i < m_vSignal.size(); ++i) {
-            val_std = std::sqrt((m_vSignal[i] - val_avg) * (m_vSignal[i] - val_avg) / m_vSignal.size());
-        }
+        double val_std = std::sqrt(sum / m_vSignal.size());
         double SNR = val_avg / val_std;
         ui->lineEditSignalSignalAvgSignal->setText(QString::number(val_avg));
         ui->lineEditSignalSignalStdSignal->setText(QString::number(val_std));
@@ -238,5 +242,11 @@ void SignalNoiseRatio::on_tabWidget_currentChanged(int index)
 void SignalNoiseRatio::on_spinBoxExcludeRadius_textChanged(const QString &val)
 {
     SETTING_CONFIG_SET(CFG_GROUP_SNR, CFG_SNR_EXCLUDE_RADIUS, val);
+}
+
+
+void SignalNoiseRatio::on_spinBoxIdx_valueChanged(int idx)
+{
+    m_idx = idx;
 }
 

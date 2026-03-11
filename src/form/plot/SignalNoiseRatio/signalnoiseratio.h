@@ -36,6 +36,7 @@ private slots:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void on_tabWidget_currentChanged(int index);
     void on_spinBoxExcludeRadius_textChanged(const QString &arg1);
+    void on_spinBoxIdx_valueChanged(int idx);
 
 private:
     void init();
