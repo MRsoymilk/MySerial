@@ -1,4 +1,5 @@
 #include "formserial.h"
+#include "ThreadParser/threadparser.h"
 #include "keydef.h"
 #include "ui_formserial.h"
 
@@ -23,6 +24,11 @@ FormSerial::FormSerial(QWidget *parent)
 FormSerial::~FormSerial()
 {
     SETTING_CONFIG_SYNC();
+    if(m_workerThread)
+    {
+        m_workerThread->quit();
+        m_workerThread->wait();
+    }
     delete ui;
 }
 
@@ -82,47 +88,40 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
             statusReport(100 * HANDSHAKE / FINISH,
                          QString("%1 step [handshake]: check excepted").arg(port));
             if (response_handshake.contains(expected_handshake)) {
-                // QString F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
                 if(F30_shown_mode == CFG_F30_MODE_DOUBLE) {
-                    while (true) {
-                        statusReport(100 * DATA_REQUEST / FINISH,
-                                     QString("%1 step [data 40 request]: start").arg(port));
-                        send("DD3C000340CDFF");
-                        m_serial->waitForReadyRead(500);
+                    statusReport(100 * DATA_REQUEST / FINISH,
+                                 QString("%1 step [data 40 request]: start").arg(port));
+                    send("DD3C000340CDFF");
+                    if (!m_serial->waitForReadyRead(500)) {
+                        LOG_WARN("cmd 40 no response");
+                        send("DD3C000360CDFF");
+                        LOG_INFO("cmd: DD3C000360CDFF to stop 40");
+                    } else {
                         QByteArray response = m_serial->readAll();
-                        LOG_INFO("cmd: DD3C000340CDFF -> {}", response.toHex().toUpper());
-                        if (doFrameExtra(response)) {
-                            break;
-                        }
+                        LOG_INFO("cmd40 -> {}", response.toHex().toUpper());
+                        doFrameExtra(response);
                     }
                 }
                 else if(F30_shown_mode == CFG_F30_MODE_SINGLE) {
-                    {
-                        while (true) {
-                            statusReport(100 * SET_INTEGRATION_TIME / FINISH,
-                                         QString("%1 step [set integration time]: check excepted")
-                                             .arg(port));
-                            send("DD3C000622000005CDFF");
-                            m_serial->waitForReadyRead(500);
+                    statusReport(100 * SET_INTEGRATION_TIME / FINISH,
+                                 QString("%1 step [set integration time]: check excepted")
+                                     .arg(port));
+                    send("DD3C000622000005CDFF");
+                    m_serial->waitForReadyRead(500);
+                    QByteArray response = m_serial->readAll();
+                    QByteArray except = QByteArray::fromHex("DE3A000323CEFF");
+                    LOG_INFO("cmd: DD3C000622000005CDFF -> {}", response.toHex().toUpper());
+                    if (response == except) {
+                        statusReport(100 * DATA_REQUEST / FINISH,
+                                     QString("%1 step [data 30 request]: start").arg(port));
+                        send("DD3C000330CDFF");
+                        if (!m_serial->waitForReadyRead(500)) {
+                            LOG_WARN("cmd 30 no response");
+                            send("DD3C000360CDFF");
+                            LOG_INFO("cmd: DD3C000360CDFF to stop 30");
+                        } else {
                             QByteArray response = m_serial->readAll();
-                            QByteArray except = QByteArray::fromHex("DE3A000323CEFF");
-                            LOG_INFO("cmd: DD3C000622000005CDFF -> {}", response.toHex().toUpper());
-                            if (response == except) {
-                                break;
-                            }
-                        }
-                    }
-                    {
-                        while (true) {
-                            statusReport(100 * DATA_REQUEST / FINISH,
-                                         QString("%1 step [data 30 request]: start").arg(port));
-                            send("DD3C000330CDFF");
-                            m_serial->waitForReadyRead(500);
-                            QByteArray response = m_serial->readAll();
-                            LOG_INFO("cmd: DD3C000330CDFF -> {}", response.toHex().toUpper());
-                            if (doFrameExtra(response)) {
-                                break;
-                            }
+                            LOG_INFO("cmd30 -> {}", response.toHex().toUpper());
                         }
                     }
                 }
@@ -197,9 +196,9 @@ void FormSerial::updateFrameTypes(const QString &algorithm)
             }
         } else {
             m_frameTypes = {
-                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 6007},
-                {"F15_33", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 6007},
-            };
+                            {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 6007},
+                            {"F15_33", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 6007},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F15Curves_SET(frame.name,
                                             FRAME_HEADER,
@@ -225,8 +224,8 @@ void FormSerial::updateFrameTypes(const QString &algorithm)
             }
         } else {
             m_frameTypes = {
-                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
-            };
+                            {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F15Single_SET(frame.name,
                                             FRAME_HEADER,
@@ -252,8 +251,8 @@ void FormSerial::updateFrameTypes(const QString &algorithm)
             }
         } else {
             m_frameTypes = {
-                {"MPU6050", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
-            };
+                            {"MPU6050", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_PLAY_MPU6050_SET(frame.name,
                                                FRAME_HEADER,
@@ -281,9 +280,9 @@ void FormSerial::updateFrameTypes(const QString &algorithm)
             }
         } else {
             m_frameTypes = {
-                {"F30_31", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
-                {"F30_33", QByteArray::fromHex("DE3A177333"), QByteArray::fromHex("CEFF"), 6007},
-            };
+                            {"F30_31", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
+                            {"F30_33", QByteArray::fromHex("DE3A177333"), QByteArray::fromHex("CEFF"), 6007},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F30Curves_SET(frame.name,
                                             FRAME_HEADER,
@@ -309,8 +308,8 @@ void FormSerial::updateFrameTypes(const QString &algorithm)
             }
         } else {
             m_frameTypes = {
-                {"F30_31", QByteArray::fromHex("DE3A064331"), QByteArray::fromHex("CEFF"), 1607},
-            };
+                            {"F30_31", QByteArray::fromHex("DE3A064331"), QByteArray::fromHex("CEFF"), 1607},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F30Single_SET(frame.name,
                                             FRAME_HEADER,
@@ -334,6 +333,13 @@ void FormSerial::updateFrameTypes(const QString &algorithm)
     } else {
         m_frameTypes = {};
     }
+    QMetaObject::invokeMethod(
+        m_parser,
+        [this]()
+        {
+            m_parser->setFrameTypes(m_frameTypes);
+        },
+        Qt::QueuedConnection);
 }
 
 void FormSerial::getINI()
@@ -604,6 +610,25 @@ void FormSerial::init()
 
     ui->tBtnNext->setObjectName("go-next");
     ui->tBtnPrev->setObjectName("go-prev");
+
+    m_workerThread = new QThread(this);
+    m_parser = new ThreadParser();
+
+    m_parser->moveToThread(m_workerThread);
+
+    connect(this,
+            &FormSerial::pushParserData,
+            m_parser,
+            &ThreadParser::pushData,
+            Qt::QueuedConnection);
+
+    connect(m_parser,
+            &ThreadParser::frameParsed,
+            this,
+            &FormSerial::handleFrame,
+            Qt::QueuedConnection);
+
+    m_workerThread->start();
 }
 
 void FormSerial::send(const QString &text)
@@ -668,8 +693,8 @@ void FormSerial::send(const QString &text)
     QStringList hexList;
     for (char byte : data) {
         hexList << QString("%1")
-                       .arg(static_cast<unsigned char>(byte), 2, 16, QLatin1Char('0'))
-                       .toUpper();
+        .arg(static_cast<unsigned char>(byte), 2, 16, QLatin1Char('0'))
+            .toUpper();
     }
     to_show = hexList.join(" ");
     if (m_ini.show_send) {
@@ -881,7 +906,8 @@ void FormSerial::onReadyRead()
         return;
     }
     QByteArray data = m_serial->readAll();
-    doFrameExtra(data);
+    // doFrameExtra(data);
+    emit pushParserData(data);
 }
 
 void FormSerial::on_btnRecvClear_clicked()

@@ -8,6 +8,7 @@
 #include "global.h"
 
 class LineSend;
+class ThreadParser;
 
 namespace Ui {
 class FormSerial;
@@ -60,13 +61,16 @@ signals:
                       const double &temperature = 0.0);
     void recv2MPU(const QByteArray &data);
     void statusReport(int progress, const QString &msg);
+    void pushParserData(QByteArray data);
 
 public slots:
     void sendRaw(const QByteArray &bytes);
     void onChangeFrameType(const QString &algorithm);
     void onSimulateRecv(const QByteArray &bytes);
     void clearData();
-
+    void handleFrame(const QString &frameName,
+                     const QByteArray &frame_candidate,
+                     const QByteArray &temp = "");
 protected:
     void closeEvent(QCloseEvent *event) override;
 
@@ -78,9 +82,7 @@ private:
     void send(const QString &text);
     void initMultSend();
     void setINI();
-    void handleFrame(const QString &frameName,
-                     const QByteArray &frame_candidate,
-                     const QByteArray &temp = "");
+
     void loadPage(int page);
     bool doFrameExtra(const QByteArray &data);
 
@@ -103,7 +105,8 @@ private slots:
     void on_tBtnPrev_clicked();
     void on_lineEditPageName_editingFinished();
     void on_checkBoxAcceptTemperature_clicked();
-
+private:
+    void flushUiBuffer();
 private:
     Ui::FormSerial *ui;
     QMap<QString, SERIAL> m_mapSerial;
@@ -126,6 +129,8 @@ private:
     int m_currentPage = 0;
     bool m_acceptTemperature = false;
     bool m_ready = false;
+    QThread *m_workerThread = nullptr;
+    ThreadParser *m_parser = nullptr;
 };
 
 #endif // FORMSERIAL_H
