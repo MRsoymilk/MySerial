@@ -20,6 +20,8 @@ set(FORM_SERIAL
     src/form/serial/LineSend/linesend.h
     src/form/serial/LineSend/linesend.cpp
     src/form/serial/LineSend/linesend.ui
+    src/form/serial/ThreadParser/threadparser.h
+    src/form/serial/ThreadParser/threadparser.cpp
 )
 
 set(FORM_PLOT
