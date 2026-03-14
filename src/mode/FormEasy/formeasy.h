@@ -42,6 +42,7 @@ public:
 
 signals:
     void toHistory(const MY_DATA &my_data);
+    void sendOption(const QJsonObject &option);
 
 public slots:
     void updatePlot4k(const MY_DATA &my_data,
@@ -77,6 +78,7 @@ private slots:
     void on_tBtnInfo_clicked();
     void doDarkSpectrum();
     void doPointsTracker();
+    void on_comboBoxTimeUnit_currentIndexChanged(int index);
 
 private:
     void initAxisControl();
@@ -166,6 +168,7 @@ private:
     QToolButton *m_tBtnPointsTracker = nullptr;
     QToolButton *m_tBtnDarkSpectrum = nullptr;
     QVector<double> m_vPointsTracker;
+    void sendIntegrationTime();
 };
 
 #endif // FORMEASY_H

@@ -701,6 +701,10 @@ void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option)
         m_enable_double = option["enable_double"].toBool();
         LOG_INFO("Threshold Option: enable_double {}", m_enable_double);
     }
+    if(option.contains("integration")) {
+        m_integration_count = option["integration"].toInt();
+        LOG_INFO("Option: integration: {}", m_enable_interpolation);
+    }
 }
 
 void ThreadWorker::onParamsArcSin(const PARAMS_ARCSIN &params)

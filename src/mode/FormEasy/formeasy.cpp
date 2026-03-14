@@ -331,11 +331,14 @@ void FormEasy::init()
             &FormSetting::sendThreshold,
             m_worker,
             &ThreadWorker::onUseLoadedThreshold);
+    connect(this, &FormEasy::sendOption,
+            m_worker, &ThreadWorker::onUseLoadedThreadsholdOption);
     connect(m_setting,
             &FormSetting::sendThresholdOption,
             m_worker,
             &ThreadWorker::onUseLoadedThreadsholdOption);
 
+    connect(formSerial, &FormSerial::sendThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15, Qt::QueuedConnection);
@@ -546,16 +549,23 @@ void FormEasy::on_tBtnImg_clicked()
     }
 }
 
+void FormEasy::sendIntegrationTime() {
+    int val = ui->spinBoxIntegrationTime->value();
+    QString unit = ui->comboBoxTimeUnit->currentText();
+    if (unit == "ms") {
+        val = val;
+    } else if (unit == "s") {
+        val *= 1000;
+    }
+    int count = (val + 1) / 5;
+    emit sendOption({{"integration", count}});
+    formSerial->writeEasyData(calcIntegrationTime(val));
+}
+
 void FormEasy::on_spinBoxIntegrationTime_valueChanged(int val)
 {
     if (m_isPlaying) {
-        QString unit = ui->comboBoxTimeUnit->currentText();
-        if (unit == "ms") {
-            val = val;
-        } else if (unit == "s") {
-            val *= 1000;
-        }
-        formSerial->writeEasyData(calcIntegrationTime(val));
+        sendIntegrationTime();
     }
 }
 
@@ -1158,3 +1168,13 @@ void FormEasy::on_tBtnInfo_clicked()
     m_infoPopup->show();
 }
 
+void FormEasy::on_comboBoxTimeUnit_currentIndexChanged(int index)
+{
+    if(index == 0) {
+        ui->spinBoxIntegrationTime->setSingleStep(5);
+    }
+    else if(index == 1) {
+        ui->spinBoxIntegrationTime->setSingleStep(1);
+    }
+    sendIntegrationTime();
+}

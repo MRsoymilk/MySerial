@@ -85,6 +85,7 @@ private:
     PARAMS_ARCSIN m_params_arcsin;
     COLLECTION_FITTING_POINTS m_collection_fitting_points;
     void doInterpolation(QList<QPointF> &v);
+    int m_integration_count = 1;
 };
 
 #endif // THREADWORKER_H

@@ -304,8 +304,14 @@
              </item>
              <item>
               <widget class="QSpinBox" name="spinBoxIntegrationTime">
+               <property name="minimum">
+                <number>5</number>
+               </property>
                <property name="maximum">
                 <number>9999</number>
+               </property>
+               <property name="singleStep">
+                <number>5</number>
                </property>
               </widget>
              </item>
