@@ -37,6 +37,30 @@ Correction
 
 ![Plot Correction](README/plot_correction.jpg)
 
+#### SNR
+
+信噪比计算
+
+##### signal / std(noise)
+
+1. 首先找最大点
+2. 将最大点左10个点，右10个点排除，其余为噪声
+3. 计算噪声平均值，噪声标准差，线性信噪比（信号相对于噪声的强度比例），转换为dB
+
+SNR = 信号强度 / 噪声标准差
+
+| SNR(dB)   | 质量 |
+| :-------- | :--- |
+| <10 dB    | 很差 |
+| 10–20 dB  | 可用 |
+| 20–30 dB  | 良好 |
+| 30–40 dB  | 很好 |
+| 大于40 dB | 极好 |
+
+##### mean(signal) / std(signal)
+
+SNR = mean(signal) / std(signal)
+
 ### Log
 
 ![Log](README/log.jpg)
