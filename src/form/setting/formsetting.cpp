@@ -31,8 +31,12 @@ void FormSetting::retranslateUI()
 
 void FormSetting::initThreshold()
 {
-    QString path = ui->lineEditThreshold->text();
-    readThresholdCSV(path);
+    bool enable_local_threshold = false;
+    if(enable_local_threshold) {
+        QString path = ui->lineEditThreshold->text();
+        readThresholdCSV(path);
+    }
+
     bool enable_double = false;
     if(ui->radioButtonUseDouble->isChecked()) {
         enable_double = true;
@@ -59,6 +63,7 @@ void FormSetting::init()
     if(status == VAL_ENABLE) {
         ui->checkBoxEnableInterpolation->setChecked(true);
     }
+    qApp->setProperty("debug", "disable");
 }
 
 void FormSetting::closeEvent(QCloseEvent *event)
@@ -149,6 +154,27 @@ void FormSetting::on_checkBoxEnableInterpolation_clicked()
     else {
         emit sendThresholdOption({{"interpolation", false}});
         SETTING_CONFIG_SET(CFG_GROUP_F30_SHOWN, CFG_F30_MODE_DOUBLE_INTERPOLATION, VAL_DISABLE);
+    }
+}
+
+void FormSetting::on_checkBoxEnableDebug_checkStateChanged(const Qt::CheckState &state)
+{
+    if(state == Qt::Checked) {
+        qApp->setProperty("debug", "enable");
+    }
+    else {
+        qApp->setProperty("debug", "disable");
+    }
+}
+
+
+void FormSetting::on_checkBoxEnableLocalThreshold_clicked()
+{
+    if(ui->checkBoxEnableLocalThreshold->isChecked()) {
+
+    }
+    else {
+
     }
 }
 

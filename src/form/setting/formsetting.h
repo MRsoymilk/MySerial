@@ -31,6 +31,8 @@ private slots:
     void on_radioButtonUseDouble_clicked(bool checked);
     void on_tBtnLoadThreshold_clicked();
     void on_checkBoxEnableInterpolation_clicked();
+    void on_checkBoxEnableDebug_checkStateChanged(const Qt::CheckState &state);
+    void on_checkBoxEnableLocalThreshold_clicked();
 
 private:
     void init();

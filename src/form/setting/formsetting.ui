@@ -47,14 +47,14 @@
           <string>F30 Shown</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="radioButtonUseSingle">
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="checkBoxEnableInterpolation">
             <property name="text">
-             <string>Use Single</string>
+             <string>enable interpolation</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="3" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QLabel" name="labelThreshold">
@@ -75,6 +75,13 @@
             </item>
            </layout>
           </item>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radioButtonUseSingle">
+            <property name="text">
+             <string>Use Single</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QRadioButton" name="radioButtonUseDouble">
             <property name="text">
@@ -82,10 +89,26 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="checkBoxEnableInterpolation">
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="checkBoxEnableLocalThreshold">
             <property name="text">
-             <string>enable interpolation</string>
+             <string>enable local threshold</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxDebug">
+         <property name="title">
+          <string>Debug</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="checkBoxEnableDebug">
+            <property name="text">
+             <string>enable</string>
             </property>
            </widget>
           </item>
