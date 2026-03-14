@@ -104,7 +104,12 @@ void ShowCorrectionCurve::init()
     m_model->setColumnCount(2);
     m_model->setHeaderData(0, Qt::Horizontal, "index");
     m_model->setHeaderData(1, Qt::Horizontal, "threshold");
+    ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->tableView->setModel(m_model);
+    connect(ui->tableView,
+            &QWidget::customContextMenuRequested,
+            this,
+            &ShowCorrectionCurve::showContextMenu);
 
     int offset = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_OFFSET, "900").toInt();
     double step = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_STEP, "1").toDouble();
@@ -127,6 +132,36 @@ void ShowCorrectionCurve::init()
     connect(shortcut_next, &QShortcut::activated, this, &ShowCorrectionCurve::on_tBtnNext_clicked);
 
     ui->tBtnExternal->setCheckable(true);
+}
+
+void ShowCorrectionCurve::showContextMenu(const QPoint &pos)
+{
+    QMenu contextMenu(tr("Context Menu"), this);
+    QAction *toHexAction = new QAction(tr("to Hex"), this);
+    connect(toHexAction, &QAction::triggered, this, &ShowCorrectionCurve::exportThresholdToHex);
+    contextMenu.addAction(toHexAction);
+    contextMenu.exec(ui->tableView->viewport()->mapToGlobal(pos));
+}
+
+void ShowCorrectionCurve::exportThresholdToHex()
+{
+    QStringList hexList;
+    for (int row = 0; row < m_model->rowCount(); ++row) {
+        QModelIndex idx = m_model->index(row, 1);
+        bool ok = false;
+        double val = m_model->data(idx).toDouble(&ok);
+        if (ok) {
+            int rounded = static_cast<int>(qRound(val)) & 0xFFFF;
+            hexList << QString("%1").arg(rounded, 4, 16, QChar('0')).toUpper();
+        }
+    }
+
+    QString hexLine = "DD3C064542" + hexList.join("") + "CDFF";
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(hexLine);
+
+    QMessageBox::information(this, tr("export success"), tr("hex add to clip board."));
 }
 
 void ShowCorrectionCurve::on_tBtnPrev_clicked()
@@ -213,7 +248,7 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
     QString filePath = QFileDialog::getOpenFileName(this,
                                                     tr("选择数据 CSV 文件"),
                                                     "",
-                                                    tr("CSV Files (*.csv)"));
+                                                    "CSV Files (*.csv);;All Files (*)");
 
     if (filePath.isEmpty()) {
         ui->tBtnLoadDataFromCSV->setChecked(false);
