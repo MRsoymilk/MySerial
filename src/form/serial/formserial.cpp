@@ -91,14 +91,30 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
                 if(F30_shown_mode == CFG_F30_MODE_DOUBLE) {
                     statusReport(100 * DATA_REQUEST / FINISH,
                                  QString("%1 step [data 40 request]: start").arg(port));
+                    send("DD3C000368CDFF");
+                    QByteArray response;
+                    response += m_serial->readAll();
+                    while (m_serial->waitForReadyRead(50)) {
+                        response += m_serial->readAll();
+                    }
+                    doThresholdExtra(response);
+
+                    if(!m_serial->waitForReadyRead(500)) {
+                        LOG_WARN("cmd DD3C000368CDFF no response");
+                        LOG_WARN("Threshold not working!");
+                    }
+                    else {
+                        QByteArray response = m_serial->readAll();
+                        doThresholdExtra(response);
+                    }
                     send("DD3C000340CDFF");
                     if (!m_serial->waitForReadyRead(500)) {
-                        LOG_WARN("cmd 40 no response");
+                        LOG_WARN("cmd DD3C000340CDFF no response");
                         send("DD3C000360CDFF");
                         LOG_INFO("cmd: DD3C000360CDFF to stop 40");
                     } else {
                         QByteArray response = m_serial->readAll();
-                        LOG_INFO("cmd40 -> {}", response.toHex().toUpper());
+                        LOG_INFO("cmd DD3C000340CDFF -> {}", response.toHex().toUpper());
                         doFrameExtra(response);
                     }
                 }
@@ -116,12 +132,12 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
                                      QString("%1 step [data 30 request]: start").arg(port));
                         send("DD3C000330CDFF");
                         if (!m_serial->waitForReadyRead(500)) {
-                            LOG_WARN("cmd 30 no response");
+                            LOG_WARN("cmd DD3C000330CDFF no response");
                             send("DD3C000360CDFF");
                             LOG_INFO("cmd: DD3C000360CDFF to stop 30");
                         } else {
                             QByteArray response = m_serial->readAll();
-                            LOG_INFO("cmd30 -> {}", response.toHex().toUpper());
+                            LOG_INFO("cmd DD3C000330CDFF -> {}", response.toHex().toUpper());
                         }
                     }
                 }
@@ -151,6 +167,38 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
         }
     }
     return false;
+}
+
+void FormSerial::doThresholdExtra(const QByteArray &data)
+{
+    const QByteArray header = QByteArray::fromHex("DE3A064569");
+    const QByteArray tail   = QByteArray::fromHex("CEFF");
+
+    int headPos = data.indexOf(header);
+    if (headPos < 0) {
+        LOG_WARN("Threshold: not found header DE3A064569");
+        return;
+    }
+
+    int tailPos = data.indexOf(tail, headPos + header.size());
+    if (tailPos < 0) {
+        LOG_WARN("Threshold: not found tail CEFF");
+        return;
+    }
+
+
+    int payloadStart = headPos + header.size();
+    int payloadLen = tailPos - payloadStart;
+
+    QByteArray payload = data.mid(payloadStart, payloadLen);
+
+    QList<double> values;
+    for (int i = 0; i + 1 < payload.size(); i += 2) {
+        qint16 v = (static_cast<quint8>(payload[i]) << 8) |
+                    static_cast<quint8>(payload[i + 1]);
+        values.append(v);
+    }
+    emit sendThreshold(true, values);
 }
 
 void FormSerial::stopEasyConnect()

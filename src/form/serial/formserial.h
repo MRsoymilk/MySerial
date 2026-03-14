@@ -62,6 +62,7 @@ signals:
     void recv2MPU(const QByteArray &data);
     void statusReport(int progress, const QString &msg);
     void pushParserData(QByteArray data);
+    void sendThreshold(bool isUse, const QList<double> &values);
 
 public slots:
     void sendRaw(const QByteArray &bytes);
@@ -131,6 +132,7 @@ private:
     bool m_ready = false;
     QThread *m_workerThread = nullptr;
     ThreadParser *m_parser = nullptr;
+    void doThresholdExtra(const QByteArray &data);
 };
 
 #endif // FORMSERIAL_H
