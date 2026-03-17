@@ -12,14 +12,11 @@ namespace Ui {
 class SignalNoiseRatio;
 }
 
-class SignalNoiseRatio : public QWidget
-{
+class SignalNoiseRatio : public QWidget {
     Q_OBJECT
 public:
-    enum IDX_SNR {
-        MODE_SIGNAL_NOISE,
-        MODE_SIGNAL_SIGNAL
-    };
+    enum IDX_SNR { MODE_SIGNAL_NOISE, MODE_SIGNAL_SIGNAL };
+
 public:
     explicit SignalNoiseRatio(QWidget *parent = nullptr);
     ~SignalNoiseRatio();
@@ -57,4 +54,4 @@ private:
     IDX_SNR m_tab_idx = MODE_SIGNAL_SIGNAL;
 };
 
-#endif // SIGNALNOISERATIO_H
+#endif  // SIGNALNOISERATIO_H

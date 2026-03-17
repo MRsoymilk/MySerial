@@ -1,38 +1,22 @@
 #include "showcorrectioncurve.h"
+
 #include "DataInput/datainput.h"
 #include "funcdef.h"
 #include "ui_showcorrectioncurve.h"
 
-ShowCorrectionCurve::ShowCorrectionCurve(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::ShowCorrectionCurve)
-{
+ShowCorrectionCurve::ShowCorrectionCurve(QWidget *parent) : QWidget(parent), ui(new Ui::ShowCorrectionCurve) {
     ui->setupUi(this);
     init();
 }
 
-ShowCorrectionCurve::~ShowCorrectionCurve()
-{
-    delete ui;
-}
+ShowCorrectionCurve::~ShowCorrectionCurve() { delete ui; }
 
-void ShowCorrectionCurve::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void ShowCorrectionCurve::retranslateUI() { ui->retranslateUi(this); }
 
-void ShowCorrectionCurve::updateThresholdStatus(const QString &status)
-{
-    ui->labelWhereThreshold->setText(status);
-}
+void ShowCorrectionCurve::updateThresholdStatus(const QString &status) { ui->labelWhereThreshold->setText(status); }
 
-void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
-                                     const double &xMin,
-                                     const double &xMax,
-                                     const double &yMin,
-                                     const double &yMax,
-                                     const double &temperature)
-{
+void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data, const double &xMin, const double &xMax,
+                                     const double &yMin, const double &yMax, const double &temperature) {
     ui->labelTemperature->setText(QString("%1 ℃").arg(temperature));
     m_line->replace(data);
     m_axisX->setRange(xMin, xMax);
@@ -49,8 +33,7 @@ void ShowCorrectionCurve::updatePlot(const QList<QPointF> &data,
     }
 }
 
-void ShowCorrectionCurve::callToExternal(const QList<QPointF> &data)
-{
+void ShowCorrectionCurve::callToExternal(const QList<QPointF> &data) {
     QJsonArray spectrumArray;
 
     for (const QPointF &pt : data) {
@@ -68,8 +51,7 @@ void ShowCorrectionCurve::callToExternal(const QList<QPointF> &data)
     emit toExternalSpectral(info);
 }
 
-void ShowCorrectionCurve::closeEvent(QCloseEvent *event)
-{
+void ShowCorrectionCurve::closeEvent(QCloseEvent *event) {
     m_data.clear();
     QList<QList<QPointF>>().swap(m_data);
     m_current_page = 0;
@@ -77,8 +59,7 @@ void ShowCorrectionCurve::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
-void ShowCorrectionCurve::init()
-{
+void ShowCorrectionCurve::init() {
     m_line = new QLineSeries();
 
     m_axisX = new QValueAxis();
@@ -106,10 +87,7 @@ void ShowCorrectionCurve::init()
     m_model->setHeaderData(1, Qt::Horizontal, "threshold");
     ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->tableView->setModel(m_model);
-    connect(ui->tableView,
-            &QWidget::customContextMenuRequested,
-            this,
-            &ShowCorrectionCurve::showContextMenu);
+    connect(ui->tableView, &QWidget::customContextMenuRequested, this, &ShowCorrectionCurve::showContextMenu);
 
     int offset = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_OFFSET, "900").toInt();
     double step = SETTING_CONFIG_GET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_STEP, "1").toDouble();
@@ -134,8 +112,7 @@ void ShowCorrectionCurve::init()
     ui->tBtnExternal->setCheckable(true);
 }
 
-void ShowCorrectionCurve::showContextMenu(const QPoint &pos)
-{
+void ShowCorrectionCurve::showContextMenu(const QPoint &pos) {
     QMenu contextMenu(tr("Context Menu"), this);
     QAction *toHexAction = new QAction(tr("to Hex"), this);
     connect(toHexAction, &QAction::triggered, this, &ShowCorrectionCurve::exportThresholdToHex);
@@ -143,8 +120,7 @@ void ShowCorrectionCurve::showContextMenu(const QPoint &pos)
     contextMenu.exec(ui->tableView->viewport()->mapToGlobal(pos));
 }
 
-void ShowCorrectionCurve::exportThresholdToHex()
-{
+void ShowCorrectionCurve::exportThresholdToHex() {
     QStringList hexList;
     for (int row = 0; row < m_model->rowCount(); ++row) {
         QModelIndex idx = m_model->index(row, 1);
@@ -164,28 +140,25 @@ void ShowCorrectionCurve::exportThresholdToHex()
     QMessageBox::information(this, tr("export success"), tr("hex add to clip board."));
 }
 
-void ShowCorrectionCurve::on_tBtnPrev_clicked()
-{
+void ShowCorrectionCurve::on_tBtnPrev_clicked() {
     if (m_current_page <= 0) {
-        return; // 已经是第一页
+        return;  // 已经是第一页
     }
     --m_current_page;
     m_line->replace(m_data[m_current_page]);
     ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
 }
 
-void ShowCorrectionCurve::on_tBtnNext_clicked()
-{
+void ShowCorrectionCurve::on_tBtnNext_clicked() {
     if (m_current_page >= m_data.size() - 1) {
-        return; // 已经是最后一页
+        return;  // 已经是最后一页
     }
     ++m_current_page;
     m_line->replace(m_data[m_current_page]);
     ui->labelPage->setText(QString("%1 / %2").arg(m_current_page + 1).arg(m_data.size()));
 }
 
-void ShowCorrectionCurve::on_tBtnLoadDataFromInput_clicked()
-{
+void ShowCorrectionCurve::on_tBtnLoadDataFromInput_clicked() {
     m_load_data = !m_load_data;
     ui->tBtnLoadDataFromInput->setChecked(m_load_data);
 
@@ -198,8 +171,8 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromInput_clicked()
         }
         for (int i = 0; i < values.size(); ++i) {
             QList<QStandardItem *> rowItems;
-            rowItems << new QStandardItem(QString::number(i * ui->doubleSpinBoxStep->value()
-                                                          + ui->doubleSpinBoxOffset->value()));
+            rowItems << new QStandardItem(
+                QString::number(i * ui->doubleSpinBoxStep->value() + ui->doubleSpinBoxOffset->value()));
             rowItems << new QStandardItem(QString::number(values.at(i)));
             m_model->appendRow(rowItems);
         }
@@ -209,18 +182,11 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromInput_clicked()
     }
 }
 
-void ShowCorrectionCurve::on_doubleSpinBoxOffset_valueChanged(double offset)
-{
-    updateIndex();
-}
+void ShowCorrectionCurve::on_doubleSpinBoxOffset_valueChanged(double offset) { updateIndex(); }
 
-void ShowCorrectionCurve::on_doubleSpinBoxStep_valueChanged(double step)
-{
-    updateIndex();
-}
+void ShowCorrectionCurve::on_doubleSpinBoxStep_valueChanged(double step) { updateIndex(); }
 
-void ShowCorrectionCurve::updateIndex()
-{
+void ShowCorrectionCurve::updateIndex() {
     int rows = m_model->rowCount();
     for (int i = 0; i < rows; ++i) {
         double idx = i * ui->doubleSpinBoxStep->value() + ui->doubleSpinBoxOffset->value();
@@ -234,8 +200,7 @@ void ShowCorrectionCurve::updateIndex()
     }
 }
 
-void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
-{
+void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked() {
     m_load_data = !m_load_data;
     ui->tBtnLoadDataFromCSV->setChecked(m_load_data);
 
@@ -245,10 +210,8 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
     }
 
     // 选择 CSV 文件
-    QString filePath = QFileDialog::getOpenFileName(this,
-                                                    tr("选择数据 CSV 文件"),
-                                                    "",
-                                                    "CSV Files (*.csv);;All Files (*)");
+    QString filePath =
+        QFileDialog::getOpenFileName(this, tr("选择数据 CSV 文件"), "", "CSV Files (*.csv);;All Files (*)");
 
     if (filePath.isEmpty()) {
         ui->tBtnLoadDataFromCSV->setChecked(false);
@@ -267,12 +230,11 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
     QList<double> values;
     m_model->removeRows(0, m_model->rowCount());
 
-    bool firstLine = true; // 跳过表头
+    bool firstLine = true;  // 跳过表头
 
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
-        if (line.isEmpty())
-            continue;
+        if (line.isEmpty()) continue;
 
         // 跳过表头行
         if (firstLine) {
@@ -281,8 +243,7 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
         }
 
         QStringList parts = line.split(",");
-        if (parts.size() < 2)
-            continue;
+        if (parts.size() < 2) continue;
 
         double indexVal = parts[0].toDouble();
         double thresholdVal = parts[1].toDouble();
@@ -303,8 +264,7 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked()
     ui->tabWidget->setCurrentWidget(ui->tabCurve);
 }
 
-void ShowCorrectionCurve::on_btnApplyOption_clicked()
-{
+void ShowCorrectionCurve::on_btnApplyOption_clicked() {
     double step = ui->doubleSpinBoxStep->value();
     double offset = ui->doubleSpinBoxOffset->value();
     int count = ui->spinBoxCount->value();
@@ -318,52 +278,42 @@ void ShowCorrectionCurve::on_btnApplyOption_clicked()
     SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_COUNT, QString::number(count));
 }
 
-void ShowCorrectionCurve::on_tBtnRangeY_clicked()
-{
+void ShowCorrectionCurve::on_tBtnRangeY_clicked() {
     if (ui->tBtnRangeY->isChecked()) {
         m_enableRangeY = true;
         m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
-        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION,
-                           CFG_CORRECTION_CURVE_Y_MIN,
+        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MIN,
                            QString::number(ui->spinBoxStartY->value()));
-        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION,
-                           CFG_CORRECTION_CURVE_Y_MAX,
-                           QString::number(ui->spinBoxEndY->value()));
+        SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MAX, QString::number(ui->spinBoxEndY->value()));
     } else {
         m_enableRangeY = false;
     }
 }
 
-void ShowCorrectionCurve::on_spinBoxStartY_valueChanged(int val)
-{
+void ShowCorrectionCurve::on_spinBoxStartY_valueChanged(int val) {
     if (ui->tBtnRangeY->isChecked()) {
         m_axisY->setRange(val, m_axisY->max());
         SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MIN, QString::number(val));
     }
 }
 
-void ShowCorrectionCurve::on_spinBoxEndY_valueChanged(int val)
-{
+void ShowCorrectionCurve::on_spinBoxEndY_valueChanged(int val) {
     if (ui->tBtnRangeY->isChecked()) {
         m_axisY->setRange(m_axisY->min(), val);
         SETTING_CONFIG_SET(CFG_GROUP_CORRECTION, CFG_CORRECTION_CURVE_Y_MAX, QString::number(val));
     }
 }
 
-void ShowCorrectionCurve::on_tBtnExportCurve_clicked()
-{
+void ShowCorrectionCurve::on_tBtnExportCurve_clicked() {
     if (m_data.isEmpty()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("no curve data to export."));
         return;
     }
 
-    QString path = QFileDialog::getSaveFileName(this,
-                                                tr("Export Curve to CSV"),
-                                                QDir::homePath() + "/curves_export.csv",
-                                                "CSV Files (*.csv)");
+    QString path = QFileDialog::getSaveFileName(this, tr("Export Curve to CSV"),
+                                                QDir::homePath() + "/curves_export.csv", "CSV Files (*.csv)");
 
-    if (path.isEmpty())
-        return;
+    if (path.isEmpty()) return;
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -380,8 +330,7 @@ void ShowCorrectionCurve::on_tBtnExportCurve_clicked()
     out << "\n";
 
     int maxLen = 0;
-    for (const auto &curve : m_data)
-        maxLen = std::max(maxLen, static_cast<int>(curve.size()));
+    for (const auto &curve : m_data) maxLen = std::max(maxLen, static_cast<int>(curve.size()));
 
     for (int row = 0; row < maxLen; ++row) {
         out << row;
@@ -399,26 +348,21 @@ void ShowCorrectionCurve::on_tBtnExportCurve_clicked()
     file.close();
 }
 
-void ShowCorrectionCurve::on_tBtnClear_clicked()
-{
+void ShowCorrectionCurve::on_tBtnClear_clicked() {
     m_data.clear();
     m_current_page = 0;
     ui->labelPage->setText(QString("%1 / %2").arg(m_current_page).arg(m_data.size()));
 }
 
-void ShowCorrectionCurve::on_tBtnExportRaw_clicked()
-{
+void ShowCorrectionCurve::on_tBtnExportRaw_clicked() {
     if (m_data.isEmpty()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("No raw data to export."));
         return;
     }
 
-    QString path = QFileDialog::getSaveFileName(this,
-                                                tr("Export raw to txt"),
-                                                QDir::homePath() + "/curves_export.txt",
+    QString path = QFileDialog::getSaveFileName(this, tr("Export raw to txt"), QDir::homePath() + "/curves_export.txt",
                                                 "TXT Files (*.txt)");
-    if (path.isEmpty())
-        return;
+    if (path.isEmpty()) return;
 
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -455,21 +399,17 @@ void ShowCorrectionCurve::on_tBtnExportRaw_clicked()
     SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("Export finished: %1").arg(path));
 }
 
-void ShowCorrectionCurve::on_tBtnExternal_clicked()
-{
+void ShowCorrectionCurve::on_tBtnExternal_clicked() {
     m_enableExternal = !m_enableExternal;
     ui->tBtnExternal->setChecked(m_enableExternal);
 }
 
-void ShowCorrectionCurve::on_tBtnInterpolation_clicked()
-{
+void ShowCorrectionCurve::on_tBtnInterpolation_clicked() {
     m_enableInterpolation = !m_enableInterpolation;
     emit useLoadedThreadsholdOption({{"interpolation", m_enableInterpolation}});
 }
 
-void ShowCorrectionCurve::on_checkBoxEnableThreshold_checkStateChanged(const Qt::CheckState &state)
-{
+void ShowCorrectionCurve::on_checkBoxEnableThreshold_checkStateChanged(const Qt::CheckState &state) {
     bool enable = state == Qt::Checked ? true : false;
     emit useLoadedThreadsholdOption({{"enable_threshold", enable}});
 }
-

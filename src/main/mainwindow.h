@@ -13,8 +13,7 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -55,7 +54,8 @@ private:
     FormProduce *m_formProduce = nullptr;
 
     void safeDelete(QWidget *&w);
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 };
-#endif // MAINWINDOW_H
+#endif  // MAINWINDOW_H

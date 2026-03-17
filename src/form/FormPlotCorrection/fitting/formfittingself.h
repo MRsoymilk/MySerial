@@ -7,8 +7,7 @@ namespace Ui {
 class FormFittingSelf;
 }
 
-class FormFittingSelf : public QWidget
-{
+class FormFittingSelf : public QWidget {
     Q_OBJECT
 
 public:
@@ -30,4 +29,4 @@ private:
     QVector<double> m_values;
 };
 
-#endif // FORMFITTINGSELF_H
+#endif  // FORMFITTINGSELF_H

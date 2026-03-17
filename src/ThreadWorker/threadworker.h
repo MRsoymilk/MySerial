@@ -3,10 +3,10 @@
 
 #include <QLineSeries>
 #include <QObject>
+
 #include "global.h"
 
-class ThreadWorker : public QObject
-{
+class ThreadWorker : public QObject {
     Q_OBJECT
 public:
     explicit ThreadWorker(QObject *parent = nullptr);
@@ -16,12 +16,9 @@ public:
     void setAlgorithm(const QString &algorithm);
 
 public slots:
-    void processDataF30(const FRAME& frame,
-                        const double &temperature);
-    void processDataF15(const FRAME& frame,
-                        const double &temperature);
-    void processDataLLC(const FRAME& frame,
-                        const double &temperature);
+    void processDataF30(const FRAME &frame, const double &temperature);
+    void processDataF15(const FRAME &frame, const double &temperature);
+    void processDataLLC(const FRAME &frame, const double &temperature);
     void onUseLoadedThreshold(bool isUse, QVector<double> threshold);
     void onUseLoadedThreadsholdOption(const QJsonObject &option);
     void onParamsArcSin(const PARAMS_ARCSIN &params);
@@ -29,43 +26,22 @@ public slots:
 
 signals:
     void changeThresholdStatus(const QString &status);
-    void plotReady4k(const MY_DATA &my_data,
-                     bool record = true);
-    void showCorrectionCurve(const QList<QPointF> &data,
-                             const double &xMin,
-                             const double &xMax,
-                             const double &yMin,
-                             const double &yMax,
-                             const double &temperature);
+    void plotReady4k(const MY_DATA &my_data, bool record = true);
+    void showCorrectionCurve(const QList<QPointF> &data, const double &xMin, const double &xMax, const double &yMin,
+                             const double &yMax, const double &temperature);
     void collectionFitingPointsFinish(bool status);
 
 private:
-    void processF30Curve31(const QByteArray &data31,
-                           QVector<double> &v_voltage31,
-                           QVector<double> &raw31,
-                           double &yMin,
+    void processF30Curve31(const QByteArray &data31, QVector<double> &v_voltage31, QVector<double> &raw31, double &yMin,
                            double &yMax);
-    void processF30Curve33(const QByteArray &data33,
-                           QVector<double> &v_voltage33,
-                           QVector<double> &raw33,
-                           double &yMin,
+    void processF30Curve33(const QByteArray &data33, QVector<double> &v_voltage33, QVector<double> &raw33, double &yMin,
                            double &yMax);
-    void processF15Curve31(const QByteArray &data31,
-                           QVector<double> &v_voltage31,
-                           QVector<double> &raw31,
-                           double &yMin,
+    void processF15Curve31(const QByteArray &data31, QVector<double> &v_voltage31, QVector<double> &raw31, double &yMin,
                            double &yMax);
-    void processF15Curve33(const QByteArray &data33,
-                           QVector<double> &v_voltage33,
-                           QVector<double> &raw33,
-                           double &yMin,
+    void processF15Curve33(const QByteArray &data33, QVector<double> &v_voltage33, QVector<double> &raw33, double &yMin,
                            double &yMax);
-    void applyThresholdForModeEasy(CURVE &curve31,
-                                   CURVE &curve33,
-                                   const double& temperature);
-    void applyThreshold(const QVector<double> &threshold,
-                        const QVector<double> &raw31,
-                        const QVector<double> &raw33,
+    void applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const double &temperature);
+    void applyThreshold(const QVector<double> &threshold, const QVector<double> &raw31, const QVector<double> &raw33,
                         const double &temperature);
     void calculateArcSinThreshold(const double &temperature);
 
@@ -91,4 +67,4 @@ private:
     MY_DATA m_data;
 };
 
-#endif // THREADWORKER_H
+#endif  // THREADWORKER_H

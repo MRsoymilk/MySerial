@@ -2,6 +2,7 @@
 #define FORMPLOTHISTORY_H
 
 #include <QWidget>
+
 #include "MyChartView/mychartview.h"
 #include "global.h"
 
@@ -12,8 +13,7 @@ namespace Ui {
 class FormPlotHistory;
 }
 
-class FormPlotHistory : public QWidget
-{
+class FormPlotHistory : public QWidget {
     Q_OBJECT
 public:
     const int INDEX_31 = 1;
@@ -26,8 +26,7 @@ public:
 
 signals:
     void windowClose();
-    void sendToPlot(const MY_DATA &data,
-                    bool record = false);
+    void sendToPlot(const MY_DATA &data, bool record = false);
 public slots:
     void onHistoryRecv(const MY_DATA &my_data);
     void onTemperature(double temperature);
@@ -72,4 +71,4 @@ private:
     bool m_enableShowData = false;
 };
 
-#endif // FORMPLOTHISTORY_H
+#endif  // FORMPLOTHISTORY_H

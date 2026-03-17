@@ -4,8 +4,7 @@
 #include <QSettings>
 #include <QString>
 
-class MySetting
-{
+class MySetting {
 public:
     enum class SETTING {
         CONFIG,
@@ -21,10 +20,7 @@ public:
     static MySetting &getInstance();
     ~MySetting();
     void setValue(SETTING s, const QString &group, const QString &key, const QString &val);
-    QString getValue(SETTING s,
-                     const QString &group,
-                     const QString &key,
-                     const QString &val_dft = "");
+    QString getValue(SETTING s, const QString &group, const QString &key, const QString &val_dft = "");
     QStringList getGroups(SETTING s);
     void sync(SETTING s);
 

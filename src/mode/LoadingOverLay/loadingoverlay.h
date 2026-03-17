@@ -7,8 +7,7 @@ namespace Ui {
 class LoadingOverLay;
 }
 
-class LoadingOverLay : public QWidget
-{
+class LoadingOverLay : public QWidget {
     Q_OBJECT
 
 public:
@@ -33,4 +32,4 @@ private:
     Ui::LoadingOverLay *ui;
 };
 
-#endif // LOADINGOVERLAY_H
+#endif  // LOADINGOVERLAY_H

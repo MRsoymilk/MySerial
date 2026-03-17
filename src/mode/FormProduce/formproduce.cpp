@@ -1,23 +1,21 @@
 #include "formproduce.h"
-#include "MyChartView/mychartview.h"
-#include "ui_formproduce.h"
-#include "../form/serial/formserial.h"
-#include "../ThreadWorker/threadworker.h"
-#include "../LoadingOverLay/loadingoverlay.h"
-#include "../form/FormPlotCorrection/fitting/formfittingpoints.h"
-#include <QThread>
-#include "funcdef.h"
 
-FormProduce::FormProduce(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormProduce)
-{
+#include <QThread>
+
+#include "../LoadingOverLay/loadingoverlay.h"
+#include "../ThreadWorker/threadworker.h"
+#include "../form/FormPlotCorrection/fitting/formfittingpoints.h"
+#include "../form/serial/formserial.h"
+#include "MyChartView/mychartview.h"
+#include "funcdef.h"
+#include "ui_formproduce.h"
+
+FormProduce::FormProduce(QWidget *parent) : QWidget(parent), ui(new Ui::FormProduce) {
     ui->setupUi(this);
     init();
 }
 
-FormProduce::~FormProduce()
-{
+FormProduce::~FormProduce() {
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
@@ -26,31 +24,24 @@ FormProduce::~FormProduce()
     delete ui;
 }
 
-void FormProduce::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormProduce::retranslateUI() { ui->retranslateUi(this); }
 
-void FormProduce::setAlgorithm(const QString &algorithm)
-{
+void FormProduce::setAlgorithm(const QString &algorithm) {
     formSerial->onChangeFrameType(algorithm);
     m_worker->setAlgorithm(algorithm);
 }
 
-void FormProduce::updatePlot4k(const MY_DATA &my_data, bool record)
-{
+void FormProduce::updatePlot4k(const MY_DATA &my_data, bool record) {
     CURVE plot31 = my_data.curve31;
     CURVE plot33 = my_data.curve33;
-    if(m_enableVoltage) {
+    if (m_enableVoltage) {
         updatePlot2d(plot31.data, plot33.data);
-    }
-    else {
+    } else {
         updatePlot2d(plot31.raw.data, plot33.raw.data);
     }
 }
 
-void FormProduce::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33)
-{
+void FormProduce::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33) {
     static bool flip = false;
     flip = !flip;
     if (flip) {
@@ -63,9 +54,7 @@ void FormProduce::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF
     updateAxis();
 }
 
-
-void FormProduce::updateAxis()
-{
+void FormProduce::updateAxis() {
     double xMin = std::numeric_limits<double>::max();
     double xMax = std::numeric_limits<double>::min();
     double yMin = std::numeric_limits<double>::max();
@@ -91,14 +80,12 @@ void FormProduce::updateAxis()
     m_axisY->setRange(yMin - padding, yMax + padding);
 }
 
-void FormProduce::closeEvent(QCloseEvent *event)
-{
+void FormProduce::closeEvent(QCloseEvent *event) {
     m_formFittingPoints->close();
     formSerial->stopFSeriesConnect();
 }
 
-void FormProduce::initTabUI()
-{
+void FormProduce::initTabUI() {
     auto tabBar = ui->tabWidget->tabBar();
     int count = tabBar->count();
 
@@ -106,11 +93,11 @@ void FormProduce::initTabUI()
     m_tabLabels.resize(count);
 
     for (int i = 0; i < count; ++i) {
-        QWidget* w = new QWidget();
-        QHBoxLayout* layout = new QHBoxLayout(w);
+        QWidget *w = new QWidget();
+        QHBoxLayout *layout = new QHBoxLayout(w);
         layout->setContentsMargins(6, 2, 6, 2);
 
-        QLabel* label = new QLabel(tr("is done"));
+        QLabel *label = new QLabel(tr("is done"));
 
         layout->addWidget(label);
         w->setLayout(layout);
@@ -122,13 +109,12 @@ void FormProduce::initTabUI()
     }
 }
 
-void FormProduce::init()
-{
+void FormProduce::init() {
     initTabUI();
     makeTabTodo();
 
     m_formFittingPoints = new FormFittingPoints;
-    connect(m_formFittingPoints, &FormFittingPoints::windowClose, this, [&](){
+    connect(m_formFittingPoints, &FormFittingPoints::windowClose, this, [&]() {
         m_enableFitting = false;
         m_formFittingPoints->setVisible(false);
     });
@@ -168,20 +154,12 @@ void FormProduce::init()
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->gLayChart->addWidget(m_chartView);
 
-    QObject::connect(formSerial,
-                     &FormSerial::recv2PlotF30,
-                     m_worker,
-                     &ThreadWorker::processDataF30,
+    QObject::connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30,
                      Qt::QueuedConnection);
-    connect(m_worker,
-            &ThreadWorker::plotReady4k,
-            this,
-            &FormProduce::updatePlot4k,
-            Qt::QueuedConnection);
+    connect(m_worker, &ThreadWorker::plotReady4k, this, &FormProduce::updatePlot4k, Qt::QueuedConnection);
 }
 
-void FormProduce::on_tBtnSwitch_clicked()
-{
+void FormProduce::on_tBtnSwitch_clicked() {
     m_isPlaying = !m_isPlaying;
     if (m_isPlaying) {
         if (connectProduceMode()) {
@@ -210,7 +188,7 @@ bool FormProduce::connectProduceMode() {
     int *connect_count = new int(0);
     connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
         LOG_INFO("connect stopped by user");
-        if(timer) {
+        if (timer) {
             timer->stop();
             overlay->deleteLater();
             timer->deleteLater();
@@ -238,15 +216,13 @@ void FormProduce::closeProduceMode() {
     formSerial->stopFSeriesConnect();
 }
 
-void FormProduce::on_btnWriteDeviceSerial_clicked()
-{
+void FormProduce::on_btnWriteDeviceSerial_clicked() {
     QString data = ui->lineEditDeviceSerial->text();
     QString msg = QString("%1%2%3").arg("DD3C000920").arg(data).arg("CDFF");
     formSerial->sendProduceData(msg);
 }
 
-void FormProduce::on_btnQueryDeviceSerial_clicked()
-{
+void FormProduce::on_btnQueryDeviceSerial_clicked() {
     const QByteArray header = QByteArray::fromHex("DE3A000913");
     const QByteArray tail = QByteArray::fromHex("CEFF");
     formSerial->sendProduceData("DD3C000312CDFF", [this, header, tail](const QByteArray &buf) -> bool {
@@ -264,7 +240,7 @@ void FormProduce::on_btnQueryDeviceSerial_clicked()
         }
 
         int start = header.size();
-        int len   = tailPos - start;
+        int len = tailPos - start;
         if (len <= 0) {
             LOG_WARN("DeviceSerial: invalid length");
             return false;
@@ -275,21 +251,20 @@ void FormProduce::on_btnQueryDeviceSerial_clicked()
     });
 }
 
-void FormProduce::on_btnWriteBaseline_clicked()
-{
+void FormProduce::on_btnWriteBaseline_clicked() {
     QString baseline = ui->lineEditBaseline->text();
     int val = baseline.toInt();
-    QString byte_val = QString("%1").arg(static_cast<quint64>(val),
-                                         6,       // 6 bytes = 12 hex chars
-                                         16,      // base 16
-                                         QChar('0'))
+    QString byte_val = QString("%1")
+                           .arg(static_cast<quint64>(val),
+                                6,   // 6 bytes = 12 hex chars
+                                16,  // base 16
+                                QChar('0'))
                            .toUpper();
     QString msg = QString("%1%2%3").arg("DD3C000644").arg(byte_val).arg("CDFF");
     formSerial->sendProduceData(msg);
 }
 
-void FormProduce::on_btnQueryBaseline_clicked()
-{
+void FormProduce::on_btnQueryBaseline_clicked() {
     const QByteArray header = QByteArray::fromHex("DE3A000671");
     const QByteArray tail = QByteArray::fromHex("CEFF");
     formSerial->sendProduceData("DD3C000370CDFF", [this, header, tail](const QByteArray &buf) -> bool {
@@ -307,7 +282,7 @@ void FormProduce::on_btnQueryBaseline_clicked()
         }
 
         int start = header.size();
-        int len   = tailPos - start;
+        int len = tailPos - start;
 
         if (len <= 0) {
             LOG_WARN("Baseline: invalid length");
@@ -315,18 +290,15 @@ void FormProduce::on_btnQueryBaseline_clicked()
         }
 
         data = data.mid(start, len);
-        int val = (static_cast<quint8>(data[0]) << 16) |
-                  (static_cast<quint8>(data[1]) << 8) |
-                  static_cast<quint8>(data[2]);
+        int val =
+            (static_cast<quint8>(data[0]) << 16) | (static_cast<quint8>(data[1]) << 8) | static_cast<quint8>(data[2]);
         ui->labelValBaseline->setText(QString::number(val));
         return false;
     });
 }
 
-void FormProduce::updateTabStyle()
-{
+void FormProduce::updateTabStyle() {
     for (int i = 0; i < m_tabWidgets.size(); ++i) {
-
         if (m_tabDone[i]) {
             m_tabWidgets[i]->setStyleSheet("background: green;");
         } else {
@@ -337,16 +309,14 @@ void FormProduce::updateTabStyle()
     }
 }
 
-void FormProduce::makeTabTodo()
-{
+void FormProduce::makeTabTodo() {
     int count = ui->tabWidget->count();
     m_tabDone = QVector<bool>(count, false);
 
     updateTabStyle();
 }
 
-void FormProduce::on_tBtnDoneDeviceSerial_clicked()
-{
+void FormProduce::on_tBtnDoneDeviceSerial_clicked() {
     int idx = ui->tabWidget->indexOf(ui->tabDevicenfo);
     m_tabDone[idx] = true;
 
@@ -354,8 +324,7 @@ void FormProduce::on_tBtnDoneDeviceSerial_clicked()
     ui->tabWidget->setCurrentWidget(ui->tabBaseline);
 }
 
-void FormProduce::on_tBtnDoneBaseline_clicked()
-{
+void FormProduce::on_tBtnDoneBaseline_clicked() {
     int idx = ui->tabWidget->indexOf(ui->tabBaseline);
     m_tabDone[idx] = true;
 
@@ -363,8 +332,7 @@ void FormProduce::on_tBtnDoneBaseline_clicked()
     ui->tabWidget->setCurrentWidget(ui->tabCorrection);
 }
 
-void FormProduce::on_tBtnDoneCorrection_clicked()
-{
+void FormProduce::on_tBtnDoneCorrection_clicked() {
     int idx = ui->tabWidget->indexOf(ui->tabCorrection);
     m_tabDone[idx] = true;
 
@@ -372,8 +340,7 @@ void FormProduce::on_tBtnDoneCorrection_clicked()
     ui->tabWidget->setCurrentWidget(ui->tabSelfCheck);
 }
 
-void FormProduce::on_tBtnDoneSelfCheck_clicked()
-{
+void FormProduce::on_tBtnDoneSelfCheck_clicked() {
     int idx = ui->tabWidget->indexOf(ui->tabSelfCheck);
     m_tabDone[idx] = true;
 
@@ -382,16 +349,14 @@ void FormProduce::on_tBtnDoneSelfCheck_clicked()
     QMessageBox::information(this, TITLE_INFO, tr("Job Done!"));
 }
 
-void FormProduce::on_btnStartCorrection_clicked()
-{
+void FormProduce::on_btnStartCorrection_clicked() {
     m_enableFitting = !m_enableFitting;
     m_formFittingPoints->setVisible(m_enableFitting);
 }
 
-void FormProduce::on_btnStartSelfCheck_clicked()
-{
+void FormProduce::on_btnStartSelfCheck_clicked() {
     formSerial->sendProduceData("DD3C000350CDFF", [this](const QByteArray &buf) -> bool {
-        if(buf.contains(QByteArray::fromHex("DE3A000351CEFF"))) {
+        if (buf.contains(QByteArray::fromHex("DE3A000351CEFF"))) {
             ui->textBrowserSelfCheckInfo->append(tr("start self check"));
             return true;
         }
@@ -411,7 +376,7 @@ void FormProduce::on_btnStartSelfCheck_clicked()
         }
 
         int start = header.size();
-        int len   = tailPos - start;
+        int len = tailPos - start;
 
         if (len <= 0) {
             LOG_WARN("SelfCheck: invalid length");
@@ -420,40 +385,30 @@ void FormProduce::on_btnStartSelfCheck_clicked()
 
         data = data.mid(start, len);
         const qint8 code = static_cast<quint8>(data[0]);
-        if(code == 0) {
+        if (code == 0) {
             ui->textBrowserSelfCheckInfo->append(tr("No fault"));
-        }
-        else if(code == 1) {
+        } else if (code == 1) {
             ui->textBrowserSelfCheckInfo->append(tr("Module not working"));
-        }
-        else if(code == 2) {
+        } else if (code == 2) {
             ui->textBrowserSelfCheckInfo->append(tr("Temperature too high (above 50℃)"));
-        }
-        else if(code == 3) {
+        } else if (code == 3) {
             ui->textBrowserSelfCheckInfo->append(tr("Temperature too low (below -20℃)"));
-        }
-        else if(code == 4) {
+        } else if (code == 4) {
             ui->textBrowserSelfCheckInfo->append(tr("TEC not working"));
-        }
-        else if(code == 5) {
+        } else if (code == 5) {
             ui->textBrowserSelfCheckInfo->append(tr("TEC unable to power on"));
-        }
-        else if(code == 6) {
+        } else if (code == 6) {
             ui->textBrowserSelfCheckInfo->append(tr("Fan not working"));
-        }
-        else if(code == 7) {
+        } else if (code == 7) {
             ui->textBrowserSelfCheckInfo->append(tr("DAC no output"));
-        }
-        else if(code == 8) {
+        } else if (code == 8) {
             ui->textBrowserSelfCheckInfo->append(tr("Module unstable"));
         }
         return false;
     });
 }
 
-void FormProduce::on_tBtnToVoltage_clicked()
-{
+void FormProduce::on_tBtnToVoltage_clicked() {
     m_enableVoltage = !m_enableVoltage;
     ui->tBtnToVoltage->setChecked(m_enableVoltage);
 }
-

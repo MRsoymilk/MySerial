@@ -7,16 +7,12 @@
 #include <QtCharts>
 #include <limits>
 
-class MyChartView : public QChartView
-{
+class MyChartView : public QChartView {
     Q_OBJECT
 
 public:
     explicit MyChartView(QChart *chart, QWidget *parent = nullptr)
-        : QChartView(chart, parent)
-        , m_enableBack(false)
-        , m_enableCrop(false)
-    {
+        : QChartView(chart, parent), m_enableBack(false), m_enableCrop(false) {
         setMouseTracking(true);
         setRubberBand(QChartView::NoRubberBand);
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -24,8 +20,7 @@ public:
         setChart(chart);
     }
 
-    void setChart(QChart *chart)
-    {
+    void setChart(QChart *chart) {
         // 清理旧的 helpers
         clearHelpers();
 
@@ -61,10 +56,8 @@ public:
         for (auto *series : chart->series()) {
             if (auto *xySeries = qobject_cast<QXYSeries *>(series)) {
                 auto attached = xySeries->attachedAxes();
-                if (!attached.contains(m_axisX))
-                    xySeries->attachAxis(m_axisX);
-                if (!attached.contains(m_axisY))
-                    xySeries->attachAxis(m_axisY);
+                if (!attached.contains(m_axisX)) xySeries->attachAxis(m_axisX);
+                if (!attached.contains(m_axisY)) xySeries->attachAxis(m_axisY);
             }
         }
 
@@ -75,8 +68,7 @@ public:
             auto *xySeries = qobject_cast<QXYSeries *>(m_chart->series().first());
             if (xySeries) {
                 QRectF bounds;
-                for (const QPointF &p : xySeries->points())
-                    bounds |= QRectF(p, QSizeF(0, 0));
+                for (const QPointF &p : xySeries->points()) bounds |= QRectF(p, QSizeF(0, 0));
                 m_initialRange = bounds;
 
                 m_axisX->setRange(bounds.left(), bounds.right());
@@ -85,8 +77,7 @@ public:
         }
     }
 
-    void setInitialAxisRange(const QRectF &range)
-    {
+    void setInitialAxisRange(const QRectF &range) {
         m_initialRange = range;
         if (m_axisX && m_axisY) {
             m_axisX->setRange(range.left(), range.right());
@@ -94,18 +85,14 @@ public:
         }
     }
 
-    void recordInitialAxisRange()
-    {
+    void recordInitialAxisRange() {
         if (m_axisX && m_axisY) {
-            m_initialRange = QRectF(m_axisX->min(),
-                                    m_axisY->min(),
-                                    m_axisX->max() - m_axisX->min(),
+            m_initialRange = QRectF(m_axisX->min(), m_axisY->min(), m_axisX->max() - m_axisX->min(),
                                     m_axisY->max() - m_axisY->min());
         }
     }
 
-    void backInitialRange()
-    {
+    void backInitialRange() {
         if (m_initialRange.isValid() && m_axisX && m_axisY) {
             m_axisX->setRange(m_initialRange.left(), m_initialRange.right());
             m_axisY->setRange(m_initialRange.top(), m_initialRange.bottom());
@@ -114,8 +101,7 @@ public:
 
     void setBackEnabled(bool enabled) { m_enableBack = enabled; }
 
-    void setCropEnabled(bool enabled)
-    {
+    void setCropEnabled(bool enabled) {
         m_enableCrop = enabled;
         setRubberBand(enabled ? QChartView::RectangleRubberBand : QChartView::NoRubberBand);
     }
@@ -125,8 +111,7 @@ signals:
     void toHover(const QPointF &point);
 
 protected:
-    void mouseMoveEvent(QMouseEvent *event) override
-    {
+    void mouseMoveEvent(QMouseEvent *event) override {
         if (isDraggingLine()) {
             QChartView::mouseMoveEvent(event);
             return;
@@ -193,15 +178,13 @@ protected:
 
         QPointF textPos = closestScenePos + QPointF(10, -30);
         QRectF sceneRect = scene()->sceneRect();
-        if (!sceneRect.contains(textPos))
-            textPos = closestScenePos + QPointF(-60, -30); // 避免超出边界
+        if (!sceneRect.contains(textPos)) textPos = closestScenePos + QPointF(-60, -30);  // 避免超出边界
         m_coordText->setPos(textPos);
         emit toHover(closestPoint);
         QChartView::mouseMoveEvent(event);
     }
 
-    void mouseDoubleClickEvent(QMouseEvent *event) override
-    {
+    void mouseDoubleClickEvent(QMouseEvent *event) override {
         if (m_enableBack) {
             backInitialRange();
         }
@@ -210,17 +193,14 @@ protected:
 
     void mouseReleaseEvent(QMouseEvent *event) override { QChartView::mouseReleaseEvent(event); }
 
-    void mousePressEvent(QMouseEvent *event) override
-    {
+    void mousePressEvent(QMouseEvent *event) override {
         QChartView::mousePressEvent(event);
         emit toSelect(closestPoint);
     }
 
 private:
-    void initHelpers()
-    {
-        if (!m_chart)
-            return;
+    void initHelpers() {
+        if (!m_chart) return;
 
         m_lineV = m_chart->scene()->addLine(QLineF(), QPen(Qt::DashLine));
         m_lineH = m_chart->scene()->addLine(QLineF(), QPen(Qt::DashLine));
@@ -236,8 +216,7 @@ private:
         m_marker->hide();
     }
 
-    void clearHelpers()
-    {
+    void clearHelpers() {
         if (m_lineV) {
             scene()->removeItem(m_lineV);
             delete m_lineV;
@@ -276,4 +255,4 @@ private:
     QPointF closestPoint;
 };
 
-#endif // MYCHARTVIEW_H
+#endif  // MYCHARTVIEW_H

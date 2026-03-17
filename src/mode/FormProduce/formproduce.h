@@ -18,8 +18,7 @@ namespace Ui {
 class FormProduce;
 }
 
-class FormProduce : public QWidget
-{
+class FormProduce : public QWidget {
     Q_OBJECT
 
 public:
@@ -29,8 +28,7 @@ public:
     void setAlgorithm(const QString &algorithm);
 
 public slots:
-    void updatePlot4k(const MY_DATA &my_data,
-                     bool record = true);
+    void updatePlot4k(const MY_DATA &my_data, bool record = true);
 
 private slots:
     void on_tBtnSwitch_clicked();
@@ -74,10 +72,11 @@ private:
     QVector<bool> m_tabDone;
     void updateTabStyle();
     void initTabUI();
-    QVector<QWidget*> m_tabWidgets;
-    QVector<QLabel*>  m_tabLabels;
+    QVector<QWidget *> m_tabWidgets;
+    QVector<QLabel *> m_tabLabels;
+
 protected:
     void closeEvent(QCloseEvent *event);
 };
 
-#endif // FORMPRODUCE_H
+#endif  // FORMPRODUCE_H

@@ -6,14 +6,14 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+
 #include "MyChartView/mychartview.h"
 
 namespace Ui {
 class ShowCorrectionCurve;
 }
 
-class ShowCorrectionCurve : public QWidget
-{
+class ShowCorrectionCurve : public QWidget {
     Q_OBJECT
 
 public:
@@ -23,12 +23,8 @@ public:
     void updateThresholdStatus(const QString &status);
 
 public:
-    void updatePlot(const QList<QPointF> &data,
-                    const double &xMin,
-                    const double &xMax,
-                    const double &yMin,
-                    const double &yMax,
-                    const double &temperature);
+    void updatePlot(const QList<QPointF> &data, const double &xMin, const double &xMax, const double &yMin,
+                    const double &yMax, const double &temperature);
 
 signals:
     void toExternalSpectral(const QJsonObject &spectrum);
@@ -81,4 +77,4 @@ private:
     bool m_enableInterpolation = false;
 };
 
-#endif // SHOWCORRECTIONCURVE_H
+#endif  // SHOWCORRECTIONCURVE_H

@@ -1,23 +1,17 @@
 #include "mysetting.h"
 
-MySetting &MySetting::getInstance()
-{
+MySetting &MySetting::getInstance() {
     static MySetting c_setting;
     return c_setting;
 }
 
 MySetting::~MySetting() {}
 
-void MySetting::setValue(SETTING s, const QString &group, const QString &key, const QString &val)
-{
+void MySetting::setValue(SETTING s, const QString &group, const QString &key, const QString &val) {
     m_settings[s]->setValue(QString("%1/%2").arg(group, key), val);
 }
 
-QString MySetting::getValue(SETTING s,
-                            const QString &group,
-                            const QString &key,
-                            const QString &val_dft)
-{
+QString MySetting::getValue(SETTING s, const QString &group, const QString &key, const QString &val_dft) {
     QString val = m_settings[s]->value(QString("%1/%2").arg(group, key)).toString();
     if (val.isEmpty()) {
         val = val_dft;
@@ -26,29 +20,16 @@ QString MySetting::getValue(SETTING s,
     return val;
 }
 
-QStringList MySetting::getGroups(SETTING s)
-{
-    return m_settings[s]->childGroups();
-}
+QStringList MySetting::getGroups(SETTING s) { return m_settings[s]->childGroups(); }
 
-void MySetting::sync(SETTING s)
-{
-    m_settings[s]->sync();
-}
+void MySetting::sync(SETTING s) { m_settings[s]->sync(); }
 
-MySetting::MySetting()
-{
+MySetting::MySetting() {
     m_settings[SETTING::CONFIG] = new QSettings("config/config.ini", QSettings::IniFormat);
-    m_settings[SETTING::FRAME_F15_SINGLE] = new QSettings("config/frame_F15_single.ini",
-                                                          QSettings::IniFormat);
-    m_settings[SETTING::FRAME_F15_CURVES] = new QSettings("config/frame_F15_curves.ini",
-                                                          QSettings::IniFormat);
-    m_settings[SETTING::FRAME_F30_SINGLE] = new QSettings("config/frame_F30_single.ini",
-                                                          QSettings::IniFormat);
-    m_settings[SETTING::FRAME_F30_CURVES] = new QSettings("config/frame_F30_curves.ini",
-                                                          QSettings::IniFormat);
-    m_settings[SETTING::PLAY_MPU6050] = new QSettings("config/frame_play_MPU6050.ini",
-                                                      QSettings::IniFormat);
-    m_settings[SETTING::FRAME_LLC_CURVES] = new QSettings("config/frame_llc_curves.ini",
-                                                          QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F15_SINGLE] = new QSettings("config/frame_F15_single.ini", QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F15_CURVES] = new QSettings("config/frame_F15_curves.ini", QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F30_SINGLE] = new QSettings("config/frame_F30_single.ini", QSettings::IniFormat);
+    m_settings[SETTING::FRAME_F30_CURVES] = new QSettings("config/frame_F30_curves.ini", QSettings::IniFormat);
+    m_settings[SETTING::PLAY_MPU6050] = new QSettings("config/frame_play_MPU6050.ini", QSettings::IniFormat);
+    m_settings[SETTING::FRAME_LLC_CURVES] = new QSettings("config/frame_llc_curves.ini", QSettings::IniFormat);
 }

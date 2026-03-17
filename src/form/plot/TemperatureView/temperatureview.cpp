@@ -1,35 +1,27 @@
 #include "temperatureview.h"
+
 #include "MyChartView/mychartview.h"
 #include "ui_temperatureview.h"
 
-TemperatureView::TemperatureView(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::TemperatureView)
-{
+TemperatureView::TemperatureView(QWidget *parent) : QWidget(parent), ui(new Ui::TemperatureView) {
     ui->setupUi(this);
     init();
 }
 
-TemperatureView::~TemperatureView()
-{
-    delete ui;
-}
+TemperatureView::~TemperatureView() { delete ui; }
 
-void TemperatureView::contextMenuEvent(QContextMenuEvent *event)
-{
+void TemperatureView::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
 
     QAction *setRangeAction = menu.addAction(tr("Set Range"));
     QAction *clearChartAction = menu.addAction(tr("Clear Chart"));
 
     QAction *selectedAction = menu.exec(event->globalPos());
-    if (!selectedAction)
-        return;
+    if (!selectedAction) return;
 
     if (selectedAction == setRangeAction) {
         bool ok = false;
-        int newRange
-            = QInputDialog::getInt(this, tr("Set Range"), tr("Range:"), m_range, 1, 10000, 1, &ok);
+        int newRange = QInputDialog::getInt(this, tr("Set Range"), tr("Range:"), m_range, 1, 10000, 1, &ok);
         if (ok) {
             m_range = newRange;
 
@@ -49,8 +41,7 @@ void TemperatureView::contextMenuEvent(QContextMenuEvent *event)
     }
 }
 
-void TemperatureView::init()
-{
+void TemperatureView::init() {
     m_line = new QLineSeries();
 
     m_axisX = new QValueAxis();
@@ -72,8 +63,7 @@ void TemperatureView::init()
     m_history_max = INT_MIN;
 }
 
-void TemperatureView::appendTemperature(const double &value)
-{
+void TemperatureView::appendTemperature(const double &value) {
     m_data.append(value);
 
     int index = m_data.size() - 1;
@@ -121,7 +111,4 @@ void TemperatureView::appendTemperature(const double &value)
                                .arg(avg, 0, 'f', 2));
 }
 
-void TemperatureView::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void TemperatureView::closeEvent(QCloseEvent *event) { emit windowClose(); }

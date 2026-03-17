@@ -12,8 +12,7 @@ namespace Ui {
 class PointsTracker;
 }
 
-class PointsTracker : public QWidget
-{
+class PointsTracker : public QWidget {
     Q_OBJECT
 
 public:
@@ -36,7 +35,7 @@ private:
     QValueAxis *m_axisX = nullptr;
     QValueAxis *m_axisY = nullptr;
 
-    QMap<QString, QLineSeries*> m_mapLines;
+    QMap<QString, QLineSeries *> m_mapLines;
     int m_idx = 0;
 
     // QWidget interface
@@ -44,4 +43,4 @@ protected:
     void closeEvent(QCloseEvent *event);
 };
 
-#endif // POINTSTRACKER_H
+#endif  // POINTSTRACKER_H

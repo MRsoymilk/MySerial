@@ -8,8 +8,7 @@ namespace Ui {
 class FormPlotSimulate;
 }
 
-class FormPlotSimulate : public QWidget
-{
+class FormPlotSimulate : public QWidget {
     Q_OBJECT
 
 public:
@@ -45,16 +44,15 @@ private:
 private:
     Ui::FormPlotSimulate *ui;
 
-    struct
-    {
+    struct {
         QString file;
     } m_ini;
 
     QTimer *m_timer = nullptr;
     QByteArray m_sendData;
     qint64 m_offset = 0;
-    QList<QByteArray> m_frames; // 每一帧
-    int m_frameIndex = 0;       // 当前发送索引
+    QList<QByteArray> m_frames;  // 每一帧
+    int m_frameIndex = 0;        // 当前发送索引
 };
 
-#endif // FORMPLOTSIMULATE_H
+#endif  // FORMPLOTSIMULATE_H

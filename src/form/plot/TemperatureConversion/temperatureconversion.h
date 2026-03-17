@@ -7,8 +7,7 @@ namespace Ui {
 class TemperatureConversion;
 }
 
-class TemperatureConversion : public QDialog
-{
+class TemperatureConversion : public QDialog {
     Q_OBJECT
 
 public:
@@ -21,4 +20,4 @@ private:
     Ui::TemperatureConversion *ui;
 };
 
-#endif // TEMPERATURECONVERSION_H
+#endif  // TEMPERATURECONVERSION_H

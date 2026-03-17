@@ -12,8 +12,7 @@ namespace Ui {
 class FormSetting;
 }
 
-class FormSetting : public QWidget
-{
+class FormSetting : public QWidget {
     Q_OBJECT
 public:
     explicit FormSetting(QWidget *parent = nullptr);
@@ -45,4 +44,4 @@ protected:
     void closeEvent(QCloseEvent *event);
 };
 
-#endif // FORMSETTING_H
+#endif  // FORMSETTING_H

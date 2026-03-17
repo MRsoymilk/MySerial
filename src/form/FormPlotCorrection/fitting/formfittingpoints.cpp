@@ -1,38 +1,29 @@
 #include "formfittingpoints.h"
-#include "ui_formfittingpoints.h"
 
-#include <QFileDialog>
-#include "funcdef.h"
 #include <qmenu.h>
 
-FormFittingPoints::FormFittingPoints(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormFittingPoints)
-{
+#include <QFileDialog>
+
+#include "funcdef.h"
+#include "ui_formfittingpoints.h"
+
+FormFittingPoints::FormFittingPoints(QWidget *parent) : QWidget(parent), ui(new Ui::FormFittingPoints) {
     ui->setupUi(this);
     init();
 }
 
-FormFittingPoints::~FormFittingPoints()
-{
-    delete ui;
-}
+FormFittingPoints::~FormFittingPoints() { delete ui; }
 
-void FormFittingPoints::init()
-{
+void FormFittingPoints::init() {
     QString dir = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_DIR, "");
     ui->lineEditDir->setText(dir);
-    int data_count
-        = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_DATA_COUNT, "10").toInt();
+    int data_count = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_DATA_COUNT, "10").toInt();
     ui->spinBoxDataCount->setValue(data_count);
-    int wave_start
-        = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_WAVE_START, "900").toInt();
+    int wave_start = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_WAVE_START, "900").toInt();
     ui->spinBoxWavelengthStart->setValue(wave_start);
-    int wave_end = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_WAVE_END, "1700")
-                       .toInt();
+    int wave_end = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_WAVE_END, "1700").toInt();
     ui->spinBoxWavelengthEnd->setValue(wave_end);
-    double step = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_WAVE_STEP, "1")
-                      .toDouble();
+    double step = SETTING_CONFIG_GET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_WAVE_STEP, "1").toDouble();
     ui->doubleSpinBoxStep->setValue(step);
     // QTableView
     m_collectModel = new QStandardItemModel(this);
@@ -48,18 +39,14 @@ void FormFittingPoints::init()
     refreshCollectTable();
 
     ui->tableViewCollectStatus->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableViewCollectStatus,
-            &QTableView::customContextMenuRequested,
-            this,
+    connect(ui->tableViewCollectStatus, &QTableView::customContextMenuRequested, this,
             &FormFittingPoints::onTableContextMenu);
 }
 
-void FormFittingPoints::onTableContextMenu(const QPoint &pos)
-{
+void FormFittingPoints::onTableContextMenu(const QPoint &pos) {
     QModelIndex index = ui->tableViewCollectStatus->indexAt(pos);
 
-    if (!index.isValid())
-        return;
+    if (!index.isValid()) return;
 
     QMenu menu(this);
 
@@ -72,20 +59,14 @@ void FormFittingPoints::onTableContextMenu(const QPoint &pos)
     }
 }
 
-void FormFittingPoints::exportWavelengthIntensityToCsv()
-{
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    "Export CSV",
-                                                    "collection.csv",
-                                                    "CSV Files (*.csv)");
+void FormFittingPoints::exportWavelengthIntensityToCsv() {
+    QString fileName = QFileDialog::getSaveFileName(this, "Export CSV", "collection.csv", "CSV Files (*.csv)");
 
-    if (fileName.isEmpty())
-        return;
+    if (fileName.isEmpty()) return;
 
     QFile file(fileName);
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;
 
     QTextStream out(&file);
     out.setEncoding(QStringConverter::Utf8);
@@ -93,12 +74,8 @@ void FormFittingPoints::exportWavelengthIntensityToCsv()
     out << "Wavelength,Intensity\n";
     int rows = m_collectModel->rowCount();
     for (int i = 0; i < rows; ++i) {
-        QString col_wavelength = m_collectModel->item(i, WAVELENGTH)
-                                     ? m_collectModel->item(i, WAVELENGTH)->text()
-                                     : "";
-        QString col_intensity = m_collectModel->item(i, INTENSITY)
-                                    ? m_collectModel->item(i, INTENSITY)->text()
-                                    : "";
+        QString col_wavelength = m_collectModel->item(i, WAVELENGTH) ? m_collectModel->item(i, WAVELENGTH)->text() : "";
+        QString col_intensity = m_collectModel->item(i, INTENSITY) ? m_collectModel->item(i, INTENSITY)->text() : "";
         out << col_wavelength << "," << col_intensity << "\n";
     }
 
@@ -107,8 +84,7 @@ void FormFittingPoints::exportWavelengthIntensityToCsv()
     QMessageBox::information(this, "Export", "CSV exported successfully.");
 }
 
-void FormFittingPoints::refreshCollectTable()
-{
+void FormFittingPoints::refreshCollectTable() {
     m_collectModel->removeRows(0, m_collectModel->rowCount());
 
     int wave_start = ui->spinBoxWavelengthStart->value();
@@ -124,7 +100,7 @@ void FormFittingPoints::refreshCollectTable()
 
     for (int i = 0; i <= n; ++i) {
         double w = wave_start + i * step;
-        QString waveStr = QString::number(w, 'f', 1); // 900.0
+        QString waveStr = QString::number(w, 'f', 1);  // 900.0
 
         // 文件名：900.txt / 901.txt ...
         QString fileName = waveStr + ".txt";
@@ -149,7 +125,6 @@ void FormFittingPoints::refreshCollectTable()
             itemPath->setBackground(green);
             itemStatus->setBackground(green);
             itemIntensity->setBackground(green);
-
         } else {
             itemStatus->setText(item_status[NOT_COLLECTED]);
 
@@ -173,18 +148,11 @@ void FormFittingPoints::refreshCollectTable()
     }
 }
 
-void FormFittingPoints::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void FormFittingPoints::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
-void FormFittingPoints::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormFittingPoints::retranslateUI() { ui->retranslateUi(this); }
 
-void FormFittingPoints::updateCollectionStatus(bool status)
-{
+void FormFittingPoints::updateCollectionStatus(bool status) {
     ui->btnCollect->setEnabled(true);
     refreshCollectTable();
     int rows = m_collectModel->rowCount();
@@ -192,15 +160,13 @@ void FormFittingPoints::updateCollectionStatus(bool status)
     for (int i = 0; i < rows; ++i) {
         QStandardItem *statusItem = m_collectModel->item(i, STATUS);
 
-        if (!statusItem)
-            continue;
+        if (!statusItem) continue;
 
         if (statusItem->text() == item_status[NOT_COLLECTED]) {
             // 第1列：文件名
             QStandardItem *fileItem = m_collectModel->item(i, FILE_NAME);
 
-            if (!fileItem)
-                continue;
+            if (!fileItem) continue;
 
             QString fileName = fileItem->text();
 
@@ -209,40 +175,32 @@ void FormFittingPoints::updateCollectionStatus(bool status)
             ui->tableViewCollectStatus->selectRow(i);
             ui->tableViewCollectStatus->scrollTo(m_collectModel->index(i, 0));
 
-            return; // 找到第一个就结束
+            return;  // 找到第一个就结束
         }
     }
 }
 
-void FormFittingPoints::setTargetIntensity(const double &avg)
-{
+void FormFittingPoints::setTargetIntensity(const double &avg) {
     auto sel = ui->tableViewCollectStatus->selectionModel()->selectedRows();
 
-    if (sel.isEmpty())
-        return;
+    if (sel.isEmpty()) return;
 
     int row = sel.first().row();
     QStandardItem *item = m_collectModel->item(row, INTENSITY);
     item->setText(QString::number(avg, 'f', 3));
 }
 
-void FormFittingPoints::on_tBtnSelectDir_clicked()
-{
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("choose dir"),
-                                                    "",
-                                                    QFileDialog::ShowDirsOnly
-                                                        | QFileDialog::DontResolveSymlinks);
+void FormFittingPoints::on_tBtnSelectDir_clicked() {
+    QString dir = QFileDialog::getExistingDirectory(this, tr("choose dir"), "",
+                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-    if (dir.isEmpty())
-        return;
+    if (dir.isEmpty()) return;
 
     ui->lineEditDir->setText(dir);
     SETTING_CONFIG_SET(CFG_GROUP_FITTING_POINTS, CFG_FITTING_POINTS_DIR, dir);
 }
 
-void FormFittingPoints::on_btnCollect_clicked()
-{
+void FormFittingPoints::on_btnCollect_clicked() {
     ui->btnCollect->setEnabled(false);
     QString dir = ui->lineEditDir->text();
     QString file = ui->lineEditWavelength->text();
@@ -250,29 +208,22 @@ void FormFittingPoints::on_btnCollect_clicked()
     emit toCollectionFittingPoints(dir, file, count);
 }
 
-void FormFittingPoints::on_tBtnRefresh_clicked()
-{
-    refreshCollectTable();
-}
+void FormFittingPoints::on_tBtnRefresh_clicked() { refreshCollectTable(); }
 
-void FormFittingPoints::on_tableViewCollectStatus_clicked(const QModelIndex &index)
-{
+void FormFittingPoints::on_tableViewCollectStatus_clicked(const QModelIndex &index) {
     int row = index.row();
 
     QStandardItem *fileItem = m_collectModel->item(row, FILE_NAME);
-    if (!fileItem)
-        return;
+    if (!fileItem) return;
 
     ui->lineEditWavelength->setText(fileItem->text());
 }
 
-void FormFittingPoints::on_tableViewCollectStatus_doubleClicked(const QModelIndex &index)
-{
+void FormFittingPoints::on_tableViewCollectStatus_doubleClicked(const QModelIndex &index) {
     int row = index.row();
 
     QStandardItem *pathItem = m_collectModel->item(row, FILE_PATH);
-    if (!pathItem)
-        return;
+    if (!pathItem) return;
     QString path = pathItem->text();
     emit doFile(path);
 }

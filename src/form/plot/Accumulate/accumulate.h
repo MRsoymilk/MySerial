@@ -10,8 +10,7 @@ namespace Ui {
 class Accumulate;
 }
 
-class Accumulate : public QWidget
-{
+class Accumulate : public QWidget {
     Q_OBJECT
 
 public:
@@ -69,4 +68,4 @@ private:
     bool m_enableDiv = false;
 };
 
-#endif // ACCUMULATE_H
+#endif  // ACCUMULATE_H

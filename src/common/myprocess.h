@@ -3,23 +3,22 @@
 
 #include <QProcess>
 
-class MyProcess : public QObject
-{
+class MyProcess : public QObject {
     Q_OBJECT
 
-   public:
+public:
     ~MyProcess() = default;
     static MyProcess &getInstance();
     void process(const QString &program, const QStringList &arguments);
     void startAttach(const QString &program, const QStringList &arguments);
     bool startDetach(const QString &program, const QStringList &arguments);
     void stopScript(const int &wait_time = 3000);
-   private slots:
+private slots:
     void handleStandardOutput();
     void handleStandardError();
     void handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
-   private:
+private:
     MyProcess(QObject *parent = nullptr);
     QProcess *m_process;
 };

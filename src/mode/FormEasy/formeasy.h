@@ -9,6 +9,7 @@
 #include <QToolButton>
 #include <QValueAxis>
 #include <QWidget>
+
 #include "global.h"
 
 class MyChartView;
@@ -30,8 +31,7 @@ namespace Ui {
 class FormEasy;
 }
 
-class FormEasy : public QWidget
-{
+class FormEasy : public QWidget {
     Q_OBJECT
 
 public:
@@ -45,8 +45,7 @@ signals:
     void sendOption(const QJsonObject &option);
 
 public slots:
-    void updatePlot4k(const MY_DATA &my_data,
-                      bool record);
+    void updatePlot4k(const MY_DATA &my_data, bool record);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -87,13 +86,8 @@ private:
     void initTable();
     void initToolButton();
     void init();
-    void updatePlot(const CURVE &curve31,
-                    const CURVE &curve33,
-                    const double &temperature = 0.0,
-                    bool record = true);
-    void updateTable(const QVector<double> &v14,
-                     const QVector<double> &v24,
-                     const QVector<double> &raw14,
+    void updatePlot(const CURVE &curve31, const CURVE &curve33, const double &temperature = 0.0, bool record = true);
+    void updateTable(const QVector<double> &v14, const QVector<double> &v24, const QVector<double> &raw14,
                      const QVector<double> &raw24);
     void callFindPeak();
     void callCalcFWHM();
@@ -171,4 +165,4 @@ private:
     void sendIntegrationTime();
 };
 
-#endif // FORMEASY_H
+#endif  // FORMEASY_H

@@ -10,8 +10,7 @@ namespace Ui {
 class TemperatureView;
 }
 
-class TemperatureView : public QWidget
-{
+class TemperatureView : public QWidget {
     Q_OBJECT
 
 public:
@@ -40,4 +39,4 @@ private:
     double m_history_max;
 };
 
-#endif // TEMPERATUREVIEW_H
+#endif  // TEMPERATUREVIEW_H

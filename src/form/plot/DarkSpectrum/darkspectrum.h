@@ -7,8 +7,7 @@ namespace Ui {
 class DarkSpectrum;
 }
 
-class DarkSpectrum : public QWidget
-{
+class DarkSpectrum : public QWidget {
     Q_OBJECT
 
 public:
@@ -33,4 +32,4 @@ private:
     QVector<double> m_lastDark;
 };
 
-#endif // DARKSPECTRUM_H
+#endif  // DARKSPECTRUM_H

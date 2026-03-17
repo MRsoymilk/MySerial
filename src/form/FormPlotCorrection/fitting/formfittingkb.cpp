@@ -1,24 +1,18 @@
 #include "formfittingkb.h"
-#include "funcdef.h"
-#include "ui_formfittingkb.h"
 
 #include <QDir>
 
-FormFittingKB::FormFittingKB(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormFittingKB)
-{
+#include "funcdef.h"
+#include "ui_formfittingkb.h"
+
+FormFittingKB::FormFittingKB(QWidget *parent) : QWidget(parent), ui(new Ui::FormFittingKB) {
     ui->setupUi(this);
     init();
 }
 
-FormFittingKB::~FormFittingKB()
-{
-    delete ui;
-}
+FormFittingKB::~FormFittingKB() { delete ui; }
 
-void FormFittingKB::init()
-{
+void FormFittingKB::init() {
     ui->labelFormula->setText(
         "y = (k<sub>1</sub> &middot; T + b<sub>1</sub>) / 8.5 / 1000 * "
         "[K &middot; x + B] + (k<sub>2</sub> &middot; T + b<sub>2</sub>) / 1000");
@@ -29,18 +23,11 @@ void FormFittingKB::init()
     // m_round = round;
 }
 
-int FormFittingKB::getRound()
-{
-    return m_round;
-}
+int FormFittingKB::getRound() { return m_round; }
 
-void FormFittingKB::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormFittingKB::retranslateUI() { ui->retranslateUi(this); }
 
-void FormFittingKB::drawKB(const float &k, const float &b)
-{
+void FormFittingKB::drawKB(const float &k, const float &b) {
     QLineSeries *series = new QLineSeries();
     for (double x = -1.0; x <= 1.0; x += 0.01) {
         series->append(x, k * x + b);
@@ -58,9 +45,8 @@ void FormFittingKB::drawKB(const float &k, const float &b)
     // 根据 y = kx + b 计算Y轴范围
     double y_min = k * (-1.0) + b;
     double y_max = k * 1.0 + b;
-    if (y_min > y_max)
-        std::swap(y_min, y_max);
-    double y_padding = (y_max - y_min) * 0.1 + 0.01; // 添加 10% 余量，避免上下贴边
+    if (y_min > y_max) std::swap(y_min, y_max);
+    double y_padding = (y_max - y_min) * 0.1 + 0.01;  // 添加 10% 余量，避免上下贴边
     QValueAxis *axisY = new QValueAxis();
     axisY->setRange(y_min - y_padding, y_max + y_padding);
     axisY->setTitleText("Y");
@@ -83,8 +69,7 @@ void FormFittingKB::drawKB(const float &k, const float &b)
     ui->gLayPlot->addWidget(chartView);
 }
 
-QVector<double> FormFittingKB::smoothCenteredMovingAverage(const QVector<double> &data, int window)
-{
+QVector<double> FormFittingKB::smoothCenteredMovingAverage(const QVector<double> &data, int window) {
     QVector<double> result = data;
     int N = data.size();
     int half = window / 2;
@@ -100,8 +85,7 @@ QVector<double> FormFittingKB::smoothCenteredMovingAverage(const QVector<double>
     return result;
 }
 
-QByteArray FormFittingKB::wrapKB(const float &k, const float &b)
-{
+QByteArray FormFittingKB::wrapKB(const float &k, const float &b) {
     QByteArray packet;
 
     // 包头
@@ -151,14 +135,9 @@ QByteArray FormFittingKB::wrapKB(const float &k, const float &b)
     return packet;
 }
 
-bool FormFittingKB::findPeak(const int &idx_min,
-                             const int &idx_max,
-                             const QVector<double> &smoothed,
-                             const int &min_distance,
-                             const double &min_prominence,
-                             const QVector<double> &v14,
-                             const QVector<double> &v24)
-{
+bool FormFittingKB::findPeak(const int &idx_min, const int &idx_max, const QVector<double> &smoothed,
+                             const int &min_distance, const double &min_prominence, const QVector<double> &v14,
+                             const QVector<double> &v24) {
     QVector<QPointF> v_14_correspond;
     QVector<double> peak;
     QVector<int> peak_location;
@@ -166,7 +145,7 @@ bool FormFittingKB::findPeak(const int &idx_min,
     int index_peak = 1;
     bool isPeekFound = false;
 
-    const int window_size = 5; // 滑动窗口，必须是奇数
+    const int window_size = 5;  // 滑动窗口，必须是奇数
     const int half_window = window_size / 2;
 
     ui->textEditKbLog->append("curve24:");
@@ -176,16 +155,14 @@ bool FormFittingKB::findPeak(const int &idx_min,
         // 判断是否为局部最大值（允许 plateau）
         bool is_peak = true;
         for (int j = -half_window; j <= half_window; ++j) {
-            if (j == 0)
-                continue;
+            if (j == 0) continue;
             if (smoothed[i] < smoothed[i + j]) {
                 is_peak = false;
                 break;
             }
         }
 
-        if (!is_peak)
-            continue;
+        if (!is_peak) continue;
 
         // 左侧 valley
         double left_valley = smoothed[i];
@@ -208,7 +185,7 @@ bool FormFittingKB::findPeak(const int &idx_min,
         double prominence = smoothed[i] - std::max(left_valley, right_valley);
 
         if (prominence >= min_prominence && i - last_peak_index >= min_distance) {
-            peak.append(v24[i]); // 原始值
+            peak.append(v24[i]);  // 原始值
             peak_location.append(i);
             last_peak_index = i;
 
@@ -229,8 +206,7 @@ bool FormFittingKB::findPeak(const int &idx_min,
     return isPeekFound;
 }
 
-void FormFittingKB::fittingKB(float &avg_k, float &avg_b)
-{
+void FormFittingKB::fittingKB(float &avg_k, float &avg_b) {
     int avg_count = 0;
     for (int i = 0; i < m_v14.size(); ++i) {
         int peak_size = m_v14.at(i).size();
@@ -248,8 +224,9 @@ void FormFittingKB::fittingKB(float &avg_k, float &avg_b)
         avg_k += k_conversion;
         avg_b += b_conversion;
         avg_count += 1;
-        QString msg = QString("k: %1 -> %2\n"
-                              "b: %3 -> %4")
+        QString msg = QString(
+                          "k: %1 -> %2\n"
+                          "b: %3 -> %4")
                           .arg(k)
                           .arg(k_conversion)
                           .arg(b)
@@ -259,8 +236,7 @@ void FormFittingKB::fittingKB(float &avg_k, float &avg_b)
     avg_k /= avg_count;
     avg_b /= avg_count;
 }
-void FormFittingKB::findV14_MaxMinIdx(const QVector<double> &v14, int &idx_min, int &idx_max)
-{
+void FormFittingKB::findV14_MaxMinIdx(const QVector<double> &v14, int &idx_min, int &idx_max) {
     double min_v14 = std::numeric_limits<double>::max();
     double max_v14 = std::numeric_limits<double>::lowest();
     for (int i = 0; i < v14.size(); ++i) {
@@ -274,17 +250,14 @@ void FormFittingKB::findV14_MaxMinIdx(const QVector<double> &v14, int &idx_min, 
         }
     }
 
-    LOG_INFO("curve14:\n{}\n{}",
-             QString("max %1 at %2").arg(max_v14).arg(idx_max),
+    LOG_INFO("curve14:\n{}\n{}", QString("max %1 at %2").arg(max_v14).arg(idx_max),
              QString("min %1 at %2").arg(min_v14).arg(idx_min));
 
     // swap range if needed
-    if (idx_min > idx_max)
-        std::swap(idx_min, idx_max);
+    if (idx_min > idx_max) std::swap(idx_min, idx_max);
 }
 
-void FormFittingKB::doCorrection(const QVector<double> &v14, const QVector<double> &v24)
-{
+void FormFittingKB::doCorrection(const QVector<double> &v14, const QVector<double> &v24) {
     QString status = QString("===== %1/%2 =====").arg(++m_current_round).arg(m_round);
     LOG_INFO("status: {}", status);
     // ui->labelStatus->setText(status);
@@ -301,9 +274,9 @@ void FormFittingKB::doCorrection(const QVector<double> &v14, const QVector<doubl
     findV14_MaxMinIdx(v14, idx_min, idx_max);
 
     // 平滑参数
-    const int window = 5;               // 平滑窗口
-    const int min_distance = 3;         // 最小峰间距
-    const double min_prominence = 0.02; // 最小突出度
+    const int window = 5;                // 平滑窗口
+    const int min_distance = 3;          // 最小峰间距
+    const double min_prominence = 0.02;  // 最小突出度
 
     // 平滑曲线
     QVector<double> smoothed = smoothCenteredMovingAverage(v24, window);
@@ -315,9 +288,7 @@ void FormFittingKB::doCorrection(const QVector<double> &v14, const QVector<doubl
     }
 
     if (v24.empty() || v24.size() < idx_max) {
-        QString msg = QString("Abnormal data: curve24 size: %1, curve14 idx_max: %2")
-                          .arg(v24.size())
-                          .arg(idx_max);
+        QString msg = QString("Abnormal data: curve24 size: %1, curve14 idx_max: %2").arg(v24.size()).arg(idx_max);
         LOG_ERROR(msg);
         ui->textEditKbLog->append(msg);
         return;

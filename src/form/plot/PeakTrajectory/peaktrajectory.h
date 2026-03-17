@@ -13,8 +13,7 @@ namespace Ui {
 class PeakTrajectory;
 }
 
-class PeakTrajectory : public QWidget
-{
+class PeakTrajectory : public QWidget {
     Q_OBJECT
 
 public:
@@ -61,4 +60,4 @@ private:
     QPointF m_point;
 };
 
-#endif // PEAKTRAJECTORY_H
+#endif  // PEAKTRAJECTORY_H

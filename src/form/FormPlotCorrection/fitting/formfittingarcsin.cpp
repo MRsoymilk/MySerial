@@ -1,51 +1,36 @@
 #include "formfittingarcsin.h"
-#include "CalculateKB/calculatekb.h"
-#include "funcdef.h"
-#include "ui_formfittingarcsin.h"
 
 #include <QClipboard>
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QMenu>
-#include "datadef.h"
-#include "httpclient.h"
 
-FormFittingArcSin::FormFittingArcSin(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormFittingArcSin)
-{
+#include "CalculateKB/calculatekb.h"
+#include "datadef.h"
+#include "funcdef.h"
+#include "httpclient.h"
+#include "ui_formfittingarcsin.h"
+
+FormFittingArcSin::FormFittingArcSin(QWidget *parent) : QWidget(parent), ui(new Ui::FormFittingArcSin) {
     ui->setupUi(this);
     init();
 }
 
-FormFittingArcSin::~FormFittingArcSin()
-{
-    delete ui;
-}
+FormFittingArcSin::~FormFittingArcSin() { delete ui; }
 
-void FormFittingArcSin::updateParams()
-{
-    on_btnUpdateFormula_clicked();
-}
+void FormFittingArcSin::updateParams() { on_btnUpdateFormula_clicked(); }
 
-void FormFittingArcSin::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormFittingArcSin::retranslateUI() { ui->retranslateUi(this); }
 
-void FormFittingArcSin::init()
-{
+void FormFittingArcSin::init() {
     m_modelThreshold = new QStandardItemModel(this);
     m_modelThreshold->setColumnCount(2);
     m_modelThreshold->setHeaderData(0, Qt::Horizontal, tr("index"));
     m_modelThreshold->setHeaderData(1, Qt::Horizontal, tr("fitting curve Raw(curve33)"));
-    ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(
-        QHeaderView::ResizeToContents);
+    ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableViewFittingCurveData->setModel(m_modelThreshold);
     ui->tableViewFittingCurveData->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableViewFittingCurveData,
-            &QWidget::customContextMenuRequested,
-            this,
+    connect(ui->tableViewFittingCurveData, &QWidget::customContextMenuRequested, this,
             &FormFittingArcSin::showContextMenu);
 
     m_modelPoints = new QStandardItemModel(this);
@@ -59,40 +44,27 @@ void FormFittingArcSin::init()
     ui->doubleSpinBoxStart->setValue(900);
     ui->doubleSpinBoxStep->setValue(1.5);
 
-    m_urlFitArcSin = SETTING_CONFIG_GET(CFG_GROUP_SETTING,
-                                        CFG_SETTING_FIT_ARCSIN_URL,
-                                        URL_FITTING_ARCSIN);
+    m_urlFitArcSin = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIT_ARCSIN_URL, URL_FITTING_ARCSIN);
     ui->labelFormula_y_lambda->setTextFormat(Qt::RichText);
     ui->labelFormula_y_lambda->setText(
         "y_lambda = arcsin(&lambda; / (2 &middot; d &middot; cos(&alpha; / 2))) - &alpha;/2");
     ui->labelFormula_y->setTextFormat(Qt::RichText);
     ui->labelFormula_y->setText("y = k &middot; y<sub>&lambda;</sub> + b");
 
-    QString temperature_R = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
-                                               CFG_FITTING_ARCSIN_TEMPERATURE_R,
-                                               "0");
+    QString temperature_R = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_TEMPERATURE_R, "0");
     ui->doubleSpinBoxTemperatureR->setValue(temperature_R.toDouble());
-    QString temperature_T = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
-                                               CFG_FITTING_ARCSIN_TEMPERATURE_T,
-                                               "0");
+    QString temperature_T = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_TEMPERATURE_T, "0");
     ui->doubleSpinBoxTemperatureT->setValue(temperature_T.toDouble());
     QString formula = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_FORMULA);
     ui->lineEditFormula->setText(formula);
-    QString threshold_num = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
-                                               CFG_FITTING_ARCSIN_THRESHOLD_NUM,
-                                               "800");
+    QString threshold_num = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_THRESHOLD_NUM, "800");
     ui->spinBoxNum->setValue(threshold_num.toInt());
-    QString threshold_offset = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
-                                                  CFG_FITTING_ARCSIN_THRESHOLD_OFFSET,
-                                                  "900");
+    QString threshold_offset = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_THRESHOLD_OFFSET, "900");
     ui->doubleSpinBoxStart->setValue(threshold_offset.toInt());
-    QString threshold_step = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN,
-                                                CFG_FITTING_ARCSIN_THRESHOLD_STEP,
-                                                "1");
+    QString threshold_step = SETTING_CONFIG_GET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_THRESHOLD_STEP, "1");
     ui->doubleSpinBoxStep->setValue(threshold_step.toInt());
 }
-void FormFittingArcSin::showContextMenu(const QPoint &pos)
-{
+void FormFittingArcSin::showContextMenu(const QPoint &pos) {
     QMenu contextMenu(tr("Context Menu"), this);
 
     QAction *exportAllAction = new QAction(tr("Export Threshold to CSV"), this);
@@ -108,8 +80,7 @@ void FormFittingArcSin::showContextMenu(const QPoint &pos)
     contextMenu.exec(ui->tableViewFittingCurveData->viewport()->mapToGlobal(pos));
 }
 
-void FormFittingArcSin::exportThresholdToHex()
-{
+void FormFittingArcSin::exportThresholdToHex() {
     QStringList hexList;
     for (int row = 0; row < m_modelThreshold->rowCount(); ++row) {
         QModelIndex idx = m_modelThreshold->index(row, 1);
@@ -129,8 +100,7 @@ void FormFittingArcSin::exportThresholdToHex()
     QMessageBox::information(this, tr("export success"), tr("hex add to clip board."));
 }
 
-void FormFittingArcSin::exportThresholdToArray()
-{
+void FormFittingArcSin::exportThresholdToArray() {
     QStringList lst;
     for (int row = 0; row < m_modelThreshold->rowCount(); ++row) {
         QModelIndex idx = m_modelThreshold->index(row, 1);
@@ -146,11 +116,8 @@ void FormFittingArcSin::exportThresholdToArray()
     QMessageBox::information(this, tr("export success"), tr("array add to clip board."));
 }
 
-void FormFittingArcSin::exportThresholdToCSV()
-{
-    QString path = QFileDialog::getSaveFileName(this,
-                                                tr("Export Threshold Data to CSV"),
-                                                "data_threshold.csv",
+void FormFittingArcSin::exportThresholdToCSV() {
+    QString path = QFileDialog::getSaveFileName(this, tr("Export Threshold Data to CSV"), "data_threshold.csv",
                                                 tr("CSV Files (*.csv)"));
     if (path.isEmpty()) {
         LOG_WARN("CSV path is empty!");
@@ -189,8 +156,7 @@ void FormFittingArcSin::exportThresholdToCSV()
     LOG_INFO("Exported all data to CSV: {}", path.toStdString());
 }
 
-void FormFittingArcSin::on_btnSendR_clicked()
-{
+void FormFittingArcSin::on_btnSendR_clicked() {
     double k = ui->doubleSpinBoxR_k->value();
     double b = ui->doubleSpinBoxR_b->value();
 
@@ -211,8 +177,7 @@ void FormFittingArcSin::on_btnSendR_clicked()
     emit sendSerialArcSin(byteArray);
 }
 
-void FormFittingArcSin::on_btnCalculate_k1b1k2b2_clicked()
-{
+void FormFittingArcSin::on_btnCalculate_k1b1k2b2_clicked() {
     CalculateKB cal;
     cal.exec();
     QJsonObject result = cal.getResult();
@@ -249,10 +214,8 @@ void FormFittingArcSin::on_btnCalculate_k1b1k2b2_clicked()
     }
 }
 
-void FormFittingArcSin::on_btnFittingArcSin_clicked()
-{
-    if (!m_modelPoints)
-        return;
+void FormFittingArcSin::on_btnFittingArcSin_clicked() {
+    if (!m_modelPoints) return;
 
     QJsonArray lambdaArray;
     QJsonArray yArray;
@@ -261,8 +224,8 @@ void FormFittingArcSin::on_btnFittingArcSin_clicked()
         QString lambda = m_modelPoints->item(row, 0) ? m_modelPoints->item(row, 0)->text() : "";
         QString raw14 = m_modelPoints->item(row, 1) ? m_modelPoints->item(row, 1)->text() : "";
 
-        lambdaArray.append(lambda.toDouble()); // λ
-        yArray.append(raw14.toInt());          // y (raw14)
+        lambdaArray.append(lambda.toDouble());  // λ
+        yArray.append(raw14.toInt());           // y (raw14)
     }
 
     QJsonObject objRequest;
@@ -310,8 +273,7 @@ void FormFittingArcSin::on_btnFittingArcSin_clicked()
     client->post(m_urlFitArcSin, objRequest);
 }
 
-void FormFittingArcSin::on_btnSendFormula_clicked()
-{
+void FormFittingArcSin::on_btnSendFormula_clicked() {
     QByteArray byteArray;
     const QByteArray header = QByteArray::fromHex("DD3C006348");
     const QByteArray tail = QByteArray::fromHex("CDFF");
@@ -371,27 +333,20 @@ void FormFittingArcSin::on_btnSendFormula_clicked()
     emit sendParamsArcSin(params);
 }
 
-void FormFittingArcSin::on_btnSetTemperatureT_clicked()
-{
+void FormFittingArcSin::on_btnSetTemperatureT_clicked() {
     m_formula_y.T = ui->doubleSpinBoxTemperatureT->value();
     ui->lineEdit_T->setText(QString::number(m_formula_y.T));
     ui->lineEdit_T_->setText(QString::number(m_formula_y.T));
-    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
-                       CFG_FITTING_ARCSIN_TEMPERATURE_T,
-                       QString::number(m_formula_y.T));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_TEMPERATURE_T, QString::number(m_formula_y.T));
 }
 
-void FormFittingArcSin::on_btnSetTemperatureR_clicked()
-{
+void FormFittingArcSin::on_btnSetTemperatureR_clicked() {
     m_formula_y.T = ui->doubleSpinBoxTemperatureR->value();
     ui->lineEdit_T->setText(QString::number(m_formula_y.T));
     ui->lineEdit_T_->setText(QString::number(m_formula_y.T));
-    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
-                       CFG_FITTING_ARCSIN_TEMPERATURE_R,
-                       QString::number(m_formula_y.T));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_TEMPERATURE_R, QString::number(m_formula_y.T));
 }
-void FormFittingArcSin::updateFormulaLambda()
-{
+void FormFittingArcSin::updateFormulaLambda() {
     if (ui->radioButtonLeft->isChecked()) {
         ui->lineEdit_k_lambda->setText(QString::number(m_formula_lambda_l.k, 'f', 3));
         ui->lineEdit_b_lambda->setText(QString::number(m_formula_lambda_l.b, 'f', 3));
@@ -407,8 +362,7 @@ void FormFittingArcSin::updateFormulaLambda()
     }
 }
 
-void FormFittingArcSin::on_btnUpdateFormula_clicked()
-{
+void FormFittingArcSin::on_btnUpdateFormula_clicked() {
     QString params = ui->lineEditFormula->text();
     if (!params.isEmpty()) {
         QByteArray byteArray = QByteArray::fromHex(params.toUtf8());
@@ -419,11 +373,10 @@ void FormFittingArcSin::on_btnUpdateFormula_clicked()
             return;
         }
 
-        int idx = 5; // 跳过 header "DD3C002351"
+        int idx = 5;  // 跳过 header "DD3C002351"
 
         auto readDouble = [&](const QByteArray &arr, int &pos) -> double {
-            if (pos + 8 > arr.size())
-                return 0.0;
+            if (pos + 8 > arr.size()) return 0.0;
             int64_t val = 0;
             for (int i = 0; i < 8; ++i) {
                 val = (val << 8) | static_cast<uint8_t>(arr[pos + i]);
@@ -445,24 +398,15 @@ void FormFittingArcSin::on_btnUpdateFormula_clicked()
         m_formula_y.k2 = readDouble(byteArray, idx);
         m_formula_y.b2 = readDouble(byteArray, idx);
 
-        LOG_INFO("generate params from {} to\n"
-                 "k1: {}, b1: {},\n"
-                 "l_k: {}, l_b: {}, l_d: {}, l_alpha: {},\n"
-                 "r_k: {}, r_b: {}, r_d: {}, r_alpha: {},\n"
-                 "k2: {}, b2: {}",
-                 params,
-                 m_formula_y.k1,
-                 m_formula_y.b1,
-                 m_formula_lambda_l.k,
-                 m_formula_lambda_l.b,
-                 m_formula_lambda_l.d,
-                 m_formula_lambda_l.alpha,
-                 m_formula_lambda_r.k,
-                 m_formula_lambda_r.b,
-                 m_formula_lambda_r.d,
-                 m_formula_lambda_r.alpha,
-                 m_formula_y.k2,
-                 m_formula_y.b2);
+        LOG_INFO(
+            "generate params from {} to\n"
+            "k1: {}, b1: {},\n"
+            "l_k: {}, l_b: {}, l_d: {}, l_alpha: {},\n"
+            "r_k: {}, r_b: {}, r_d: {}, r_alpha: {},\n"
+            "k2: {}, b2: {}",
+            params, m_formula_y.k1, m_formula_y.b1, m_formula_lambda_l.k, m_formula_lambda_l.b, m_formula_lambda_l.d,
+            m_formula_lambda_l.alpha, m_formula_lambda_r.k, m_formula_lambda_r.b, m_formula_lambda_r.d,
+            m_formula_lambda_r.alpha, m_formula_y.k2, m_formula_y.b2);
 
         ui->lineEdit_k1->setText(QString::number(m_formula_y.k1, 'f', 3));
         ui->lineEdit_b1->setText(QString::number(m_formula_y.b1, 'f', 3));
@@ -494,32 +438,28 @@ void FormFittingArcSin::on_btnUpdateFormula_clicked()
     }
 }
 
-double FormFittingArcSin::calculate(const double &idx)
-{
+double FormFittingArcSin::calculate(const double &idx) {
     double y_lambda = 0.0;
     if (idx <= 1300) {
-        y_lambda = m_formula_lambda_l.k
-                       * (qAsin(idx / 1000.0
-                                / (2 * m_formula_lambda_l.d
-                                   * qCos(M_PI / 180.0 * m_formula_lambda_l.alpha / 2)))
-                          - m_formula_lambda_l.alpha / 2)
-                   + m_formula_lambda_l.b;
+        y_lambda =
+            m_formula_lambda_l.k *
+                (qAsin(idx / 1000.0 / (2 * m_formula_lambda_l.d * qCos(M_PI / 180.0 * m_formula_lambda_l.alpha / 2))) -
+                 m_formula_lambda_l.alpha / 2) +
+            m_formula_lambda_l.b;
     } else {
-        y_lambda = m_formula_lambda_r.k
-                       * (qAsin(idx / 1000.0
-                                / (2 * m_formula_lambda_r.d
-                                   * qCos(M_PI / 180.0 * m_formula_lambda_r.alpha / 2)))
-                          - m_formula_lambda_r.alpha / 2)
-                   + m_formula_lambda_r.b;
+        y_lambda =
+            m_formula_lambda_r.k *
+                (qAsin(idx / 1000.0 / (2 * m_formula_lambda_r.d * qCos(M_PI / 180.0 * m_formula_lambda_r.alpha / 2))) -
+                 m_formula_lambda_r.alpha / 2) +
+            m_formula_lambda_r.b;
     }
 
-    double y = (m_formula_y.k1 * m_formula_y.T + m_formula_y.b1) / 8.5 / 1000 * y_lambda
-               + (m_formula_y.k2 * m_formula_y.T + m_formula_y.b2) / 1000;
+    double y = (m_formula_y.k1 * m_formula_y.T + m_formula_y.b1) / 8.5 / 1000 * y_lambda +
+               (m_formula_y.k2 * m_formula_y.T + m_formula_y.b2) / 1000;
     return y;
 }
 
-void FormFittingArcSin::on_btnGenerateThreshold_clicked()
-{
+void FormFittingArcSin::on_btnGenerateThreshold_clicked() {
     m_modelThreshold->removeRows(0, m_modelThreshold->rowCount());
     double start = ui->doubleSpinBoxStart->value();
     double step = ui->doubleSpinBoxStep->value();
@@ -534,53 +474,36 @@ void FormFittingArcSin::on_btnGenerateThreshold_clicked()
     }
     ui->tabWidget->setCurrentWidget(ui->tabFittingCurveData);
 
-    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
-                       CFG_FITTING_ARCSIN_THRESHOLD_NUM,
-                       QString::number(num));
-    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
-                       CFG_FITTING_ARCSIN_THRESHOLD_OFFSET,
-                       QString::number(start));
-    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN,
-                       CFG_FITTING_ARCSIN_THRESHOLD_STEP,
-                       QString::number(step));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_THRESHOLD_NUM, QString::number(num));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_THRESHOLD_OFFSET, QString::number(start));
+    SETTING_CONFIG_SET(CFG_GROUP_FITTING_ARCSIN, CFG_FITTING_ARCSIN_THRESHOLD_STEP, QString::number(step));
 }
 
-void FormFittingArcSin::on_tBtnAdd_clicked()
-{
-    if (!m_modelPoints)
-        return;
+void FormFittingArcSin::on_tBtnAdd_clicked() {
+    if (!m_modelPoints) return;
 
     int row = m_modelPoints->rowCount();
     m_modelPoints->insertRow(row);
 
-    m_modelPoints->setItem(row, 0, new QStandardItem("0.0")); // lambda
-    m_modelPoints->setItem(row, 1, new QStandardItem("0"));   // curve33(raw)
+    m_modelPoints->setItem(row, 0, new QStandardItem("0.0"));  // lambda
+    m_modelPoints->setItem(row, 1, new QStandardItem("0"));    // curve33(raw)
 
     QModelIndex index = m_modelPoints->index(row, 0);
     ui->tableViewPoints->setCurrentIndex(index);
     ui->tableViewPoints->edit(index);
 }
 
-void FormFittingArcSin::on_tBtnDelete_clicked()
-{
-    if (!m_modelPoints)
-        return;
+void FormFittingArcSin::on_tBtnDelete_clicked() {
+    if (!m_modelPoints) return;
 
     // 获取当前选中的行
     QModelIndex index = ui->tableViewPoints->currentIndex();
-    if (!index.isValid())
-        return;
+    if (!index.isValid()) return;
 
     int row = index.row();
     m_modelPoints->removeRow(row);
 }
 
-void FormFittingArcSin::on_radioButtonRight_clicked()
-{
-    updateFormulaLambda();
-}
+void FormFittingArcSin::on_radioButtonRight_clicked() { updateFormulaLambda(); }
 
-void FormFittingArcSin::on_radioButtonLeft_clicked()
-{
-    updateFormulaLambda();
-}
+void FormFittingArcSin::on_radioButtonLeft_clicked() { updateFormulaLambda(); }

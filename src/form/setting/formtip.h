@@ -7,8 +7,7 @@ namespace Ui {
 class FormTip;
 }
 
-class FormTip : public QWidget
-{
+class FormTip : public QWidget {
     Q_OBJECT
 
 public:
@@ -23,4 +22,4 @@ private:
     Ui::FormTip *ui;
 };
 
-#endif // FORMTIP_H
+#endif  // FORMTIP_H

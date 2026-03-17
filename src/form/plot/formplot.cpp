@@ -1,5 +1,4 @@
 #include "formplot.h"
-#include "ui_formplot.h"
 
 #include <QKeySequence>
 #include <QLabel>
@@ -12,6 +11,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+
 #include "Accumulate/accumulate.h"
 #include "Derivation/derivation.h"
 #include "DraggableLine/draggableline.h"
@@ -21,11 +21,10 @@
 #include "TemperatureConversion/temperatureconversion.h"
 #include "TemperatureView/temperatureview.h"
 #include "funcdef.h"
+#include "ui_formplot.h"
 
-void FormPlot::saveChartAsImage(const QString &filePath)
-{
-    if (!m_chartView)
-        return;
+void FormPlot::saveChartAsImage(const QString &filePath) {
+    if (!m_chartView) return;
 
     QSize size = m_chartView->size();
 
@@ -39,39 +38,24 @@ void FormPlot::saveChartAsImage(const QString &filePath)
     image.save(filePath);
 }
 
-FormPlot::FormPlot(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormPlot)
-{
+FormPlot::FormPlot(QWidget *parent) : QWidget(parent), ui(new Ui::FormPlot) {
     ui->setupUi(this);
     init();
 }
 
-FormPlot::~FormPlot()
-{
-    delete ui;
-}
+FormPlot::~FormPlot() { delete ui; }
 
-void FormPlot::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormPlot::retranslateUI() { ui->retranslateUi(this); }
 
-void FormPlot::setAlgorithm(const QString &algorithm)
-{
-    m_algorithm = algorithm;
-}
+void FormPlot::setAlgorithm(const QString &algorithm) { m_algorithm = algorithm; }
 
-void FormPlot::onDataReceivedLLC(const FRAME& frame,
-                                 const double temperature)
-{
+void FormPlot::onDataReceivedLLC(const FRAME &frame, const double temperature) {
     if (!m_pause) {
         emit newDataReceivedLLC(frame, temperature);
     }
 }
 
-void FormPlot::getINI()
-{
+void FormPlot::getINI() {
     int offset31 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET31, "0").toInt();
     int offset33 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET33, "0").toInt();
     if (offset31 != 0) {
@@ -96,16 +80,14 @@ void FormPlot::getINI()
     ui->spinBoxEndX->setValue(x_end);
 }
 
-void FormPlot::setINI()
-{
+void FormPlot::setINI() {
     int offset31 = ui->spinBox31Offset->value();
     int offset33 = ui->spinBox33Offset->value();
     SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET31, QString::number(offset31));
     SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET33, QString::number(offset33));
 }
 
-void FormPlot::init2d()
-{
+void FormPlot::init2d() {
     m_series33 = new QLineSeries();
     m_series31 = new QLineSeries();
     m_peaks = new QScatterSeries();
@@ -162,8 +144,7 @@ void FormPlot::init2d()
     ui->stackedWidget->addWidget(m_chartView);
 }
 
-void FormPlot::initToolButtons()
-{
+void FormPlot::initToolButtons() {
     ui->tBtnCrop->setObjectName("crop");
     ui->tBtnCrop->setIconSize(QSize(24, 24));
     ui->tBtnCrop->setCheckable(true);
@@ -250,8 +231,7 @@ void FormPlot::initToolButtons()
     ui->tBtnToVoltage->setCheckable(true);
 }
 
-void FormPlot::init()
-{
+void FormPlot::init() {
     init2d();
     initToolButtons();
 
@@ -292,24 +272,19 @@ void FormPlot::init()
     connect(m_trajectory, &PeakTrajectory::broadcast, this, &FormPlot::broadcast);
 }
 
-void FormPlot::onDataReceivedF30(const FRAME& frame,
-                                 const double &temperature)
-{
+void FormPlot::onDataReceivedF30(const FRAME &frame, const double &temperature) {
     if (!m_pause) {
         emit newDataReceivedF30(frame, temperature);
     }
 }
 
-void FormPlot::onDataReceivedF15(const FRAME& frame,
-                                 const double &temperature)
-{
+void FormPlot::onDataReceivedF15(const FRAME &frame, const double &temperature) {
     if (!m_pause) {
         emit newDataReceivedF15(frame, temperature);
     }
 }
 
-void FormPlot::updateAxis()
-{
+void FormPlot::updateAxis() {
     double xMin = m_offset;
     double xMax = std::numeric_limits<double>::min();
     double yMin = std::numeric_limits<double>::max();
@@ -341,8 +316,7 @@ void FormPlot::updateAxis()
     }
 }
 
-void FormPlot::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33)
-{
+void FormPlot::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33) {
     static bool flip = false;
     flip = !flip;
     if (flip) {
@@ -355,9 +329,7 @@ void FormPlot::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &
     updateAxis();
 }
 
-void FormPlot::updatePlot4k(const MY_DATA &my_data,
-                            bool record)
-{
+void FormPlot::updatePlot4k(const MY_DATA &my_data, bool record) {
     if (m_pause) {
         return;
     }
@@ -466,8 +438,7 @@ void FormPlot::updatePlot4k(const MY_DATA &my_data,
     callCalcFWHM();
 }
 
-void FormPlot::callToExternal(const QList<QPointF> &data)
-{
+void FormPlot::callToExternal(const QList<QPointF> &data) {
     QJsonArray spectrumArray;
 
     for (const QPointF &pt : data) {
@@ -485,8 +456,7 @@ void FormPlot::callToExternal(const QList<QPointF> &data)
     emit toExternalSpectral(info);
 }
 
-void FormPlot::wheelEvent(QWheelEvent *event)
-{
+void FormPlot::wheelEvent(QWheelEvent *event) {
     if (m_autoZoom) {
         on_tBtnZoom_clicked();
     }
@@ -506,8 +476,7 @@ void FormPlot::wheelEvent(QWheelEvent *event)
     }
 }
 
-void FormPlot::closeEvent(QCloseEvent *event)
-{
+void FormPlot::closeEvent(QCloseEvent *event) {
     if (m_trajectory) {
         m_trajectory->close();
     }
@@ -529,8 +498,7 @@ void FormPlot::closeEvent(QCloseEvent *event)
     this->close();
 }
 
-void FormPlot::on_tBtnCrop_clicked()
-{
+void FormPlot::on_tBtnCrop_clicked() {
     m_enableCrop = !m_enableCrop;
     ui->tBtnCrop->setChecked(m_enableCrop);
     if (m_enableCrop) {
@@ -542,8 +510,7 @@ void FormPlot::on_tBtnCrop_clicked()
     }
 }
 
-void FormPlot::on_tBtnZoom_clicked()
-{
+void FormPlot::on_tBtnZoom_clicked() {
     m_autoZoom = !m_autoZoom;
     ui->tBtnZoom->setChecked(m_autoZoom);
     if (m_autoZoom) {
@@ -552,70 +519,59 @@ void FormPlot::on_tBtnZoom_clicked()
     }
 }
 
-void FormPlot::on_spinBox31Offset_valueChanged(int val)
-{
+void FormPlot::on_spinBox31Offset_valueChanged(int val) {
     emit sendOffset31(val);
     setINI();
 }
 
-void FormPlot::on_spinBox33Offset_valueChanged(int val)
-{
+void FormPlot::on_spinBox33Offset_valueChanged(int val) {
     emit sendOffset33(val);
     setINI();
 }
 
-void FormPlot::on_tBtnImgSave_clicked()
-{
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                                    tr("Save Chart"),
-                                                    "",
-                                                    "PNG Image (*.png);;JPEG Image (*.jpg)");
+void FormPlot::on_tBtnImgSave_clicked() {
+    QString filePath =
+        QFileDialog::getSaveFileName(this, tr("Save Chart"), "", "PNG Image (*.png);;JPEG Image (*.jpg)");
     if (!filePath.isEmpty()) {
         saveChartAsImage(filePath);
     }
 }
 
-void FormPlot::on_spinBoxStartX_valueChanged(int val)
-{
+void FormPlot::on_spinBoxStartX_valueChanged(int val) {
     if (m_enableControlX) {
         m_axisX->setRange(val, m_axisX->max());
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_X_START, QString::number(val));
     }
 }
 
-void FormPlot::on_spinBoxEndX_valueChanged(int val)
-{
+void FormPlot::on_spinBoxEndX_valueChanged(int val) {
     if (m_enableControlX) {
         m_axisX->setRange(m_axisX->min(), val);
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_X_END, QString::number(val));
     }
 }
 
-void FormPlot::on_spinBoxStartY_valueChanged(int val)
-{
+void FormPlot::on_spinBoxStartY_valueChanged(int val) {
     if (m_enableControlY) {
         m_axisY->setRange(val, m_axisY->max());
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_Y_START, QString::number(val));
     }
 }
 
-void FormPlot::on_spinBoxEndY_valueChanged(int val)
-{
+void FormPlot::on_spinBoxEndY_valueChanged(int val) {
     if (m_enableControlY) {
         m_axisY->setRange(m_axisY->min(), val);
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_Y_END, QString::number(val));
     }
 }
 
-void FormPlot::on_dSpinBoxStep_valueChanged(double val)
-{
+void FormPlot::on_dSpinBoxStep_valueChanged(double val) {
     if (ui->tBtnStep->isChecked()) {
         m_step = val;
     }
 }
 
-void FormPlot::on_tBtnStep_clicked()
-{
+void FormPlot::on_tBtnStep_clicked() {
     if (ui->tBtnStep->isChecked()) {
         m_step = ui->dSpinBoxStep->value();
         SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_STEP, QString::number(m_step));
@@ -624,15 +580,13 @@ void FormPlot::on_tBtnStep_clicked()
     }
 }
 
-QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double minDist)
-{
+QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double minDist) {
     QVector<QPointF> peaks;
     int n = m_series31->count();
 
     QVector<double> values;
     values.reserve(n);
-    for (int i = 0; i < n; i++)
-        values.append(m_series31->at(i).y());
+    for (int i = 0; i < n; i++) values.append(m_series31->at(i).y());
 
     double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
     double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
@@ -642,8 +596,7 @@ QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double m
     double lastPeakX = -1e9;
     for (int i = window; i < n - window; i++) {
         double yCurr = m_series31->at(i).y();
-        if (yCurr < threshold)
-            continue;
+        if (yCurr < threshold) continue;
 
         bool isPeak = true;
         for (int j = i - window; j <= i + window; j++) {
@@ -664,8 +617,7 @@ QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double m
     return peaks;
 }
 
-void FormPlot::callCalcFWHM()
-{
+void FormPlot::callCalcFWHM() {
     if (m_findFWHM) {
         for (auto *line : m_fwhmLines) {
             m_chart->removeSeries(line);
@@ -678,8 +630,7 @@ void FormPlot::callCalcFWHM()
         m_fwhmLabels.clear();
 
         auto peaks = findPeak(3, 1.0, 5.0);
-        if (peaks.isEmpty())
-            return;
+        if (peaks.isEmpty()) return;
 
         for (const auto &peak : peaks) {
             double yPeak = peak.y();
@@ -688,10 +639,8 @@ void FormPlot::callCalcFWHM()
 
             double xLeft = xPeak, xRight = xPeak;
             for (int i = m_series31->count() - 1; i >= 1; --i) {
-                if (m_series31->at(i).x() >= xPeak)
-                    continue;
-                if (ui->spinBoxLimit->value() != 0
-                    && (xPeak - m_series31->at(i).x() > ui->spinBoxLimit->value()))
+                if (m_series31->at(i).x() >= xPeak) continue;
+                if (ui->spinBoxLimit->value() != 0 && (xPeak - m_series31->at(i).x() > ui->spinBoxLimit->value()))
                     break;
                 double y1 = m_series31->at(i).y();
                 double y2 = m_series31->at(i - 1).y();
@@ -704,10 +653,8 @@ void FormPlot::callCalcFWHM()
                 }
             }
             for (int i = 0; i < m_series31->count() - 1; ++i) {
-                if (m_series31->at(i).x() <= xPeak)
-                    continue;
-                if (ui->spinBoxLimit->value() != 0
-                    && (xPeak - m_series31->at(i).x() > ui->spinBoxLimit->value()))
+                if (m_series31->at(i).x() <= xPeak) continue;
+                if (ui->spinBoxLimit->value() != 0 && (xPeak - m_series31->at(i).x() > ui->spinBoxLimit->value()))
                     break;
 
                 double y1 = m_series31->at(i).y();
@@ -736,8 +683,7 @@ void FormPlot::callCalcFWHM()
             QPointF mid((xLeft + xRight) / 2.0, yHalf);
             QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
 
-            auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2),
-                                                      m_chart);
+            auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
             label->setBrush(Qt::red);
             label->setPos(scenePos + QPointF(5, -15));
             m_fwhmLabels.append(label);
@@ -755,10 +701,8 @@ void FormPlot::callCalcFWHM()
     }
 }
 
-void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
-{
-    if (!ui->checkBoxTrajectory->isChecked() || peaks.isEmpty() || !m_series31)
-        return;
+void FormPlot::peakTrajectory(const QVector<QPointF> &peaks) {
+    if (!ui->checkBoxTrajectory->isChecked() || peaks.isEmpty() || !m_series31) return;
 
     // 找到 peaks 中 Y 最大的点
     QPointF maxPeak = QPointF(0, std::numeric_limits<float>::lowest());
@@ -803,8 +747,7 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks)
     }
 }
 
-void FormPlot::callFindPeak()
-{
+void FormPlot::callFindPeak() {
     if (m_findPeak) {
         if (!m_series31 || m_series31->count() < 5) {
             return;
@@ -829,8 +772,7 @@ void FormPlot::callFindPeak()
                 if (m_enableVoltage) {
                     // 转换为 raw 值
                     int raw = y * 0x8000 / 3.3;
-                    ui->textBrowser->append(
-                        QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y).arg(raw));
+                    ui->textBrowser->append(QString("peak[%1]-> V: %2, Raw: %3").arg(pt.x()).arg(y).arg(raw));
                 } else {
                     ui->textBrowser->append(QString("peak[%1]-> V: %2").arg(pt.x()).arg(y));
                 }
@@ -843,29 +785,24 @@ void FormPlot::callFindPeak()
     }
 }
 
-void FormPlot::on_tBtnFindPeak_clicked()
-{
+void FormPlot::on_tBtnFindPeak_clicked() {
     m_findPeak = !m_findPeak;
     ui->tBtnFindPeak->setChecked(m_findPeak);
 
     callFindPeak();
 }
 
-void FormPlot::on_tBtnPause_clicked()
-{
+void FormPlot::on_tBtnPause_clicked() {
     m_pause = !m_pause;
     ui->tBtnPause->setChecked(m_pause);
 }
 
-void FormPlot::on_tBtnOffset_clicked()
-{
+void FormPlot::on_tBtnOffset_clicked() {
     if (ui->tBtnOffset->isChecked()) {
         m_offset = ui->spinBoxOffset->value();
         m_trajectory_start += m_offset;
         m_trajectory_end += m_offset;
-        SETTING_CONFIG_SET(CFG_GROUP_PLOT,
-                           CFG_PLOT_OFFSET,
-                           QString::number(ui->spinBoxOffset->value()));
+        SETTING_CONFIG_SET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET, QString::number(ui->spinBoxOffset->value()));
     } else {
         m_trajectory_start -= ui->spinBoxOffset->value();
         m_trajectory_end -= ui->spinBoxOffset->value();
@@ -873,14 +810,12 @@ void FormPlot::on_tBtnOffset_clicked()
     }
 }
 
-void FormPlot::on_tBtnFWHM_clicked()
-{
+void FormPlot::on_tBtnFWHM_clicked() {
     m_findFWHM = !m_findFWHM;
     callCalcFWHM();
 }
 
-void FormPlot::on_checkBoxTrajectory_clicked()
-{
+void FormPlot::on_checkBoxTrajectory_clicked() {
     if (ui->checkBoxTrajectory->isChecked()) {
         m_enablePeakTrajectory = true;
         m_trajectory_start = m_axisX->min();
@@ -898,12 +833,8 @@ void FormPlot::on_checkBoxTrajectory_clicked()
 
         m_lineLeft = new DraggableLine(chart, leftX, Qt::green);
         m_lineRight = new DraggableLine(chart, rightX, Qt::darkGreen);
-        connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) {
-            m_trajectory_start = x;
-        });
-        connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) {
-            m_trajectory_end = x;
-        });
+        connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) { m_trajectory_start = x; });
+        connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) { m_trajectory_end = x; });
 
         chart->scene()->addItem(m_lineLeft);
         chart->scene()->addItem(m_lineRight);
@@ -929,16 +860,14 @@ void FormPlot::on_checkBoxTrajectory_clicked()
     }
 }
 
-void FormPlot::on_tBtnRangeX_clicked()
-{
+void FormPlot::on_tBtnRangeX_clicked() {
     m_enableControlX = !m_enableControlX;
     if (m_enableControlX) {
         m_axisX->setRange(ui->spinBoxStartX->value(), ui->spinBoxEndX->value());
     }
 }
 
-void FormPlot::on_tBtnRangeY_clicked()
-{
+void FormPlot::on_tBtnRangeY_clicked() {
     m_enableControlY = !m_enableControlY;
     if (m_enableControlY) {
         m_axisY->setRange(ui->spinBoxStartY->value(), ui->spinBoxEndY->value());
@@ -947,8 +876,7 @@ void FormPlot::on_tBtnRangeY_clicked()
     }
 }
 
-void FormPlot::on_tBtnFourier_clicked()
-{
+void FormPlot::on_tBtnFourier_clicked() {
     m_enableFourier = !m_enableFourier;
     if (m_enableFourier) {
         m_fourierTransform->show();
@@ -957,8 +885,7 @@ void FormPlot::on_tBtnFourier_clicked()
     }
 }
 
-void FormPlot::on_tBtnDerivation_clicked()
-{
+void FormPlot::on_tBtnDerivation_clicked() {
     m_enableDerivation = !m_enableDerivation;
     ui->tBtnDerivation->setChecked(m_enableDerivation);
     if (m_enableDerivation) {
@@ -968,8 +895,7 @@ void FormPlot::on_tBtnDerivation_clicked()
     }
 }
 
-void FormPlot::on_tBtnAccumulate_clicked()
-{
+void FormPlot::on_tBtnAccumulate_clicked() {
     m_enableAccumulate = !m_enableAccumulate;
     ui->tBtnAccumulate->setChecked(m_enableAccumulate);
     if (m_enableAccumulate) {
@@ -979,8 +905,7 @@ void FormPlot::on_tBtnAccumulate_clicked()
     }
 }
 
-void FormPlot::on_tBtnSNR_clicked()
-{
+void FormPlot::on_tBtnSNR_clicked() {
     m_enableSNR = !m_enableSNR;
     ui->tBtnSNR->setChecked(m_enableSNR);
     if (m_enableSNR) {
@@ -990,8 +915,7 @@ void FormPlot::on_tBtnSNR_clicked()
     }
 }
 
-void FormPlot::on_tBtnTemperature_clicked()
-{
+void FormPlot::on_tBtnTemperature_clicked() {
     m_enableTemperature = !m_enableTemperature;
     ui->tBtnTemperature->setChecked(m_enableTemperature);
     if (m_enableTemperature) {
@@ -1001,8 +925,7 @@ void FormPlot::on_tBtnTemperature_clicked()
     }
 }
 
-void FormPlot::on_tBtnConversion_clicked()
-{
+void FormPlot::on_tBtnConversion_clicked() {
     m_enableConversion = !m_enableConversion;
     if (m_enableConversion) {
         TemperatureConversion conv;
@@ -1012,14 +935,12 @@ void FormPlot::on_tBtnConversion_clicked()
     }
 }
 
-void FormPlot::on_tBtnToExternal_clicked()
-{
+void FormPlot::on_tBtnToExternal_clicked() {
     m_enableExternal = !m_enableExternal;
     ui->tBtnToExternal->setChecked(m_enableExternal);
 }
 
-void FormPlot::on_tBtnToVoltage_clicked()
-{
+void FormPlot::on_tBtnToVoltage_clicked() {
     m_enableVoltage = !m_enableVoltage;
     ui->tBtnToVoltage->setChecked(m_enableVoltage);
 }

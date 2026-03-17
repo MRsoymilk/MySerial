@@ -14,8 +14,7 @@ class ExternalControl;
 }
 QT_END_NAMESPACE
 
-class FormExternal : public QWidget
-{
+class FormExternal : public QWidget {
     Q_OBJECT
 public:
     explicit FormExternal(QWidget *parent = nullptr);
@@ -48,8 +47,7 @@ private:
     // ===== 运行状态 =====
     std::atomic_bool m_running{false};
 
-    struct
-    {
+    struct {
         QString enable;
         QString log;
         QString port;

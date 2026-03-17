@@ -1,31 +1,24 @@
 #include "formexternal.h"
+
+#include <QJsonDocument>
+
 #include "funcdef.h"
 #include "keydef.h"
 #include "ui_formexternal.h"
 
-#include <QJsonDocument>
-
-FormExternal::FormExternal(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::ExternalControl)
-{
+FormExternal::FormExternal(QWidget *parent) : QWidget(parent), ui(new Ui::ExternalControl) {
     ui->setupUi(this);
     init();
 }
 
-FormExternal::~FormExternal()
-{
+FormExternal::~FormExternal() {
     stopServer();
     delete ui;
 }
 
-void FormExternal::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormExternal::retranslateUI() { ui->retranslateUi(this); }
 
-void FormExternal::init()
-{
+void FormExternal::init() {
     m_iniServer.enable = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, VAL_DISABLE);
     m_iniServer.log = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_LOG, VAL_DISABLE);
     m_iniServer.port = SETTING_CONFIG_GET(CFG_GROUP_SERVER, CFG_SERVER_PORT, "12345");
@@ -39,22 +32,19 @@ void FormExternal::init()
     }
 }
 
-void FormExternal::onExternalSpectral(const QJsonObject &spectral)
-{
+void FormExternal::onExternalSpectral(const QJsonObject &spectral) {
     QMutexLocker locker(&m_mutex);
     m_objSpectrum = spectral;
 }
 
-void FormExternal::startServer()
-{
+void FormExternal::startServer() {
     if (!m_server) {
         m_server = new httplib::Server();
         m_server->new_task_queue = [] { return new httplib::ThreadPool(4); };
         addRouter();
     }
 
-    if (m_running.load())
-        return;
+    if (m_running.load()) return;
 
     m_running.store(true);
 
@@ -66,19 +56,13 @@ void FormExternal::startServer()
         LOG_INFO("http listen thread exited");
     });
 
-    connect(m_listenThread,
-            &QThread::finished,
-            m_listenThread,
-            &QObject::deleteLater,
-            Qt::QueuedConnection);
+    connect(m_listenThread, &QThread::finished, m_listenThread, &QObject::deleteLater, Qt::QueuedConnection);
 
     m_listenThread->start();
 }
 
-void FormExternal::stopServer()
-{
-    if (!m_server || !m_running.load())
-        return;
+void FormExternal::stopServer() {
+    if (!m_server || !m_running.load()) return;
 
     LOG_INFO("stop http server");
 
@@ -92,8 +76,7 @@ void FormExternal::stopServer()
     }
 }
 
-void FormExternal::addRouter()
-{
+void FormExternal::addRouter() {
     // ===== /info =====
     m_server->Get("/info", [this](const httplib::Request &, httplib::Response &res) {
         if (!m_running.load()) {
@@ -115,14 +98,12 @@ void FormExternal::addRouter()
         }
 
         QMutexLocker locker(&m_mutex);
-        res.set_content(QJsonDocument(m_objSpectrum).toJson(QJsonDocument::Compact).toStdString(),
-                        "application/json");
+        res.set_content(QJsonDocument(m_objSpectrum).toJson(QJsonDocument::Compact).toStdString(), "application/json");
         m_objSpectrum = {};
     });
 }
 
-void FormExternal::on_checkBoxEnable_clicked()
-{
+void FormExternal::on_checkBoxEnable_clicked() {
     bool enable = ui->checkBoxEnable->isChecked();
     m_iniServer.enable = enable ? VAL_ENABLE : VAL_DISABLE;
     SETTING_CONFIG_SET(CFG_GROUP_SERVER, CFG_SERVER_ENABLE, m_iniServer.enable);
@@ -132,11 +113,9 @@ void FormExternal::on_checkBoxEnable_clicked()
     } else {
         stopServer();
     }
-
 }
 
-void FormExternal::on_checkBoxLog_clicked()
-{
+void FormExternal::on_checkBoxLog_clicked() {
     m_iniServer.log = ui->checkBoxLog->isChecked() ? VAL_ENABLE : VAL_DISABLE;
     SETTING_CONFIG_SET(CFG_GROUP_SERVER, CFG_SERVER_LOG, m_iniServer.log);
 }

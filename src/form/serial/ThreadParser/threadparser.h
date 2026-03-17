@@ -26,15 +26,14 @@
 // };
 
 // #endif // THREADPARSER_H
-#include <QObject>
 #include <QByteArray>
 #include <QList>
 #include <QMutex>
+#include <QObject>
 
 #include "global.h"
 
-class ThreadParser : public QObject
-{
+class ThreadParser : public QObject {
     Q_OBJECT
 
 public:

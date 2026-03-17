@@ -9,8 +9,7 @@ namespace Ui {
 class CalculateKB;
 }
 
-class CalculateKB : public QDialog
-{
+class CalculateKB : public QDialog {
     Q_OBJECT
 
 public:
@@ -39,4 +38,4 @@ private:
     int m_temp_column = 1;
 };
 
-#endif // CALCULATEKB_H
+#endif  // CALCULATEKB_H

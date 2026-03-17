@@ -1,28 +1,18 @@
 #include "formtip.h"
+
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+
 #include "funcdef.h"
 #include "ui_formtip.h"
 
-FormTip::FormTip(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormTip)
-{
-    ui->setupUi(this);
-}
+FormTip::FormTip(QWidget *parent) : QWidget(parent), ui(new Ui::FormTip) { ui->setupUi(this); }
 
-FormTip::~FormTip()
-{
-    delete ui;
-}
+FormTip::~FormTip() { delete ui; }
 
-void FormTip::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormTip::retranslateUI() { ui->retranslateUi(this); }
 
-void FormTip::onFetchUpdates(const QString &url)
-{
+void FormTip::onFetchUpdates(const QString &url) {
     QNetworkAccessManager manager;
     QNetworkRequest request((QUrl(url + "/update.txt")));
 

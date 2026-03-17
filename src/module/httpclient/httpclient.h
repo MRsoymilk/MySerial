@@ -7,8 +7,7 @@
 #include <QObject>
 #include <QPixmap>
 
-class HttpClient : public QObject
-{
+class HttpClient : public QObject {
     Q_OBJECT
 public:
     explicit HttpClient(QObject *parent = nullptr);
@@ -16,10 +15,8 @@ public:
 
     void post(const QUrl &url, const QJsonObject &data);
     void getImage(const QUrl &imageUrl);
-    void downloadBinary(const QString &url,
-                        std::function<void(QByteArray)> onSuccess,
-                        std::function<void(QString)> onError,
-                        std::function<void(qint64, qint64)> onProgress);
+    void downloadBinary(const QString &url, std::function<void(QByteArray)> onSuccess,
+                        std::function<void(QString)> onError, std::function<void(qint64, qint64)> onProgress);
     QJsonObject get_sync(const QString &url, int timeoutMs = 3000);
 
 signals:
@@ -37,4 +34,4 @@ private:
     QNetworkReply *m_currentReply = nullptr;
 };
 
-#endif // HTTPCLIENT_H
+#endif  // HTTPCLIENT_H

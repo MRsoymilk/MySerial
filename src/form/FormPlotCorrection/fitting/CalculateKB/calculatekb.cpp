@@ -1,5 +1,4 @@
 #include "calculatekb.h"
-#include "ui_calculatekb.h"
 
 #include <QChart>
 #include <QChartView>
@@ -7,39 +6,28 @@
 #include <QLineSeries>
 #include <QMenu>
 #include <QValueAxis>
+
 #include "datadef.h"
 #include "funcdef.h"
 #include "httpclient.h"
+#include "ui_calculatekb.h"
 
-CalculateKB::CalculateKB(QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::CalculateKB)
-{
+CalculateKB::CalculateKB(QWidget *parent) : QDialog(parent), ui(new Ui::CalculateKB) {
     ui->setupUi(this);
     init();
 }
 
-CalculateKB::~CalculateKB()
-{
-    delete ui;
-}
+CalculateKB::~CalculateKB() { delete ui; }
 
-QJsonObject CalculateKB::getResult()
-{
-    return m_result;
-}
+QJsonObject CalculateKB::getResult() { return m_result; }
 
-void CalculateKB::init()
-{
+void CalculateKB::init() {
     m_model = new QStandardItemModel(0, 3, this);
     m_model->setHeaderData(0, Qt::Horizontal, tr("temperature (R)"));
     m_model->setHeaderData(1, Qt::Horizontal, tr("slope (mV)"));
     m_model->setHeaderData(2, Qt::Horizontal, tr("intercept (mV)"));
     ui->tableView->setModel(m_model);
-    connect(ui->tableView,
-            &QWidget::customContextMenuRequested,
-            this,
-            &CalculateKB::showContextMenu);
+    connect(ui->tableView, &QWidget::customContextMenuRequested, this, &CalculateKB::showContextMenu);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -49,8 +37,7 @@ void CalculateKB::init()
     m_urlFitKB = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIT_KB_URL, URL_FITTING_KB);
 }
 
-void CalculateKB::showContextMenu(const QPoint &pos)
-{
+void CalculateKB::showContextMenu(const QPoint &pos) {
     QMenu contextMenu(tr("Context Menu"), this);
 
     QAction *displayAction = new QAction(tr("Display"), this);
@@ -63,8 +50,7 @@ void CalculateKB::showContextMenu(const QPoint &pos)
 
     contextMenu.exec(ui->tableView->viewport()->mapToGlobal(pos));
 }
-void CalculateKB::displayData()
-{
+void CalculateKB::displayData() {
     // 1. 提取数据
     QVector<double> temperature, slopes, intercepts;
     int rowCount = m_model->rowCount();
@@ -132,11 +118,9 @@ void CalculateKB::displayData()
     ui->gLayPlot->addWidget(chartView, 0, 0);
 }
 
-void CalculateKB::deleteData()
-{
+void CalculateKB::deleteData() {
     QItemSelectionModel *selectionModel = ui->tableView->selectionModel();
-    if (!selectionModel->hasSelection())
-        return;
+    if (!selectionModel->hasSelection()) return;
 
     QModelIndexList selectedRows = selectionModel->selectedRows();
     if (!selectedRows.isEmpty()) {
@@ -145,8 +129,7 @@ void CalculateKB::deleteData()
     }
 }
 
-void CalculateKB::on_btnCalculate_clicked()
-{
+void CalculateKB::on_btnCalculate_clicked() {
     HttpClient *client = new HttpClient;
     connect(client, &HttpClient::success, this, [&](const QJsonDocument &resp) {
         m_result = resp.object();
@@ -183,8 +166,7 @@ void CalculateKB::on_btnCalculate_clicked()
     client->post(m_urlFitKB, objRequest);
 }
 
-void CalculateKB::on_textEditInput_textChanged()
-{
+void CalculateKB::on_textEditInput_textChanged() {
     QString text = ui->textEditInput->toPlainText();
 
     if (text.isEmpty()) {
@@ -193,19 +175,19 @@ void CalculateKB::on_textEditInput_textChanged()
 
     QStringList lines = text.split('\n', Qt::SkipEmptyParts);
 
-    QVector<double> slopes;      // 存放斜率
-    QVector<double> intercepts;  // 存放截距
-    QVector<double> temperature; // 存放温度
+    QVector<double> slopes;       // 存放斜率
+    QVector<double> intercepts;   // 存放截距
+    QVector<double> temperature;  // 存放温度
 
     // 第一行是表头，从第二行开始解析
     for (int i = 1; i < lines.size(); ++i) {
-        QString line = lines[i].simplified(); // 去掉多余空格
+        QString line = lines[i].simplified();  // 去掉多余空格
         QStringList cols = line.split(' ', Qt::SkipEmptyParts);
         if (cols.size() >= 5) {
             bool ok1 = false, ok2 = false, ok3 = false;
             double temp = cols[m_temp_column].toDouble(&ok1) * 1000;
-            double slope = cols[m_temp_column + 3].toDouble(&ok2);     // 第4列
-            double intercept = cols[m_temp_column + 4].toDouble(&ok3); // 第5列
+            double slope = cols[m_temp_column + 3].toDouble(&ok2);      // 第4列
+            double intercept = cols[m_temp_column + 4].toDouble(&ok3);  // 第5列
             if (ok1 && ok2 && ok3) {
                 temperature.append(temp);
                 slopes.append(slope);
@@ -216,10 +198,7 @@ void CalculateKB::on_textEditInput_textChanged()
 
     // 打印测试
     for (int i = 0; i < slopes.size(); ++i) {
-        LOG_INFO("temperature = {}, slope = {}, intercept = {}",
-                 temperature[i],
-                 slopes[i],
-                 intercepts[i]);
+        LOG_INFO("temperature = {}, slope = {}, intercept = {}", temperature[i], slopes[i], intercepts[i]);
     }
 
     for (int row = 0; row < temperature.size(); ++row) {
@@ -230,7 +209,4 @@ void CalculateKB::on_textEditInput_textChanged()
     ui->tableView->resizeColumnsToContents();
 }
 
-void CalculateKB::on_spinBoxTemperatureColumn_valueChanged(int val)
-{
-    m_temp_column = val;
-}
+void CalculateKB::on_spinBoxTemperatureColumn_valueChanged(int val) { m_temp_column = val; }

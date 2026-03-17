@@ -1,26 +1,21 @@
 #include "derivation.h"
+
+#include <Eigen/Dense>
+
 #include "MyChartView/mychartview.h"
 #include "ui_derivation.h"
-#include <Eigen/Dense>
 
 using Eigen::ArrayXd;
 using Eigen::VectorXd;
 
-Derivation::Derivation(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::Derivation)
-{
+Derivation::Derivation(QWidget *parent) : QWidget(parent), ui(new Ui::Derivation) {
     ui->setupUi(this);
     initChart();
 }
 
-Derivation::~Derivation()
-{
-    delete ui;
-}
+Derivation::~Derivation() { delete ui; }
 
-void Derivation::initChart()
-{
+void Derivation::initChart() {
     m_chart = new QChart;
     m_chart->setTitle("Derivation");
     m_seriesData33 = new QLineSeries;
@@ -72,8 +67,7 @@ void Derivation::initChart()
     ui->plainTextEdit->setVisible(false);
 }
 
-void Derivation::derivation(const QList<QPointF> &data31, const QList<QPointF> &data33)
-{
+void Derivation::derivation(const QList<QPointF> &data31, const QList<QPointF> &data33) {
     m_lastData31 = data31;
     m_lastData33 = data33;
 
@@ -90,8 +84,7 @@ void Derivation::derivation(const QList<QPointF> &data31, const QList<QPointF> &
     }
 
     int count = qMin(data31.size(), data33.size());
-    if (count < 2)
-        return;
+    if (count < 2) return;
 
     VectorXd x(count), y31(count), y33(count);
 
@@ -107,7 +100,7 @@ void Derivation::derivation(const QList<QPointF> &data31, const QList<QPointF> &
     diff(0) = 0.0;
     diff.tail(count - 1) = y33.tail(count - 1) - y33.head(count - 1);
 
-    Eigen::Array<bool, Eigen::Dynamic, 1> falling = diff.array() < -0.0001; // 判定下降沿
+    Eigen::Array<bool, Eigen::Dynamic, 1> falling = diff.array() < -0.0001;  // 判定下降沿
 
     QList<QPointF> points33, points31, pointsDeriv;
 
@@ -158,8 +151,7 @@ void Derivation::derivation(const QList<QPointF> &data31, const QList<QPointF> &
     m_chart->createDefaultAxes();
 
     double margin = (yMax - yMin) * 0.10;
-    if (margin == 0)
-        margin = 1.0;
+    if (margin == 0) margin = 1.0;
 
     m_chart->axes(Qt::Vertical).first()->setRange(yMin - margin, yMax + margin);
     m_chart->axes(Qt::Horizontal).first()->setRange(x(0), x(count - 1));
@@ -185,13 +177,9 @@ void Derivation::derivation(const QList<QPointF> &data31, const QList<QPointF> &
     }
 }
 
-void Derivation::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void Derivation::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
-void Derivation::updateExtraCurve()
-{
+void Derivation::updateExtraCurve() {
     auto curves = m_curve[m_current_extra];
     m_seriesExtra31->replace(curves.curve31.data);
     m_seriesExtra33->replace(curves.curve33.data);
@@ -203,8 +191,7 @@ void Derivation::updateExtraCurve()
     }
 }
 
-void Derivation::on_tBtnNextExtra_clicked()
-{
+void Derivation::on_tBtnNextExtra_clicked() {
     if (m_current_extra - 1 >= 0) {
         --m_current_extra;
     } else {
@@ -213,8 +200,7 @@ void Derivation::on_tBtnNextExtra_clicked()
     updateExtraCurve();
 }
 
-void Derivation::on_tBtnPrevExtra_clicked()
-{
+void Derivation::on_tBtnPrevExtra_clicked() {
     if (m_current_extra + 1 < m_curve.size()) {
         ++m_current_extra;
     } else {
@@ -223,22 +209,19 @@ void Derivation::on_tBtnPrevExtra_clicked()
     updateExtraCurve();
 }
 
-void Derivation::on_horizontalSlider_valueChanged(int value)
-{
+void Derivation::on_horizontalSlider_valueChanged(int value) {
     ui->spinBoxMinLength->blockSignals(true);
     ui->spinBoxMinLength->setValue(value);
     ui->spinBoxMinLength->blockSignals(false);
 }
 
-void Derivation::on_spinBoxMinLength_valueChanged(int value)
-{
+void Derivation::on_spinBoxMinLength_valueChanged(int value) {
     ui->horizontalSlider->blockSignals(true);
     ui->horizontalSlider->setValue(value);
     ui->horizontalSlider->blockSignals(false);
 }
 
-void Derivation::callFindPeak(const QList<QPointF> &points31, const QList<QPointF> &points33)
-{
+void Derivation::callFindPeak(const QList<QPointF> &points31, const QList<QPointF> &points33) {
     // 自动进入 checked 情况：开始找峰
     if (points31.isEmpty()) {
         return;
@@ -281,8 +264,7 @@ void Derivation::callFindPeak(const QList<QPointF> &points31, const QList<QPoint
                                            .arg(corresponding33 * 0x8000 / 3.3));
 }
 
-void Derivation::on_tBtnFindPeak_clicked()
-{
+void Derivation::on_tBtnFindPeak_clicked() {
     m_enableFindPeak = !m_enableFindPeak;
     ui->tBtnFindPeak->setChecked(m_enableFindPeak);
     ui->plainTextEdit->setVisible(m_enableFindPeak);

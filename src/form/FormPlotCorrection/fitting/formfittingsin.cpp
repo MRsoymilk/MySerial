@@ -1,31 +1,28 @@
 #include "formfittingsin.h"
+
 #include <QFile>
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QMenu>
-#include <QPair>
-#include <QtMath>
-#include <optional>
-
 #include <QMouseEvent>
+#include <QPair>
 #include <QtCore>
 #include <QtMath>
+#include <cmath>
+#include <cstdint>
+#include <optional>
+
 #include "CalculateKB/calculatekb.h"
 #include "ImageViewer/imageviewer.h"
 #include "datadef.h"
 #include "funcdef.h"
 #include "httpclient.h"
 #include "ui_formfittingsin.h"
-#include <cmath>
-#include <cstdint>
 
 ImageViewer *imageViewer = nullptr;
 
-FormFittingSin::FormFittingSin(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormFittingSin)
-{
+FormFittingSin::FormFittingSin(QWidget *parent) : QWidget(parent), ui(new Ui::FormFittingSin) {
     ui->setupUi(this);
     init();
 
@@ -33,13 +30,9 @@ FormFittingSin::FormFittingSin(QWidget *parent)
     ui->labelPlotPeak->installEventFilter(this);
 }
 
-FormFittingSin::~FormFittingSin()
-{
-    delete ui;
-}
+FormFittingSin::~FormFittingSin() { delete ui; }
 
-void FormFittingSin::init()
-{
+void FormFittingSin::init() {
     ui->labelFormula->setText(
         "y = (k<sub>1</sub> &middot; T + b<sub>1</sub>) / 8.5 / 1000 * "
         "[y<sub>0</sub> + A &middot; sin(&pi; (x - "
@@ -56,13 +49,10 @@ void FormFittingSin::init()
     m_model->setHeaderData(0, Qt::Horizontal, "index");
     m_model->setHeaderData(1, Qt::Horizontal, "fitting curve V(curve33)");
     m_model->setHeaderData(2, Qt::Horizontal, "fitting curve Raw(curve33)");
-    ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(
-        QHeaderView::ResizeToContents);
+    ui->tableViewFittingCurveData->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableViewFittingCurveData->setModel(m_model);
     ui->tableViewFittingCurveData->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->tableViewFittingCurveData,
-            &QWidget::customContextMenuRequested,
-            this,
+    connect(ui->tableViewFittingCurveData, &QWidget::customContextMenuRequested, this,
             &FormFittingSin::showContextMenu);
 
     m_urlCalculate = SETTING_CONFIG_GET(CFG_GROUP_SETTING, CFG_SETTING_FIT_SIN_URL, URL_FITTING_SIN);
@@ -75,8 +65,7 @@ void FormFittingSin::init()
     ui->tBtnAddStep2->setCheckable(true);
 }
 
-void FormFittingSin::showContextMenu(const QPoint &pos)
-{
+void FormFittingSin::showContextMenu(const QPoint &pos) {
     QMenu contextMenu(tr("Context Menu"), this);
 
     QAction *exportAllAction = new QAction(tr("Export All to CSV"), this);
@@ -86,12 +75,9 @@ void FormFittingSin::showContextMenu(const QPoint &pos)
     contextMenu.exec(ui->tableViewFittingCurveData->viewport()->mapToGlobal(pos));
 }
 
-void FormFittingSin::exportAllToCSV()
-{
-    QString path = QFileDialog::getSaveFileName(this,
-                                                tr("Export All Data to CSV"),
-                                                "data_all.csv",
-                                                tr("CSV Files (*.csv)"));
+void FormFittingSin::exportAllToCSV() {
+    QString path =
+        QFileDialog::getSaveFileName(this, tr("Export All Data to CSV"), "data_all.csv", tr("CSV Files (*.csv)"));
     if (path.isEmpty()) {
         LOG_WARN("CSV path is empty!");
         return;
@@ -129,8 +115,7 @@ void FormFittingSin::exportAllToCSV()
     LOG_INFO("Exported all data to CSV: {}", path.toStdString());
 }
 
-void FormFittingSin::packageRawData(bool isSend)
-{
+void FormFittingSin::packageRawData(bool isSend) {
     QByteArray byteArray;
 
     // 包头
@@ -174,8 +159,7 @@ void FormFittingSin::packageRawData(bool isSend)
     }
 }
 
-QByteArray FormFittingSin::packageRawData(const QVector<QPointF> &points)
-{
+QByteArray FormFittingSin::packageRawData(const QVector<QPointF> &points) {
     QByteArray byteArray;
 
     // 包头
@@ -201,8 +185,7 @@ QByteArray FormFittingSin::packageRawData(const QVector<QPointF> &points)
     return byteArray;
 }
 
-void FormFittingSin::fillFixedFittingCurveData(const double &start)
-{
+void FormFittingSin::fillFixedFittingCurveData(const double &start) {
     m_threshold_table.clear();
     m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
     m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
@@ -222,8 +205,7 @@ void FormFittingSin::fillFixedFittingCurveData(const double &start)
     }
 }
 
-bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
-{
+bool FormFittingSin::eventFilter(QObject *obj, QEvent *event) {
     if (obj == ui->labelPlotSin && event->type() == QEvent::MouseButtonDblClick) {
         if (!m_pixSin.isNull()) {
             if (!imageViewer) {
@@ -255,8 +237,7 @@ bool FormFittingSin::eventFilter(QObject *obj, QEvent *event)
     return QWidget::eventFilter(obj, event);
 }
 
-void FormFittingSin::startFitting()
-{
+void FormFittingSin::startFitting() {
     if (!m_data_ready) {
         return;
     }
@@ -293,25 +274,22 @@ void FormFittingSin::startFitting()
         double loss_rss = result["loss_rss"].toDouble();
         double loss_mse = result["loss_mse"].toDouble();
         double r2 = result["r2"].toDouble();
-        ui->textBrowserSinLog->append(
-            QString("Loss: rss: %1, mse: %2, r2: %3").arg(loss_rss).arg(loss_mse).arg(r2));
+        ui->textBrowserSinLog->append(QString("Loss: rss: %1, mse: %2, r2: %3").arg(loss_rss).arg(loss_mse).arg(r2));
         QString imageUrl = result[KEY_IMG_URL].toString();
 
         ui->lineEdit_A->setText(QString::number(m_sin.A));
         ui->lineEdit_w->setText(QString::number(m_sin.w));
         ui->lineEdit_xc->setText(QString::number(m_sin.xc));
         ui->lineEdit_y0->setText(QString::number(m_sin.y0));
-        QString msg = QString("response: %1")
-                          .arg(QString(QJsonDocument(resp).toJson(QJsonDocument::Indented)));
+        QString msg = QString("response: %1").arg(QString(QJsonDocument(resp).toJson(QJsonDocument::Indented)));
         ui->textBrowserSinLog->append(msg);
         LOG_INFO(msg);
         clientFitSin->getImage(QUrl(imageUrl));
     });
 
     connect(clientFitSin, &HttpClient::imageLoaded, this, [=](const QPixmap &pixmap) {
-        QString msg = QString("Fitting Sin recv img size: (%1, %2)")
-                          .arg(pixmap.size().width())
-                          .arg(pixmap.size().height());
+        QString msg =
+            QString("Fitting Sin recv img size: (%1, %2)").arg(pixmap.size().width()).arg(pixmap.size().height());
         ui->textBrowserSinLog->append(msg);
         LOG_INFO(msg);
 
@@ -365,9 +343,8 @@ void FormFittingSin::startFitting()
         clientFindPeak->getImage(QUrl(url));
     });
     connect(clientFindPeak, &HttpClient::imageLoaded, this, [=](const QPixmap &pixmap) {
-        QString msg = QString("Find Peak recv img size: (%1, %2)")
-                          .arg(pixmap.size().width())
-                          .arg(pixmap.size().height());
+        QString msg =
+            QString("Find Peak recv img size: (%1, %2)").arg(pixmap.size().width()).arg(pixmap.size().height());
         ui->textBrowserSinLog->append(msg);
         LOG_INFO(msg);
 
@@ -402,8 +379,7 @@ void FormFittingSin::startFitting()
     clientFindPeak->post(urlFindPeak, objFindPeak);
 }
 
-void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<double> &v24)
-{
+void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<double> &v24) {
     ui->textBrowserSinLog->append("===== start correction =====");
 
     if (v14.empty()) {
@@ -418,27 +394,19 @@ void FormFittingSin::doCorrection(const QVector<double> &v14, const QVector<doub
     startFitting();
 }
 
-void FormFittingSin::setTemperature(double temperature)
-{
+void FormFittingSin::setTemperature(double temperature) {
     m_sin.T = temperature;
     ui->lineEdit_T->setText(QString::number(temperature));
     ui->lineEdit_T_->setText(QString::number(temperature));
     startFitting();
 }
 
-void FormFittingSin::updateParams()
-{
-    on_btnUpdate_clicked();
-}
+void FormFittingSin::updateParams() { on_btnUpdate_clicked(); }
 
-void FormFittingSin::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormFittingSin::retranslateUI() { ui->retranslateUi(this); }
 
-std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
-    double x1, double y1, double x2, double y2, double A, double y0)
-{
+std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(double x1, double y1, double x2, double y2,
+                                                                         double A, double y0) {
     y1 = (y1 - m_b) / m_k;
     y2 = (y2 - m_b) / m_k;
 
@@ -448,8 +416,7 @@ std::optional<QPair<double, double>> FormFittingSin::solveSinParams_hard(
     return QPair<double, double>(xc, w);
 }
 
-QByteArray FormFittingSin::buildFrame()
-{
+QByteArray FormFittingSin::buildFrame() {
     QByteArray byteArray;
     const QByteArray header = QByteArray::fromHex("DD3C002349");
     const QByteArray tail = QByteArray::fromHex("CDFF");
@@ -478,8 +445,7 @@ QByteArray FormFittingSin::buildFrame()
     return byteArray;
 }
 
-void FormFittingSin::on_btnAdjust_clicked()
-{
+void FormFittingSin::on_btnAdjust_clicked() {
     if (ui->spinBoxX1Real->value() == ui->spinBoxX2Real->value()) {
         SHOW_AUTO_CLOSE_MSGBOX(this, tr("Error"), tr("points can not be same!"));
     }
@@ -519,27 +485,23 @@ void FormFittingSin::on_btnAdjust_clicked()
     packageRawData();
 }
 
-void FormFittingSin::on_btnUpdate_clicked()
-{
+void FormFittingSin::on_btnUpdate_clicked() {
     QString params = ui->lineEditParameter->text();
     if (!params.isEmpty()) {
         QByteArray byteArray = QByteArray::fromHex(params.toUtf8());
 
         // 校验头尾
-        if (byteArray.size() < 2 + 8 * 4 + 2) { // header(5) + 8*4 + tail(2)
+        if (byteArray.size() < 2 + 8 * 4 + 2) {  // header(5) + 8*4 + tail(2)
             qWarning() << "参数长度不正确";
             return;
         }
 
-        int idx = 5; // 跳过 header "DD3C002349"
+        int idx = 5;  // 跳过 header "DD3C002349"
 
         auto readDouble = [&](const QByteArray &arr, int &pos) -> double {
-            if (pos + 4 > arr.size())
-                return 0.0;
-            int32_t val = (static_cast<uint8_t>(arr[pos]) << 24)
-                          | (static_cast<uint8_t>(arr[pos + 1]) << 16)
-                          | (static_cast<uint8_t>(arr[pos + 2]) << 8)
-                          | (static_cast<uint8_t>(arr[pos + 3]));
+            if (pos + 4 > arr.size()) return 0.0;
+            int32_t val = (static_cast<uint8_t>(arr[pos]) << 24) | (static_cast<uint8_t>(arr[pos + 1]) << 16) |
+                          (static_cast<uint8_t>(arr[pos + 2]) << 8) | (static_cast<uint8_t>(arr[pos + 3]));
             pos += 4;
             return static_cast<double>(val) / 1000.0;
         };
@@ -556,17 +518,10 @@ void FormFittingSin::on_btnUpdate_clicked()
         m_k = (m_sin.k1 * m_sin.T + m_sin.b1) / 8.5 / 1000.0;
         m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
 
-        LOG_INFO("generate params from {} to k1: {}, b1: {}, y0: {}, A: {}, xc: {}, w: {}, k2: {}, "
-                 "b2: {}",
-                 params,
-                 m_sin.k1,
-                 m_sin.b1,
-                 m_sin.y0,
-                 m_sin.A,
-                 m_sin.xc,
-                 m_sin.w,
-                 m_sin.k2,
-                 m_sin.b2);
+        LOG_INFO(
+            "generate params from {} to k1: {}, b1: {}, y0: {}, A: {}, xc: {}, w: {}, k2: {}, "
+            "b2: {}",
+            params, m_sin.k1, m_sin.b1, m_sin.y0, m_sin.A, m_sin.xc, m_sin.w, m_sin.k2, m_sin.b2);
 
         ui->lineEdit_k1->setText(QString::number(m_sin.k1));
         ui->lineEdit_b1->setText(QString::number(m_sin.b1));
@@ -594,15 +549,13 @@ void FormFittingSin::on_btnUpdate_clicked()
     }
 }
 
-void FormFittingSin::on_btnGenerateThreshold_clicked()
-{
+void FormFittingSin::on_btnGenerateThreshold_clicked() {
     double start = ui->doubleSpinBoxStart->value();
     fillFixedFittingCurveData(start);
     packageRawData();
 }
 
-void FormFittingSin::on_btnCalculate_k1b1_k2b2_clicked()
-{
+void FormFittingSin::on_btnCalculate_k1b1_k2b2_clicked() {
     CalculateKB cal;
     cal.exec();
     QJsonObject result = cal.getResult();
@@ -618,8 +571,7 @@ void FormFittingSin::on_btnCalculate_k1b1_k2b2_clicked()
         ui->lineEdit_k1->setText(QString::number(k));
         ui->lineEdit_b1->setText(QString::number(b));
         ui->textBrowserSinLog->append(QString("slope: y = %1 * T + %2").arg(k).arg(b));
-        ui->textBrowserSinLog->append(
-            QString("loss: mse: %1, mae: %2, r2: %3").arg(mse).arg(mae).arg(r2));
+        ui->textBrowserSinLog->append(QString("loss: mse: %1, mae: %2, r2: %3").arg(mse).arg(mae).arg(r2));
         m_sin.k1 = k;
         m_sin.b1 = b;
     }
@@ -632,15 +584,13 @@ void FormFittingSin::on_btnCalculate_k1b1_k2b2_clicked()
         ui->lineEdit_k2->setText(QString::number(k));
         ui->lineEdit_b2->setText(QString::number(b));
         ui->textBrowserSinLog->append(QString("intercept: y = %1 * T + %2").arg(k).arg(b));
-        ui->textBrowserSinLog->append(
-            QString("loss: mse: %1, mae: %2, r2: %3").arg(mse).arg(mae).arg(r2));
+        ui->textBrowserSinLog->append(QString("loss: mse: %1, mae: %2, r2: %3").arg(mse).arg(mae).arg(r2));
         m_sin.k2 = k;
         m_sin.b2 = b;
     }
 }
 
-void FormFittingSin::on_btnSetTemperature_clicked()
-{
+void FormFittingSin::on_btnSetTemperature_clicked() {
     QString val = QString::number(ui->doubleSpinBoxTemperature->value());
     ui->lineEdit_T->setText(val);
     ui->lineEdit_T_->setText(val);
@@ -649,8 +599,7 @@ void FormFittingSin::on_btnSetTemperature_clicked()
     m_b = (m_sin.k2 * m_sin.T + m_sin.b2) / 1000.0;
 }
 
-void FormFittingSin::on_btnSendFormula_clicked()
-{
+void FormFittingSin::on_btnSendFormula_clicked() {
     auto frame = buildFrame();
     LOG_INFO("send formula: {}", FORMAT_HEX(frame));
     LOG_INFO("k1 {}", m_sin.k1);
@@ -664,8 +613,7 @@ void FormFittingSin::on_btnSendFormula_clicked()
     emit sendSin(frame);
 }
 
-void FormFittingSin::on_btnSendR_kb_clicked()
-{
+void FormFittingSin::on_btnSendR_kb_clicked() {
     double k = ui->doubleSpinBoxR_k->value();
     double b = ui->doubleSpinBoxR_b->value();
     QByteArray byteArray;
@@ -685,8 +633,7 @@ void FormFittingSin::on_btnSendR_kb_clicked()
     emit sendSin(byteArray);
 }
 
-void FormFittingSin::on_btnSendSegmentFormula_clicked()
-{
+void FormFittingSin::on_btnSendSegmentFormula_clicked() {
     if (ui->tBtnAddStep1->isChecked() && ui->tBtnAddStep2->isChecked()) {
         QByteArray byteArray;
         const QByteArray header = QByteArray::fromHex("DD3C002351");
@@ -737,12 +684,6 @@ void FormFittingSin::on_btnSendSegmentFormula_clicked()
     }
 }
 
-void FormFittingSin::on_tBtnAddStep1_clicked()
-{
-    m_step_1 = m_sin;
-}
+void FormFittingSin::on_tBtnAddStep1_clicked() { m_step_1 = m_sin; }
 
-void FormFittingSin::on_tBtnAddStep2_clicked()
-{
-    m_step_2 = m_sin;
-}
+void FormFittingSin::on_tBtnAddStep2_clicked() { m_step_2 = m_sin; }

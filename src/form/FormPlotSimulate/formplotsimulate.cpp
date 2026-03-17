@@ -1,5 +1,4 @@
 #include "formplotsimulate.h"
-#include "ui_formplotsimulate.h"
 
 #include <QFile>
 #include <QFileDialog>
@@ -9,11 +8,9 @@
 #include <QTimer>
 
 #include "funcdef.h"
+#include "ui_formplotsimulate.h"
 
-FormPlotSimulate::FormPlotSimulate(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormPlotSimulate)
-{
+FormPlotSimulate::FormPlotSimulate(QWidget *parent) : QWidget(parent), ui(new Ui::FormPlotSimulate) {
     ui->setupUi(this);
 
     m_timer = new QTimer(this);
@@ -24,47 +21,31 @@ FormPlotSimulate::FormPlotSimulate(QWidget *parent)
     init();
 }
 
-FormPlotSimulate::~FormPlotSimulate()
-{
-    delete ui;
-}
+FormPlotSimulate::~FormPlotSimulate() { delete ui; }
 
-void FormPlotSimulate::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormPlotSimulate::retranslateUI() { ui->retranslateUi(this); }
 
-void FormPlotSimulate::onDoFile(const QString &path)
-{
+void FormPlotSimulate::onDoFile(const QString &path) {
     ui->lineEditPath->setText(path);
     on_toolButtonRe_clicked();
 }
 
-void FormPlotSimulate::init()
-{
-    getINI();
-}
+void FormPlotSimulate::init() { getINI(); }
 
 // ================= INI =================
 
-void FormPlotSimulate::getINI()
-{
+void FormPlotSimulate::getINI() {
     m_ini.file = SETTING_CONFIG_GET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE);
 
     ui->lineEditPath->setText(m_ini.file);
 }
 
-void FormPlotSimulate::setINI()
-{
-    SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE, m_ini.file);
-}
+void FormPlotSimulate::setINI() { SETTING_CONFIG_SET(CFG_GROUP_SIMULATE, CFG_SIMULATE_FILE, m_ini.file); }
 
-void FormPlotSimulate::on_btnLoadFile_clicked()
-{
+void FormPlotSimulate::on_btnLoadFile_clicked() {
     QString path = QFileDialog::getOpenFileName(this, tr("choose file"), "", "(*.*)");
 
-    if (path.isEmpty())
-        return;
+    if (path.isEmpty()) return;
 
     ui->lineEditPath->setText(path);
 
@@ -75,8 +56,7 @@ void FormPlotSimulate::on_btnLoadFile_clicked()
     setINI();
 }
 
-void FormPlotSimulate::on_toolButtonRe_clicked()
-{
+void FormPlotSimulate::on_toolButtonRe_clicked() {
     m_ini.file = ui->lineEditPath->text();
 
     simulate4k();
@@ -84,17 +64,14 @@ void FormPlotSimulate::on_toolButtonRe_clicked()
     setINI();
 }
 
-void FormPlotSimulate::closeEvent(QCloseEvent *event)
-{
+void FormPlotSimulate::closeEvent(QCloseEvent *event) {
     emit windowClose();
 
     QWidget::closeEvent(event);
 }
 
-void FormPlotSimulate::simulate4k()
-{
-    if (m_timer->isActive())
-        m_timer->stop();
+void FormPlotSimulate::simulate4k() {
+    if (m_timer->isActive()) m_timer->stop();
 
     emit simulateReset();
 
@@ -103,8 +80,7 @@ void FormPlotSimulate::simulate4k()
 
     QFile file(m_ini.file);
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
 
     QString suffix = QFileInfo(file).suffix().toLower();
 
@@ -128,16 +104,13 @@ void FormPlotSimulate::simulate4k()
         while (!in.atEnd()) {
             QString line = in.readLine();
             QStringList fields = line.split(',');
-            if (fields.size() <= index)
-                continue;
+            if (fields.size() <= index) continue;
             QString value = fields[index];
             value.replace("0x", "");
             value.remove(QRegularExpression("\\s+"));
-            if (value.isEmpty())
-                continue;
+            if (value.isEmpty()) continue;
             QByteArray frame = QByteArray::fromHex(value.toUtf8());
-            if (!frame.isEmpty())
-                m_frames.append(frame);
+            if (!frame.isEmpty()) m_frames.append(frame);
         }
     }
 
@@ -149,13 +122,11 @@ void FormPlotSimulate::simulate4k()
             line.replace("0x", "");
             line.remove(QRegularExpression("\\s+"));
 
-            if (line.isEmpty())
-                continue;
+            if (line.isEmpty()) continue;
 
             QByteArray frame = QByteArray::fromHex(line.toUtf8());
 
-            if (!frame.isEmpty())
-                m_frames.append(frame);
+            if (!frame.isEmpty()) m_frames.append(frame);
         }
     }
 
@@ -170,8 +141,7 @@ void FormPlotSimulate::simulate4k()
     m_timer->start();
 }
 
-void FormPlotSimulate::sendChunk()
-{
+void FormPlotSimulate::sendChunk() {
     if (m_frameIndex >= m_frames.size()) {
         m_timer->stop();
         ui->progressBar->setValue(100);

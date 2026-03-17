@@ -1,21 +1,17 @@
 #include "threadparser.h"
-#include "funcdef.h"
 
 #include <QMutexLocker>
 
-ThreadParser::ThreadParser(QObject *parent)
-    : QObject(parent)
-{
-}
+#include "funcdef.h"
 
-void ThreadParser::setFrameTypes(const QList<FrameType> &types)
-{
+ThreadParser::ThreadParser(QObject *parent) : QObject(parent) {}
+
+void ThreadParser::setFrameTypes(const QList<FrameType> &types) {
     QMutexLocker locker(&m_mutex);
     m_frameTypes = types;
 }
 
-void ThreadParser::pushData(const QByteArray &data)
-{
+void ThreadParser::pushData(const QByteArray &data) {
     QMutexLocker locker(&m_mutex);
 
     m_buffer.append(data);
@@ -30,10 +26,8 @@ void ThreadParser::pushData(const QByteArray &data)
     parse();
 }
 
-void ThreadParser::parse()
-{
+void ThreadParser::parse() {
     while (true) {
-
         if (m_frameTypes.isEmpty()) {
             m_buffer.clear();
             return;
@@ -52,7 +46,6 @@ void ThreadParser::parse()
         }
 
         if (firstHeaderIdx == -1) {
-
             if (m_buffer.size() > 1024 * 10) {
                 LOG_WARN("No header found, clearing buffer");
                 m_buffer.clear();
@@ -62,22 +55,17 @@ void ThreadParser::parse()
         }
 
         if (firstHeaderIdx > 0) {
-
-            LOG_WARN("Dropping invalid data before header: {} bytes",
-                     firstHeaderIdx);
+            LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
 
             m_buffer.remove(0, firstHeaderIdx);
         }
 
         if (current.length != 0) {
-
-            if (m_buffer.size() < current.length)
-                return;
+            if (m_buffer.size() < current.length) return;
 
             QByteArray frame = m_buffer.left(current.length);
 
             if (!frame.endsWith(current.footer)) {
-
                 LOG_WARN("Invalid footer (fixed length), resync");
 
                 // 关键修复：只删除1字节
@@ -86,8 +74,7 @@ void ThreadParser::parse()
                 continue;
             }
 
-            LOG_INFO("Fixed-length frame matched: {}",
-                     current.name.toStdString());
+            LOG_INFO("Fixed-length frame matched: {}", current.name.toStdString());
 
             emit frameParsed(current.name, frame);
 
@@ -97,20 +84,15 @@ void ThreadParser::parse()
         }
 
         // -------- 变长帧 --------
-        int footerIdx =
-            m_buffer.indexOf(current.footer,
-                             current.header.size());
+        int footerIdx = m_buffer.indexOf(current.footer, current.header.size());
 
-        if (footerIdx == -1)
-            return;
+        if (footerIdx == -1) return;
 
         int frameLen = footerIdx + current.footer.size();
 
         QByteArray frame = m_buffer.left(frameLen);
 
-        LOG_INFO("Variable-length frame matched: {}, size={}",
-                 current.name.toStdString(),
-                 frameLen);
+        LOG_INFO("Variable-length frame matched: {}, size={}", current.name.toStdString(), frameLen);
 
         emit frameParsed(current.name, frame);
 

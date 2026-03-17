@@ -3,14 +3,14 @@
 
 #include <QWidget>
 #include <QtCharts>
+
 #include "global.h"
 
 namespace Ui {
 class Derivation;
 }
 
-class Derivation : public QWidget
-{
+class Derivation : public QWidget {
     Q_OBJECT
 
 public:
@@ -55,8 +55,7 @@ private:
     QLineSeries *m_seriesExtra33;
     QScatterSeries *m_peakMarker = nullptr;
 
-    struct DOUBLE_CURVE
-    {
+    struct DOUBLE_CURVE {
         CURVE curve31;
         CURVE curve33;
     };
@@ -69,4 +68,4 @@ private:
     bool m_enableFindPeak = false;
 };
 
-#endif // DERIVATION_H
+#endif  // DERIVATION_H

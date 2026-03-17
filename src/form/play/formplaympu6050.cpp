@@ -1,31 +1,26 @@
 #include "formplaympu6050.h"
-#include "ui_formplaympu6050.h"
 
 #include <QFile>
-
 #include <QPainter>
 #include <QtMath>
 
-EulerWidget::EulerWidget(QWidget *parent)
-    : QWidget(parent)
-{
+#include "ui_formplaympu6050.h"
+
+EulerWidget::EulerWidget(QWidget *parent) : QWidget(parent) {
     setMinimumSize(MIN_SIZE, MIN_SIZE);
     updateCachedBackground();
 }
 
-void EulerWidget::setEuler(float roll, float pitch, float yaw)
-{
+void EulerWidget::setEuler(float roll, float pitch, float yaw) {
     // 限制欧拉角范围
     m_roll = qBound(-180.0f, roll, 180.0f);
     m_pitch = qBound(-90.0f, pitch, 90.0f);
     m_yaw = fmod(yaw, 360.0f);
-    if (m_yaw < 0)
-        m_yaw += 360.0f;
+    if (m_yaw < 0) m_yaw += 360.0f;
     update();
 }
 
-void EulerWidget::paintEvent(QPaintEvent *)
-{
+void EulerWidget::paintEvent(QPaintEvent *) {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
@@ -40,33 +35,23 @@ void EulerWidget::paintEvent(QPaintEvent *)
     int spacing = h * SPACING_RATIO;
 
     // 确保表盘中心相对于窗口中心
-    QRect rollRect(-(rollRadius + BORDER_WIDTH),
-                   -spacing - rollRadius - BORDER_WIDTH,
-                   (rollRadius + BORDER_WIDTH) * 2,
+    QRect rollRect(-(rollRadius + BORDER_WIDTH), -spacing - rollRadius - BORDER_WIDTH, (rollRadius + BORDER_WIDTH) * 2,
                    (rollRadius + BORDER_WIDTH) * 2);
-    QRect pitchRect(-40 - BORDER_WIDTH,
-                    -pitchHeight / 2 - BORDER_WIDTH,
-                    80 + 2 * BORDER_WIDTH,
+    QRect pitchRect(-40 - BORDER_WIDTH, -pitchHeight / 2 - BORDER_WIDTH, 80 + 2 * BORDER_WIDTH,
                     pitchHeight + 2 * BORDER_WIDTH);
-    QRect yawRect(-(yawRadius + BORDER_WIDTH),
-                  spacing - yawRadius - BORDER_WIDTH,
-                  (yawRadius + BORDER_WIDTH) * 2,
+    QRect yawRect(-(yawRadius + BORDER_WIDTH), spacing - yawRadius - BORDER_WIDTH, (yawRadius + BORDER_WIDTH) * 2,
                   (yawRadius + BORDER_WIDTH) * 2);
 
     // 绘制动态部分
-    p.translate(width() / 2, height() / 2); // 移到窗口中心
+    p.translate(width() / 2, height() / 2);  // 移到窗口中心
     drawRoll(&p, rollRect);
     drawPitch(&p, pitchRect);
     drawYaw(&p, yawRect);
 }
 
-void EulerWidget::resizeEvent(QResizeEvent *)
-{
-    updateCachedBackground();
-}
+void EulerWidget::resizeEvent(QResizeEvent *) { updateCachedBackground(); }
 
-void EulerWidget::updateCachedBackground()
-{
+void EulerWidget::updateCachedBackground() {
     int w = width();
     int h = height();
     m_background = QPixmap(w, h);
@@ -74,7 +59,7 @@ void EulerWidget::updateCachedBackground()
 
     QPainter p(&m_background);
     p.setRenderHint(QPainter::Antialiasing);
-    p.translate(w / 2, h / 2); // 移到窗口中心
+    p.translate(w / 2, h / 2);  // 移到窗口中心
 
     int rollRadius = h * ROLL_RADIUS_RATIO;
     int pitchHeight = h * PITCH_HEIGHT_RATIO;
@@ -82,9 +67,7 @@ void EulerWidget::updateCachedBackground()
     int spacing = h * SPACING_RATIO;
 
     // 绘制滚转背景
-    QRect rollRect(-(rollRadius + BORDER_WIDTH),
-                   -spacing - rollRadius - BORDER_WIDTH,
-                   (rollRadius + BORDER_WIDTH) * 2,
+    QRect rollRect(-(rollRadius + BORDER_WIDTH), -spacing - rollRadius - BORDER_WIDTH, (rollRadius + BORDER_WIDTH) * 2,
                    (rollRadius + BORDER_WIDTH) * 2);
     p.setPen(QPen(Qt::black, BORDER_WIDTH));
     QLinearGradient rollGradient(rollRect.topLeft(), rollRect.bottomRight());
@@ -104,9 +87,7 @@ void EulerWidget::updateCachedBackground()
     }
 
     // 绘制俯仰背景
-    QRect pitchRect(-40 - BORDER_WIDTH,
-                    -pitchHeight / 2 - BORDER_WIDTH,
-                    80 + 2 * BORDER_WIDTH,
+    QRect pitchRect(-40 - BORDER_WIDTH, -pitchHeight / 2 - BORDER_WIDTH, 80 + 2 * BORDER_WIDTH,
                     pitchHeight + 2 * BORDER_WIDTH);
     p.setPen(QPen(Qt::black, BORDER_WIDTH));
     QLinearGradient pitchGradient(pitchRect.topLeft(), pitchRect.bottomRight());
@@ -116,9 +97,7 @@ void EulerWidget::updateCachedBackground()
     p.drawRect(pitchRect);
 
     // 绘制偏航背景
-    QRect yawRect(-(yawRadius + BORDER_WIDTH),
-                  spacing - yawRadius - BORDER_WIDTH,
-                  (yawRadius + BORDER_WIDTH) * 2,
+    QRect yawRect(-(yawRadius + BORDER_WIDTH), spacing - yawRadius - BORDER_WIDTH, (yawRadius + BORDER_WIDTH) * 2,
                   (yawRadius + BORDER_WIDTH) * 2);
     p.setPen(QPen(Qt::black, BORDER_WIDTH));
     QLinearGradient yawGradient(yawRect.topLeft(), yawRect.bottomRight());
@@ -138,8 +117,7 @@ void EulerWidget::updateCachedBackground()
     }
 }
 
-void EulerWidget::drawRoll(QPainter *p, const QRect &rect)
-{
+void EulerWidget::drawRoll(QPainter *p, const QRect &rect) {
     p->save();
     p->translate(rect.center());
 
@@ -153,13 +131,10 @@ void EulerWidget::drawRoll(QPainter *p, const QRect &rect)
     p->restore();
     p->setFont(LABEL_FONT);
     p->setPen(Qt::black);
-    p->drawText(rect.left() + BORDER_WIDTH,
-                rect.top() - LABEL_OFFSET,
-                QString("Roll: %1°").arg(m_roll, 0, 'f', 1));
+    p->drawText(rect.left() + BORDER_WIDTH, rect.top() - LABEL_OFFSET, QString("Roll: %1°").arg(m_roll, 0, 'f', 1));
 }
 
-void EulerWidget::drawPitch(QPainter *p, const QRect &rect)
-{
+void EulerWidget::drawPitch(QPainter *p, const QRect &rect) {
     p->save();
     p->translate(rect.center());
 
@@ -173,13 +148,10 @@ void EulerWidget::drawPitch(QPainter *p, const QRect &rect)
     p->restore();
     p->setFont(LABEL_FONT);
     p->setPen(Qt::black);
-    p->drawText(rect.left() + BORDER_WIDTH,
-                rect.top() - LABEL_OFFSET,
-                QString("Pitch: %1°").arg(m_pitch, 0, 'f', 1));
+    p->drawText(rect.left() + BORDER_WIDTH, rect.top() - LABEL_OFFSET, QString("Pitch: %1°").arg(m_pitch, 0, 'f', 1));
 }
 
-void EulerWidget::drawYaw(QPainter *p, const QRect &rect)
-{
+void EulerWidget::drawYaw(QPainter *p, const QRect &rect) {
     p->save();
     p->translate(rect.center());
 
@@ -194,16 +166,11 @@ void EulerWidget::drawYaw(QPainter *p, const QRect &rect)
     p->restore();
     p->setFont(LABEL_FONT);
     p->setPen(Qt::black);
-    p->drawText(rect.left() + BORDER_WIDTH,
-                rect.bottom() + LABEL_OFFSET + 10,
+    p->drawText(rect.left() + BORDER_WIDTH, rect.bottom() + LABEL_OFFSET + 10,
                 QString("Yaw: %1°").arg(m_yaw, 0, 'f', 1));
 }
 
-FormPlayMPU6050::FormPlayMPU6050(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormPlayMPU6050)
-    , m_model(nullptr)
-{
+FormPlayMPU6050::FormPlayMPU6050(QWidget *parent) : QWidget(parent), ui(new Ui::FormPlayMPU6050), m_model(nullptr) {
     ui->setupUi(this);
 
     m_model = new QStandardItemModel(4, 3, this);
@@ -214,13 +181,9 @@ FormPlayMPU6050::FormPlayMPU6050(QWidget *parent)
     ui->gLayPlane->addWidget(m_drawWidget);
 }
 
-FormPlayMPU6050::~FormPlayMPU6050()
-{
-    delete ui;
-}
+FormPlayMPU6050::~FormPlayMPU6050() { delete ui; }
 
-void FormPlayMPU6050::onRecvMPU(const QByteArray &data)
-{
+void FormPlayMPU6050::onRecvMPU(const QByteArray &data) {
     int start = data.indexOf("<MPU>");
     int end = data.indexOf("<END>", start);
 

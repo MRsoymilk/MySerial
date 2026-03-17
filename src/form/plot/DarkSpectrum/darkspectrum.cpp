@@ -1,22 +1,13 @@
 #include "darkspectrum.h"
+
 #include "ui_darkspectrum.h"
 
-DarkSpectrum::DarkSpectrum(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::DarkSpectrum)
-{
-    ui->setupUi(this);
-}
+DarkSpectrum::DarkSpectrum(QWidget *parent) : QWidget(parent), ui(new Ui::DarkSpectrum) { ui->setupUi(this); }
 
-DarkSpectrum::~DarkSpectrum()
-{
-    delete ui;
-}
+DarkSpectrum::~DarkSpectrum() { delete ui; }
 
-void DarkSpectrum::calculate(const QVector<double> &v)
-{
-    if (v.isEmpty())
-        return;
+void DarkSpectrum::calculate(const QVector<double> &v) {
+    if (v.isEmpty()) return;
 
     double avg = std::accumulate(v.begin(), v.end(), 0.0) / v.size();
     ui->lineEditBaseLine->setText(QString::number(avg));
@@ -30,15 +21,12 @@ void DarkSpectrum::calculate(const QVector<double> &v)
 
     QVector<double> delta(N);
 
-    for (int i = 0; i < N; ++i)
-        delta[i] = v[i] - m_lastDark[i];
+    for (int i = 0; i < N; ++i) delta[i] = v[i] - m_lastDark[i];
 
-    double meanDelta =
-        std::accumulate(delta.begin(), delta.end(), 0.0) / N;
+    double meanDelta = std::accumulate(delta.begin(), delta.end(), 0.0) / N;
 
     double sum = 0.0;
-    for (double d : delta)
-        sum += (d - meanDelta) * (d - meanDelta);
+    for (double d : delta) sum += (d - meanDelta) * (d - meanDelta);
 
     double sigma = std::sqrt(sum / (N - 1));
 
@@ -54,17 +42,12 @@ void DarkSpectrum::calculate(const QVector<double> &v)
     emit doCalculate(false);
 }
 
-void DarkSpectrum::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void DarkSpectrum::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
-void DarkSpectrum::on_btnRefresh_clicked()
-{
+void DarkSpectrum::on_btnRefresh_clicked() {
     m_lastDark.clear();
     ui->lineEditBaseLine->setText("");
     ui->lineEditRMS->setText("");
     ui->lineEditDR->setText("");
     emit doCalculate(true);
 }
-

@@ -5,6 +5,7 @@
 #include <QPointer>
 #include <QSerialPort>
 #include <QWidget>
+
 #include "global.h"
 
 class LineSend;
@@ -14,15 +15,13 @@ namespace Ui {
 class FormSerial;
 }
 
-class FormSerial : public QWidget
-{
+class FormSerial : public QWidget {
     Q_OBJECT
 
 public:
     enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
 
-    struct SERIAL
-    {
+    struct SERIAL {
         QString Description;
         QString Manufacturer;
         QString SerialNumber;
@@ -30,8 +29,7 @@ public:
         QList<qint32> StandardBaudRates;
     };
 
-    struct INI_SERIAL
-    {
+    struct INI_SERIAL {
         QString port_name;
         QString debug_port;
         QString baud_rate;
@@ -47,21 +45,18 @@ public:
     explicit FormSerial(QWidget *parent = nullptr);
     ~FormSerial();
     void retranslateUI();
-    bool startEasyConnect(const QString& F30_shown_mode);
+    bool startEasyConnect(const QString &F30_shown_mode);
     bool startProduceConnect();
     void stopFSeriesConnect();
-    void sendEasyData(const QString& text);
+    void sendEasyData(const QString &text);
     void sendExpertData(const QString &text);
     void updateFrameTypes(const QString &idx);
     void sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func = nullptr);
 
 signals:
-    void recv2PlotLLC(const FRAME& frame,
-                      const double &temperature = 0.0);
-    void recv2PlotF30(const FRAME& frame,
-                      const double &temperature = 0.0);
-    void recv2PlotF15(const FRAME& frame,
-                      const double &temperature = 0.0);
+    void recv2PlotLLC(const FRAME &frame, const double &temperature = 0.0);
+    void recv2PlotF30(const FRAME &frame, const double &temperature = 0.0);
+    void recv2PlotF15(const FRAME &frame, const double &temperature = 0.0);
     void recv2MPU(const QByteArray &data);
     void statusReport(int progress, const QString &msg);
     void pushParserData(QByteArray data);
@@ -73,9 +68,8 @@ public slots:
     void onChangeFrameType(const QString &algorithm);
     void onSimulateRecv(const QByteArray &bytes);
     void clearData();
-    void handleFrame(const QString &frameName,
-                     const QByteArray &frame_candidate,
-                     const QByteArray &temp = "");
+    void handleFrame(const QString &frameName, const QByteArray &frame_candidate, const QByteArray &temp = "");
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 
@@ -139,4 +133,4 @@ private:
     std::function<bool(const QByteArray &)> m_call_produce_func = nullptr;
 };
 
-#endif // FORMSERIAL_H
+#endif  // FORMSERIAL_H

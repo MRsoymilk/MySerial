@@ -1,12 +1,11 @@
-#include "mainwindow.h"
-
 #include <QApplication>
 #include <QSharedMemory>
+
 #include "funcdef.h"
+#include "mainwindow.h"
 #include "version.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     LOG_INFO("version: {}", APP_VERSION);
     QApplication a(argc, argv);
 
@@ -14,9 +13,7 @@ int main(int argc, char *argv[])
     sharedMemory.setKey("MySerial_soymilk");
 
     if (!sharedMemory.create(1)) {
-        QMessageBox::warning(nullptr,
-                             TITLE_WARNING,
-                             QObject::tr("Application is already running!"));
+        QMessageBox::warning(nullptr, TITLE_WARNING, QObject::tr("Application is already running!"));
 
         return 0;
     }

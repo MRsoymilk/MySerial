@@ -5,16 +5,14 @@
 
 std::shared_ptr<spdlog::logger> MyLog::s_logger = nullptr;
 
-MyLog &MyLog::getInstance()
-{
+MyLog &MyLog::getInstance() {
     static MyLog instance;
     return instance;
 }
 
 MyLog::~MyLog() { spdlog::drop_all(); }
 
-void MyLog::init(const std::string &file_name, size_t max_size, size_t max_files)
-{
+void MyLog::init(const std::string &file_name, size_t max_size, size_t max_files) {
     std::vector<spdlog::sink_ptr> logSinks;
     logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
     logSinks.emplace_back(std::make_shared<spdlog::sinks::rotating_file_sink_mt>(file_name, max_size, max_files));

@@ -3,24 +3,18 @@
 #include <QContextMenuEvent>
 #include <QInputDialog>
 #include <QMenu>
+
 #include "MyChartView/mychartview.h"
 #include "ui_peaktrajectory.h"
 
-PeakTrajectory::PeakTrajectory(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::PeakTrajectory)
-{
+PeakTrajectory::PeakTrajectory(QWidget *parent) : QWidget(parent), ui(new Ui::PeakTrajectory) {
     ui->setupUi(this);
     init();
 }
 
-PeakTrajectory::~PeakTrajectory()
-{
-    delete ui;
-}
+PeakTrajectory::~PeakTrajectory() { delete ui; }
 
-void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event)
-{
+void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
 
     QAction *setRangeAction = menu.addAction(tr("Set Range"));
@@ -28,13 +22,11 @@ void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event)
     QAction *removeCurrentAction = menu.addAction(tr("Remove Current Point"));
 
     QAction *selectedAction = menu.exec(event->globalPos());
-    if (!selectedAction)
-        return;
+    if (!selectedAction) return;
 
     if (selectedAction == setRangeAction) {
         bool ok = false;
-        int newRange
-            = QInputDialog::getInt(this, tr("Set Range"), tr("Range:"), m_range, 1, 999999, 1, &ok);
+        int newRange = QInputDialog::getInt(this, tr("Set Range"), tr("Range:"), m_range, 1, 999999, 1, &ok);
         if (ok) {
             m_range = newRange;
 
@@ -52,16 +44,13 @@ void PeakTrajectory::contextMenuEvent(QContextMenuEvent *event)
     }
 }
 
-void PeakTrajectory::onRemoveCurrentPoint()
-{
-    if (m_data.isEmpty())
-        return;
+void PeakTrajectory::onRemoveCurrentPoint() {
+    if (m_data.isEmpty()) return;
 
     // 用已选点的 x 作为 index
     int index = qRound(m_point.x());
 
-    if (index < 0 || index >= m_data.size())
-        return;
+    if (index < 0 || index >= m_data.size()) return;
 
     // 删除
     m_data.removeAt(index);
@@ -98,15 +87,13 @@ void PeakTrajectory::onRemoveCurrentPoint()
         } else {
             m_axisX->setRange(total - m_range, total);
         }
-
     } else {
         m_axisX->setRange(0, m_range);
         m_axisY->setRange(0, 1);
     }
 }
 
-void PeakTrajectory::appendPeak(const int &value)
-{
+void PeakTrajectory::appendPeak(const int &value) {
     m_data.append(value);
 
     int index = m_data.size() - 1;
@@ -158,13 +145,9 @@ void PeakTrajectory::appendPeak(const int &value)
                                .arg(avg, 0, 'f', 2));
 }
 
-void PeakTrajectory::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void PeakTrajectory::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
-void PeakTrajectory::init()
-{
+void PeakTrajectory::init() {
     m_line = new QLineSeries();
 
     m_axisX = new QValueAxis();
@@ -191,13 +174,9 @@ void PeakTrajectory::init()
     connect(shortcut_delete, &QShortcut::activated, this, &PeakTrajectory::onRemoveCurrentPoint);
 }
 
-void PeakTrajectory::getSelect(const QPointF &point)
-{
-    m_point = point;
-}
+void PeakTrajectory::getSelect(const QPointF &point) { m_point = point; }
 
-void PeakTrajectory::on_tBtnAxisY_clicked()
-{
+void PeakTrajectory::on_tBtnAxisY_clicked() {
     m_enableAxisY = !m_enableAxisY;
     ui->tBtnAxisY->setChecked(m_enableAxisY);
     if (m_enableAxisY) {
@@ -207,24 +186,21 @@ void PeakTrajectory::on_tBtnAxisY_clicked()
     }
 }
 
-void PeakTrajectory::on_spinBoxStartY_valueChanged(int val)
-{
+void PeakTrajectory::on_spinBoxStartY_valueChanged(int val) {
     m_y_start = val;
     if (m_enableAxisY) {
         m_axisY->setRange(m_y_start, m_y_end);
     }
 }
 
-void PeakTrajectory::on_spinBoxEndY_valueChanged(int val)
-{
+void PeakTrajectory::on_spinBoxEndY_valueChanged(int val) {
     m_y_end = val;
     if (m_enableAxisY) {
         m_axisY->setRange(m_y_start, m_y_end);
     }
 }
 
-void PeakTrajectory::clearChart()
-{
+void PeakTrajectory::clearChart() {
     m_data.clear();
     m_line->clear();
 
@@ -232,8 +208,7 @@ void PeakTrajectory::clearChart()
     m_axisY->setRange(0, 1);
 }
 
-void PeakTrajectory::on_tBtnBroadcast_clicked()
-{
+void PeakTrajectory::on_tBtnBroadcast_clicked() {
     double avg = std::accumulate(m_data.begin(), m_data.end(), 0.0) / m_data.size();
     emit broadcast(avg);
     if (ui->checkBoxAutoClean->isChecked()) {

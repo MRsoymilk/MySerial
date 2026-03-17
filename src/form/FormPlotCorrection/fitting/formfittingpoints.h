@@ -8,8 +8,7 @@ namespace Ui {
 class FormFittingPoints;
 }
 
-class FormFittingPoints : public QWidget
-{
+class FormFittingPoints : public QWidget {
     Q_OBJECT
 public:
     enum ITEM { WAVELENGTH, FILE_NAME, FILE_PATH, STATUS, INTENSITY };
@@ -51,4 +50,4 @@ protected:
     void closeEvent(QCloseEvent *event);
 };
 
-#endif // FORMFITTINGPOINTS_H
+#endif  // FORMFITTINGPOINTS_H

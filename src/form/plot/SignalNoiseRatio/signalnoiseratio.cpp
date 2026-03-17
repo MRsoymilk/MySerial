@@ -1,24 +1,18 @@
 #include "signalnoiseratio.h"
-#include "MyChartView/mychartview.h"
-#include "ui_signalnoiseratio.h"
-#include "keydef.h"
-#include "funcdef.h"
 
-SignalNoiseRatio::SignalNoiseRatio(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::SignalNoiseRatio)
-{
+#include "MyChartView/mychartview.h"
+#include "funcdef.h"
+#include "keydef.h"
+#include "ui_signalnoiseratio.h"
+
+SignalNoiseRatio::SignalNoiseRatio(QWidget *parent) : QWidget(parent), ui(new Ui::SignalNoiseRatio) {
     ui->setupUi(this);
     init();
 }
 
-SignalNoiseRatio::~SignalNoiseRatio()
-{
-    delete ui;
-}
+SignalNoiseRatio::~SignalNoiseRatio() { delete ui; }
 
-void SignalNoiseRatio::calculate(const QList<QPointF> &data)
-{
+void SignalNoiseRatio::calculate(const QList<QPointF> &data) {
     if (data.size() < 10) {
         ui->lineEditSignalNoiseSNRLinear->setText(tr("Insufficient data"));
         return;
@@ -26,18 +20,16 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
 
     QVector<double> y;
     y.reserve(data.size());
-    for (const auto &p : data)
-        y.append(p.y());
+    for (const auto &p : data) y.append(p.y());
 
     int signalIndex = 0;
     double signalValue = 0.0;
 
     // ===== 找到信号峰值 =====
     if (m_enableIdx) {
-        auto it = std::min_element(data.begin(), data.end(),
-                                   [this](const QPointF &a, const QPointF &b) {
-                                       return std::abs(a.x() - m_idx) < std::abs(b.x() - m_idx);
-                                   });
+        auto it = std::min_element(data.begin(), data.end(), [this](const QPointF &a, const QPointF &b) {
+            return std::abs(a.x() - m_idx) < std::abs(b.x() - m_idx);
+        });
 
         signalIndex = std::distance(data.begin(), it);
         signalValue = it->y();
@@ -49,15 +41,14 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
     m_vSignal.push_back(signalValue);
     ui->lineEditPeakValue->setText(tr("Index=%1, Value=%2").arg(signalIndex).arg(signalValue, 0, 'f', 4));
 
-    if(m_tab_idx == MODE_SIGNAL_NOISE) {
+    if (m_tab_idx == MODE_SIGNAL_NOISE) {
         // ===== 提取噪声区域 =====
         const int excludeRadius = ui->spinBoxExcludeRadius->value();
         QVector<double> noise;
         noise.reserve(y.size());
 
         for (int i = 0; i < y.size(); i++) {
-            if (qAbs(i - signalIndex) > excludeRadius)
-                noise.append(y[i]);
+            if (qAbs(i - signalIndex) > excludeRadius) noise.append(y[i]);
         }
 
         if (noise.size() < 2) {
@@ -75,8 +66,7 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
 
         double noise_std = std::sqrt(variance);
 
-        if (noise_std <= 1e-12)
-            noise_std = 1e-12;
+        if (noise_std <= 1e-12) noise_std = 1e-12;
 
         m_vNoiseStd.append(noise_std);
 
@@ -86,12 +76,10 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
         ui->lineEditSignalNoiseNoiseStd->setText(QString::number(noise_std, 'f', 2));
         ui->lineEditSignalNoiseSNRLinear->setText(QString::number(snrLinear, 'f', 2));
         ui->lineEditSignalNoiseSNRdB->setText(QString::number(snrDb, 'f', 2) + " dB");
-    }
-    else if(m_tab_idx == MODE_SIGNAL_SIGNAL) {
+    } else if (m_tab_idx == MODE_SIGNAL_SIGNAL) {
         double val_avg = std::accumulate(m_vSignal.begin(), m_vSignal.end(), 0.0) / m_vSignal.size();
         double sum = 0;
-        for(auto v : m_vSignal)
-        {
+        for (auto v : m_vSignal) {
             double d = v - val_avg;
             sum += d * d;
         }
@@ -105,18 +93,12 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data)
     // ===== 曲线更新 =====
     m_line->append(m_vSignal.size(), signalValue);
     m_axisX->setRange(0, m_vSignal.size());
-    m_axisY->setRange(
-        std::min(m_axisY->min(), signalValue),
-        std::max(m_axisY->max(), signalValue));
+    m_axisY->setRange(std::min(m_axisY->min(), signalValue), std::max(m_axisY->max(), signalValue));
 }
 
-void SignalNoiseRatio::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void SignalNoiseRatio::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
-void SignalNoiseRatio::on_checkBoxUseIdx_checkStateChanged(const Qt::CheckState &state)
-{
+void SignalNoiseRatio::on_checkBoxUseIdx_checkStateChanged(const Qt::CheckState &state) {
     if (state == Qt::Checked) {
         m_enableIdx = true;
         m_idx = ui->spinBoxIdx->value();
@@ -125,8 +107,7 @@ void SignalNoiseRatio::on_checkBoxUseIdx_checkStateChanged(const Qt::CheckState 
     }
 }
 
-void SignalNoiseRatio::init()
-{
+void SignalNoiseRatio::init() {
     m_line = new QLineSeries();
 
     m_axisX = new QValueAxis();
@@ -148,18 +129,16 @@ void SignalNoiseRatio::init()
 
     ui->labelSNR_linear->setToolTip(tr("peak / noise(std)"));
     m_tab_idx = static_cast<IDX_SNR>(SETTING_CONFIG_GET(CFG_GROUP_SNR, CFG_SNR_TAB_IDX, "1").toInt());
-    if(m_tab_idx == MODE_SIGNAL_NOISE) {
+    if (m_tab_idx == MODE_SIGNAL_NOISE) {
         ui->tabWidget->setCurrentWidget(ui->tabSignalNoise);
-    }
-    else if(m_tab_idx == MODE_SIGNAL_SIGNAL) {
+    } else if (m_tab_idx == MODE_SIGNAL_SIGNAL) {
         ui->tabWidget->setCurrentWidget(ui->tabSignalSignal);
     }
     int exclude_radius = SETTING_CONFIG_GET(CFG_GROUP_SNR, CFG_SNR_EXCLUDE_RADIUS, "10").toInt();
     ui->spinBoxExcludeRadius->setValue(exclude_radius);
 }
 
-void SignalNoiseRatio::contextMenuEvent(QContextMenuEvent *event)
-{
+void SignalNoiseRatio::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
 
     QAction *clearChartAction = menu.addAction(tr("Clear Chart"));
@@ -167,12 +146,11 @@ void SignalNoiseRatio::contextMenuEvent(QContextMenuEvent *event)
     QAction *exportChartAction = menu.addAction(tr("Export Chart"));
 
     QAction *selectedAction = menu.exec(event->globalPos());
-    if (!selectedAction)
-        return;
+    if (!selectedAction) return;
 
     if (selectedAction == clearChartAction) {
         clearChart();
-    } else if(selectedAction == exportChartAction) {
+    } else if (selectedAction == exportChartAction) {
         exportChart();
     }
 }
@@ -187,15 +165,9 @@ void SignalNoiseRatio::clearChart() {
 }
 
 void SignalNoiseRatio::exportChart() {
-    QString fileName = QFileDialog::getSaveFileName(
-        this,
-        tr("Export CSV"),
-        "snr_data.csv",
-        tr("CSV Files (*.csv)")
-        );
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "snr_data.csv", tr("CSV Files (*.csv)"));
 
-    if (fileName.isEmpty())
-        return;
+    if (fileName.isEmpty()) return;
 
     QFile file(fileName);
 
@@ -206,47 +178,33 @@ void SignalNoiseRatio::exportChart() {
 
     QTextStream out(&file);
 
-    if(m_tab_idx == MODE_SIGNAL_NOISE) {
+    if (m_tab_idx == MODE_SIGNAL_NOISE) {
         out << "Index,Signal,NoiseStd\n";
         for (int i = 0; i < m_vSignal.size(); i++) {
             double signal = m_vSignal[i];
             double noise = m_vNoiseStd[i];
-            out << i + 1 << ","
-                << signal << ","
-                << noise << "\n";
+            out << i + 1 << "," << signal << "," << noise << "\n";
         }
-    }
-    else if(m_tab_idx == MODE_SIGNAL_SIGNAL){
+    } else if (m_tab_idx == MODE_SIGNAL_SIGNAL) {
         out << "Index,Signal\n";
         for (int i = 0; i < m_vSignal.size(); i++) {
             double signal = m_vSignal[i];
-            out << i + 1 << ","
-                << signal << "\n";
+            out << i + 1 << "," << signal << "\n";
         }
     }
     file.close();
 
-    QMessageBox::information(this,
-                             TITLE_INFO,
-                             tr("CSV exported successfully."));
+    QMessageBox::information(this, TITLE_INFO, tr("CSV exported successfully."));
 }
 
-void SignalNoiseRatio::on_tabWidget_currentChanged(int index)
-{
+void SignalNoiseRatio::on_tabWidget_currentChanged(int index) {
     m_tab_idx = static_cast<IDX_SNR>(index);
     SETTING_CONFIG_SET(CFG_GROUP_SNR, CFG_SNR_TAB_IDX, QString::number(index));
     clearChart();
 }
 
-
-void SignalNoiseRatio::on_spinBoxExcludeRadius_textChanged(const QString &val)
-{
+void SignalNoiseRatio::on_spinBoxExcludeRadius_textChanged(const QString &val) {
     SETTING_CONFIG_SET(CFG_GROUP_SNR, CFG_SNR_EXCLUDE_RADIUS, val);
 }
 
-
-void SignalNoiseRatio::on_spinBoxIdx_valueChanged(int idx)
-{
-    m_idx = idx;
-}
-
+void SignalNoiseRatio::on_spinBoxIdx_valueChanged(int idx) { m_idx = idx; }

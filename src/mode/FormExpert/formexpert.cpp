@@ -1,4 +1,5 @@
 #include "formexpert.h"
+
 #include "../ThreadWorker/threadworker.h"
 #include "../form/AutoUpdate/autoupdate.h"
 #include "../form/FormExternal/formexternal.h"
@@ -12,16 +13,12 @@
 #include "../form/setting/formsetting.h"
 #include "ui_formexpert.h"
 
-FormExpert::FormExpert(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormExpert)
-{
+FormExpert::FormExpert(QWidget *parent) : QWidget(parent), ui(new Ui::FormExpert) {
     ui->setupUi(this);
     init();
 }
 
-FormExpert::~FormExpert()
-{
+FormExpert::~FormExpert() {
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
@@ -30,8 +27,7 @@ FormExpert::~FormExpert()
     delete ui;
 }
 
-void FormExpert::retranslateUI()
-{
+void FormExpert::retranslateUI() {
     ui->retranslateUi(this);
     if (m_plotCorrection) {
         m_plotCorrection->retranslateUI();
@@ -62,41 +58,26 @@ void FormExpert::retranslateUI()
     }
 }
 
-void FormExpert::setAlgorithm(const QString &algorithm)
-{
+void FormExpert::setAlgorithm(const QString &algorithm) {
     formSerial->onChangeFrameType(algorithm);
     formPlot->setAlgorithm(algorithm);
     m_worker->setAlgorithm(algorithm);
 }
 
-void FormExpert::initToolbar()
-{
+void FormExpert::initToolbar() {
     QList<QToolButton *> buttonList = {
-        ui->btnSerial,
-        ui->btnLog,
-        ui->btnPlot,
-        ui->btnUpdate,
-        ui->btnSetting,
-        ui->btnExternal,
+        ui->btnSerial, ui->btnLog, ui->btnPlot, ui->btnUpdate, ui->btnSetting, ui->btnExternal,
     };
 
     QMap<QToolButton *, QString> onIcons = {
-                                            {ui->btnSerial, "usb-on"},
-                                            {ui->btnLog, "log-on"},
-                                            {ui->btnPlot, "plot-on"},
-                                            {ui->btnUpdate, "update-on"},
-                                            {ui->btnSetting, "setting-on"},
-                                            {ui->btnExternal, "external-on"},
-                                            };
+        {ui->btnSerial, "usb-on"},    {ui->btnLog, "log-on"},         {ui->btnPlot, "plot-on"},
+        {ui->btnUpdate, "update-on"}, {ui->btnSetting, "setting-on"}, {ui->btnExternal, "external-on"},
+    };
 
     QMap<QToolButton *, QString> offIcons = {
-                                             {ui->btnSerial, "usb-off"},
-                                             {ui->btnLog, "log-off"},
-                                             {ui->btnPlot, "plot-off"},
-                                             {ui->btnUpdate, "update-off"},
-                                             {ui->btnSetting, "setting-off"},
-                                             {ui->btnExternal, "external-off"},
-                                             };
+        {ui->btnSerial, "usb-off"},    {ui->btnLog, "log-off"},         {ui->btnPlot, "plot-off"},
+        {ui->btnUpdate, "update-off"}, {ui->btnSetting, "setting-off"}, {ui->btnExternal, "external-off"},
+    };
 
     for (QToolButton *btn : buttonList) {
         btn->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -141,8 +122,7 @@ void FormExpert::initToolbar()
     ui->tBtnCorrection->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 
-void FormExpert::initStackWidget()
-{
+void FormExpert::initStackWidget() {
     formPlot = new FormPlot(this);
     ui->stackedWidget->addWidget(formPlot);
 
@@ -176,44 +156,36 @@ void FormExpert::initStackWidget()
     connect(shortcut_Plot, &QShortcut::activated, this, [this]() { ui->btnPlot->click(); });
     connect(shortcut_Log, &QShortcut::activated, this, [this]() { ui->btnLog->click(); });
     connect(shortcut_Setting, &QShortcut::activated, this, [this]() { ui->btnSetting->click(); });
-    connect(shortcut_Play, &QShortcut::activated, this, [this]() {
-        ui->stackedWidget->setCurrentWidget(playMPU6050);
-    });
+    connect(shortcut_Play, &QShortcut::activated, this, [this]() { ui->stackedWidget->setCurrentWidget(playMPU6050); });
     connect(shortcut_External, &QShortcut::activated, this, [this]() { ui->btnExternal->click(); });
 }
 
-void FormExpert::plotHistoryClose()
-{
+void FormExpert::plotHistoryClose() {
     m_showHistory = false;
     ui->tBtnHistory->setChecked(false);
 }
 
-void FormExpert::plotSimulateClose()
-{
+void FormExpert::plotSimulateClose() {
     m_showSimulate = false;
     ui->tBtnSimulate->setChecked(false);
 }
 
-void FormExpert::plotCorrectionClose()
-{
+void FormExpert::plotCorrectionClose() {
     m_showCorrection = false;
     ui->tBtnCorrection->setChecked(false);
 }
 
-void FormExpert::on_tBtnHistory_clicked()
-{
+void FormExpert::on_tBtnHistory_clicked() {
     m_showHistory = !m_showHistory;
     m_plotHistory->setVisible(m_showHistory);
 }
 
-void FormExpert::on_tBtnSimulate_clicked()
-{
+void FormExpert::on_tBtnSimulate_clicked() {
     m_showSimulate = !m_showSimulate;
     m_plotSimulate->setVisible(m_showSimulate);
 }
 
-void FormExpert::on_tBtnCorrection_clicked()
-{
+void FormExpert::on_tBtnCorrection_clicked() {
     m_showCorrection = !m_showCorrection;
     m_plotCorrection->setVisible(m_showCorrection);
     // if (m_showCorrection) {
@@ -225,8 +197,7 @@ void FormExpert::on_tBtnCorrection_clicked()
     // }
 }
 
-void FormExpert::closeEvent(QCloseEvent *event)
-{
+void FormExpert::closeEvent(QCloseEvent *event) {
     m_plotCorrection->close();
     m_plotHistory->close();
     m_plotSimulate->close();
@@ -238,8 +209,7 @@ void FormExpert::closeEvent(QCloseEvent *event)
     formSetting->close();
 }
 
-void FormExpert::init()
-{
+void FormExpert::init() {
     initStackWidget();
     initToolbar();
 
@@ -257,170 +227,69 @@ void FormExpert::init()
     m_worker = new ThreadWorker();
     m_worker->moveToThread(m_workerThread);
 
-    connect(m_plotSimulate,
-            &FormPlotSimulate::simulateDataReady,
-            formSerial,
-            &FormSerial::onSimulateRecv,
+    connect(m_plotSimulate, &FormPlotSimulate::simulateDataReady, formSerial, &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
     connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData, Qt::QueuedConnection);
 
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
-    connect(formPlot,
-            &FormPlot::newDataReceivedF15,
-            m_worker,
-            &ThreadWorker::processDataF15,
-            Qt::QueuedConnection);
-    connect(formPlot,
-            &FormPlot::newDataReceivedLLC,
-            m_worker,
-            &ThreadWorker::processDataLLC,
-            Qt::QueuedConnection);
+    connect(formPlot, &FormPlot::newDataReceivedF15, m_worker, &ThreadWorker::processDataF15, Qt::QueuedConnection);
+    connect(formPlot, &FormPlot::newDataReceivedLLC, m_worker, &ThreadWorker::processDataLLC, Qt::QueuedConnection);
 
     connect(m_plotHistory, &FormPlotHistory::sendToPlot, formPlot, &FormPlot::updatePlot4k, Qt::QueuedConnection);
-    connect(m_worker,
-            &ThreadWorker::plotReady4k,
-            formPlot,
-            &FormPlot::updatePlot4k,
-            Qt::QueuedConnection);
+    connect(m_worker, &ThreadWorker::plotReady4k, formPlot, &FormPlot::updatePlot4k, Qt::QueuedConnection);
 
-    connect(m_worker,
-            &ThreadWorker::collectionFitingPointsFinish,
-            m_plotCorrection,
-            &FormPlotCorrection::onCollectionFitingPointsFinish,
-            Qt::QueuedConnection);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::toCollectionFittingPoints,
-            m_worker,
-            &ThreadWorker::onCollectionFittingPoints,
-            Qt::QueuedConnection);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::doFile,
-            m_plotSimulate,
-            &FormPlotSimulate::onDoFile,
+    connect(m_worker, &ThreadWorker::collectionFitingPointsFinish, m_plotCorrection,
+            &FormPlotCorrection::onCollectionFitingPointsFinish, Qt::QueuedConnection);
+    connect(m_plotCorrection, &FormPlotCorrection::toCollectionFittingPoints, m_worker,
+            &ThreadWorker::onCollectionFittingPoints, Qt::QueuedConnection);
+    connect(m_plotCorrection, &FormPlotCorrection::doFile, m_plotSimulate, &FormPlotSimulate::onDoFile,
             Qt::QueuedConnection);
 
     m_workerThread->start();
 
-    connect(m_plotHistory,
-            &FormPlotHistory::windowClose,
-            this,
-            &FormExpert::plotHistoryClose,
+    connect(m_plotHistory, &FormPlotHistory::windowClose, this, &FormExpert::plotHistoryClose, Qt::QueuedConnection);
+    connect(formPlot, &FormPlot::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv, Qt::QueuedConnection);
+    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, &FormExpert::plotSimulateClose, Qt::QueuedConnection);
+    connect(m_plotCorrection, &FormPlotCorrection::windowClose, this, &FormExpert::plotCorrectionClose,
             Qt::QueuedConnection);
-    connect(formPlot,
-            &FormPlot::toHistory,
-            m_plotHistory,
-            &FormPlotHistory::onHistoryRecv,
+    connect(m_plotCorrection, &FormPlotCorrection::useLoadedThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold,
             Qt::QueuedConnection);
-    connect(m_plotSimulate,
-            &FormPlotSimulate::windowClose,
-            this,
-            &FormExpert::plotSimulateClose,
+    connect(m_plotCorrection, &FormPlotCorrection::useLoadedThreadsholdOption, m_worker,
+            &ThreadWorker::onUseLoadedThreadsholdOption, Qt::QueuedConnection);
+    connect(m_plotCorrection, &FormPlotCorrection::sendParamsArcSin, m_worker, &ThreadWorker::onParamsArcSin,
             Qt::QueuedConnection);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::windowClose,
-            this,
-            &FormExpert::plotCorrectionClose,
+    connect(m_worker, &ThreadWorker::showCorrectionCurve, m_plotCorrection, &FormPlotCorrection::onShowCorrectionCurve,
             Qt::QueuedConnection);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::useLoadedThreshold,
-            m_worker,
-            &ThreadWorker::onUseLoadedThreshold,
+    connect(formPlot, &FormPlot::sendOffset31, m_worker, &ThreadWorker::setOffset31, Qt::QueuedConnection);
+    connect(formPlot, &FormPlot::sendOffset33, m_worker, &ThreadWorker::setOffset33, Qt::QueuedConnection);
+    connect(formPlot, &FormPlot::toExternalSpectral, formExternal, &FormExternal::onExternalSpectral,
             Qt::QueuedConnection);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::useLoadedThreadsholdOption,
-            m_worker,
-            &ThreadWorker::onUseLoadedThreadsholdOption,
+    connect(formPlot, &FormPlot::broadcast, m_plotCorrection, &FormPlotCorrection::onBroadcast, Qt::QueuedConnection);
+    connect(m_plotCorrection, &FormPlotCorrection::toExternalSpectral, formExternal, &FormExternal::onExternalSpectral,
             Qt::QueuedConnection);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::sendParamsArcSin,
-            m_worker,
-            &ThreadWorker::onParamsArcSin,
-            Qt::QueuedConnection);
-    connect(m_worker,
-            &ThreadWorker::showCorrectionCurve,
-            m_plotCorrection,
-            &FormPlotCorrection::onShowCorrectionCurve,
-            Qt::QueuedConnection);
-    connect(formPlot,
-            &FormPlot::sendOffset31,
-            m_worker,
-            &ThreadWorker::setOffset31,
-            Qt::QueuedConnection);
-    connect(formPlot,
-            &FormPlot::sendOffset33,
-            m_worker,
-            &ThreadWorker::setOffset33,
-            Qt::QueuedConnection);
-    connect(formPlot,
-            &FormPlot::toExternalSpectral,
-            formExternal,
-            &FormExternal::onExternalSpectral,
-            Qt::QueuedConnection);
-    connect(formPlot,
-            &FormPlot::broadcast,
-            m_plotCorrection,
-            &FormPlotCorrection::onBroadcast,
-            Qt::QueuedConnection);
-    connect(m_plotCorrection,
-            &FormPlotCorrection::toExternalSpectral,
-            formExternal,
-            &FormExternal::onExternalSpectral,
-            Qt::QueuedConnection);
-    connect(m_worker,
-            &ThreadWorker::changeThresholdStatus,
-            m_plotCorrection,
-            &FormPlotCorrection::onThresholdStatus,
+    connect(m_worker, &ThreadWorker::changeThresholdStatus, m_plotCorrection, &FormPlotCorrection::onThresholdStatus,
             Qt::QueuedConnection);
 
-    QObject::connect(formSerial,
-                     &FormSerial::recv2PlotLLC,
-                     m_worker,
-                     &ThreadWorker::processDataLLC,
+    QObject::connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC,
                      Qt::QueuedConnection);
-    QObject::connect(formSerial,
-                     &FormSerial::recv2PlotF30,
-                     m_worker,
-                     &ThreadWorker::processDataF30,
+    QObject::connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30,
                      Qt::QueuedConnection);
-    QObject::connect(formSerial,
-                     &FormSerial::recv2PlotF15,
-                     m_worker,
-                     &ThreadWorker::processDataF15,
+    QObject::connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15,
                      Qt::QueuedConnection);
-    QObject::connect(formSerial,
-                     &FormSerial::recv2MPU,
-                     playMPU6050,
-                     &FormPlayMPU6050::onRecvMPU,
-                     Qt::QueuedConnection);
+    QObject::connect(formSerial, &FormSerial::recv2MPU, playMPU6050, &FormPlayMPU6050::onRecvMPU, Qt::QueuedConnection);
 }
 
-void FormExpert::on_btnSerial_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(formSerial);
-}
+void FormExpert::on_btnSerial_clicked() { ui->stackedWidget->setCurrentWidget(formSerial); }
 
-void FormExpert::on_btnPlot_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(formPlot);
-}
+void FormExpert::on_btnPlot_clicked() { ui->stackedWidget->setCurrentWidget(formPlot); }
 
-void FormExpert::on_btnLog_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(formLog);
-}
+void FormExpert::on_btnLog_clicked() { ui->stackedWidget->setCurrentWidget(formLog); }
 
-void FormExpert::on_btnUpdate_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(formAutoUpdate);
-}
+void FormExpert::on_btnUpdate_clicked() { ui->stackedWidget->setCurrentWidget(formAutoUpdate); }
 
-void FormExpert::on_btnExternal_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(formExternal);
-}
+void FormExpert::on_btnExternal_clicked() { ui->stackedWidget->setCurrentWidget(formExternal); }
 
-void FormExpert::keyPressEvent(QKeyEvent *event)
-{
+void FormExpert::keyPressEvent(QKeyEvent *event) {
     if (event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Tab) {
         int count = ui->stackedWidget->count();
         m_currentPageIndex = (m_currentPageIndex + 1) % count;
@@ -433,7 +302,4 @@ void FormExpert::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void FormExpert::on_btnSetting_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(formSetting);
-}
+void FormExpert::on_btnSetting_clicked() { ui->stackedWidget->setCurrentWidget(formSetting); }

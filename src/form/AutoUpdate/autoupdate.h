@@ -10,12 +10,10 @@ namespace Ui {
 class AutoUpdate;
 }
 
-class AutoUpdate : public QWidget
-{
+class AutoUpdate : public QWidget {
     Q_OBJECT
 public:
-    struct INI_UPDATE
-    {
+    struct INI_UPDATE {
         QString url;
         QString check;
         QString tip;
@@ -44,4 +42,4 @@ private:
     QJsonObject m_objUpdate;
 };
 
-#endif // AUTOUPDATE_H
+#endif  // AUTOUPDATE_H

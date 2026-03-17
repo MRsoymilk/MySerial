@@ -3,9 +3,8 @@
 
 #include <QString>
 
-class MyDir
-{
-   public:
+class MyDir {
+public:
     MyDir() = default;
     ~MyDir() = default;
     static bool CheckDirExists(const QString &path);

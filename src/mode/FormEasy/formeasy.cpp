@@ -1,33 +1,31 @@
 #include "formeasy.h"
+
 #include <QMovie>
+
+#include "../LoadingOverLay/loadingoverlay.h"
 #include "../ThreadWorker/threadworker.h"
 #include "../form/FormPlotHistory/formplothistory.h"
 #include "../form/FormPlotSimulate/formplotsimulate.h"
 #include "../form/plot/Accumulate/accumulate.h"
+#include "../form/plot/DarkSpectrum/darkspectrum.h"
 #include "../form/plot/Derivation/derivation.h"
 #include "../form/plot/FourierTransform/fouriertransform.h"
+#include "../form/plot/PeakTrajectory/peaktrajectory.h"
+#include "../form/plot/PointsTracker/pointstracker.h"
 #include "../form/plot/SignalNoiseRatio/signalnoiseratio.h"
 #include "../form/serial/formserial.h"
 #include "../form/setting/formsetting.h"
-#include "../form/plot/PeakTrajectory/peaktrajectory.h"
-#include "../form/plot/DarkSpectrum/darkspectrum.h"
-#include "../form/plot/PointsTracker/pointstracker.h"
-#include "../LoadingOverLay/loadingoverlay.h"
-#include "MyChartView/mychartview.h"
 #include "DraggableLine/draggableline.h"
+#include "MyChartView/mychartview.h"
 #include "funcdef.h"
 #include "ui_formeasy.h"
 
-FormEasy::FormEasy(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormEasy)
-{
+FormEasy::FormEasy(QWidget *parent) : QWidget(parent), ui(new Ui::FormEasy) {
     ui->setupUi(this);
     init();
 }
 
-FormEasy::~FormEasy()
-{
+FormEasy::~FormEasy() {
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
@@ -36,19 +34,14 @@ FormEasy::~FormEasy()
     delete ui;
 }
 
-void FormEasy::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormEasy::retranslateUI() { ui->retranslateUi(this); }
 
-void FormEasy::setAlgorithm(const QString &algorithm)
-{
+void FormEasy::setAlgorithm(const QString &algorithm) {
     formSerial->onChangeFrameType(algorithm);
     m_worker->setAlgorithm(algorithm);
 }
 
-bool FormEasy::connectEasyMode()
-{
+bool FormEasy::connectEasyMode() {
     LoadingOverLay *overlay = new LoadingOverLay(this);
 
     connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
@@ -64,7 +57,7 @@ bool FormEasy::connectEasyMode()
     QTimer *timer = new QTimer(this);
     connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
         LOG_INFO("connect stopped by user");
-        if(timer) {
+        if (timer) {
             timer->stop();
             overlay->deleteLater();
             timer->deleteLater();
@@ -90,15 +83,13 @@ bool FormEasy::connectEasyMode()
     return true;
 }
 
-void FormEasy::closeEasyMode()
-{
+void FormEasy::closeEasyMode() {
     m_isPlaying = false;
     ui->tBtnSwitch->setChecked(false);
     formSerial->stopFSeriesConnect();
 }
 
-void FormEasy::on_tBtnSwitch_clicked()
-{
+void FormEasy::on_tBtnSwitch_clicked() {
     m_isPlaying = !m_isPlaying;
     if (m_isPlaying) {
         if (connectEasyMode()) {
@@ -124,12 +115,12 @@ void FormEasy::initAxisControl() {
     ui->spinBoxYEnd->setValue(y_end);
 
     const QString val_x_enable = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_ENABLE, VAL_DISABLE);
-    if(val_x_enable == VAL_ENABLE) {
+    if (val_x_enable == VAL_ENABLE) {
         m_enableAxisX = true;
         ui->tBtnAxisX->setChecked(true);
     }
     const QString val_y_enable = SETTING_CONFIG_GET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_ENABLE, VAL_DISABLE);
-    if(val_y_enable == VAL_ENABLE) {
+    if (val_y_enable == VAL_ENABLE) {
         m_enableAxisY = true;
         ui->tBtnAxisY->setChecked(true);
         m_autoZoom = false;
@@ -197,7 +188,7 @@ void FormEasy::initToolButton() {
     m_infoPopup->setFrameShape(QFrame::Box);
 
     QVBoxLayout *layout = new QVBoxLayout(m_infoPopup);
-    layout->setContentsMargins(4,4,4,4);
+    layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(2);
 
     m_tBtnSimulate = new QToolButton;
@@ -230,12 +221,8 @@ void FormEasy::initToolButton() {
     m_tBtnDarkSpectrum->setCheckable(true);
     connect(m_tBtnDarkSpectrum, &QToolButton::clicked, this, &FormEasy::doDarkSpectrum);
 
-    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [=]() {
-        m_tBtnSimulate->setChecked(false);
-    });
-    connect(m_plotHistory, &FormPlotHistory::windowClose, this, [=]() {
-        m_tBtnHistory->setChecked(false);
-    });
+    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [=]() { m_tBtnSimulate->setChecked(false); });
+    connect(m_plotHistory, &FormPlotHistory::windowClose, this, [=]() { m_tBtnHistory->setChecked(false); });
     connect(m_snr, &SignalNoiseRatio::windowClose, this, [=]() {
         m_enableSNR = false;
         m_tBtnSNR->setChecked(false);
@@ -248,9 +235,7 @@ void FormEasy::initToolButton() {
         m_enableDarkSpectrum = false;
         m_tBtnDarkSpectrum->setChecked(false);
     });
-    connect(m_darkSpectrum, &DarkSpectrum::doCalculate, this, [=](bool status) {
-        m_doDarkSpectrumCalc = status;
-    });
+    connect(m_darkSpectrum, &DarkSpectrum::doCalculate, this, [=](bool status) { m_doDarkSpectrumCalc = status; });
     layout->addWidget(m_tBtnSimulate);
     layout->addWidget(m_tBtnHistory);
     layout->addWidget(m_tBtnSNR);
@@ -258,8 +243,7 @@ void FormEasy::initToolButton() {
     layout->addWidget(m_tBtnPointsTracker);
 }
 
-void FormEasy::init()
-{
+void FormEasy::init() {
     m_trajectory = new PeakTrajectory;
 
     formSerial = new FormSerial;
@@ -317,31 +301,19 @@ void FormEasy::init()
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     m_workerThread->start();
 
-    connect(m_plotSimulate,
-            &FormPlotSimulate::simulateDataReady,
-            formSerial,
-            &FormSerial::onSimulateRecv,
+    connect(m_plotSimulate, &FormPlotSimulate::simulateDataReady, formSerial, &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
     connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData, Qt::QueuedConnection);
 
-    connect(m_worker,
-            &ThreadWorker::plotReady4k,
-            this,
-            &FormEasy::updatePlot4k,
-            Qt::QueuedConnection);
-    connect(m_setting,
-            &FormSetting::sendThreshold,
-            m_worker,
-            &ThreadWorker::onUseLoadedThreshold);
-    connect(this, &FormEasy::sendOption,
-            m_worker, &ThreadWorker::onUseLoadedThreadsholdOption);
-    connect(m_setting,
-            &FormSetting::sendThresholdOption,
-            m_worker,
-            &ThreadWorker::onUseLoadedThreadsholdOption);
+    connect(m_worker, &ThreadWorker::plotReady4k, this, &FormEasy::updatePlot4k, Qt::QueuedConnection);
+    connect(m_setting, &FormSetting::sendThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold);
+    connect(this, &FormEasy::sendOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption);
+    connect(m_setting, &FormSetting::sendThresholdOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption);
 
-    connect(formSerial, &FormSerial::sendThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold, Qt::QueuedConnection);
-    connect(formSerial, &FormSerial::sendOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption, Qt::QueuedConnection);
+    connect(formSerial, &FormSerial::sendThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold,
+            Qt::QueuedConnection);
+    connect(formSerial, &FormSerial::sendOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption,
+            Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15, Qt::QueuedConnection);
@@ -371,15 +343,12 @@ void FormEasy::init()
     });
 }
 
-void FormEasy::highlightRowByX(double x)
-{
-    if (!m_modelValue)
-        return;
+void FormEasy::highlightRowByX(double x) {
+    if (!m_modelValue) return;
 
     int row = qRound(x) - 900;
 
-    if (row < 0 || row >= m_modelValue->rowCount())
-        return;
+    if (row < 0 || row >= m_modelValue->rowCount()) return;
 
     QTableView *table = ui->tableViewValue;
 
@@ -388,18 +357,15 @@ void FormEasy::highlightRowByX(double x)
     QItemSelectionModel *sel = table->selectionModel();
     sel->clearSelection();
 
-    QItemSelection selection(m_modelValue->index(row, 0),
-                             m_modelValue->index(row, m_modelValue->columnCount() - 1));
+    QItemSelection selection(m_modelValue->index(row, 0), m_modelValue->index(row, m_modelValue->columnCount() - 1));
 
     sel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 
     table->scrollTo(m_modelValue->index(row, 0), QAbstractItemView::PositionAtCenter);
 }
 
-static int findClosestIndex(const QVector<QPointF> &data, double pos)
-{
-    if (data.isEmpty())
-        return -1;
+static int findClosestIndex(const QVector<QPointF> &data, double pos) {
+    if (data.isEmpty()) return -1;
 
     int left = 0;
     int right = data.size() - 1;
@@ -413,10 +379,8 @@ static int findClosestIndex(const QVector<QPointF> &data, double pos)
             right = mid - 1;
     }
 
-    if (left >= data.size())
-        return data.size() - 1;
-    if (left == 0)
-        return 0;
+    if (left >= data.size()) return data.size() - 1;
+    if (left == 0) return 0;
 
     double d1 = std::abs(data[left].x() - pos);
     double d2 = std::abs(data[left - 1].x() - pos);
@@ -424,9 +388,7 @@ static int findClosestIndex(const QVector<QPointF> &data, double pos)
     return (d1 < d2) ? left : (left - 1);
 }
 
-void FormEasy::updatePlot4k(const MY_DATA &my_data,
-                            bool record)
-{
+void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
     if (m_pause) {
         return;
     }
@@ -447,18 +409,13 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data,
     }
 
     if (m_enablePointsTracker) {
-        QMap<QString,double> values;
-        for(double pos : m_vPointsTracker) {
-            int idx = findClosestIndex(
-                m_toVoltage ? m_curve.data : m_curve.raw.data,
-                pos
-                );
+        QMap<QString, double> values;
+        for (double pos : m_vPointsTracker) {
+            int idx = findClosestIndex(m_toVoltage ? m_curve.data : m_curve.raw.data, pos);
 
-            if(idx >= 0) {
-                double value = m_toVoltage ?
-                                   m_curve.data.at(idx).y() :
-                                   m_curve.raw.data.at(idx).y();
-                QString name = QString::number(pos,'f',2);
+            if (idx >= 0) {
+                double value = m_toVoltage ? m_curve.data.at(idx).y() : m_curve.raw.data.at(idx).y();
+                QString name = QString::number(pos, 'f', 2);
                 values[name] = value;
             }
         }
@@ -480,28 +437,26 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data,
 
     updatePlot(m_curve, {}, my_data.temperature, record);
     QVector<double> v31, r31;
-    for(int i = 0; i < m_curve.data.size(); ++i) {
+    for (int i = 0; i < m_curve.data.size(); ++i) {
         v31.push_back(m_curve.data.at(i).y());
     }
-    for(int i = 0; i < m_curve.raw.data.size(); ++i) {
+    for (int i = 0; i < m_curve.raw.data.size(); ++i) {
         r31.push_back(m_curve.raw.data.at(i).y());
     }
     updateTable(v31, {}, r31, {});
 
-    if(m_enableDarkSpectrum) {
-        if(m_doDarkSpectrumCalc) {
-            if(m_toVoltage) {
+    if (m_enableDarkSpectrum) {
+        if (m_doDarkSpectrumCalc) {
+            if (m_toVoltage) {
                 m_darkSpectrum->calculate(v31);
-            }
-            else {
+            } else {
                 m_darkSpectrum->calculate(r31);
             }
         }
     }
 }
 
-void FormEasy::on_tBtnZoom_clicked()
-{
+void FormEasy::on_tBtnZoom_clicked() {
     m_autoZoom = !m_autoZoom;
     ui->tBtnZoom->setChecked(m_autoZoom);
     if (m_autoZoom) {
@@ -513,8 +468,7 @@ void FormEasy::on_tBtnZoom_clicked()
     }
 }
 
-void FormEasy::on_tBtnCrop_clicked()
-{
+void FormEasy::on_tBtnCrop_clicked() {
     m_enableCrop = !m_enableCrop;
     ui->tBtnCrop->setChecked(m_enableCrop);
     if (m_enableCrop) {
@@ -526,26 +480,21 @@ void FormEasy::on_tBtnCrop_clicked()
     }
 }
 
-void FormEasy::on_tBtnPeak_clicked()
-{
+void FormEasy::on_tBtnPeak_clicked() {
     m_findPeak = !m_findPeak;
     ui->tBtnPeak->setChecked(m_findPeak);
     m_peaks->setVisible(m_findPeak);
     callFindPeak();
 }
 
-void FormEasy::on_tBtnFWHM_clicked()
-{
+void FormEasy::on_tBtnFWHM_clicked() {
     m_calcFWHM = !m_calcFWHM;
     ui->tBtnFWHM->setChecked(m_calcFWHM);
     callCalcFWHM();
 }
 
-void FormEasy::on_tBtnImg_clicked()
-{
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                                    tr("Save Chart"),
-                                                    QString("%1.png").arg(TIMESTAMP_0()),
+void FormEasy::on_tBtnImg_clicked() {
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Save Chart"), QString("%1.png").arg(TIMESTAMP_0()),
                                                     "PNG Image (*.png);;JPEG Image (*.jpg)");
     if (!filePath.isEmpty()) {
         saveChartAsImage(filePath);
@@ -565,23 +514,19 @@ void FormEasy::sendIntegrationTime() {
     formSerial->sendEasyData(calcIntegrationTime(val));
 }
 
-void FormEasy::on_spinBoxIntegrationTime_valueChanged(int val)
-{
+void FormEasy::on_spinBoxIntegrationTime_valueChanged(int val) {
     if (m_isPlaying) {
         sendIntegrationTime();
     }
 }
 
-void FormEasy::on_tBtnPause_clicked()
-{
+void FormEasy::on_tBtnPause_clicked() {
     m_pause = !m_pause;
     ui->tBtnPause->setChecked(m_pause);
 }
 
-void FormEasy::saveChartAsImage(const QString &filePath)
-{
-    if (!m_chartView)
-        return;
+void FormEasy::saveChartAsImage(const QString &filePath) {
+    if (!m_chartView) return;
 
     QSize size = m_chartView->size();
 
@@ -595,8 +540,7 @@ void FormEasy::saveChartAsImage(const QString &filePath)
     image.save(filePath);
 }
 
-void FormEasy::closeEvent(QCloseEvent *event)
-{
+void FormEasy::closeEvent(QCloseEvent *event) {
     closeEasyMode();
 
     m_trajectory->close();
@@ -611,11 +555,7 @@ void FormEasy::closeEvent(QCloseEvent *event)
     m_darkSpectrum->close();
 }
 
-void FormEasy::updatePlot(const CURVE &curve31,
-                          const CURVE &curve33,
-                          const double &temperature,
-                          bool record)
-{
+void FormEasy::updatePlot(const CURVE &curve31, const CURVE &curve33, const double &temperature, bool record) {
     double val_min = std::numeric_limits<double>::max();
     double val_max = std::numeric_limits<double>::min();
     QList<QPointF> v;
@@ -659,7 +599,7 @@ void FormEasy::updatePlot(const CURVE &curve31,
     }
 
     callFindPeak();
-    if(m_enablePeakTrack) {
+    if (m_enablePeakTrack) {
         QPointF maxPoint;
         qreal maxY = -std::numeric_limits<qreal>::max();
 
@@ -677,11 +617,8 @@ void FormEasy::updatePlot(const CURVE &curve31,
     callCalcFWHM();
 }
 
-void FormEasy::updateTable(const QVector<double> &v14,
-                           const QVector<double> &v24,
-                           const QVector<double> &raw14,
-                           const QVector<double> &raw24)
-{
+void FormEasy::updateTable(const QVector<double> &v14, const QVector<double> &v24, const QVector<double> &raw14,
+                           const QVector<double> &raw24) {
     if (m_pause) {
         return;
     }
@@ -702,15 +639,13 @@ void FormEasy::updateTable(const QVector<double> &v14,
     }
 }
 
-QVector<QPointF> FormEasy::findPeak(int window, double thresholdFactor, double minDist)
-{
+QVector<QPointF> FormEasy::findPeak(int window, double thresholdFactor, double minDist) {
     QVector<QPointF> peaks;
     int n = m_line->count();
 
     QVector<double> values;
     values.reserve(n);
-    for (int i = 0; i < n; i++)
-        values.append(m_line->at(i).y());
+    for (int i = 0; i < n; i++) values.append(m_line->at(i).y());
 
     double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
     double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
@@ -720,8 +655,7 @@ QVector<QPointF> FormEasy::findPeak(int window, double thresholdFactor, double m
     double lastPeakX = -1e9;
     for (int i = window; i < n - window; i++) {
         double yCurr = m_line->at(i).y();
-        if (yCurr < threshold)
-            continue;
+        if (yCurr < threshold) continue;
 
         bool isPeak = true;
         for (int j = i - window; j <= i + window; j++) {
@@ -742,8 +676,7 @@ QVector<QPointF> FormEasy::findPeak(int window, double thresholdFactor, double m
     return peaks;
 }
 
-void FormEasy::callFindPeak()
-{
+void FormEasy::callFindPeak() {
     if (m_findPeak) {
         if (!m_line || m_line->count() < 5) {
             return;
@@ -762,8 +695,7 @@ void FormEasy::callFindPeak()
     }
 }
 
-void FormEasy::callCalcFWHM()
-{
+void FormEasy::callCalcFWHM() {
     if (m_calcFWHM) {
         for (auto *line : m_fwhmLines) {
             m_chart->removeSeries(line);
@@ -776,8 +708,7 @@ void FormEasy::callCalcFWHM()
         m_fwhmLabels.clear();
 
         auto peaks = findPeak(3, 1.0, 5.0);
-        if (peaks.isEmpty())
-            return;
+        if (peaks.isEmpty()) return;
 
         for (const auto &peak : peaks) {
             double yPeak = peak.y();
@@ -786,8 +717,7 @@ void FormEasy::callCalcFWHM()
 
             double xLeft = xPeak, xRight = xPeak;
             for (int i = m_line->count() - 1; i >= 1; --i) {
-                if (m_line->at(i).x() >= xPeak)
-                    continue;
+                if (m_line->at(i).x() >= xPeak) continue;
                 double y1 = m_line->at(i).y();
                 double y2 = m_line->at(i - 1).y();
                 if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
@@ -799,8 +729,7 @@ void FormEasy::callCalcFWHM()
                 }
             }
             for (int i = 0; i < m_line->count() - 1; ++i) {
-                if (m_line->at(i).x() <= xPeak)
-                    continue;
+                if (m_line->at(i).x() <= xPeak) continue;
                 double y1 = m_line->at(i).y();
                 double y2 = m_line->at(i + 1).y();
                 if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
@@ -826,8 +755,7 @@ void FormEasy::callCalcFWHM()
             QPointF mid((xLeft + xRight) / 2.0, yHalf);
             QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
 
-            auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2),
-                                                      m_chart);
+            auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
             label->setBrush(Qt::red);
             label->setPos(scenePos + QPointF(5, -15));
             m_fwhmLabels.append(label);
@@ -845,8 +773,7 @@ void FormEasy::callCalcFWHM()
     }
 }
 
-QString FormEasy::calcIntegrationTime(int value)
-{
+QString FormEasy::calcIntegrationTime(int value) {
     int rawValue = value;
     QString hex = QString("%1").arg(rawValue, 6, 16, QLatin1Char('0')).toUpper();
     QString prefix = "DD3C000622";
@@ -856,34 +783,29 @@ QString FormEasy::calcIntegrationTime(int value)
     return cmd;
 }
 
-void FormEasy::doSimulateClicked()
-{
+void FormEasy::doSimulateClicked() {
     m_enableSimulate = !m_enableSimulate;
     m_plotSimulate->setVisible(m_enableSimulate);
     m_tBtnSimulate->setChecked(m_enableSimulate);
 }
 
-void FormEasy::doHistoryClicked()
-{
+void FormEasy::doHistoryClicked() {
     m_enableHistory = !m_enableHistory;
     m_plotHistory->setVisible(m_enableHistory);
     m_tBtnHistory->setChecked(m_enableHistory);
 }
 
-void FormEasy::on_tBtnFourier_clicked()
-{
+void FormEasy::on_tBtnFourier_clicked() {
     m_enableFourier = !m_enableFourier;
     m_fourierTransform->setVisible(ui->tBtnFourier->isChecked());
 }
 
-void FormEasy::on_tBtnAccumulate_clicked()
-{
+void FormEasy::on_tBtnAccumulate_clicked() {
     m_enableAccumulate = !m_enableAccumulate;
     m_accumulate->setVisible(ui->tBtnAccumulate->isChecked());
 }
 
-void FormEasy::doSNRClicked()
-{
+void FormEasy::doSNRClicked() {
     m_enableSNR = !m_enableSNR;
     m_snr->setVisible(m_enableSNR);
     m_tBtnSNR->setChecked(m_enableSNR);
@@ -901,14 +823,12 @@ void FormEasy::doDarkSpectrum() {
     m_tBtnDarkSpectrum->setChecked(m_enableDarkSpectrum);
 }
 
-void FormEasy::on_tBtnSetting_clicked()
-{
+void FormEasy::on_tBtnSetting_clicked() {
     m_enableSetting = !m_enableSetting;
     m_setting->setVisible(m_enableSetting);
 }
 
-void FormEasy::on_tBtnAxisY_clicked()
-{
+void FormEasy::on_tBtnAxisY_clicked() {
     m_enableAxisY = !m_enableAxisY;
     ui->tBtnAxisY->setChecked(m_enableAxisY);
     if (m_enableAxisY) {
@@ -922,49 +842,42 @@ void FormEasy::on_tBtnAxisY_clicked()
     }
 }
 
-void FormEasy::on_tBtnToVoltage_clicked()
-{
+void FormEasy::on_tBtnToVoltage_clicked() {
     m_toVoltage = !m_toVoltage;
     ui->tBtnToVoltage->setChecked(m_toVoltage);
 }
 
-void FormEasy::on_spinBoxYStart_valueChanged(int val)
-{
+void FormEasy::on_spinBoxYStart_valueChanged(int val) {
     m_y_start = val;
     SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_START, QString::number(val));
 }
 
-void FormEasy::on_spinBoxYEnd_valueChanged(int val)
-{
+void FormEasy::on_spinBoxYEnd_valueChanged(int val) {
     m_y_end = val;
     SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_Y_END, QString::number(val));
 }
 
-void FormEasy::on_spinBoxXStart_valueChanged(int val)
-{
+void FormEasy::on_spinBoxXStart_valueChanged(int val) {
     m_x_start = val;
     if (m_enableAxisX) {
         SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_START, QString::number(val));
     }
 }
 
-void FormEasy::on_spinBoxXEnd_valueChanged(int val)
-{
+void FormEasy::on_spinBoxXEnd_valueChanged(int val) {
     m_x_end = val;
     if (m_enableAxisX) {
         SETTING_CONFIG_SET(CFG_GROUP_MODE_EASY, CFG_MODE_EASY_X_END, QString::number(val));
     }
 }
 
-void FormEasy::on_tBtnAxisX_clicked()
-{
+void FormEasy::on_tBtnAxisX_clicked() {
     m_enableAxisX = !m_enableAxisX;
     ui->tBtnAxisX->setChecked(m_enableAxisX);
 }
 
-void FormEasy::on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &state)
-{
-    if(state == Qt::Checked) {
+void FormEasy::on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &state) {
+    if (state == Qt::Checked) {
         m_enablePeakTrack = true;
         m_findPeak = true;
         ui->tBtnPeak->setChecked(true);
@@ -981,17 +894,12 @@ void FormEasy::on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &stat
 
         m_lineLeft = new DraggableLine(chart, leftX, Qt::green);
         m_lineRight = new DraggableLine(chart, rightX, Qt::darkGreen);
-        connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) {
-            m_trajectory_start = x;
-        });
-        connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) {
-            m_trajectory_end = x;
-        });
+        connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) { m_trajectory_start = x; });
+        connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) { m_trajectory_end = x; });
 
         chart->scene()->addItem(m_lineLeft);
         chart->scene()->addItem(m_lineRight);
-    }
-    else {
+    } else {
         m_enablePeakTrack = false;
         m_findPeak = false;
         ui->tBtnPeak->setChecked(false);
@@ -1011,8 +919,7 @@ void FormEasy::on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &stat
     }
 }
 
-void FormEasy::contextMenuEvent(QContextMenuEvent *event)
-{
+void FormEasy::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
 
     QAction *loadChartAction = menu.addAction(tr("Load Chart"));
@@ -1020,22 +927,21 @@ void FormEasy::contextMenuEvent(QContextMenuEvent *event)
     menu.addSeparator();
     QAction *pointsTrackerAction = nullptr;
     QAction *pointsClearAction = nullptr;
-    if(m_enablePointsTracker) {
+    if (m_enablePointsTracker) {
         pointsTrackerAction = menu.addAction(tr("Add Points Tracker"));
         pointsClearAction = menu.addAction(tr("Clear Tracker"));
     }
 
     QAction *selectedAction = menu.exec(event->globalPos());
-    if (!selectedAction)
-        return;
+    if (!selectedAction) return;
 
     if (selectedAction == loadChartAction) {
         loadChart();
-    } else if(selectedAction == exportChartAction) {
+    } else if (selectedAction == exportChartAction) {
         exportChart();
-    } else if(selectedAction == pointsTrackerAction) {
+    } else if (selectedAction == pointsTrackerAction) {
         addToPointsTracker();
-    } else if(selectedAction == pointsClearAction) {
+    } else if (selectedAction == pointsClearAction) {
         clearPointsTracker();
     }
 }
@@ -1045,38 +951,20 @@ void FormEasy::clearPointsTracker() {
     m_vPointsTracker.clear();
 }
 
-void FormEasy::addToPointsTracker()
-{
+void FormEasy::addToPointsTracker() {
     bool ok = false;
 
-    double pos = QInputDialog::getDouble(
-        this,
-        tr("Add Point"),
-        tr("Input position:"),
-        0.0,
-        900,
-        1700,
-        4,
-        &ok
-        );
+    double pos = QInputDialog::getDouble(this, tr("Add Point"), tr("Input position:"), 0.0, 900, 1700, 4, &ok);
 
-    if (!ok)
-        return;
+    if (!ok) return;
 
     m_vPointsTracker.append(pos);
 }
 
-void FormEasy::loadChart()
-{
-    QString path = QFileDialog::getOpenFileName(
-        this,
-        tr("choose file"),
-        "",
-        tr("CSV Files (*.csv)")
-        );
+void FormEasy::loadChart() {
+    QString path = QFileDialog::getOpenFileName(this, tr("choose file"), "", tr("CSV Files (*.csv)"));
 
-    if (path.isEmpty())
-        return;
+    if (path.isEmpty()) return;
 
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -1092,8 +980,7 @@ void FormEasy::loadChart()
     bool firstLine = true;
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
-        if (line.isEmpty())
-            continue;
+        if (line.isEmpty()) continue;
 
         if (firstLine) {
             firstLine = false;
@@ -1101,8 +988,7 @@ void FormEasy::loadChart()
         }
 
         QStringList parts = line.split(",");
-        if (parts.size() < 2)
-            continue;
+        if (parts.size() < 2) continue;
 
         double x = parts[0].toDouble();
         double y_raw = parts[1].toDouble();
@@ -1124,21 +1010,13 @@ void FormEasy::loadChart()
     data.curve31 = curve;
     updatePlot4k(data, false);
 
-    QMessageBox::information(this,
-                             TITLE_INFO,
-                             tr("CSV loaded successfully."));
+    QMessageBox::information(this, TITLE_INFO, tr("CSV loaded successfully."));
 }
 
 void FormEasy::exportChart() {
-    QString fileName = QFileDialog::getSaveFileName(
-        this,
-        tr("Export CSV"),
-        "spectral.csv",
-        tr("CSV Files (*.csv)")
-        );
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "spectral.csv", tr("CSV Files (*.csv)"));
 
-    if (fileName.isEmpty())
-        return;
+    if (fileName.isEmpty()) return;
 
     QFile file(fileName);
 
@@ -1150,33 +1028,25 @@ void FormEasy::exportChart() {
     QTextStream out(&file);
     out << "Index,Intensity_Raw,Intensity_Voltage\n";
     for (int i = 0; i < m_line->count(); ++i) {
-        out << QString::number(m_line->at(i).x()) << ","
-            << QString::number(m_curve.raw.data.at(i).y()) << ","
+        out << QString::number(m_line->at(i).x()) << "," << QString::number(m_curve.raw.data.at(i).y()) << ","
             << QString::number(m_curve.data.at(i).y()) << "\n";
     }
     file.close();
 
-    QMessageBox::information(this,
-                             TITLE_INFO,
-                             tr("CSV exported successfully."));
+    QMessageBox::information(this, TITLE_INFO, tr("CSV exported successfully."));
 }
 
-void FormEasy::on_tBtnInfo_clicked()
-{
-    QPoint pos = ui->tBtnInfo->mapToGlobal(
-        QPoint(0, ui->tBtnInfo->height())
-        );
+void FormEasy::on_tBtnInfo_clicked() {
+    QPoint pos = ui->tBtnInfo->mapToGlobal(QPoint(0, ui->tBtnInfo->height()));
 
     m_infoPopup->move(pos);
     m_infoPopup->show();
 }
 
-void FormEasy::on_comboBoxTimeUnit_currentIndexChanged(int index)
-{
-    if(index == 0) {
+void FormEasy::on_comboBoxTimeUnit_currentIndexChanged(int index) {
+    if (index == 0) {
         ui->spinBoxIntegrationTime->setSingleStep(5);
-    }
-    else if(index == 1) {
+    } else if (index == 1) {
         ui->spinBoxIntegrationTime->setSingleStep(1);
     }
     sendIntegrationTime();

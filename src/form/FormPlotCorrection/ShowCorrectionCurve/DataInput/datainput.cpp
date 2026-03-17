@@ -1,27 +1,16 @@
 #include "datainput.h"
-#include "ui_datainput.h"
 
 #include <QRegularExpression>
 
-DataInput::DataInput(QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::DataInput)
-{
-    ui->setupUi(this);
-}
+#include "ui_datainput.h"
 
-DataInput::~DataInput()
-{
-    delete ui;
-}
+DataInput::DataInput(QWidget *parent) : QDialog(parent), ui(new Ui::DataInput) { ui->setupUi(this); }
 
-QVector<double> DataInput::getValues()
-{
-    return m_values;
-}
+DataInput::~DataInput() { delete ui; }
 
-void DataInput::on_textEdit_textChanged()
-{
+QVector<double> DataInput::getValues() { return m_values; }
+
+void DataInput::on_textEdit_textChanged() {
     QString txt = ui->textEdit->toPlainText().trimmed();
 
     QStringList parts = txt.split(QRegularExpression("[,\\s]+"), Qt::SkipEmptyParts);

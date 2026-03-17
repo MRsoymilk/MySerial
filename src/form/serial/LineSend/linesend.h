@@ -7,8 +7,7 @@ namespace Ui {
 class LineSend;
 }
 
-class LineSend : public QWidget
-{
+class LineSend : public QWidget {
     Q_OBJECT
 
 public:
@@ -36,4 +35,4 @@ private:
     int m_index;
 };
 
-#endif // LINESEND_H
+#endif  // LINESEND_H

@@ -4,19 +4,11 @@
 #include <QJsonObject>
 #include <QTimer>
 
-HttpClient::HttpClient(QObject *parent)
-    : QObject(parent)
-{
-    m_manager = new QNetworkAccessManager(this);
-}
+HttpClient::HttpClient(QObject *parent) : QObject(parent) { m_manager = new QNetworkAccessManager(this); }
 
-HttpClient::~HttpClient()
-{
-    delete m_manager;
-}
+HttpClient::~HttpClient() { delete m_manager; }
 
-void HttpClient::post(const QUrl &url, const QJsonObject &data)
-{
+void HttpClient::post(const QUrl &url, const QJsonObject &data) {
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QJsonDocument doc(data);
@@ -24,8 +16,7 @@ void HttpClient::post(const QUrl &url, const QJsonObject &data)
     connect(m_currentReply, &QNetworkReply::finished, this, &HttpClient::onFinished);
 }
 
-void HttpClient::onFinished()
-{
+void HttpClient::onFinished() {
     m_currentReply->deleteLater();
 
     if (m_currentReply->error() == QNetworkReply::NoError) {
@@ -39,8 +30,7 @@ void HttpClient::onFinished()
     m_currentReply = nullptr;
 }
 
-void HttpClient::getImage(const QUrl &imageUrl)
-{
+void HttpClient::getImage(const QUrl &imageUrl) {
     QNetworkRequest request(imageUrl);
     QNetworkReply *reply = m_manager->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
@@ -59,19 +49,14 @@ void HttpClient::getImage(const QUrl &imageUrl)
     });
 }
 
-void HttpClient::downloadBinary(const QString &url,
-                                std::function<void(QByteArray)> onSuccess,
-                                std::function<void(QString)> onError,
-                                std::function<void(qint64, qint64)> onProgress)
-{
+void HttpClient::downloadBinary(const QString &url, std::function<void(QByteArray)> onSuccess,
+                                std::function<void(QString)> onError, std::function<void(qint64, qint64)> onProgress) {
     QUrl qurl(url);
     QNetworkRequest request(qurl);
     QNetworkReply *reply = m_manager->get(request);
 
     if (onProgress) {
-        connect(reply,
-                &QNetworkReply::downloadProgress,
-                reply,
+        connect(reply, &QNetworkReply::downloadProgress, reply,
                 [reply, onProgress](qint64 received, qint64 total) { onProgress(received, total); });
     }
 
@@ -85,14 +70,11 @@ void HttpClient::downloadBinary(const QString &url,
         reply->deleteLater();
     });
 
-    connect(reply,
-            QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred),
-            reply,
+    connect(reply, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::errorOccurred), reply,
             [reply, onError](QNetworkReply::NetworkError) { onError(reply->errorString()); });
 }
 
-QJsonObject HttpClient::get_sync(const QString &url, int timeoutMs)
-{
+QJsonObject HttpClient::get_sync(const QString &url, int timeoutMs) {
     QUrl qurl(url);
     QNetworkRequest request(qurl);
 

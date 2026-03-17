@@ -19,8 +19,7 @@ namespace Ui {
 class FormExpert;
 }
 
-class FormExpert : public QWidget
-{
+class FormExpert : public QWidget {
     Q_OBJECT
 
 public:
@@ -78,4 +77,4 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 };
 
-#endif // FORMEXPERT_H
+#endif  // FORMEXPERT_H

@@ -6,6 +6,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QValueAxis>
+
 #include "MyChartView/mychartview.h"
 #include "global.h"
 
@@ -21,8 +22,7 @@ namespace Ui {
 class FormPlot;
 }
 
-class FormPlot : public QWidget
-{
+class FormPlot : public QWidget {
     Q_OBJECT
 
 public:
@@ -32,12 +32,9 @@ public:
     void setAlgorithm(const QString &algorithm);
 
 signals:
-    void newDataReceivedLLC(const FRAME& frame,
-                            const double &temperature);
-    void newDataReceivedF30(const FRAME& frame,
-                            const double &temperature);
-    void newDataReceivedF15(const FRAME& frame,
-                            const double &temperature);
+    void newDataReceivedLLC(const FRAME &frame, const double &temperature);
+    void newDataReceivedF30(const FRAME &frame, const double &temperature);
+    void newDataReceivedF15(const FRAME &frame, const double &temperature);
     void sendOffset31(int val);
     void sendOffset33(int val);
     void toHistory(const MY_DATA &data);
@@ -45,14 +42,10 @@ signals:
     void broadcast(const double &avg);
 
 public slots:
-    void onDataReceivedLLC(const FRAME& frame,
-                           const double temperature);
-    void onDataReceivedF30(const FRAME& frame,
-                           const double &temperature);
-    void onDataReceivedF15(const FRAME& frame,
-                           const double &temperature);
-    void updatePlot4k(const MY_DATA &my_data,
-                      bool record = false);
+    void onDataReceivedLLC(const FRAME &frame, const double temperature);
+    void onDataReceivedF30(const FRAME &frame, const double &temperature);
+    void onDataReceivedF15(const FRAME &frame, const double &temperature);
+    void updatePlot4k(const MY_DATA &my_data, bool record = false);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
@@ -151,4 +144,4 @@ private:
     QString m_algorithm;
 };
 
-#endif // FORMPLOT_H
+#endif  // FORMPLOT_H

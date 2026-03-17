@@ -1,16 +1,16 @@
 #ifndef SHOWDATA_H
 #define SHOWDATA_H
 
-#include <QWidget>
 #include <QStandardItemModel>
+#include <QWidget>
+
 #include "global.h"
 
 namespace Ui {
 class ShowData;
 }
 
-class ShowData : public QWidget
-{
+class ShowData : public QWidget {
     Q_OBJECT
 
 public:
@@ -26,4 +26,4 @@ private:
     QStandardItemModel *m_model = nullptr;
 };
 
-#endif // SHOWDATA_H
+#endif  // SHOWDATA_H

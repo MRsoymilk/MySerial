@@ -1,30 +1,24 @@
 #include "accumulate.h"
-#include "MyChartView/mychartview.h"
-#include "ui_accumulate.h"
+
 #include <Eigen/Dense>
 #include <Eigen/QR>
+
+#include "MyChartView/mychartview.h"
+#include "ui_accumulate.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-Accumulate::Accumulate(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::Accumulate)
-{
+Accumulate::Accumulate(QWidget *parent) : QWidget(parent), ui(new Ui::Accumulate) {
     ui->setupUi(this);
     init();
 }
 
-Accumulate::~Accumulate()
-{
-    delete ui;
-}
+Accumulate::~Accumulate() { delete ui; }
 
-QList<QPointF> Accumulate::fitSingleCurve(const QList<QPointF> &points, int order)
-{
+QList<QPointF> Accumulate::fitSingleCurve(const QList<QPointF> &points, int order) {
     int n = points.size();
-    if (n <= 1)
-        return points;
+    if (n <= 1) return points;
 
     order = qMin(order, n - 1);
     int m = order + 1;
@@ -63,8 +57,7 @@ QList<QPointF> Accumulate::fitSingleCurve(const QList<QPointF> &points, int orde
     return fitted;
 }
 
-void Accumulate::updateAvgFittedCurve(const QList<QPointF> &newFitted)
-{
+void Accumulate::updateAvgFittedCurve(const QList<QPointF> &newFitted) {
     if (m_avgFitCount == 0) {
         m_avgFittedCurve = newFitted;
         m_avgFitCount = 1;
@@ -82,16 +75,13 @@ void Accumulate::updateAvgFittedCurve(const QList<QPointF> &newFitted)
     m_avgFitCount++;
 }
 
-QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
-{
-    if (v.isEmpty())
-        return {};
+QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v) {
+    if (v.isEmpty()) return {};
 
     // ==========================
     // 噪声采集
     // ==========================
     if (m_enableNoise) {
-
         --m_count_noise_remain;
 
         if (m_count_noise_remain <= 0) {
@@ -112,11 +102,10 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         }
 
         if (idx >= m_noiseMinMaxGroups.size()) {
-
             auto scatter = new QScatterSeries();
 
             scatter->setMarkerSize(6);
-            scatter->setColor(QColor(0,0,0,120));
+            scatter->setColor(QColor(0, 0, 0, 120));
             scatter->setName("");
 
             m_noiseMinMaxGroups.append(scatter);
@@ -142,7 +131,6 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         updateAvgFittedCurve(newFitted);
 
         if (!m_lineNoiseFit) {
-
             m_lineNoiseFit = new QLineSeries();
             m_lineNoiseFit->setColor(Qt::red);
             m_lineNoiseFit->setName("avg_fitting");
@@ -187,23 +175,19 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         m_axisXNoiseMinMax->setRange(xMin, xMax);
         m_axisYNoise->setRange(yMin, yMax);
         if (!m_avgFittedCurve.isEmpty()) {
-
             double fitXMin = m_avgFittedCurve.first().x();
             double fitXMax = m_avgFittedCurve.last().x();
 
             m_axisXNoiseFit->setRange(fitXMin, fitXMax);
         }
 
-        ui->labelCountStatus->setText(
-            QString("%1/%2").arg(m_count_noise_remain).arg(m_count_noise)
-            );
+        ui->labelCountStatus->setText(QString("%1/%2").arg(m_count_noise_remain).arg(m_count_noise));
     }
 
     // ==========================
     // 信号累加
     // ==========================
     else if (m_enableAccumulate) {
-
         ++m_count_acc;
 
         ui->labelAccStatus->setText(QString("acc %1").arg(m_count_acc));
@@ -213,16 +197,13 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         int n = v.size();
 
         if (m_accumulatedCurve.isEmpty()) {
-            for (int i = 0; i < n; ++i)
-                m_accumulatedCurve.append({v[i].x(),0});
+            for (int i = 0; i < n; ++i) m_accumulatedCurve.append({v[i].x(), 0});
         }
 
         for (int i = 0; i < n; ++i) {
-
             double y = v[i].y();
 
-            if (!m_avgFittedCurve.isEmpty())
-                y -= m_avgFittedCurve[i].y();
+            if (!m_avgFittedCurve.isEmpty()) y -= m_avgFittedCurve[i].y();
 
             y += m_accumulatedCurve[i].y();
 
@@ -232,17 +213,13 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
         m_accumulatedCurve = accumulated;
 
         if (m_target_count != 0) {
-
             if (m_count_acc >= m_target_count) {
-
                 if (m_enableDiv) {
-                    for (int i = 0; i < accumulated.size(); ++i)
-                        accumulated[i].setY(accumulated[i].y() / m_count_acc);
+                    for (int i = 0; i < accumulated.size(); ++i) accumulated[i].setY(accumulated[i].y() / m_count_acc);
                 }
 
                 m_count_acc = 0;
                 m_accumulatedCurve.clear();
-
             } else {
                 return {};
             }
@@ -255,13 +232,11 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
     // 基线扣除
     // ==========================
     else if (m_enableBaselineDeduction) {
-
         QList<QPointF> result;
 
         int n = v.size();
 
         for (int i = 0; i < n; ++i) {
-
             double y = v[i].y() - m_avgFittedCurve[i].y();
 
             result.append(QPointF(v[i].x(), y));
@@ -273,8 +248,7 @@ QList<QPointF> Accumulate::accumulate(const QList<QPointF> &v)
     return v;
 }
 
-void Accumulate::closeEvent(QCloseEvent *event)
-{
+void Accumulate::closeEvent(QCloseEvent *event) {
     m_accumulatedCurve.clear();
     m_accumulateNoise.clear();
     m_enableAccumulate = false;
@@ -287,8 +261,7 @@ void Accumulate::closeEvent(QCloseEvent *event)
     emit windowClose();
 }
 
-void Accumulate::contextMenuEvent(QContextMenuEvent *event)
-{
+void Accumulate::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
     QAction *clearNoseAction = new QAction("Clear Noise", &menu);
     QAction *clearAccumulateAction = new QAction("Clear Accumulate", &menu);
@@ -302,8 +275,7 @@ void Accumulate::contextMenuEvent(QContextMenuEvent *event)
     menu.exec(event->globalPos());
 }
 
-void Accumulate::onMenuClearNose()
-{
+void Accumulate::onMenuClearNose() {
     m_noiseBuffer.clear();
     m_avgFittedCurve.clear();
     m_accumulateNoise.clear();
@@ -313,15 +285,13 @@ void Accumulate::onMenuClearNose()
     m_avgFitCount = 0;
 }
 
-void Accumulate::onMenuClearAccumulate()
-{
+void Accumulate::onMenuClearAccumulate() {
     on_tBtnAccumulateEnable_clicked();
     on_tBtnAccumulateEnable_clicked();
 }
 
 // 初始化
-void Accumulate::init()
-{
+void Accumulate::init() {
     m_chartNoise = new QChart();
     m_chartNoise->setTitle(tr("Noise"));
     m_chartNoise->legend()->hide();
@@ -352,10 +322,8 @@ void Accumulate::init()
     ui->tBtnEnableDiv->setCheckable(true);
 }
 
-QList<QPointF> Accumulate::gaussianSmooth(const QList<QPointF> &points, int window)
-{
-    if (points.isEmpty() || window <= 1)
-        return points;
+QList<QPointF> Accumulate::gaussianSmooth(const QList<QPointF> &points, int window) {
+    if (points.isEmpty() || window <= 1) return points;
 
     QList<QPointF> result;
 
@@ -369,7 +337,6 @@ QList<QPointF> Accumulate::gaussianSmooth(const QList<QPointF> &points, int wind
     double sumWeights = 0.0;
 
     for (int i = 0; i < window; ++i) {
-
         int x = i - radius;
 
         double w = std::exp(-(x * x) / (2 * sigma * sigma));
@@ -379,20 +346,16 @@ QList<QPointF> Accumulate::gaussianSmooth(const QList<QPointF> &points, int wind
         sumWeights += w;
     }
 
-    for (int i = 0; i < window; ++i)
-        weights[i] /= sumWeights;
+    for (int i = 0; i < window; ++i) weights[i] /= sumWeights;
 
     for (int i = 0; i < n; ++i) {
-
         double ySum = 0.0;
         double wSum = 0.0;
 
         for (int k = -radius; k <= radius; ++k) {
-
             int idx = i + k;
 
             if (idx >= 0 && idx < n) {
-
                 double w = weights[k + radius];
 
                 ySum += points[idx].y() * w;
@@ -408,8 +371,7 @@ QList<QPointF> Accumulate::gaussianSmooth(const QList<QPointF> &points, int wind
 }
 
 // 开关
-void Accumulate::on_tBtnNoiseEnable_clicked()
-{
+void Accumulate::on_tBtnNoiseEnable_clicked() {
     m_enableNoise = !m_enableNoise;
     ui->tBtnNoiseEnable->setChecked(m_enableNoise);
     if (m_enableNoise) {
@@ -431,8 +393,7 @@ void Accumulate::on_tBtnNoiseEnable_clicked()
     }
 }
 
-void Accumulate::on_tBtnAccumulateEnable_clicked()
-{
+void Accumulate::on_tBtnAccumulateEnable_clicked() {
     m_enableAccumulate = !m_enableAccumulate;
     ui->tBtnAccumulateEnable->setChecked(m_enableAccumulate);
     if (m_enableAccumulate) {
@@ -444,8 +405,7 @@ void Accumulate::on_tBtnAccumulateEnable_clicked()
     }
 }
 
-void Accumulate::on_tBtnBaselineDeductionEnable_clicked()
-{
+void Accumulate::on_tBtnBaselineDeductionEnable_clicked() {
     m_enableBaselineDeduction = !m_enableBaselineDeduction;
     ui->tBtnBaselineDeductionEnable->setChecked(m_enableBaselineDeduction);
     if (m_enableBaselineDeduction) {
@@ -454,13 +414,9 @@ void Accumulate::on_tBtnBaselineDeductionEnable_clicked()
     }
 }
 
-void Accumulate::on_spinBoxCount_valueChanged(int count)
-{
-    m_target_count = count;
-}
+void Accumulate::on_spinBoxCount_valueChanged(int count) { m_target_count = count; }
 
-void Accumulate::on_tBtnEnableDiv_clicked()
-{
+void Accumulate::on_tBtnEnableDiv_clicked() {
     m_enableDiv = !m_enableDiv;
     ui->tBtnEnableDiv->setChecked(m_enableDiv);
 }

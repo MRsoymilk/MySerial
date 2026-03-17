@@ -8,12 +8,10 @@ namespace Ui {
 class FormFittingSin;
 }
 
-class FormFittingSin : public QWidget
-{
+class FormFittingSin : public QWidget {
     Q_OBJECT
 public:
-    struct SIN
-    {
+    struct SIN {
         double A;
         double w;
         double xc;
@@ -58,8 +56,8 @@ private:
     QByteArray packageRawData(const QVector<QPointF> &points);
     void fillFixedFittingCurveData(const double &start);
     void packageRawData(bool isSend = false);
-    std::optional<QPair<double, double> > solveSinParams_hard(
-        double x1, double y1, double x2, double y2, double A, double y0);
+    std::optional<QPair<double, double> > solveSinParams_hard(double x1, double y1, double x2, double y2, double A,
+                                                              double y0);
     QByteArray buildFrame();
     void startFitting();
 
@@ -80,4 +78,4 @@ private:
     QString m_urlFindPeak;
 };
 
-#endif // FORMFITTINGSIN_H
+#endif  // FORMFITTINGSIN_H

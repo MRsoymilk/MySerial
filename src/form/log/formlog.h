@@ -7,8 +7,7 @@ namespace Ui {
 class FormLog;
 }
 
-class FormLog : public QWidget
-{
+class FormLog : public QWidget {
     Q_OBJECT
 
 public:
@@ -20,4 +19,4 @@ private:
     Ui::FormLog *ui;
 };
 
-#endif // FORMLOG_H
+#endif  // FORMLOG_H

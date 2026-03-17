@@ -13,8 +13,7 @@ class FourierTransform;
 }
 QT_END_NAMESPACE
 
-class FourierTransform : public QWidget
-{
+class FourierTransform : public QWidget {
     Q_OBJECT
 
 public:
@@ -42,10 +41,7 @@ private:
 
     QList<QPointF> fftAmplitude(const QList<QPointF> &data, double sampleRate);
 
-    QList<QPointF> ifftBandLimited(const QList<QPointF> &data,
-                                   double sampleRate,
-                                   double freqStart,
-                                   double freqEnd);
+    QList<QPointF> ifftBandLimited(const QList<QPointF> &data, double sampleRate, double freqStart, double freqEnd);
 
     QList<QPointF> updateIFFT();
 
@@ -79,4 +75,4 @@ private:
     int m_axisXEnd = 0;
 };
 
-#endif // FOURIERTRANSFORM_H
+#endif  // FOURIERTRANSFORM_H

@@ -7,8 +7,7 @@ namespace Ui {
 class DataInput;
 }
 
-class DataInput : public QDialog
-{
+class DataInput : public QDialog {
     Q_OBJECT
 
 public:
@@ -24,4 +23,4 @@ private:
     QVector<double> m_values;
 };
 
-#endif // DATAINPUT_H
+#endif  // DATAINPUT_H

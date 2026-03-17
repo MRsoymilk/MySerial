@@ -1,50 +1,39 @@
 #include "fouriertransform.h"
+
+#include <fftw3.h>
+
+#include <cmath>
+#include <limits>
+
 #include "DraggableLine/draggableline.h"
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
 #include "keydef.h"
 #include "ui_fouriertransform.h"
-#include <cmath>
-#include <fftw3.h>
-#include <limits>
 
-FourierTransform::FourierTransform(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FourierTransform)
-{
+FourierTransform::FourierTransform(QWidget *parent) : QWidget(parent), ui(new Ui::FourierTransform) {
     ui->setupUi(this);
     init();
 }
 
-FourierTransform::~FourierTransform()
-{
-    delete ui;
-}
+FourierTransform::~FourierTransform() { delete ui; }
 
-void FourierTransform::setSampleRate(double rate)
-{
+void FourierTransform::setSampleRate(double rate) {
     if (rate > 0) {
         m_sampleRate = rate;
     }
 }
 
-void FourierTransform::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void FourierTransform::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
-QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
-                                                 double sampleRate,
-                                                 double freqStart,
-                                                 double freqEnd)
-{
+QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data, double sampleRate, double freqStart,
+                                                 double freqEnd) {
     int N = data.size();
-    if (N == 0)
-        return {};
+    if (N == 0) return {};
 
-    double *in = (double *) fftw_malloc(sizeof(double) * N);
-    fftw_complex *freq = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * (N / 2 + 1));
-    double *out = (double *) fftw_malloc(sizeof(double) * N);
+    double *in = (double *)fftw_malloc(sizeof(double) * N);
+    fftw_complex *freq = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * (N / 2 + 1));
+    double *out = (double *)fftw_malloc(sizeof(double) * N);
 
     for (int i = 0; i < N; ++i) {
         in[i] = data[i].y();
@@ -53,17 +42,17 @@ QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
     fftw_plan p_forward = fftw_plan_dft_r2c_1d(N, in, freq, FFTW_ESTIMATE);
     fftw_execute(p_forward);
 
-    double transitionWidth = (freqEnd - freqStart) * 0.05; // 5% transition
+    double transitionWidth = (freqEnd - freqStart) * 0.05;  // 5% transition
 
     for (int k = 0; k <= N / 2; ++k) {
-        double f = (double) k * sampleRate / N;
+        double f = (double)k * sampleRate / N;
 
         if (f < freqStart - transitionWidth || f > freqEnd + transitionWidth) {
             freq[k][0] = 0.0;
             freq[k][1] = 0.0;
         } else if (f < freqStart) {
             double x = (f - (freqStart - transitionWidth)) / transitionWidth;
-            double w = 0.5 * (1 - cos(M_PI * x)); // Hann 窗渐变
+            double w = 0.5 * (1 - cos(M_PI * x));  // Hann 窗渐变
             freq[k][0] *= w;
             freq[k][1] *= w;
         } else if (f > freqEnd) {
@@ -92,10 +81,8 @@ QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
         double y = out[i];
         result.append(QPointF(t, y));
 
-        if (y < y_min)
-            y_min = y;
-        if (y > y_max)
-            y_max = y;
+        if (y < y_min) y_min = y;
+        if (y > y_max) y_max = y;
     }
 
     fftw_destroy_plan(p_forward);
@@ -104,12 +91,10 @@ QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
     fftw_free(freq);
     fftw_free(out);
 
-    if (m_lineIFFT)
-        m_lineIFFT->replace(result);
+    if (m_lineIFFT) m_lineIFFT->replace(result);
 
     double margin = (y_max - y_min) * 0.1;
-    if (qAbs(margin) < 1e-6)
-        margin = 1.0;
+    if (qAbs(margin) < 1e-6) margin = 1.0;
 
     if (m_axisYIFFT) {
         m_axisYIFFT->setRange(y_min - margin, y_max + margin);
@@ -118,17 +103,14 @@ QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data,
     return result;
 }
 
-QList<QPointF> FourierTransform::fftAmplitude(const QList<QPointF> &data, double sampleRate)
-{
+QList<QPointF> FourierTransform::fftAmplitude(const QList<QPointF> &data, double sampleRate) {
     int N = data.size();
-    if (N == 0)
-        return {};
+    if (N == 0) return {};
 
-    double *in = (double *) fftw_malloc(sizeof(double) * N);
-    fftw_complex *out = (fftw_complex *) fftw_malloc(sizeof(fftw_complex) * (N / 2 + 1));
+    double *in = (double *)fftw_malloc(sizeof(double) * N);
+    fftw_complex *out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * (N / 2 + 1));
 
-    for (int i = 0; i < N; i++)
-        in[i] = data[i].y();
+    for (int i = 0; i < N; i++) in[i] = data[i].y();
 
     fftw_plan plan = fftw_plan_dft_r2c_1d(N, in, out, FFTW_ESTIMATE);
     fftw_execute(plan);
@@ -146,17 +128,14 @@ QList<QPointF> FourierTransform::fftAmplitude(const QList<QPointF> &data, double
         double amplitude = sqrt(real * real + imag * imag);
 
         amplitude = amplitude / N;
-        if (k > 0)
-            amplitude *= 2;
+        if (k > 0) amplitude *= 2;
 
-        double freq = (double) k * sampleRate / N;
+        double freq = (double)k * sampleRate / N;
 
         spectrum.append(QPointF(freq, amplitude));
 
-        if (freq > x_max)
-            x_max = freq;
-        if (amplitude > y_max)
-            y_max = amplitude;
+        if (freq > x_max) x_max = freq;
+        if (amplitude > y_max) y_max = amplitude;
     }
 
     fftw_destroy_plan(plan);
@@ -170,10 +149,8 @@ QList<QPointF> FourierTransform::fftAmplitude(const QList<QPointF> &data, double
     return spectrum;
 }
 
-QList<QPointF> FourierTransform::transform(const QList<QPointF> &data)
-{
-    if (data.isEmpty())
-        return {};
+QList<QPointF> FourierTransform::transform(const QList<QPointF> &data) {
+    if (data.isEmpty()) return {};
 
     if (m_enableAxisX) {
         int start = qMax(0, m_axisXStart);
@@ -199,25 +176,20 @@ QList<QPointF> FourierTransform::transform(const QList<QPointF> &data)
         double y_min = std::numeric_limits<double>::max();
         double y_max = std::numeric_limits<double>::lowest();
         for (const auto &p : m_currentData) {
-            if (p.y() < y_min)
-                y_min = p.y();
-            if (p.y() > y_max)
-                y_max = p.y();
+            if (p.y() < y_min) y_min = p.y();
+            if (p.y() > y_max) y_max = p.y();
         }
         m_axisYIFFT->setRange(y_min, y_max);
     }
     return {};
 }
 
-QList<QPointF> FourierTransform::updateIFFT()
-{
-    if (m_currentData.isEmpty())
-        return {};
+QList<QPointF> FourierTransform::updateIFFT() {
+    if (m_currentData.isEmpty()) return {};
     return ifftBandLimited(m_currentData, m_sampleRate, m_start, m_end);
 }
 
-void FourierTransform::init()
-{
+void FourierTransform::init() {
     m_lineFFT = new QLineSeries();
     m_chartFFT = new QChart();
     m_chartFFT->addSeries(m_lineFFT);
@@ -263,8 +235,7 @@ void FourierTransform::init()
     ui->tBtnAxis->setCheckable(true);
 }
 
-void FourierTransform::on_tBtnRange_clicked()
-{
+void FourierTransform::on_tBtnRange_clicked() {
     m_enableRange = ui->tBtnRange->isChecked();
 
     if (m_enableRange) {
@@ -306,7 +277,6 @@ void FourierTransform::on_tBtnRange_clicked()
         ui->doubleSpinBoxStart->setValue(m_start);
         ui->doubleSpinBoxEnd->setValue(m_end);
         updateIFFT();
-
     } else {
         if (m_lineLeft) {
             m_chartFFT->scene()->removeItem(m_lineLeft);
@@ -327,33 +297,23 @@ void FourierTransform::on_tBtnRange_clicked()
             double y_min = std::numeric_limits<double>::max();
             double y_max = std::numeric_limits<double>::lowest();
             for (auto p : m_currentData) {
-                if (p.y() < y_min)
-                    y_min = p.y();
-                if (p.y() > y_max)
-                    y_max = p.y();
+                if (p.y() < y_min) y_min = p.y();
+                if (p.y() > y_max) y_max = p.y();
             }
             m_axisYIFFT->setRange(y_min, y_max);
         }
     }
 }
 
-void FourierTransform::on_spinBoxSampleRate_valueChanged(int rate)
-{
+void FourierTransform::on_spinBoxSampleRate_valueChanged(int rate) {
     m_sampleRate = rate;
     SETTING_CONFIG_SET(CFG_GROUP_FOURIER, CFG_FOURIER_SAMPLE_RATE, QString::number(rate));
 }
 
-void FourierTransform::on_tBtnAxis_clicked()
-{
+void FourierTransform::on_tBtnAxis_clicked() {
     m_enableAxisX = !m_enableAxisX;
     ui->tBtnAxis->setChecked(m_enableAxisX);
 }
 
-void FourierTransform::on_spinBoxAxisXStart_valueChanged(int val)
-{
-    m_axisXStart = val;
-}
-void FourierTransform::on_spinBoxAxisXEnd_valueChanged(int val)
-{
-    m_axisXEnd = val;
-}
+void FourierTransform::on_spinBoxAxisXStart_valueChanged(int val) { m_axisXStart = val; }
+void FourierTransform::on_spinBoxAxisXEnd_valueChanged(int val) { m_axisXEnd = val; }

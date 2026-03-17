@@ -2,6 +2,7 @@
 #define FORMPLOTCORRECTION_H
 
 #include <QWidget>
+
 #include "global.h"
 
 class FormFittingKB;
@@ -15,8 +16,7 @@ namespace Ui {
 class FormPlotCorrection;
 }
 
-class FormPlotCorrection : public QWidget
-{
+class FormPlotCorrection : public QWidget {
     Q_OBJECT
 public:
     explicit FormPlotCorrection(QWidget *parent = nullptr);
@@ -30,12 +30,8 @@ signals:
     void sendSin(const QByteArray &bytes);
     void sendSerialArcSin(const QByteArray &bytes);
     void sendParamsArcSin(const PARAMS_ARCSIN &params);
-    void onShowCorrectionCurve(const QList<QPointF> &data,
-                               const double &xMin,
-                               const double &xMax,
-                               const double &yMin,
-                               const double &yMax,
-                               const double &temperature);
+    void onShowCorrectionCurve(const QList<QPointF> &data, const double &xMin, const double &xMax, const double &yMin,
+                               const double &yMax, const double &temperature);
     void useLoadedThreshold(bool isUse, QVector<double> v);
     void useLoadedThreadsholdOption(const QJsonObject &option);
     void useAutoUpdateThreshold(bool isUse);
@@ -74,4 +70,4 @@ private:
     ShowCorrectionCurve *arcSinShow;
 };
 
-#endif // FORMPLOTCORRECTION_H
+#endif  // FORMPLOTCORRECTION_H

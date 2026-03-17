@@ -1,39 +1,26 @@
 #include "threadworker.h"
+
 #include <QDir>
 #include <QLineSeries>
 #include <QPointF>
+
 #include "funcdef.h"
 
-ThreadWorker::ThreadWorker(QObject *parent)
-    : QObject(parent)
-{
+ThreadWorker::ThreadWorker(QObject *parent) : QObject(parent) {
     m_offset31 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET31, "0").toInt();
     m_offset33 = SETTING_CONFIG_GET(CFG_GROUP_PLOT, CFG_PLOT_OFFSET33, "0").toInt();
 }
 
 ThreadWorker::~ThreadWorker() {}
 
-void ThreadWorker::setOffset31(const int &offset)
-{
-    m_offset31 = offset;
-}
+void ThreadWorker::setOffset31(const int &offset) { m_offset31 = offset; }
 
-void ThreadWorker::setOffset33(const int &offset)
-{
-    m_offset33 = offset;
-}
+void ThreadWorker::setOffset33(const int &offset) { m_offset33 = offset; }
 
-void ThreadWorker::setAlgorithm(const QString &algorithm)
-{
-    m_algorithm = algorithm;
-}
+void ThreadWorker::setAlgorithm(const QString &algorithm) { m_algorithm = algorithm; }
 
-void ThreadWorker::processF15Curve31(const QByteArray &data31,
-                                     QVector<double> &v_voltage31,
-                                     QVector<double> &raw31,
-                                     double &yMin,
-                                     double &yMax)
-{
+void ThreadWorker::processF15Curve31(const QByteArray &data31, QVector<double> &v_voltage31, QVector<double> &raw31,
+                                     double &yMin, double &yMax) {
     QByteArray payload = data31.mid(5, data31.size() - 7);
     int remainder = payload.size() % 3;
 
@@ -44,9 +31,8 @@ void ThreadWorker::processF15Curve31(const QByteArray &data31,
     }
     QByteArray filteredPayload;
     for (int i = 0; i < payload.size(); i += 3) {
-        quint32 value = (static_cast<quint8>(payload[i]) << 16)
-                        | (static_cast<quint8>(payload[i + 1]) << 8)
-                        | static_cast<quint8>(payload[i + 2]);
+        quint32 value = (static_cast<quint8>(payload[i]) << 16) | (static_cast<quint8>(payload[i + 1]) << 8) |
+                        static_cast<quint8>(payload[i + 2]);
         // if (value != 0) {
         //     filteredPayload.append(payload.mid(i, 3));
         // }
@@ -67,8 +53,7 @@ void ThreadWorker::processF15Curve31(const QByteArray &data31,
 
     for (int i = 0; i < numPoints; ++i) {
         int idx = i * 3;
-        quint32 raw = (quint8) payload[idx] << 16 | (quint8) payload[idx + 1] << 8
-                      | (quint8) payload[idx + 2];
+        quint32 raw = (quint8)payload[idx] << 16 | (quint8)payload[idx + 1] << 8 | (quint8)payload[idx + 2];
 
         qint32 signedRaw = static_cast<qint32>(raw);
         double voltage;
@@ -79,21 +64,15 @@ void ThreadWorker::processF15Curve31(const QByteArray &data31,
         raw31.push_back(signedRaw);
         voltage = signedRaw / double(1 << 23) * 2.5;
 
-        if (voltage < yMin)
-            yMin = voltage;
-        if (voltage > yMax)
-            yMax = voltage;
+        if (voltage < yMin) yMin = voltage;
+        if (voltage > yMax) yMax = voltage;
 
         v_voltage31.push_back(voltage);
     }
 }
 
-void ThreadWorker::processF15Curve33(const QByteArray &data33,
-                                     QVector<double> &v_voltage33,
-                                     QVector<double> &raw33,
-                                     double &yMin,
-                                     double &yMax)
-{
+void ThreadWorker::processF15Curve33(const QByteArray &data33, QVector<double> &v_voltage33, QVector<double> &raw33,
+                                     double &yMin, double &yMax) {
     {
         QByteArray payload = data33.mid(5, data33.size() - 7);
         if (payload.size() % 3 != 0) {
@@ -102,9 +81,8 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33,
         }
         QByteArray filteredPayload;
         for (int i = 0; i < payload.size(); i += 3) {
-            quint32 value = (static_cast<quint8>(payload[i]) << 16)
-                            | (static_cast<quint8>(payload[i + 1]) << 8)
-                            | static_cast<quint8>(payload[i + 2]);
+            quint32 value = (static_cast<quint8>(payload[i]) << 16) | (static_cast<quint8>(payload[i + 1]) << 8) |
+                            static_cast<quint8>(payload[i + 2]);
             // if (value != 0) {
             //     filteredPayload.append(payload.mid(i, 3));
             // }
@@ -124,8 +102,7 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33,
 
         for (int i = 0; i < numPoints; ++i) {
             int idx = i * 3;
-            quint32 raw = (quint8) payload[idx] << 16 | (quint8) payload[idx + 1] << 8
-                          | (quint8) payload[idx + 2];
+            quint32 raw = (quint8)payload[idx] << 16 | (quint8)payload[idx + 1] << 8 | (quint8)payload[idx + 2];
 
             qint32 signedRaw = static_cast<qint32>(raw);
             double voltage;
@@ -149,8 +126,7 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33,
     }
 }
 
-void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const double &temperature)
-{
+void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const double &temperature) {
     QVector<int> v_idx;
 
     int idx_max = 0;
@@ -244,9 +220,7 @@ void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, con
     }
 }
 
-void ThreadWorker::processDataF30(const FRAME& frame,
-                                  const double &temperature)
-{
+void ThreadWorker::processDataF30(const FRAME &frame, const double &temperature) {
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();
     double yMax31 = std::numeric_limits<double>::lowest();
@@ -292,7 +266,7 @@ void ThreadWorker::processDataF30(const FRAME& frame,
     curve33.raw.x_min = 0;
     curve33.raw.x_max = raw33.size();
 
-    if(m_enable_threshold) {
+    if (m_enable_threshold) {
         if (!m_autoupdate_threshold) {
             applyThreshold(m_threshold, raw31, raw33, temperature);
         } else {
@@ -300,7 +274,7 @@ void ThreadWorker::processDataF30(const FRAME& frame,
             applyThreshold(m_threshold, raw31, raw33, temperature);
         }
     }
-    if(m_enable_double) {
+    if (m_enable_double) {
         applyThresholdForModeEasy(curve31, curve33, temperature);
         return;
     }
@@ -312,8 +286,7 @@ void ThreadWorker::processDataF30(const FRAME& frame,
     data.frame = frame.ToFrameString();
     emit plotReady4k(data);
     if (m_collection_fitting_points.m_enable) {
-        QString path = QString("%1/%2").arg(m_collection_fitting_points.dir,
-                                            m_collection_fitting_points.file);
+        QString path = QString("%1/%2").arg(m_collection_fitting_points.dir, m_collection_fitting_points.file);
         QDir dir(m_collection_fitting_points.dir);
         if (!dir.exists()) {
             dir.mkpath(".");
@@ -351,9 +324,7 @@ void ThreadWorker::processDataF30(const FRAME& frame,
     }
 }
 
-void ThreadWorker::processDataF15(const FRAME& frame,
-                                  const double &temperature)
-{
+void ThreadWorker::processDataF15(const FRAME &frame, const double &temperature) {
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();
     QVector<double> v_voltage31;
@@ -417,7 +388,7 @@ void ThreadWorker::processDataF15(const FRAME& frame,
         curve33.raw.x_max = numPointsRaw;
     }
 
-    if(m_enable_threshold) {
+    if (m_enable_threshold) {
         if (!m_autoupdate_threshold) {
             applyThreshold(m_threshold, raw31, raw33, temperature);
         }
@@ -430,9 +401,7 @@ void ThreadWorker::processDataF15(const FRAME& frame,
     emit plotReady4k(data);
 }
 
-void ThreadWorker::processDataLLC(const FRAME& frame,
-                                  const double &temperature)
-{
+void ThreadWorker::processDataLLC(const FRAME &frame, const double &temperature) {
     double yMin = std::numeric_limits<double>::max();
     double yMax = std::numeric_limits<double>::lowest();
     double yMax31 = std::numeric_limits<double>::lowest();
@@ -462,16 +431,13 @@ void ThreadWorker::processDataLLC(const FRAME& frame,
         // 遍历所有采样点
         for (int i = 0; i + 4 < payload.size(); i += 4) {
             // big-endian 高字节在前
-            quint16 raw = (static_cast<quint8>(payload[i + 1]))
-                          | (static_cast<quint8>(payload[i + 2]) << 8);
+            quint16 raw = (static_cast<quint8>(payload[i + 1])) | (static_cast<quint8>(payload[i + 2]) << 8);
 
             double voltage = static_cast<double>(raw) * 50.358 / 1000000.0;
             // double voltage = raw;
 
-            if (voltage < yMin)
-                yMin = voltage;
-            if (voltage > yMax)
-                yMax = voltage;
+            if (voltage < yMin) yMin = voltage;
+            if (voltage > yMax) yMax = voltage;
 
             v_voltage31.push_back(voltage);
             raw31.push_back(raw);
@@ -496,17 +462,14 @@ void ThreadWorker::processDataLLC(const FRAME& frame,
         }
 
         for (int i = 0; i + 4 < payload.size(); i += 4) {
-            quint16 raw = (static_cast<quint8>(payload[i + 1]))
-                          | (static_cast<quint8>(payload[i + 2]) << 8);
+            quint16 raw = (static_cast<quint8>(payload[i + 1])) | (static_cast<quint8>(payload[i + 2]) << 8);
 
             qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
             double voltage = static_cast<double>(signedRaw) / 0x8000 * 3.3;
             // double voltage = signedRaw;
 
-            if (voltage < yMin)
-                yMin = voltage;
-            if (voltage > yMax)
-                yMax = voltage;
+            if (voltage < yMin) yMin = voltage;
+            if (voltage > yMax) yMax = voltage;
 
             v_voltage33.push_back(voltage);
             raw33.push_back(signedRaw);
@@ -530,7 +493,7 @@ void ThreadWorker::processDataLLC(const FRAME& frame,
     curve33.x_min = 0;
     curve33.x_max = v_voltage33.size();
 
-    if(m_enable_threshold) {
+    if (m_enable_threshold) {
         if (!m_autoupdate_threshold) {
             applyThreshold(m_threshold, raw31, raw33, temperature);
         } else {
@@ -546,11 +509,8 @@ void ThreadWorker::processDataLLC(const FRAME& frame,
     emit plotReady4k(data);
 }
 
-void ThreadWorker::applyThreshold(const QVector<double> &threshold,
-                                  const QVector<double> &raw31,
-                                  const QVector<double> &raw33,
-                                  const double &temperature)
-{
+void ThreadWorker::applyThreshold(const QVector<double> &threshold, const QVector<double> &raw31,
+                                  const QVector<double> &raw33, const double &temperature) {
     QList<QPointF> out_correction;
     int idx_max = 0;
     int idx_min = 0;
@@ -595,20 +555,14 @@ void ThreadWorker::applyThreshold(const QVector<double> &threshold,
     }
     if (m_enable_interpolation) {
         doInterpolation(out_correction);
-
     }
-    emit showCorrectionCurve(out_correction,
-                             m_correction_offset,
-                             x_max_correction,
-                             y_min_correction,
-                             y_max_correction,
+    emit showCorrectionCurve(out_correction, m_correction_offset, x_max_correction, y_min_correction, y_max_correction,
                              temperature);
 }
 
 void ThreadWorker::doInterpolation(QList<QPointF> &v) {
     int n = v.size();
-    if (n < 2)
-        return;
+    if (n < 2) return;
 
     QList<QPointF> dense;
     for (int i = 0; i < n - 1; ++i) {
@@ -658,45 +612,39 @@ void ThreadWorker::doInterpolation(QList<QPointF> &v) {
     v = out_interpolation;
 }
 
-void ThreadWorker::calculateArcSinThreshold(const double &temperature)
-{
+void ThreadWorker::calculateArcSinThreshold(const double &temperature) {
     QVector<double> threshod;
     for (int i = 0; i < m_correction_count; ++i) {
         double idx = i * m_correction_step + m_correction_offset;
         double y_lambda = 0;
         if (idx <= 1300) {
-            y_lambda = m_params_arcsin.l_k
-                           * (qAsin(idx / 1000.0
-                                    / (2 * m_params_arcsin.l_d
-                                       * qCos(M_PI / 180.0 * m_params_arcsin.l_alpha / 2)))
-                              - m_params_arcsin.l_alpha / 2)
-                       + m_params_arcsin.l_b;
+            y_lambda = m_params_arcsin.l_k *
+                           (qAsin(idx / 1000.0 /
+                                  (2 * m_params_arcsin.l_d * qCos(M_PI / 180.0 * m_params_arcsin.l_alpha / 2))) -
+                            m_params_arcsin.l_alpha / 2) +
+                       m_params_arcsin.l_b;
         } else {
-            y_lambda = m_params_arcsin.r_k
-                           * (qAsin(idx / 1000.0
-                                    / (2 * m_params_arcsin.r_d
-                                       * qCos(M_PI / 180.0 * m_params_arcsin.r_alpha / 2)))
-                              - m_params_arcsin.r_alpha / 2)
-                       + m_params_arcsin.r_b;
+            y_lambda = m_params_arcsin.r_k *
+                           (qAsin(idx / 1000.0 /
+                                  (2 * m_params_arcsin.r_d * qCos(M_PI / 180.0 * m_params_arcsin.r_alpha / 2))) -
+                            m_params_arcsin.r_alpha / 2) +
+                       m_params_arcsin.r_b;
         }
-        double y = (m_params_arcsin.t_k1 * temperature + m_params_arcsin.t_b1) / 8.5 / 1000
-                       * y_lambda
-                   + (m_params_arcsin.t_k2 * temperature + m_params_arcsin.t_b2) / 1000;
+        double y = (m_params_arcsin.t_k1 * temperature + m_params_arcsin.t_b1) / 8.5 / 1000 * y_lambda +
+                   (m_params_arcsin.t_k2 * temperature + m_params_arcsin.t_b2) / 1000;
         threshod.push_back(y);
     }
 
     m_threshold = threshod;
 }
 
-void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<double> threshold)
-{
+void ThreadWorker::onUseLoadedThreshold(bool isUse, QVector<double> threshold) {
     m_autoupdate_threshold = !isUse;
     m_threshold = threshold;
     emit changeThresholdStatus("use loaded threshold");
 }
 
-void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option)
-{
+void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option) {
     if (option.contains("offset")) {
         m_correction_offset = option["offset"].toDouble();
         LOG_INFO("Threshold Option: offset {}", m_correction_offset);
@@ -713,35 +661,31 @@ void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option)
         m_enable_interpolation = option["interpolation"].toBool();
         LOG_INFO("Threshold Option: interpolation {}", m_enable_interpolation);
     }
-    if(option.contains("enable_threshold")) {
+    if (option.contains("enable_threshold")) {
         m_enable_threshold = option["enable_threshold"].toBool();
         LOG_INFO("Threshold Option: enable_threshold {}", m_enable_threshold);
     }
-    if(option.contains("enable_double")) {
+    if (option.contains("enable_double")) {
         m_enable_double = option["enable_double"].toBool();
         LOG_INFO("Threshold Option: enable_double {}", m_enable_double);
     }
-    if(option.contains("integration")) {
+    if (option.contains("integration")) {
         m_integration_count = option["integration"].toInt();
         LOG_INFO("Option: integration: {}", m_enable_interpolation);
     }
-    if(option.contains("baseline")) {
+    if (option.contains("baseline")) {
         m_baseline = option["baseline"].toInt();
         LOG_INFO("Option: baseline: {}", m_baseline);
     }
 }
 
-void ThreadWorker::onParamsArcSin(const PARAMS_ARCSIN &params)
-{
+void ThreadWorker::onParamsArcSin(const PARAMS_ARCSIN &params) {
     m_params_arcsin = params;
     m_autoupdate_threshold = true;
     emit changeThresholdStatus("use auto update threshold");
 }
 
-void ThreadWorker::onCollectionFittingPoints(const QString &dir,
-                                             const QString &file,
-                                             const int &count)
-{
+void ThreadWorker::onCollectionFittingPoints(const QString &dir, const QString &file, const int &count) {
     m_collection_fitting_points.count = count;
     m_collection_fitting_points.current_idx = 0;
     m_collection_fitting_points.dir = dir;
@@ -749,12 +693,8 @@ void ThreadWorker::onCollectionFittingPoints(const QString &dir,
     m_collection_fitting_points.m_enable = true;
 }
 
-void ThreadWorker::processF30Curve31(const QByteArray &data31,
-                                     QVector<double> &v_voltage31,
-                                     QVector<double> &raw31,
-                                     double &yMin,
-                                     double &yMax)
-{
+void ThreadWorker::processF30Curve31(const QByteArray &data31, QVector<double> &v_voltage31, QVector<double> &raw31,
+                                     double &yMin, double &yMax) {
     // 长度字段（2字节，大端序）
     QByteArray payload = data31.mid(5, data31.size() - 7);
     if (payload.size() % 2 != 0) {
@@ -774,27 +714,20 @@ void ThreadWorker::processF30Curve31(const QByteArray &data31,
     // 遍历所有采样点
     for (int i = 0; i + 2 < payload.size(); i += 2) {
         // big-endian 高字节在前
-        quint16 raw = (static_cast<quint8>(payload[i]) << 8)
-                      | (static_cast<quint8>(payload[i + 1]));
+        quint16 raw = (static_cast<quint8>(payload[i]) << 8) | (static_cast<quint8>(payload[i + 1]));
 
         double voltage = static_cast<double>(raw) * 50.358 / 1000000.0;
 
-        if (voltage < yMin)
-            yMin = voltage;
-        if (voltage > yMax)
-            yMax = voltage;
+        if (voltage < yMin) yMin = voltage;
+        if (voltage > yMax) yMax = voltage;
 
         v_voltage31.push_back(voltage);
         raw31.push_back(raw);
     }
 }
 
-void ThreadWorker::processF30Curve33(const QByteArray &data33,
-                                     QVector<double> &v_voltage33,
-                                     QVector<double> &raw33,
-                                     double &yMin,
-                                     double &yMax)
-{
+void ThreadWorker::processF30Curve33(const QByteArray &data33, QVector<double> &v_voltage33, QVector<double> &raw33,
+                                     double &yMin, double &yMax) {
     QByteArray payload = data33.mid(5, data33.size() - 7);
     if (payload.size() % 2 != 0) {
         LOG_WARN("Invalid data length: {}", payload.size());
@@ -812,16 +745,13 @@ void ThreadWorker::processF30Curve33(const QByteArray &data33,
     }
 
     for (int i = 0; i + 2 < payload.size(); i += 2) {
-        quint16 raw = (static_cast<quint8>(payload[i]) << 8)
-                      | (static_cast<quint8>(payload[i + 1]));
+        quint16 raw = (static_cast<quint8>(payload[i]) << 8) | (static_cast<quint8>(payload[i + 1]));
 
         qint16 signedRaw = *reinterpret_cast<qint16 *>(&raw);
         double voltage = static_cast<double>(signedRaw) / 0x8000 * 3.3;
 
-        if (voltage < yMin)
-            yMin = voltage;
-        if (voltage > yMax)
-            yMax = voltage;
+        if (voltage < yMin) yMin = voltage;
+        if (voltage > yMax) yMax = voltage;
 
         v_voltage33.push_back(voltage);
         raw33.push_back(signedRaw);

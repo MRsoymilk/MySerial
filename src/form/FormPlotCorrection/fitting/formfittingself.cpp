@@ -1,5 +1,4 @@
 #include "formfittingself.h"
-#include "ui_formfittingself.h"
 
 #include <QChart>
 #include <QChartView>
@@ -7,26 +6,18 @@
 #include <QFile>
 #include <QLineSeries>
 
-FormFittingSelf::FormFittingSelf(QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::FormFittingSelf)
-{
+#include "ui_formfittingself.h"
+
+FormFittingSelf::FormFittingSelf(QWidget *parent) : QWidget(parent), ui(new Ui::FormFittingSelf) {
     ui->setupUi(this);
     init();
 }
 
-FormFittingSelf::~FormFittingSelf()
-{
-    delete ui;
-}
+FormFittingSelf::~FormFittingSelf() { delete ui; }
 
-void FormFittingSelf::retranslateUI()
-{
-    ui->retranslateUi(this);
-}
+void FormFittingSelf::retranslateUI() { ui->retranslateUi(this); }
 
-void FormFittingSelf::init()
-{
+void FormFittingSelf::init() {
     ui->spinBoxCountStep1->setValue(267);
     ui->spinBoxCountStep2->setValue(167);
     ui->spinBoxTotal->setValue(535);
@@ -35,8 +26,7 @@ void FormFittingSelf::init()
     ui->btnCalculate->setToolTip(tr("generate file fitting_self.csv"));
 }
 
-void FormFittingSelf::on_btnCalculate_clicked()
-{
+void FormFittingSelf::on_btnCalculate_clicked() {
     m_values.clear();
 
     int start = ui->spinBoxStart->value();
@@ -62,13 +52,12 @@ void FormFittingSelf::on_btnCalculate_clicked()
     if (count_step2 > 1) {
         double step = double(middle - end) / (count_step2 - 1);
         double value = middle;
-        for (int i = 1; i < count_step2; ++i) { // i=1 避免重复 middle
+        for (int i = 1; i < count_step2; ++i) {  // i=1 避免重复 middle
             value -= step;
             m_values.append(static_cast<int>(std::lround(value)));
         }
     } else {
-        if (m_values.isEmpty() || m_values.last() != end)
-            m_values.append(end);
+        if (m_values.isEmpty() || m_values.last() != end) m_values.append(end);
     }
 
     // ---------- 第3段 ----------
@@ -95,8 +84,7 @@ void FormFittingSelf::on_btnCalculate_clicked()
     file.close();
 }
 
-void FormFittingSelf::on_tBtnToHex_clicked()
-{
+void FormFittingSelf::on_tBtnToHex_clicked() {
     on_btnCalculate_clicked();
 
     QStringList hexList;
@@ -106,14 +94,12 @@ void FormFittingSelf::on_tBtnToHex_clicked()
         QString lo = hex.mid(2, 2);
         hexList << hi << lo;
     }
-    QString result = ui->lineEditHead->text().trimmed() + hexList.join("")
-                     + ui->lineEditFoot->text().trimmed();
+    QString result = ui->lineEditHead->text().trimmed() + hexList.join("") + ui->lineEditFoot->text().trimmed();
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(result);
 }
 
-void FormFittingSelf::on_tBtnToIntArray_clicked()
-{
+void FormFittingSelf::on_tBtnToIntArray_clicked() {
     on_btnCalculate_clicked();
 
     QStringList intList;
@@ -127,8 +113,7 @@ void FormFittingSelf::on_tBtnToIntArray_clicked()
     clipboard->setText(cArray);
 }
 
-void FormFittingSelf::on_tBtnToPlot_clicked()
-{
+void FormFittingSelf::on_tBtnToPlot_clicked() {
     on_btnCalculate_clicked();
 
     QLineSeries *series = new QLineSeries();

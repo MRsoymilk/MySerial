@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QTranslator>
+
 #include "../mode/FormEasy/formeasy.h"
 #include "../mode/FormExpert/formexpert.h"
 #include "../mode/FormProduce/formproduce.h"
@@ -12,21 +13,14 @@
 #include "global.h"
 #include "version.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     init();
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
+MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::initMsgBar()
-{
+void MainWindow::initMsgBar() {
     QLabel *linkLabel = new QLabel(this);
     linkLabel->setText(QString("version: %1").arg(APP_VERSION));
     linkLabel->setTextFormat(Qt::RichText);
@@ -35,8 +29,7 @@ void MainWindow::initMsgBar()
     ui->statusbar->addPermanentWidget(linkLabel);
 }
 
-void MainWindow::initTheme()
-{
+void MainWindow::initTheme() {
     QString theme = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_THEME, "Lite");
     connect(ui->menuTheme, &QMenu::triggered, this, &MainWindow::menuThemeSelect);
     const QList<QAction *> actions = ui->menuTheme->actions();
@@ -48,8 +41,7 @@ void MainWindow::initTheme()
     }
 }
 
-void MainWindow::initLanguage()
-{
+void MainWindow::initLanguage() {
     QString language = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, "en");
     connect(ui->menuLanguage, &QMenu::triggered, this, &MainWindow::menuLanguageSelect);
     const QList<QAction *> actions = ui->menuLanguage->actions();
@@ -61,8 +53,7 @@ void MainWindow::initLanguage()
     }
 }
 
-void MainWindow::initAlgorithm()
-{
+void MainWindow::initAlgorithm() {
     QString algorithm = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_ALGORITHM, "Freedom");
     connect(ui->menuAlgorithm, &QMenu::triggered, this, &MainWindow::menuAlgorithmSelect);
     const QList<QAction *> actions = ui->menuAlgorithm->actions();
@@ -74,8 +65,7 @@ void MainWindow::initAlgorithm()
     }
 }
 
-void MainWindow::initMode()
-{
+void MainWindow::initMode() {
     QString mode = SETTING_CONFIG_GET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_EASY);
     connect(ui->menuMode, &QMenu::triggered, this, &MainWindow::menuModeSelect);
     const QList<QAction *> actions = ui->menuMode->actions();
@@ -87,8 +77,7 @@ void MainWindow::initMode()
     }
 }
 
-void MainWindow::paintEvent(QPaintEvent *event)
-{
+void MainWindow::paintEvent(QPaintEvent *event) {
     QMainWindow::paintEvent(event);
 
     QPainter painter(this);
@@ -97,9 +86,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
     painter.fillRect(rect(), Qt::transparent);
 
     if (!m_background.isNull()) {
-        QPixmap scaled = m_background.scaled(this->size(),
-                                             Qt::KeepAspectRatioByExpanding,
-                                             Qt::SmoothTransformation);
+        QPixmap scaled = m_background.scaled(this->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
         int x = (width() - scaled.width()) / 2;
         int y = (height() - scaled.height()) / 2;
@@ -108,8 +95,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
     }
 }
 
-void MainWindow::setLanguage(const QString &language)
-{
+void MainWindow::setLanguage(const QString &language) {
     qApp->setProperty("language", language);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_LANGUAGE, language);
 
@@ -123,14 +109,13 @@ void MainWindow::setLanguage(const QString &language)
         if (m_formExpert) {
             m_formExpert->retranslateUI();
         }
-        if(m_formProduce) {
+        if (m_formProduce) {
             m_formProduce->retranslateUI();
         }
     }
 }
 
-void MainWindow::setTheme(const QString &theme)
-{
+void MainWindow::setTheme(const QString &theme) {
     qApp->setProperty("theme", theme);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_THEME, theme);
 
@@ -144,8 +129,7 @@ void MainWindow::setTheme(const QString &theme)
     }
 }
 
-void MainWindow::setAlgorithm(const QString &algorithm)
-{
+void MainWindow::setAlgorithm(const QString &algorithm) {
     qApp->setProperty("algorithm", algorithm);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_ALGORITHM, algorithm);
 
@@ -160,8 +144,7 @@ void MainWindow::setAlgorithm(const QString &algorithm)
     }
 }
 
-void MainWindow::safeDelete(QWidget*& w)
-{
+void MainWindow::safeDelete(QWidget *&w) {
     if (!w) return;
 
     ui->stackedWidgetMode->removeWidget(w);
@@ -169,8 +152,7 @@ void MainWindow::safeDelete(QWidget*& w)
     w = nullptr;
 }
 
-void MainWindow::setMode(const QString &mode)
-{
+void MainWindow::setMode(const QString &mode) {
     qApp->setProperty("mode", mode);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, mode);
 
@@ -181,8 +163,8 @@ void MainWindow::setMode(const QString &mode)
         }
         ui->stackedWidgetMode->setCurrentWidget(m_formEasy);
 
-        safeDelete((QWidget*&)m_formExpert);
-        safeDelete((QWidget*&)m_formProduce);
+        safeDelete((QWidget *&)m_formExpert);
+        safeDelete((QWidget *&)m_formProduce);
     } else if (mode == CFG_MODE_EXPERT) {
         if (!m_formExpert) {
             m_formExpert = new FormExpert;
@@ -190,8 +172,8 @@ void MainWindow::setMode(const QString &mode)
         }
         ui->stackedWidgetMode->setCurrentWidget(m_formExpert);
 
-        safeDelete((QWidget*&)m_formEasy);
-        safeDelete((QWidget*&)m_formProduce);
+        safeDelete((QWidget *&)m_formEasy);
+        safeDelete((QWidget *&)m_formProduce);
     } else if (mode == CFG_MODE_PRODUCE) {
         if (!m_formProduce) {
             m_formProduce = new FormProduce;
@@ -199,13 +181,12 @@ void MainWindow::setMode(const QString &mode)
         }
         ui->stackedWidgetMode->setCurrentWidget(m_formProduce);
 
-        safeDelete((QWidget*&)m_formEasy);
-        safeDelete((QWidget*&)m_formExpert);
+        safeDelete((QWidget *&)m_formEasy);
+        safeDelete((QWidget *&)m_formExpert);
     }
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
+void MainWindow::closeEvent(QCloseEvent *event) {
     if (m_formEasy) {
         m_formEasy->close();
     }
@@ -217,8 +198,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::menuLanguageSelect(QAction *selectedAction)
-{
+void MainWindow::menuLanguageSelect(QAction *selectedAction) {
     QString language = selectedAction->text();
     setLanguage(language);
     const QList<QAction *> actions = ui->menuLanguage->actions();
@@ -231,8 +211,7 @@ void MainWindow::menuLanguageSelect(QAction *selectedAction)
     }
 }
 
-void MainWindow::menuThemeSelect(QAction *selectedTheme)
-{
+void MainWindow::menuThemeSelect(QAction *selectedTheme) {
     QString theme = selectedTheme->text();
     setTheme(theme);
     const QList<QAction *> actions = ui->menuTheme->actions();
@@ -245,8 +224,7 @@ void MainWindow::menuThemeSelect(QAction *selectedTheme)
     }
 }
 
-void MainWindow::menuAlgorithmSelect(QAction *selectedAlgorithm)
-{
+void MainWindow::menuAlgorithmSelect(QAction *selectedAlgorithm) {
     QString algorithm = selectedAlgorithm->text();
     setAlgorithm(algorithm);
     const QList<QAction *> actions = ui->menuAlgorithm->actions();
@@ -259,8 +237,7 @@ void MainWindow::menuAlgorithmSelect(QAction *selectedAlgorithm)
     }
 }
 
-void MainWindow::menuModeSelect(QAction *selectedMode)
-{
+void MainWindow::menuModeSelect(QAction *selectedMode) {
     QString mode = selectedMode->text();
     setMode(mode);
     const QList<QAction *> actions = ui->menuMode->actions();
@@ -273,8 +250,7 @@ void MainWindow::menuModeSelect(QAction *selectedMode)
     }
 }
 
-void MainWindow::on_actionEasy_triggered()
-{
+void MainWindow::on_actionEasy_triggered() {
     LOG_INFO("software mode: Easy");
     ui->stackedWidgetMode->setCurrentWidget(m_formEasy);
     ui->actionEasy->setChecked(true);
@@ -283,8 +259,7 @@ void MainWindow::on_actionEasy_triggered()
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_EASY);
 }
 
-void MainWindow::on_actionExpert_triggered()
-{
+void MainWindow::on_actionExpert_triggered() {
     LOG_INFO("software mode: Expert");
     ui->stackedWidgetMode->setCurrentWidget(m_formExpert);
     ui->actionExpert->setChecked(true);
@@ -302,8 +277,7 @@ void MainWindow::on_actionProduce_triggered() {
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_PRODUCE);
 }
 
-void MainWindow::init()
-{
+void MainWindow::init() {
     initMsgBar();
     initMode();
     initTheme();

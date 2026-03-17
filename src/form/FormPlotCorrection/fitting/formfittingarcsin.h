@@ -3,14 +3,14 @@
 
 #include <QStandardItem>
 #include <QWidget>
+
 #include "global.h"
 
 namespace Ui {
 class FormFittingArcSin;
 }
 
-class FormFittingArcSin : public QWidget
-{
+class FormFittingArcSin : public QWidget {
     Q_OBJECT
 
 public:
@@ -50,15 +50,13 @@ private:
 
 private:
     Ui::FormFittingArcSin *ui;
-    struct FORMULA_LAMBDA
-    {
+    struct FORMULA_LAMBDA {
         double k;
         double b;
         double d;
         double alpha;
     } m_formula_lambda_l, m_formula_lambda_r;
-    struct FORMULA_Y
-    {
+    struct FORMULA_Y {
         double k1;
         double b1;
         double k2;
@@ -70,4 +68,4 @@ private:
     QString m_urlFitArcSin;
 };
 
-#endif // FORMFITTINGARCSIN_H
+#endif  // FORMFITTINGARCSIN_H
