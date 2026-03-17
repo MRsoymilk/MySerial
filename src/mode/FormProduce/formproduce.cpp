@@ -280,7 +280,7 @@ void FormProduce::on_btnWriteBaseline_clicked()
     QString baseline = ui->lineEditBaseline->text();
     int val = baseline.toInt();
     QString byte_val = QString("%1").arg(static_cast<quint64>(val),
-                                         12,      // 6 bytes = 12 hex chars
+                                         6,       // 6 bytes = 12 hex chars
                                          16,      // base 16
                                          QChar('0'))
                            .toUpper();
