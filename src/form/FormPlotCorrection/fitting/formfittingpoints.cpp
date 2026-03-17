@@ -120,8 +120,10 @@ void FormFittingPoints::refreshCollectTable()
     QDir saveDir(dir);
 
     int row = 0;
+    int n = static_cast<int>((wave_end - wave_start) / step + 0.5);
 
-    for (double w = wave_start; w <= wave_end; w += step) {
+    for (int i = 0; i <= n; ++i) {
+        double w = wave_start + i * step;
         QString waveStr = QString::number(w, 'f', 1); // 900.0
 
         // 文件名：900.txt / 901.txt ...

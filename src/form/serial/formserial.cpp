@@ -1249,7 +1249,6 @@ void FormSerial::on_tBtnPrev_clicked()
         m_currentPage = 0;
     }
     loadPage(m_currentPage);
-    int maxPage = m_lineSends.size() / m_pageSize;
     ui->labelPage->setText(QString("%1 / %2").arg(m_currentPage + 1).arg(6));
 }
 

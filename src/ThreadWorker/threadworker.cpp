@@ -189,38 +189,58 @@ void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, con
         v_idx.push_back(target_idx);
     }
     {
-        double raw_y_min_correction = std::numeric_limits<double>::max();
-        double raw_y_max_correction = std::numeric_limits<double>::lowest();
-        double vol_y_min_correction = std::numeric_limits<double>::max();
-        double vol_y_max_correction = std::numeric_limits<double>::lowest();
-
-        QList<QPointF> list_raw, list_voltage;
-        for(int i = 0; i < v_idx.size(); ++i) {
+        QList<QPointF> list_raw;
+        for (int i = 0; i < v_idx.size(); ++i) {
             int idx = v_idx[i];
             list_raw.append({m_correction_offset + i, curve31.raw.data[idx].y()});
-            raw_y_min_correction = std::min(raw_y_min_correction, curve31.raw.data[idx].y());
-            raw_y_max_correction = std::max(raw_y_max_correction, curve31.raw.data[idx].y());
-            list_voltage.append({m_correction_offset + i, curve31.data[idx].y()});
-            vol_y_min_correction = std::min(vol_y_min_correction, curve31.data[idx].y());
-            vol_y_max_correction = std::max(vol_y_max_correction, curve31.data[idx].y());
         }
 
-        if(m_enable_interpolation) {
+        if (m_enable_interpolation) {
             doInterpolation(list_raw);
-            doInterpolation(list_voltage);
         }
-        MY_DATA data;
-        data.curve31.data = list_voltage;
-        data.curve31.x_min = m_correction_offset;
-        data.curve31.x_max = m_correction_offset + m_correction_count;
-        data.curve31.y_min = vol_y_min_correction;
-        data.curve31.y_max = vol_y_max_correction;
-        data.curve31.raw.data = list_raw;
-        data.curve31.raw.x_min = m_correction_offset;
-        data.curve31.raw.x_max = m_correction_offset + m_correction_count;
-        data.curve33.raw.y_min = raw_y_min_correction;
-        data.curve33.raw.y_max = raw_y_max_correction;
-        emit plotReady4k(data);
+        // baseline + accumulate
+        if (m_current_intergration == 0) {
+            m_data.curve31.raw.data = list_raw;
+
+            for (int i = 0; i < list_raw.size(); ++i) {
+                m_data.curve31.raw.data[i].setY(list_raw[i].y() - m_baseline);
+            }
+        } else {
+            for (int i = 0; i < list_raw.size(); ++i) {
+                double val = list_raw[i].y() - m_baseline;
+                m_data.curve31.raw.data[i].setY(std::min(m_data.curve31.raw.data[i].y() + val, 65535.0));
+            }
+        }
+
+        m_current_intergration++;
+
+        // finish
+        if (m_current_intergration >= m_integration_count) {
+            m_current_intergration = 0;
+
+            double y_min = std::numeric_limits<double>::max();
+            double y_max = std::numeric_limits<double>::lowest();
+
+            m_data.curve31.data.clear();
+            for (int i = 0; i < m_data.curve31.raw.data.size(); ++i) {
+                double y = m_data.curve31.raw.data[i].y();
+                double y_vol = static_cast<double>(y) * 50.358 / 1000000.0;
+                m_data.curve31.data.append({m_data.curve31.raw.data[i].x(), y_vol});
+                y_min = std::min(y_min, y);
+                y_max = std::max(y_max, y);
+            }
+
+            m_data.curve31.raw.x_min = m_data.curve31.raw.data.front().x();
+            m_data.curve31.raw.x_max = m_data.curve31.raw.data.back().x();
+            m_data.curve31.raw.y_min = y_min;
+            m_data.curve31.raw.y_max = y_max;
+            m_data.curve31.x_min = m_data.curve31.raw.x_min;
+            m_data.curve31.x_max = m_data.curve31.raw.x_max;
+            m_data.curve31.y_min = static_cast<double>(y_min) * 50.358 / 1000000.0;
+            m_data.curve31.y_max = static_cast<double>(y_max) * 50.358 / 1000000.0;
+
+            emit plotReady4k(m_data);
+        }
     }
 }
 
@@ -704,6 +724,10 @@ void ThreadWorker::onUseLoadedThreadsholdOption(const QJsonObject &option)
     if(option.contains("integration")) {
         m_integration_count = option["integration"].toInt();
         LOG_INFO("Option: integration: {}", m_enable_interpolation);
+    }
+    if(option.contains("baseline")) {
+        m_baseline = option["baseline"].toInt();
+        LOG_INFO("Option: baseline: {}", m_baseline);
     }
 }
 

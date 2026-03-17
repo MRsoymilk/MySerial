@@ -86,6 +86,9 @@ private:
     COLLECTION_FITTING_POINTS m_collection_fitting_points;
     void doInterpolation(QList<QPointF> &v);
     int m_integration_count = 1;
+    int m_current_intergration = 0;
+    int m_baseline = 0;
+    MY_DATA m_data;
 };
 
 #endif // THREADWORKER_H
