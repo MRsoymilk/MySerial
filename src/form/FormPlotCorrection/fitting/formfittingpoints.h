@@ -27,6 +27,7 @@ public:
 signals:
     void toCollectionFittingPoints(const QString &dir, const QString &file, const int &count);
     void doFile(const QString &path);
+    void windowClose();
 
 private slots:
     void on_tBtnSelectDir_clicked();
@@ -44,6 +45,10 @@ private:
 private:
     Ui::FormFittingPoints *ui;
     QStandardItemModel *m_collectModel = nullptr;
+
+    // QWidget interface
+protected:
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // FORMFITTINGPOINTS_H

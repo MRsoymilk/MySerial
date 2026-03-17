@@ -46,6 +46,51 @@ enum STEP_EASY_CONNECT {
     FINISH
 };
 
+bool FormSerial::startProduceConnect() {
+    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
+    QStringList ports;
+    for (const auto &port : availablePorts) {
+        ports.append(port.portName());
+    }
+#ifdef QT_DEBUG
+    QString debug_port = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
+    ports.push_front(debug_port);
+#endif
+    for (const auto &port : ports) {
+        LOG_INFO("test port: {}", port);
+        statusReport(100 * CONNECT_PORT / FINISH, QString("connect to port: %1").arg(port));
+        closeSerial();
+        m_serial = new QSerialPort(this);
+        m_serial->setPortName(port);
+        m_serial->setBaudRate(115200);
+        m_serial->setDataBits(static_cast<QSerialPort::DataBits>(8));
+        m_serial->setParity(QSerialPort::NoParity);
+        m_serial->setStopBits(QSerialPort::OneStop);
+        if (!m_serial->open(QIODevice::ReadWrite)) {
+            LOG_ERROR("error: {}", m_serial->errorString());
+            continue;
+        }
+        connect(m_serial,
+                &QSerialPort::readyRead,
+                this,
+                &FormSerial::onReadyRead,
+                Qt::UniqueConnection);
+        sendEasyData("DD3C000310CDFF");
+        if (m_serial->bytesAvailable() > 0 || m_serial->waitForReadyRead(500)) {
+            QByteArray response_handshake = m_serial->readAll();
+            QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
+            if(response_handshake.contains(expected_handshake)) {
+                sendEasyData("DD3C000340CDFF");
+                m_serial->readAll();
+                m_serial->clear(QSerialPort::Input);
+                m_ready = true;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
 {
     QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
@@ -78,7 +123,7 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
                 Qt::UniqueConnection);
         statusReport(100 * HANDSHAKE / FINISH, QString("%1 step [handshake]: start").arg(port));
         m_serial->clear(QSerialPort::Input);
-        send("DD3C000310CDFF");
+        sendEasyData("DD3C000310CDFF");
         statusReport(100 * HANDSHAKE / FINISH,
                      QString("%1 step [handshake]: wait response").arg(port));
         if (m_serial->bytesAvailable() > 0 || m_serial->waitForReadyRead(500)) {
@@ -91,38 +136,31 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
                 if(F30_shown_mode == CFG_F30_MODE_DOUBLE) {
                     statusReport(100 * DATA_REQUEST / FINISH,
                                  QString("%1 step [data 40 request]: start").arg(port));
-                    send("DD3C000368CDFF");
-                    QByteArray response;
-                    response += m_serial->readAll();
-                    while (m_serial->waitForReadyRead(50)) {
+                    {
+                        sendEasyData("DD3C000368CDFF");
+                        QByteArray response;
                         response += m_serial->readAll();
-                    }
-                    doThresholdExtra(response);
-
-                    if(!m_serial->waitForReadyRead(500)) {
-                        LOG_WARN("cmd DD3C000368CDFF no response");
-                        LOG_WARN("Threshold not working!");
-                    }
-                    else {
-                        QByteArray response = m_serial->readAll();
+                        while (m_serial->waitForReadyRead(50)) {
+                            response += m_serial->readAll();
+                        }
                         doThresholdExtra(response);
                     }
-                    send("DD3C000340CDFF");
-                    if (!m_serial->waitForReadyRead(500)) {
-                        LOG_WARN("cmd DD3C000340CDFF no response");
-                        send("DD3C000360CDFF");
-                        LOG_INFO("cmd: DD3C000360CDFF to stop 40");
-                    } else {
-                        QByteArray response = m_serial->readAll();
-                        LOG_INFO("cmd DD3C000340CDFF -> {}", response.toHex().toUpper());
-                        doFrameExtra(response);
+                    {
+                        sendEasyData("DD3C000370CDFF");
+                        QByteArray response;
+                        response += m_serial->readAll();
+                        while (m_serial->waitForReadyRead(50)) {
+                            response += m_serial->readAll();
+                        }
+                        doBaselineExtra(response);
                     }
+                    sendEasyData("DD3C000340CDFF");
                 }
                 else if(F30_shown_mode == CFG_F30_MODE_SINGLE) {
                     statusReport(100 * SET_INTEGRATION_TIME / FINISH,
                                  QString("%1 step [set integration time]: check excepted")
                                      .arg(port));
-                    send("DD3C000622000005CDFF");
+                    sendEasyData("DD3C000622000005CDFF");
                     m_serial->waitForReadyRead(500);
                     QByteArray response = m_serial->readAll();
                     QByteArray except = QByteArray::fromHex("DE3A000323CEFF");
@@ -130,15 +168,7 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
                     if (response == except) {
                         statusReport(100 * DATA_REQUEST / FINISH,
                                      QString("%1 step [data 30 request]: start").arg(port));
-                        send("DD3C000330CDFF");
-                        if (!m_serial->waitForReadyRead(500)) {
-                            LOG_WARN("cmd DD3C000330CDFF no response");
-                            send("DD3C000360CDFF");
-                            LOG_INFO("cmd: DD3C000360CDFF to stop 30");
-                        } else {
-                            QByteArray response = m_serial->readAll();
-                            LOG_INFO("cmd DD3C000330CDFF -> {}", response.toHex().toUpper());
-                        }
+                        sendEasyData("DD3C000330CDFF");
                     }
                 }
 
@@ -169,6 +199,31 @@ bool FormSerial::startEasyConnect(const QString& F30_shown_mode)
     return false;
 }
 
+void FormSerial::doBaselineExtra(const QByteArray &data) {
+    const QByteArray header = QByteArray::fromHex("DE3A000671");
+    const QByteArray tail   = QByteArray::fromHex("CEFF");
+    int headPos = data.indexOf(header);
+    if (headPos < 0) {
+        LOG_WARN("Baseline: not found header: DE3A000671");
+        return;
+    }
+
+    int tailPos = data.indexOf(tail, headPos + header.size());
+    if (tailPos < 0) {
+        LOG_WARN("Baseline: not found tail: CEFF");
+        return;
+    }
+
+    int payloadStart = headPos + header.size();
+    int payloadLen = tailPos - payloadStart;
+
+    QByteArray payload = data.mid(payloadStart, payloadLen);
+    int value = (static_cast<quint8>(payload[0]) << 16) |
+                static_cast<quint8>(payload[1]) << 8 |
+                static_cast<quint8>(payload[2]);
+    emit sendOption({{"baseline", value}});
+}
+
 void FormSerial::doThresholdExtra(const QByteArray &data)
 {
     const QByteArray header = QByteArray::fromHex("DE3A064569");
@@ -176,13 +231,13 @@ void FormSerial::doThresholdExtra(const QByteArray &data)
 
     int headPos = data.indexOf(header);
     if (headPos < 0) {
-        LOG_WARN("Threshold: not found header DE3A064569");
+        LOG_WARN("Threshold: not found header: DE3A064569");
         return;
     }
 
     int tailPos = data.indexOf(tail, headPos + header.size());
     if (tailPos < 0) {
-        LOG_WARN("Threshold: not found tail CEFF");
+        LOG_WARN("Threshold: not found tail: CEFF");
         return;
     }
 
@@ -201,7 +256,7 @@ void FormSerial::doThresholdExtra(const QByteArray &data)
     emit sendThreshold(true, values);
 }
 
-void FormSerial::stopEasyConnect()
+void FormSerial::stopFSeriesConnect()
 {
     m_ready = false;
 
@@ -210,7 +265,7 @@ void FormSerial::stopEasyConnect()
                    this, &FormSerial::onReadyRead);
         m_serial->clear(QSerialPort::AllDirections);
         QThread::msleep(50);
-        send("DD3C000360CDFF");
+        sendExpertData("DD3C000360CDFF");
         if (!m_serial->waitForBytesWritten(500)) {
             LOG_WARN("stop Easy connect: write timeout");
         }
@@ -221,9 +276,38 @@ void FormSerial::stopEasyConnect()
     closeSerial();
 }
 
-void FormSerial::writeEasyData(const QString &value)
+void FormSerial::sendEasyData(const QString &text)
 {
-    send(value);
+    LOG_INFO("serial send: {}", text);
+    if (!(m_serial && m_serial->isOpen())) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("serial not open!"));
+        LOG_ERROR("Serial not open!");
+        return;
+    }
+
+    QByteArray data;
+    QString cleaned = text;
+    cleaned.remove(QRegularExpression("[^0-9A-Fa-f\\s]"));
+
+    QStringList byteStrings;
+    if (cleaned.contains(QRegularExpression("\\s+"))) {
+        byteStrings = cleaned.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+    } else {
+        for (int i = 0; i + 1 < cleaned.length(); i += 2) {
+            byteStrings << cleaned.mid(i, 2);
+        }
+    }
+
+    for (const QString &byteStr : byteStrings) {
+        bool ok;
+        int byte = byteStr.toInt(&ok, 16);
+        if (ok) {
+            data.append(static_cast<char>(byte));
+        } else {
+            LOG_WARN("illegal hex: {}", byteStr);
+        }
+    }
+    m_serial->write(data);
 }
 
 void FormSerial::updateFrameTypes(const QString &algorithm)
@@ -582,7 +666,7 @@ void FormSerial::initMultSend()
 
         connect(lineSend, &LineSend::cmdSendClicked, this, [this](int index, const QString &cmd) {
             if (!cmd.isEmpty()) {
-                send(cmd);
+                sendExpertData(cmd);
             }
         });
 
@@ -679,7 +763,7 @@ void FormSerial::init()
     m_workerThread->start();
 }
 
-void FormSerial::send(const QString &text)
+void FormSerial::sendExpertData(const QString &text)
 {
     LOG_INFO("serial send: {}", text);
     if (!(m_serial && m_serial->isOpen())) {
@@ -753,11 +837,45 @@ void FormSerial::send(const QString &text)
     LOG_INFO("{}: {}", flag, to_show);
 }
 
+void FormSerial::sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func) {
+    LOG_INFO("serial send: {}", text);
+    if (!(m_serial && m_serial->isOpen())) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("serial not open!"));
+        LOG_ERROR("Serial not open!");
+        return;
+    }
+
+    QByteArray data;
+    QString cleaned = text;
+    cleaned.remove(QRegularExpression("[^0-9A-Fa-f\\s]"));
+
+    QStringList byteStrings;
+    if (cleaned.contains(QRegularExpression("\\s+"))) {
+        byteStrings = cleaned.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+    } else {
+        for (int i = 0; i + 1 < cleaned.length(); i += 2) {
+            byteStrings << cleaned.mid(i, 2);
+        }
+    }
+
+    for (const QString &byteStr : byteStrings) {
+        bool ok;
+        int byte = byteStr.toInt(&ok, 16);
+        if (ok) {
+            data.append(static_cast<char>(byte));
+        } else {
+            LOG_WARN("illegal hex: {}", byteStr);
+        }
+    }
+    m_call_produce_func = func;
+    m_serial->write(data);
+}
+
 void FormSerial::on_btnSend_clicked()
 {
     QString text = ui->txtSend->toPlainText().trimmed();
     LOG_INFO("serial send: {}", text);
-    send(text);
+    sendExpertData(text);
     SETTING_CONFIG_SET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND, text);
 }
 
@@ -954,8 +1072,29 @@ void FormSerial::onReadyRead()
         return;
     }
     QByteArray data = m_serial->readAll();
-    // doFrameExtra(data);
     emit pushParserData(data);
+    if(m_call_produce_func) {
+        if(!m_call_produce_func(data)){
+            m_call_produce_func = nullptr;
+        }
+    }
+    if(m_ini.hex_display) {
+        QString text = data.toHex(' ').toUpper();
+        ui->txtRecv->setUpdatesEnabled(false);
+        QTextCursor cursor = ui->txtRecv->textCursor();
+        cursor.movePosition(QTextCursor::End);
+        cursor.insertText("\n[RX]: " + text + "\n");
+        ui->txtRecv->setTextCursor(cursor);
+        ui->txtRecv->setUpdatesEnabled(true);
+        if (ui->txtRecv->document()->blockCount() > 20000)
+        {
+            QTextCursor c(ui->txtRecv->document());
+            c.movePosition(QTextCursor::Start);
+            c.select(QTextCursor::BlockUnderCursor);
+            c.removeSelectedText();
+            c.deleteChar();
+        }
+    }
 }
 
 void FormSerial::on_btnRecvClear_clicked()
@@ -1036,14 +1175,14 @@ void FormSerial::onAutoSend()
     if (ui->tabWidget->currentWidget() == ui->tabSingle) {
         QString msg = ui->txtSend->toPlainText();
         if (!msg.isEmpty()) {
-            send(msg);
+            sendExpertData(msg);
         }
     } else {
         return;
         for (int i = 0; i <= 4; ++i) {
             QString msg = findChild<QLineEdit *>(QString("lineEdit_cmd_%1").arg(i))->text();
             if (!msg.isEmpty()) {
-                send(msg);
+                sendExpertData(msg);
             }
         }
     }

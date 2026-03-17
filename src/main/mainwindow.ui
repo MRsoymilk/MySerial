@@ -184,6 +184,7 @@
     </property>
     <addaction name="actionEasy"/>
     <addaction name="actionExpert"/>
+    <addaction name="actionProduce"/>
    </widget>
    <widget class="QMenu" name="menuAlgorithm">
     <property name="title">
@@ -345,6 +346,14 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionProduce">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Produce</string>
    </property>
   </action>
  </widget>

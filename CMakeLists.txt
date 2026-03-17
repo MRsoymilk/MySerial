@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.4.5 LANGUAGES CXX)
+project(MySerial VERSION 1.4.6 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -179,12 +179,15 @@ set(SERIAL_MODE
     src/mode/FormEasy/formeasy.h
     src/mode/FormEasy/formeasy.cpp
     src/mode/FormEasy/formeasy.ui
-    src/mode/FormEasy/LoadingOverLay/loadingoverlay.h
-    src/mode/FormEasy/LoadingOverLay/loadingoverlay.cpp
-    src/mode/FormEasy/LoadingOverLay/loadingoverlay.ui
+    src/mode/LoadingOverLay/loadingoverlay.h
+    src/mode/LoadingOverLay/loadingoverlay.cpp
+    src/mode/LoadingOverLay/loadingoverlay.ui
     src/mode/FormExpert/formexpert.h
     src/mode/FormExpert/formexpert.cpp
     src/mode/FormExpert/formexpert.ui
+    src/mode/FormProduce/formproduce.h
+    src/mode/FormProduce/formproduce.cpp
+    src/mode/FormProduce/formproduce.ui
 )
 
 set(PROJECT_SOURCES

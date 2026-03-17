@@ -61,11 +61,8 @@ private slots:
     void on_tBtnImg_clicked();
     void on_tBtnPause_clicked();
     void on_spinBoxIntegrationTime_valueChanged(int val);
-    void doSimulateClicked();
-    void doHistoryClicked();
     void on_tBtnFourier_clicked();
     void on_tBtnAccumulate_clicked();
-    void doSNRClicked();
     void on_tBtnSetting_clicked();
     void on_tBtnAxisY_clicked();
     void on_tBtnToVoltage_clicked();
@@ -74,11 +71,14 @@ private slots:
     void on_spinBoxXStart_valueChanged(int val);
     void on_spinBoxXEnd_valueChanged(int val);
     void on_tBtnAxisX_clicked();
-    void on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &arg1);
+    void on_checkBoxPeakTrack_checkStateChanged(const Qt::CheckState &state);
     void on_tBtnInfo_clicked();
+    void on_comboBoxTimeUnit_currentIndexChanged(int index);
+    void doSimulateClicked();
+    void doHistoryClicked();
+    void doSNRClicked();
     void doDarkSpectrum();
     void doPointsTracker();
-    void on_comboBoxTimeUnit_currentIndexChanged(int index);
 
 private:
     void initAxisControl();

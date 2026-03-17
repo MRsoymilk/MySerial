@@ -5,6 +5,7 @@
 
 class FormEasy;
 class FormExpert;
+class FormProduce;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,6 +30,7 @@ private slots:
     void menuAlgorithmSelect(QAction *selectedAlgorithm);
     void on_actionEasy_triggered();
     void on_actionExpert_triggered();
+    void on_actionProduce_triggered();
 
 private:
     void init();
@@ -38,7 +40,6 @@ private:
     void initAlgorithm();
     void setLanguage(const QString &language);
     void setTheme(const QString &theme);
-    void initStackWidget();
     void initMode();
     void menuModeSelect(QAction *selectedMode);
     void setAlgorithm(const QString &algorithm);
@@ -49,9 +50,11 @@ private:
 
 private:
     QPixmap m_background;
-    FormEasy *m_formEasy;
-    FormExpert *m_formExpert;
+    FormEasy *m_formEasy = nullptr;
+    FormExpert *m_formExpert = nullptr;
+    FormProduce *m_formProduce = nullptr;
 
+    void safeDelete(QWidget *&w);
 protected:
     void closeEvent(QCloseEvent *event) override;
 };

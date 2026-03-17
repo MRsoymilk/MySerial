@@ -12,7 +12,7 @@
 #include "../form/plot/PeakTrajectory/peaktrajectory.h"
 #include "../form/plot/DarkSpectrum/darkspectrum.h"
 #include "../form/plot/PointsTracker/pointstracker.h"
-#include "LoadingOverLay/loadingoverlay.h"
+#include "../LoadingOverLay/loadingoverlay.h"
 #include "MyChartView/mychartview.h"
 #include "DraggableLine/draggableline.h"
 #include "funcdef.h"
@@ -94,7 +94,7 @@ void FormEasy::closeEasyMode()
 {
     m_isPlaying = false;
     ui->tBtnSwitch->setChecked(false);
-    formSerial->stopEasyConnect();
+    formSerial->stopFSeriesConnect();
 }
 
 void FormEasy::on_tBtnSwitch_clicked()
@@ -159,8 +159,10 @@ void FormEasy::initChart() {
 }
 
 void FormEasy::initConnectInfo() {
+    ui->comboBoxTimeUnit->blockSignals(true);
     ui->comboBoxTimeUnit->addItems({"ms", "s"});
     ui->comboBoxTimeUnit->setCurrentIndex(0);
+    ui->comboBoxTimeUnit->blockSignals(false);
     ui->spinBoxIntegrationTime->setValue(5);
 }
 
@@ -339,6 +341,7 @@ void FormEasy::init()
             &ThreadWorker::onUseLoadedThreadsholdOption);
 
     connect(formSerial, &FormSerial::sendThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold, Qt::QueuedConnection);
+    connect(formSerial, &FormSerial::sendOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotLLC, m_worker, &ThreadWorker::processDataLLC, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15, Qt::QueuedConnection);
@@ -559,7 +562,7 @@ void FormEasy::sendIntegrationTime() {
     }
     int count = (val + 1) / 5;
     emit sendOption({{"integration", count}});
-    formSerial->writeEasyData(calcIntegrationTime(val));
+    formSerial->sendEasyData(calcIntegrationTime(val));
 }
 
 void FormEasy::on_spinBoxIntegrationTime_valueChanged(int val)

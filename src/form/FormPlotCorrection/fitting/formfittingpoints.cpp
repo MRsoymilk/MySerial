@@ -171,6 +171,11 @@ void FormFittingPoints::refreshCollectTable()
     }
 }
 
+void FormFittingPoints::closeEvent(QCloseEvent *event)
+{
+    emit windowClose();
+}
+
 void FormFittingPoints::retranslateUI()
 {
     ui->retranslateUi(this);

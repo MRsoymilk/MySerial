@@ -6,6 +6,7 @@
 #include <QTranslator>
 #include "../mode/FormEasy/formeasy.h"
 #include "../mode/FormExpert/formexpert.h"
+#include "../mode/FormProduce/formproduce.h"
 #include "./ui_mainwindow.h"
 #include "funcdef.h"
 #include "global.h"
@@ -122,6 +123,9 @@ void MainWindow::setLanguage(const QString &language)
         if (m_formExpert) {
             m_formExpert->retranslateUI();
         }
+        if(m_formProduce) {
+            m_formProduce->retranslateUI();
+        }
     }
 }
 
@@ -145,8 +149,24 @@ void MainWindow::setAlgorithm(const QString &algorithm)
     qApp->setProperty("algorithm", algorithm);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_ALGORITHM, algorithm);
 
-    m_formEasy->setAlgorithm(algorithm);
-    m_formExpert->setAlgorithm(algorithm);
+    if (m_formEasy) {
+        m_formEasy->setAlgorithm(algorithm);
+    }
+    if (m_formExpert) {
+        m_formExpert->setAlgorithm(algorithm);
+    }
+    if (m_formProduce) {
+        m_formProduce->setAlgorithm(algorithm);
+    }
+}
+
+void MainWindow::safeDelete(QWidget*& w)
+{
+    if (!w) return;
+
+    ui->stackedWidgetMode->removeWidget(w);
+    w->deleteLater();
+    w = nullptr;
 }
 
 void MainWindow::setMode(const QString &mode)
@@ -154,25 +174,47 @@ void MainWindow::setMode(const QString &mode)
     qApp->setProperty("mode", mode);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, mode);
 
-    if (mode == CFG_MODE_EXPERT) {
-        ui->stackedWidgetMode->setCurrentWidget(m_formExpert);
-    } else if (mode == CFG_MODE_EASY) {
+    if (mode == CFG_MODE_EASY) {
+        if (!m_formEasy) {
+            m_formEasy = new FormEasy;
+            ui->stackedWidgetMode->addWidget(m_formEasy);
+        }
         ui->stackedWidgetMode->setCurrentWidget(m_formEasy);
-    }
-}
 
-void MainWindow::initStackWidget()
-{
-    m_formEasy = new FormEasy;
-    m_formExpert = new FormExpert;
-    ui->stackedWidgetMode->addWidget(m_formEasy);
-    ui->stackedWidgetMode->addWidget(m_formExpert);
+        safeDelete((QWidget*&)m_formExpert);
+        safeDelete((QWidget*&)m_formProduce);
+    } else if (mode == CFG_MODE_EXPERT) {
+        if (!m_formExpert) {
+            m_formExpert = new FormExpert;
+            ui->stackedWidgetMode->addWidget(m_formExpert);
+        }
+        ui->stackedWidgetMode->setCurrentWidget(m_formExpert);
+
+        safeDelete((QWidget*&)m_formEasy);
+        safeDelete((QWidget*&)m_formProduce);
+    } else if (mode == CFG_MODE_PRODUCE) {
+        if (!m_formProduce) {
+            m_formProduce = new FormProduce;
+            ui->stackedWidgetMode->addWidget(m_formProduce);
+        }
+        ui->stackedWidgetMode->setCurrentWidget(m_formProduce);
+
+        safeDelete((QWidget*&)m_formEasy);
+        safeDelete((QWidget*&)m_formExpert);
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    m_formEasy->close();
-    m_formExpert->close();
+    if (m_formEasy) {
+        m_formEasy->close();
+    }
+    if (m_formExpert) {
+        m_formExpert->close();
+    }
+    if (m_formProduce) {
+        m_formProduce->close();
+    }
 }
 
 void MainWindow::menuLanguageSelect(QAction *selectedAction)
@@ -237,6 +279,7 @@ void MainWindow::on_actionEasy_triggered()
     ui->stackedWidgetMode->setCurrentWidget(m_formEasy);
     ui->actionEasy->setChecked(true);
     ui->actionExpert->setChecked(false);
+    ui->actionProduce->setChecked(false);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_EASY);
 }
 
@@ -244,17 +287,26 @@ void MainWindow::on_actionExpert_triggered()
 {
     LOG_INFO("software mode: Expert");
     ui->stackedWidgetMode->setCurrentWidget(m_formExpert);
-    ui->actionEasy->setChecked(false);
     ui->actionExpert->setChecked(true);
+    ui->actionEasy->setChecked(false);
+    ui->actionProduce->setChecked(false);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_EXPERT);
+}
+
+void MainWindow::on_actionProduce_triggered() {
+    LOG_INFO("software mode: Produce");
+    ui->stackedWidgetMode->setCurrentWidget(m_formProduce);
+    ui->actionProduce->setChecked(true);
+    ui->actionEasy->setChecked(false);
+    ui->actionExpert->setChecked(false);
+    SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, CFG_MODE_PRODUCE);
 }
 
 void MainWindow::init()
 {
     initMsgBar();
-    initStackWidget();
+    initMode();
     initTheme();
     initLanguage();
-    initMode();
     initAlgorithm();
 }

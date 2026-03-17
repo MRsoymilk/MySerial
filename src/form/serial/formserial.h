@@ -48,9 +48,12 @@ public:
     ~FormSerial();
     void retranslateUI();
     bool startEasyConnect(const QString& F30_shown_mode);
-    void stopEasyConnect();
-    void writeEasyData(const QString &value);
+    bool startProduceConnect();
+    void stopFSeriesConnect();
+    void sendEasyData(const QString& text);
+    void sendExpertData(const QString &text);
     void updateFrameTypes(const QString &idx);
+    void sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func = nullptr);
 
 signals:
     void recv2PlotLLC(const FRAME& frame,
@@ -63,6 +66,7 @@ signals:
     void statusReport(int progress, const QString &msg);
     void pushParserData(QByteArray data);
     void sendThreshold(bool isUse, const QList<double> &values);
+    void sendOption(const QJsonObject &option);
 
 public slots:
     void sendRaw(const QByteArray &bytes);
@@ -80,12 +84,13 @@ private:
     void init();
     void openSerial();
     void closeSerial();
-    void send(const QString &text);
     void initMultSend();
     void setINI();
-
     void loadPage(int page);
     bool doFrameExtra(const QByteArray &data);
+    void flushUiBuffer();
+    void doThresholdExtra(const QByteArray &data);
+    void doBaselineExtra(const QByteArray &data);
 
 private slots:
     void on_btnRecvSave_clicked();
@@ -106,8 +111,7 @@ private slots:
     void on_tBtnPrev_clicked();
     void on_lineEditPageName_editingFinished();
     void on_checkBoxAcceptTemperature_clicked();
-private:
-    void flushUiBuffer();
+
 private:
     Ui::FormSerial *ui;
     QMap<QString, SERIAL> m_mapSerial;
@@ -132,7 +136,7 @@ private:
     bool m_ready = false;
     QThread *m_workerThread = nullptr;
     ThreadParser *m_parser = nullptr;
-    void doThresholdExtra(const QByteArray &data);
+    std::function<bool(const QByteArray &)> m_call_produce_func = nullptr;
 };
 
 #endif // FORMSERIAL_H
