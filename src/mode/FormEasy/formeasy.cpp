@@ -43,43 +43,26 @@ void FormEasy::setAlgorithm(const QString &algorithm) {
 
 bool FormEasy::connectEasyMode() {
     LoadingOverLay *overlay = new LoadingOverLay(this);
-
-    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     overlay->resize(this->size());
     overlay->show();
     QString algorithm = qApp->property("algorithm").toString();
     formSerial->updateFrameTypes(algorithm);
     m_worker->setAlgorithm(algorithm);
-    bool isConnect = false;
-
-    int *connect_count = new int(0);
-
-    QTimer *timer = new QTimer(this);
     connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
         LOG_INFO("connect stopped by user");
-        if (timer) {
-            timer->stop();
-            overlay->deleteLater();
-            timer->deleteLater();
-            delete connect_count;
-            closeEasyMode();
-        }
+        m_isPlaying = false;
+        ui->tBtnSwitch->setChecked(false);
+        closeEasyMode();
+        overlay->deleteLater();
     });
-    connect(timer, &QTimer::timeout, this, [=]() mutable {
-        overlay->updateTry(++(*connect_count));
-
-        QString F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
-        m_setting->initThreshold();
-
-        if (formSerial->startEasyConnect(F30_shown_mode)) {
-            LOG_INFO("connect [{}] success.", *connect_count);
-            timer->stop();
-            overlay->deleteLater();
-            timer->deleteLater();
-            delete connect_count;
-        }
+    connect(formSerial, &FormSerial::connectEasyModeEstablished, [=]() {
+        m_isPlaying = true;
+        ui->tBtnSwitch->setChecked(true);
+        overlay->close();
     });
-    timer->start(500);
+    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
+    QString F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
+    formSerial->startEasyConnect(F30_shown_mode);
     return true;
 }
 

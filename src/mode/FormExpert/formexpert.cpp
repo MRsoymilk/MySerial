@@ -212,7 +212,8 @@ void FormExpert::closeEvent(QCloseEvent *event) {
 void FormExpert::init() {
     initStackWidget();
     initToolbar();
-
+    QString algorithm = qApp->property("algorithm").toString();
+    formSerial->updateFrameTypes(algorithm);
     m_plotHistory = new FormPlotHistory;
     m_plotHistory->hide();
 

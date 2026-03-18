@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setMode(const QString &mode);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -42,7 +43,6 @@ private:
     void initMode();
     void menuModeSelect(QAction *selectedMode);
     void setAlgorithm(const QString &algorithm);
-    void setMode(const QString &mode);
 
 private:
     Ui::MainWindow *ui;

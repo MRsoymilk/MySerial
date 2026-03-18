@@ -7,6 +7,7 @@
 #include <QWidget>
 
 #include "global.h"
+#include "keydef.h"
 
 class LineSend;
 class ThreadParser;
@@ -20,6 +21,16 @@ class FormSerial : public QWidget {
 
 public:
     enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
+    enum STEP_PRODUCE_CONNECT { PRODUCE_CONNECT_PORT = 1, PRODUCE_HANDSHAKE, PRODUCE_DATA_REQUEST, PRODUCE_FINISH };
+    enum STEP_EASY_CONNECT {
+        EASY_CONNECT_PORT = 1,
+        EASY_HANDSHAKE,
+        EASY_MODE_DOUBLE_DO_THRESHOLD,
+        EASY_MODE_DOUBLE_DO_BASELINE,
+        EASY_SET_INTEGRATION_TIME,
+        EASY_DATA_REQUEST,
+        EASY_FINISH
+    };
 
     struct SERIAL {
         QString Description;
@@ -59,6 +70,8 @@ signals:
     void recv2PlotF15(const FRAME &frame, const double &temperature = 0.0);
     void recv2MPU(const QByteArray &data);
     void statusReport(int progress, const QString &msg);
+    void connectProduceModeEstablished();
+    void connectEasyModeEstablished();
     void pushParserData(QByteArray data);
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendOption(const QJsonObject &option);
@@ -81,10 +94,9 @@ private:
     void initMultSend();
     void setINI();
     void loadPage(int page);
-    bool doFrameExtra(const QByteArray &data);
     void flushUiBuffer();
-    void doThresholdExtra(const QByteArray &data);
-    void doBaselineExtra(const QByteArray &data);
+    bool doThresholdExtra(const QByteArray &data);
+    bool doBaselineExtra(const QByteArray &data);
 
 private slots:
     void on_btnRecvSave_clicked();
@@ -92,10 +104,10 @@ private slots:
     void on_btnSend_clicked();
     void on_btnSerialSwitch_clicked();
     void on_cBoxPortName_activated(int index);
-    void onReadyRead();
+    void onProduceModeReadyRead();
     void on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &state);
     void on_cBoxSendFormat_currentTextChanged(const QString &format);
-    void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &arg1);
+    void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &state);
     void on_checkBoxScheduledDelivery_clicked();
     void onAutoSend();
     void on_lineEditCycle_editingFinished();
@@ -105,6 +117,7 @@ private slots:
     void on_tBtnPrev_clicked();
     void on_lineEditPageName_editingFinished();
     void on_checkBoxAcceptTemperature_clicked();
+    void onExpertModeReadyRead();
 
 private:
     Ui::FormSerial *ui;
@@ -112,7 +125,6 @@ private:
     bool m_switch;
     QPointer<QSerialPort> m_serial;
     INI_SERIAL m_ini;
-    QByteArray m_buffer;
     bool m_show_send;
     SEND_FORMAT m_send_format;
     bool m_hex_display;
@@ -127,10 +139,33 @@ private:
     int m_pageSize = 5;
     int m_currentPage = 0;
     bool m_acceptTemperature = false;
-    bool m_ready = false;
     QThread *m_workerThread = nullptr;
     ThreadParser *m_parser = nullptr;
+
+private:
+    void doPortsScan();
+    int m_port_index = 0;
+    QStringList m_ports;
+    bool m_establish = false;
+
+private:
+    void doProduceConnect();
+    void onProduceModeTimeout();
+    void processProduceConnect(const QByteArray &frame);
     std::function<bool(const QByteArray &)> m_call_produce_func = nullptr;
+    QTimer *m_timer_produce = nullptr;
+    STEP_PRODUCE_CONNECT m_step_produce = PRODUCE_CONNECT_PORT;
+
+private:
+    bool doFrameExtra(const QByteArray &data);
+    void onEasyModeTimeout();
+    void onEasyModeReadyRead();
+    void doEasyConnect();
+    void processEasyConnect();
+    QTimer *m_timer_easy = nullptr;
+    STEP_EASY_CONNECT m_step_easy = EASY_CONNECT_PORT;
+    QString m_easy_mode = CFG_F30_MODE_DOUBLE;
+    QByteArray m_easy_buffer;
 };
 
 #endif  // FORMSERIAL_H

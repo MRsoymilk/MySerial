@@ -182,31 +182,19 @@ bool FormProduce::connectProduceMode() {
     QString algorithm = qApp->property("algorithm").toString();
     formSerial->updateFrameTypes(algorithm);
     m_worker->setAlgorithm(algorithm);
-    QTimer *timer = new QTimer(this);
-    bool isConnect = false;
-
-    int *connect_count = new int(0);
     connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
         LOG_INFO("connect stopped by user");
-        if (timer) {
-            timer->stop();
-            overlay->deleteLater();
-            timer->deleteLater();
-            delete connect_count;
-            closeProduceMode();
-        }
+        m_isPlaying = false;
+        ui->tBtnSwitch->setChecked(false);
+        overlay->deleteLater();
     });
-    connect(timer, &QTimer::timeout, this, [=]() mutable {
-        overlay->updateTry(++(*connect_count));
-        if (formSerial->startProduceConnect()) {
-            LOG_INFO("connect [{}] success.", *connect_count);
-            timer->stop();
-            overlay->deleteLater();
-            timer->deleteLater();
-            delete connect_count;
-        }
+    connect(formSerial, &FormSerial::connectProduceModeEstablished, [=]() {
+        m_isPlaying = true;
+        ui->tBtnSwitch->setChecked(true);
+        overlay->close();
     });
-    timer->start(500);
+    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
+    formSerial->startProduceConnect();
     return true;
 }
 

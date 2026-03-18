@@ -156,6 +156,14 @@ void MainWindow::setMode(const QString &mode) {
     qApp->setProperty("mode", mode);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_MODE, mode);
 
+    const QList<QAction *> actions = ui->menuMode->actions();
+    for (QAction *act : actions) {
+        if (act->text().toLower() == mode) {
+            act->setChecked(true);
+        } else {
+            act->setChecked(false);
+        }
+    }
     if (mode == CFG_MODE_EASY) {
         if (!m_formEasy) {
             m_formEasy = new FormEasy;
@@ -238,16 +246,8 @@ void MainWindow::menuAlgorithmSelect(QAction *selectedAlgorithm) {
 }
 
 void MainWindow::menuModeSelect(QAction *selectedMode) {
-    QString mode = selectedMode->text();
+    QString mode = selectedMode->text().toLower();
     setMode(mode);
-    const QList<QAction *> actions = ui->menuMode->actions();
-    for (QAction *act : actions) {
-        if (act == selectedMode) {
-            act->setChecked(true);
-        } else {
-            act->setChecked(false);
-        }
-    }
 }
 
 void MainWindow::on_actionEasy_triggered() {

@@ -29,156 +29,127 @@ FormSerial::~FormSerial() {
 
 void FormSerial::retranslateUI() { ui->retranslateUi(this); }
 
-enum STEP_EASY_CONNECT { CONNECT_PORT = 1, HANDSHAKE, SET_INTEGRATION_TIME, DATA_REQUEST, FRAME_CHECK, FINISH };
+void FormSerial::doProduceConnect() {
+    if (m_port_index >= m_ports.size()) {
+        LOG_WARN("connect: no device found!");
+        startProduceConnect();
+        return;
+    }
 
-bool FormSerial::startProduceConnect() {
+    QString port = m_ports[m_port_index];
+    LOG_INFO("test port: {}", port);
+    statusReport(100 * PRODUCE_CONNECT_PORT / PRODUCE_FINISH, QString("connect to port: %1").arg(port));
+    if (m_serial) {
+        m_serial->close();
+        m_serial->deleteLater();
+        m_serial = nullptr;
+    }
+
+    m_serial = new QSerialPort(this);
+    m_serial->setPortName(port);
+    m_serial->setBaudRate(115200);
+    m_serial->setDataBits(QSerialPort::Data8);
+    m_serial->setParity(QSerialPort::NoParity);
+    m_serial->setStopBits(QSerialPort::OneStop);
+
+    if (!m_serial->open(QIODevice::ReadWrite)) {
+        LOG_WARN("open failed: {}", m_serial->errorString());
+        ++m_port_index;
+        QTimer::singleShot(0, this, &FormSerial::doProduceConnect);
+        return;
+    }
+
+    connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onProduceModeReadyRead, Qt::UniqueConnection);
+
+    statusReport(100 * PRODUCE_HANDSHAKE / PRODUCE_FINISH, QString("%1 step [handshake]: start").arg(port));
+    m_step_produce = PRODUCE_HANDSHAKE;
+    m_serial->write(QByteArray::fromHex("DD3C000310CDFF"));
+    statusReport(100 * PRODUCE_HANDSHAKE / PRODUCE_FINISH, QString("%1 step [handshake]: wait response").arg(port));
+    m_timer_produce->start(1000);
+}
+
+void FormSerial::doEasyConnect() {
+    if (m_port_index >= m_ports.size()) {
+        LOG_WARN("connect: no device found!");
+        startEasyConnect(m_easy_mode);
+        return;
+    }
+
+    QString port = m_ports[m_port_index];
+    LOG_INFO("test port: {}", port);
+    statusReport(100 * EASY_CONNECT_PORT / EASY_FINISH, QString("connect to port: %1").arg(port));
+    if (m_serial) {
+        m_serial->close();
+        m_serial->deleteLater();
+        m_serial = nullptr;
+    }
+
+    m_serial = new QSerialPort(this);
+    m_serial->setPortName(port);
+    m_serial->setBaudRate(115200);
+    m_serial->setDataBits(QSerialPort::Data8);
+    m_serial->setParity(QSerialPort::NoParity);
+    m_serial->setStopBits(QSerialPort::OneStop);
+
+    if (!m_serial->open(QIODevice::ReadWrite)) {
+        LOG_WARN("open failed: {}", m_serial->errorString());
+        ++m_port_index;
+        QTimer::singleShot(0, this, &FormSerial::doEasyConnect);
+        return;
+    }
+
+    connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onEasyModeReadyRead, Qt::UniqueConnection);
+
+    m_easy_buffer.clear();
+
+    statusReport(100 * EASY_HANDSHAKE / EASY_FINISH, QString("%1 step [handshake]: start").arg(port));
+    m_step_easy = EASY_HANDSHAKE;
+    m_serial->write(QByteArray::fromHex("DD3C000310CDFF"));
+    statusReport(100 * EASY_HANDSHAKE / EASY_FINISH, QString("%1 step [handshake]: wait response").arg(port));
+    m_timer_easy->start(1000);
+}
+
+void FormSerial::doPortsScan() {
+    m_port_index = 0;
+    m_ports.clear();
     QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
-    QStringList ports;
     for (const auto &port : availablePorts) {
-        ports.append(port.portName());
+        m_ports.append(port.portName());
     }
 #ifdef QT_DEBUG
     QString debug_port = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
-    ports.push_front(debug_port);
+    m_ports.push_front(debug_port);
 #endif
-    for (const auto &port : ports) {
-        LOG_INFO("test port: {}", port);
-        statusReport(100 * CONNECT_PORT / FINISH, QString("connect to port: %1").arg(port));
-        closeSerial();
-        m_serial = new QSerialPort(this);
-        m_serial->setPortName(port);
-        m_serial->setBaudRate(115200);
-        m_serial->setDataBits(static_cast<QSerialPort::DataBits>(8));
-        m_serial->setParity(QSerialPort::NoParity);
-        m_serial->setStopBits(QSerialPort::OneStop);
-        if (!m_serial->open(QIODevice::ReadWrite)) {
-            LOG_ERROR("error: {}", m_serial->errorString());
-            continue;
-        }
-        connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead, Qt::UniqueConnection);
-        sendEasyData("DD3C000310CDFF");
-        if (m_serial->bytesAvailable() > 0 || m_serial->waitForReadyRead(500)) {
-            QByteArray response_handshake = m_serial->readAll();
-            QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
-            if (response_handshake.contains(expected_handshake)) {
-                sendEasyData("DD3C000340CDFF");
-                m_serial->readAll();
-                m_serial->clear(QSerialPort::Input);
-                m_ready = true;
-                return true;
-            }
-        }
-    }
-    return false;
+}
+
+bool FormSerial::startProduceConnect() {
+    m_establish = false;
+    doPortsScan();
+    doProduceConnect();
+    return true;
 }
 
 bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
-    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
-    QStringList ports;
-    for (const auto &port : availablePorts) {
-        ports.append(port.portName());
-    }
-#ifdef QT_DEBUG
-    QString debug_port = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DEBUG_PORT);
-    ports.push_front(debug_port);
-#endif
-    for (const auto &port : ports) {
-        LOG_INFO("test port: {}", port);
-        statusReport(100 * CONNECT_PORT / FINISH, QString("connect to port: %1").arg(port));
-        closeSerial();
-        m_serial = new QSerialPort(this);
-        m_serial->setPortName(port);
-        m_serial->setBaudRate(115200);
-        m_serial->setDataBits(static_cast<QSerialPort::DataBits>(8));
-        m_serial->setParity(QSerialPort::NoParity);
-        m_serial->setStopBits(QSerialPort::OneStop);
-        if (!m_serial->open(QIODevice::ReadWrite)) {
-            LOG_ERROR("error: {}", m_serial->errorString());
-            continue;
-        }
-        connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead, Qt::UniqueConnection);
-        statusReport(100 * HANDSHAKE / FINISH, QString("%1 step [handshake]: start").arg(port));
-        m_serial->clear(QSerialPort::Input);
-        sendEasyData("DD3C000310CDFF");
-        statusReport(100 * HANDSHAKE / FINISH, QString("%1 step [handshake]: wait response").arg(port));
-        if (m_serial->bytesAvailable() > 0 || m_serial->waitForReadyRead(500)) {
-            QByteArray response_handshake = m_serial->readAll();
-            QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
-            LOG_INFO("cmd: DD3C000310CDFF -> {}", response_handshake.toHex().toUpper());
-            statusReport(100 * HANDSHAKE / FINISH, QString("%1 step [handshake]: check excepted").arg(port));
-            if (response_handshake.contains(expected_handshake)) {
-                if (F30_shown_mode == CFG_F30_MODE_DOUBLE) {
-                    statusReport(100 * DATA_REQUEST / FINISH, QString("%1 step [data 40 request]: start").arg(port));
-                    {
-                        sendEasyData("DD3C000368CDFF");
-                        QByteArray response;
-                        response += m_serial->readAll();
-                        while (m_serial->waitForReadyRead(50)) {
-                            response += m_serial->readAll();
-                        }
-                        doThresholdExtra(response);
-                    }
-                    {
-                        sendEasyData("DD3C000370CDFF");
-                        QByteArray response;
-                        response += m_serial->readAll();
-                        while (m_serial->waitForReadyRead(50)) {
-                            response += m_serial->readAll();
-                        }
-                        doBaselineExtra(response);
-                    }
-                    sendEasyData("DD3C000340CDFF");
-                } else if (F30_shown_mode == CFG_F30_MODE_SINGLE) {
-                    statusReport(100 * SET_INTEGRATION_TIME / FINISH,
-                                 QString("%1 step [set integration time]: check excepted").arg(port));
-                    sendEasyData("DD3C000622000005CDFF");
-                    m_serial->waitForReadyRead(500);
-                    QByteArray response = m_serial->readAll();
-                    QByteArray except = QByteArray::fromHex("DE3A000323CEFF");
-                    LOG_INFO("cmd: DD3C000622000005CDFF -> {}", response.toHex().toUpper());
-                    if (response == except) {
-                        statusReport(100 * DATA_REQUEST / FINISH,
-                                     QString("%1 step [data 30 request]: start").arg(port));
-                        sendEasyData("DD3C000330CDFF");
-                    }
-                }
-
-                m_serial->readAll();
-                m_serial->clear(QSerialPort::Input);
-                m_ready = true;
-                return true;
-            } else {
-                statusReport(100 * FRAME_CHECK / FINISH, QString("%1 step [frame check]: start").arg(port));
-                if (doFrameExtra(response_handshake)) {
-                    statusReport(100 * FRAME_CHECK / FINISH, QString("%1 step [frame check]: success.").arg(port));
-                    m_serial->readAll();
-                    m_serial->clear(QSerialPort::Input);
-                    m_ready = true;
-                    return true;
-                } else {
-                    statusReport(100 * FRAME_CHECK / FINISH, QString("%1 step [frame check]: fail!").arg(port));
-                }
-            }
-        } else {
-            statusReport(100 * HANDSHAKE / FINISH, QString("%1 step [handshake]: no response").arg(port));
-        }
-    }
-    return false;
+    m_establish = false;
+    m_easy_mode = F30_shown_mode;
+    doPortsScan();
+    doEasyConnect();
+    return true;
 }
 
-void FormSerial::doBaselineExtra(const QByteArray &data) {
+bool FormSerial::doBaselineExtra(const QByteArray &data) {
     const QByteArray header = QByteArray::fromHex("DE3A000671");
     const QByteArray tail = QByteArray::fromHex("CEFF");
     int headPos = data.indexOf(header);
     if (headPos < 0) {
         LOG_WARN("Baseline: not found header: DE3A000671");
-        return;
+        return false;
     }
 
     int tailPos = data.indexOf(tail, headPos + header.size());
     if (tailPos < 0) {
         LOG_WARN("Baseline: not found tail: CEFF");
-        return;
+        return false;
     }
 
     int payloadStart = headPos + header.size();
@@ -188,22 +159,23 @@ void FormSerial::doBaselineExtra(const QByteArray &data) {
     int value = (static_cast<quint8>(payload[0]) << 16) | static_cast<quint8>(payload[1]) << 8 |
                 static_cast<quint8>(payload[2]);
     emit sendOption({{"baseline", value}});
+    return true;
 }
 
-void FormSerial::doThresholdExtra(const QByteArray &data) {
+bool FormSerial::doThresholdExtra(const QByteArray &data) {
     const QByteArray header = QByteArray::fromHex("DE3A064569");
     const QByteArray tail = QByteArray::fromHex("CEFF");
 
     int headPos = data.indexOf(header);
     if (headPos < 0) {
         LOG_WARN("Threshold: not found header: DE3A064569");
-        return;
+        return false;
     }
 
     int tailPos = data.indexOf(tail, headPos + header.size());
     if (tailPos < 0) {
         LOG_WARN("Threshold: not found tail: CEFF");
-        return;
+        return false;
     }
 
     int payloadStart = headPos + header.size();
@@ -217,13 +189,12 @@ void FormSerial::doThresholdExtra(const QByteArray &data) {
         values.append(v);
     }
     emit sendThreshold(true, values);
+    return true;
 }
 
 void FormSerial::stopFSeriesConnect() {
-    m_ready = false;
-
     if (m_serial) {
-        disconnect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+        disconnect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onProduceModeReadyRead);
         m_serial->clear(QSerialPort::AllDirections);
         QThread::msleep(50);
         sendExpertData("DD3C000360CDFF");
@@ -235,6 +206,124 @@ void FormSerial::stopFSeriesConnect() {
     }
 
     closeSerial();
+}
+
+void FormSerial::processEasyConnect() {
+    if (m_timer_easy->isActive()) {
+        m_timer_easy->stop();
+    }
+    switch (m_step_easy) {
+        case EASY_CONNECT_PORT:
+            break;
+        case EASY_HANDSHAKE: {
+            QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
+            if (m_easy_buffer.contains(expected_handshake)) {
+                LOG_INFO("handshake ok, cmd: DD3C000310CDFF -> {}", m_easy_buffer.toHex().toUpper());
+                m_easy_buffer.clear();
+                if (m_easy_mode == CFG_F30_MODE_DOUBLE) {
+                    statusReport(100 * EASY_MODE_DOUBLE_DO_THRESHOLD / EASY_FINISH,
+                                 QString("step [mode double do threshold]: wait response"));
+                    m_step_easy = EASY_MODE_DOUBLE_DO_THRESHOLD;
+                    m_timer_easy->start(1000);
+                    sendEasyData("DD3C000368CDFF");
+                } else {
+                    statusReport(100 * EASY_SET_INTEGRATION_TIME / EASY_FINISH,
+                                 QString("step [set integration time]: wait response"));
+                    m_step_easy = EASY_SET_INTEGRATION_TIME;
+                    m_timer_easy->start(1000);
+                    sendEasyData("DD3C000622000005CDFF");
+                }
+            } else {
+                onEasyModeTimeout();
+            }
+            break;
+        }
+        case EASY_MODE_DOUBLE_DO_THRESHOLD: {
+            statusReport(100 * EASY_MODE_DOUBLE_DO_THRESHOLD / EASY_FINISH,
+                         QString("step [mode double do threshold]: extra"));
+            if (doThresholdExtra(m_easy_buffer)) {
+                m_easy_buffer.clear();
+                statusReport(100 * EASY_MODE_DOUBLE_DO_BASELINE / EASY_FINISH,
+                             QString("step [mode double do baseline]: wait response"));
+                m_step_easy = EASY_MODE_DOUBLE_DO_BASELINE;
+                m_timer_easy->start(1000);
+                sendEasyData("DD3C000370CDFF");
+            }
+            break;
+        }
+        case EASY_MODE_DOUBLE_DO_BASELINE: {
+            statusReport(100 * EASY_MODE_DOUBLE_DO_BASELINE / EASY_FINISH,
+                         QString("step [mode double do baseline]: extra"));
+            if (doBaselineExtra(m_easy_buffer)) {
+                m_easy_buffer.clear();
+                statusReport(100 * EASY_DATA_REQUEST / EASY_FINISH, QString("step [data 40 request]: wait response"));
+                m_step_easy = EASY_DATA_REQUEST;
+                m_timer_easy->start(1000);
+                sendEasyData("DD3C000340CDFF");
+            }
+            break;
+        }
+        case EASY_SET_INTEGRATION_TIME: {
+            statusReport(100 * EASY_SET_INTEGRATION_TIME / PRODUCE_FINISH,
+                         QString("step [set integration time]: check response"));
+            QByteArray except_integration = QByteArray::fromHex("DE3A000323CEFF");
+            if (m_easy_buffer.contains(except_integration)) {
+                statusReport(100 * EASY_DATA_REQUEST / EASY_FINISH, QString("step [data 30 request]: wait response"));
+                m_step_easy = EASY_DATA_REQUEST;
+                m_timer_easy->start(1000);
+                sendEasyData("DD3C000330CDFF");
+            }
+            break;
+        }
+        case EASY_DATA_REQUEST: {
+            if (doFrameExtra(m_easy_buffer)) {
+                statusReport(100 * EASY_FINISH / EASY_FINISH, QString("step [data request]: established"));
+                m_step_easy = EASY_FINISH;
+            }
+            break;
+        }
+        case EASY_FINISH: {
+            if (!m_establish) {
+                emit connectEasyModeEstablished();
+                m_establish = true;
+            }
+            break;
+        }
+    }
+}
+
+void FormSerial::processProduceConnect(const QByteArray &frame) {
+    if (m_timer_produce->isActive()) {
+        m_timer_produce->stop();
+    }
+
+    switch (m_step_produce) {
+        case PRODUCE_CONNECT_PORT:
+            break;
+        case PRODUCE_HANDSHAKE: {
+            QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
+            if (frame.contains(expected_handshake)) {
+                LOG_INFO("cmd: DD3C000310CDFF -> {}", frame.toHex().toUpper());
+                statusReport(100 * PRODUCE_DATA_REQUEST / PRODUCE_FINISH,
+                             QString("step [data 40 request]: wait response"));
+                m_step_produce = PRODUCE_DATA_REQUEST;
+                m_serial->write(QByteArray::fromHex("DD3C000340CDFF"));
+            } else {
+                onProduceModeTimeout();
+            }
+            break;
+        }
+        case PRODUCE_DATA_REQUEST:
+            statusReport(100 * PRODUCE_FINISH / PRODUCE_FINISH, QString("step [data request]: established"));
+            m_step_produce = PRODUCE_FINISH;
+            break;
+        case PRODUCE_FINISH:
+            if (!m_establish) {
+                m_establish = true;
+                emit connectProduceModeEstablished();
+            }
+            break;
+    }
 }
 
 void FormSerial::sendEasyData(const QString &text) {
@@ -271,6 +360,7 @@ void FormSerial::sendEasyData(const QString &text) {
 }
 
 void FormSerial::updateFrameTypes(const QString &algorithm) {
+    m_algorithm = algorithm;
     m_frameTypes.clear();
     if (m_algorithm == "F15_curves") {
         QStringList groups = SETTING_FRAME_F15Curves_GROUPS();
@@ -371,7 +461,7 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
             }
         } else {
             m_frameTypes = {
-                {"F30_31", QByteArray::fromHex("DE3A064331"), QByteArray::fromHex("CEFF"), 1607},
+                {"F30_31", QByteArray::fromHex("DE3A064531"), QByteArray::fromHex("CEFF"), 1609},
             };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F30Single_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
@@ -450,27 +540,9 @@ void FormSerial::onChangeFrameType(const QString &algorithm) {
 }
 
 bool FormSerial::doFrameExtra(const QByteArray &data) {
-    m_recv_count += data.size();
-    ui->labelRecvCount->setText(QString("recv: %1").arg(m_recv_count));
-    m_buffer.append(data);
-
-    QString to_show = data;
-    if (m_ini.hex_display) {
-        to_show.clear();
-        for (int i = 0; i < data.length(); ++i) {
-            to_show.append(QString("%1 ").arg((unsigned char)data[i], 2, 16, QChar('0')).toUpper());
-        }
-        ui->txtRecv->setUpdatesEnabled(false);
-        ui->txtRecv->appendPlainText(to_show);
-        ui->txtRecv->setUpdatesEnabled(true);
-        if (ui->txtRecv->document()->characterCount() > 200000) {
-            ui->txtRecv->clear();
-        }
-    }
-
     while (true) {
         if (m_frameTypes.isEmpty()) {
-            m_buffer.clear();
+            m_easy_buffer.clear();
             return false;
         }
         int firstHeaderIdx = -1;
@@ -478,7 +550,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
 
         // 查找所有已知帧头
         for (const auto &type : m_frameTypes) {
-            int idx = m_buffer.indexOf(type.header);
+            int idx = m_easy_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
                 firstHeaderIdx = idx;
                 current_frame = type;
@@ -487,9 +559,9 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
 
         // 没有帧头，清理或等待
         if (firstHeaderIdx == -1) {
-            if (m_buffer.size() > 10 * 1024) {
+            if (m_easy_buffer.size() > 10 * 1024) {
                 LOG_WARN("Buffer overflow, clearing");
-                m_buffer.clear();
+                m_easy_buffer.clear();
             }
             break;
         }
@@ -497,27 +569,27 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
         // 丢弃无效数据
         if (firstHeaderIdx > 0) {
             LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
-            m_buffer.remove(0, firstHeaderIdx);
+            m_easy_buffer.remove(0, firstHeaderIdx);
         }
 
         if (current_frame.length != 0) {
             // 长度固定帧
-            if (m_buffer.size() < current_frame.length) break;
+            if (m_easy_buffer.size() < current_frame.length) break;
 
-            QByteArray frame_candidate = m_buffer.left(current_frame.length);
+            QByteArray frame_candidate = m_easy_buffer.left(current_frame.length);
             if (!frame_candidate.endsWith(current_frame.footer)) {
                 LOG_WARN("Invalid footer (fixed length), removing header only");
-                m_buffer.remove(0, current_frame.header.size());
+                m_easy_buffer.remove(0, current_frame.header.size());
                 continue;
             }
 
             LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
             handleFrame(current_frame.name, frame_candidate);
-            m_buffer.remove(0, current_frame.length);
+            m_easy_buffer.remove(0, current_frame.length);
             return true;
         } else {
             // 长度不固定：查找 footer 位置
-            int footerIdx = m_buffer.indexOf(current_frame.footer, current_frame.header.size());
+            int footerIdx = m_easy_buffer.indexOf(current_frame.footer, current_frame.header.size());
             if (footerIdx == -1) {
                 // 没找到帧尾，等待更多数据
                 break;
@@ -525,21 +597,21 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
 
             int frame_len = footerIdx + current_frame.footer.size();
             QByteArray frame_candidate;
-            frame_candidate = m_buffer.left(frame_len);
+            frame_candidate = m_easy_buffer.left(frame_len);
 
             LOG_INFO("Variable-length frame matched: {}, size = {}", current_frame.name.toStdString(), frame_len);
             handleFrame(current_frame.name, frame_candidate);
 
-            m_buffer.remove(0, frame_len);
+            m_easy_buffer.remove(0, frame_len);
             return true;
         }
     }
     return false;
 }
 
-void FormSerial::onSimulateRecv(const QByteArray &bytes) { doFrameExtra(bytes); }
+void FormSerial::onSimulateRecv(const QByteArray &bytes) { emit pushParserData(bytes); }
 
-void FormSerial::clearData() { m_buffer.clear(); }
+void FormSerial::clearData() { m_easy_buffer.clear(); }
 
 void FormSerial::closeEvent(QCloseEvent *event) {
     closeSerial();
@@ -582,9 +654,37 @@ void FormSerial::initMultSend() {
     ui->labelPage->setText("1 / 6");
 }
 
+void FormSerial::onEasyModeTimeout() {
+    LOG_WARN("easy mode timeout, switch port");
+    if (m_serial) {
+        m_serial->close();
+    }
+    ++m_port_index;
+    QTimer::singleShot(0, this, &FormSerial::doEasyConnect);
+}
+
+void FormSerial::onProduceModeTimeout() {
+    LOG_WARN("produce mode timeout, switch port");
+    if (m_serial) {
+        m_serial->close();
+    }
+    ++m_port_index;
+    QTimer::singleShot(0, this, &FormSerial::doProduceConnect);
+}
+
 void FormSerial::init() {
+    m_timer_produce = new QTimer(this);
+    m_timer_produce->setSingleShot(true);
+
+    connect(m_timer_produce, &QTimer::timeout, this, &FormSerial::onProduceModeTimeout);
+
+    m_timer_easy = new QTimer(this);
+    m_timer_easy->setSingleShot(true);
+
+    connect(m_timer_easy, &QTimer::timeout, this, &FormSerial::onEasyModeTimeout);
     // ini
     getINI();
+
     // init port
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
@@ -760,11 +860,9 @@ void FormSerial::on_btnSerialSwitch_clicked() {
     m_switch = !m_switch;
     if (m_switch) {
         // open serial
-        m_ready = true;
         openSerial();
     } else {
         // close serial
-        m_ready = false;
         closeSerial();
         ui->checkBoxScheduledDelivery->setChecked(false);
         on_checkBoxScheduledDelivery_clicked();
@@ -810,7 +908,7 @@ void FormSerial::openSerial() {
         return;
     }
 
-    connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onReadyRead);
+    connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onExpertModeReadyRead);
 
     ui->btnSerialSwitch->setText("To Close");
     ui->btnSerialSwitch->setStyleSheet("background-color: green; color: white;");
@@ -825,13 +923,14 @@ void FormSerial::closeSerial() {
         m_serial->disconnect(this);
 
         if (m_serial->isOpen()) {
+            m_serial->clear();
             m_serial->close();
         }
         delete m_serial;
         m_serial = nullptr;
     }
 
-    ui->btnSerialSwitch->setText("To Open");
+    ui->btnSerialSwitch->setText(tr("To Open"));
     ui->btnSerialSwitch->setStyleSheet("background-color: white; color: black;");
 }
 
@@ -880,6 +979,7 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
             }
         }
     } else if (m_algorithm == "F30_single") {
+        m_frame.data31 = data;
         emit recv2PlotF30(m_frame, {});
     } else if (m_algorithm == "F15_curves") {
         if (type == "F15_31") {
@@ -930,17 +1030,9 @@ void FormSerial::loadPage(int page) {
                                                      QString("page_%1").arg(page)));
 }
 
-void FormSerial::onReadyRead() {
-    if (!m_ready) {
-        return;
-    }
+void FormSerial::onExpertModeReadyRead() {
     QByteArray data = m_serial->readAll();
     emit pushParserData(data);
-    if (m_call_produce_func) {
-        if (!m_call_produce_func(data)) {
-            m_call_produce_func = nullptr;
-        }
-    }
     if (m_ini.hex_display) {
         QString text = data.toHex(' ').toUpper();
         ui->txtRecv->setUpdatesEnabled(false);
@@ -955,6 +1047,29 @@ void FormSerial::onReadyRead() {
             c.select(QTextCursor::BlockUnderCursor);
             c.removeSelectedText();
             c.deleteChar();
+        }
+    }
+}
+
+void FormSerial::onEasyModeReadyRead() {
+    QByteArray data = m_serial->readAll();
+    m_easy_buffer.append(data);
+    processEasyConnect();
+    if (m_establish) {
+        emit pushParserData(data);
+    }
+}
+
+void FormSerial::onProduceModeReadyRead() {
+    QByteArray data = m_serial->readAll();
+    processProduceConnect(data);
+    if (!m_establish) {
+        return;
+    }
+    emit pushParserData(data);
+    if (m_call_produce_func) {
+        if (!m_call_produce_func(data)) {
+            m_call_produce_func = nullptr;
         }
     }
 }
