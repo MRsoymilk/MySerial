@@ -59,7 +59,7 @@ void MainWindow::initAlgorithm() {
     const QList<QAction *> actions = ui->menuAlgorithm->actions();
     for (QAction *act : actions) {
         act->setCheckable(true);
-        if (act->text() == algorithm) {
+        if (COMPARE_CaseInsensitive(act->text(), algorithm)) {
             menuAlgorithmSelect(act);
         }
     }
@@ -71,7 +71,7 @@ void MainWindow::initMode() {
     const QList<QAction *> actions = ui->menuMode->actions();
     for (QAction *act : actions) {
         act->setCheckable(true);
-        if (act->text() == mode) {
+        if (COMPARE_CaseInsensitive(act->text(), mode)) {
             menuModeSelect(act);
         }
     }
