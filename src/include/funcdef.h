@@ -104,7 +104,7 @@
 
 #define TO_STR(obj) QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Compact))
 #define TO_STR_INDENTED(obj) QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Indented))
-
+#define COMPARE_CaseInsensitive(a, b) QString::compare(a, b, Qt::CaseInsensitive) == 0
 // FUNCTION ===================================================================
 
 #endif

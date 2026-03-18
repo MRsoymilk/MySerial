@@ -716,7 +716,7 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks) {
     }
 
     int xPeak = maxPeak.x();
-    if (m_algorithm == "F15_curves") {
+    if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_CURVES)) {
         // 在曲线33中找到与该 X 坐标最接近的点
         double y = 0;
         if (m_series33->count() > xPeak) {
@@ -728,11 +728,11 @@ void FormPlot::peakTrajectory(const QVector<QPointF> &peaks) {
         if (m_trajectory) {
             m_trajectory->appendPeak(y);
         }
-    } else if (m_algorithm == "F15_single") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_SINGLE)) {
         m_trajectory->appendPeak(maxPeak.rx());
-    } else if (m_algorithm == "F30_single") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F30_SINGLE)) {
         m_trajectory->appendPeak(maxPeak.rx());
-    } else if (m_algorithm == "F30_curves") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F30_CURVES)) {
         // 在曲线33中找到与该 X 坐标最接近的点
         double y = 0;
         if (m_series33->count() + m_offset > xPeak) {
@@ -762,7 +762,7 @@ void FormPlot::callFindPeak() {
         auto test_33 = m_series33->points();
         for (const auto &pt : peaks31) {
             m_peaks->append(pt);
-            if (m_algorithm == "F30_curves") {
+            if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F30_CURVES)) {
                 // 在曲线33中找到与该 X 坐标最接近的点
                 double y = 0;
                 if (m_series33->count() > pt.x() - m_offset) {

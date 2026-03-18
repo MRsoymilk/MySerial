@@ -334,16 +334,16 @@ void ThreadWorker::processDataF15(const FRAME &frame, const double &temperature)
     int numPoints = 0;
     int numPointsRaw = 0;
 
-    if (m_algorithm == "F15_curves") {
+    if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_CURVES)) {
         processF15Curve31(frame.data31, v_voltage31, raw31, yMin, yMax);
         processF15Curve33(frame.data33, v_voltage33, raw33, yMin, yMax);
-    } else if (m_algorithm == "F15_single") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_SINGLE)) {
         processF15Curve31(frame.data31, v_voltage31, raw31, yMin, yMax);
     }
 
     CURVE curve31;
     CURVE curve33;
-    if (m_algorithm == "F15_single") {
+    if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_SINGLE)) {
         for (int i = 0; i < v_voltage31.size(); ++i) {
             curve31.data.push_back({static_cast<double>(i), v_voltage31[i]});
             curve31.y_min = std::min(curve31.y_min, v_voltage31[i]);

@@ -132,7 +132,14 @@ void MainWindow::setTheme(const QString &theme) {
 void MainWindow::setAlgorithm(const QString &algorithm) {
     qApp->setProperty("algorithm", algorithm);
     SETTING_CONFIG_SET(CFG_GROUP_PROGRAM, CFG_PROGRAM_ALGORITHM, algorithm);
-
+    const QList<QAction *> actions = ui->menuAlgorithm->actions();
+    for (QAction *act : actions) {
+        if (COMPARE_CaseInsensitive(act->text(), algorithm)) {
+            act->setChecked(true);
+        } else {
+            act->setChecked(false);
+        }
+    }
     if (m_formEasy) {
         m_formEasy->setAlgorithm(algorithm);
     }
@@ -235,14 +242,6 @@ void MainWindow::menuThemeSelect(QAction *selectedTheme) {
 void MainWindow::menuAlgorithmSelect(QAction *selectedAlgorithm) {
     QString algorithm = selectedAlgorithm->text();
     setAlgorithm(algorithm);
-    const QList<QAction *> actions = ui->menuAlgorithm->actions();
-    for (QAction *act : actions) {
-        if (act == selectedAlgorithm) {
-            act->setChecked(true);
-        } else {
-            act->setChecked(false);
-        }
-    }
 }
 
 void MainWindow::menuModeSelect(QAction *selectedMode) {

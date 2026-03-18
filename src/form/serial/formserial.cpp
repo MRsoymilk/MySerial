@@ -102,9 +102,11 @@ void FormSerial::doEasyConnect() {
 
     m_easy_buffer.clear();
 
+    LOG_INFO(QString("%1 step [handshake]: start").arg(port));
     statusReport(100 * EASY_HANDSHAKE / EASY_FINISH, QString("%1 step [handshake]: start").arg(port));
     m_step_easy = EASY_HANDSHAKE;
     m_serial->write(QByteArray::fromHex("DD3C000310CDFF"));
+    LOG_INFO(QString("%1 step [handshake]: wait response").arg(port));
     statusReport(100 * EASY_HANDSHAKE / EASY_FINISH, QString("%1 step [handshake]: wait response").arg(port));
     m_timer_easy->start(1000);
 }
@@ -221,12 +223,14 @@ void FormSerial::processEasyConnect() {
                 LOG_INFO("handshake ok, cmd: DD3C000310CDFF -> {}", m_easy_buffer.toHex().toUpper());
                 m_easy_buffer.clear();
                 if (m_easy_mode == CFG_F30_MODE_DOUBLE) {
+                    LOG_INFO("step [mode double do threshold]: wait response");
                     statusReport(100 * EASY_MODE_DOUBLE_DO_THRESHOLD / EASY_FINISH,
                                  QString("step [mode double do threshold]: wait response"));
                     m_step_easy = EASY_MODE_DOUBLE_DO_THRESHOLD;
                     m_timer_easy->start(1000);
                     sendEasyData("DD3C000368CDFF");
                 } else {
+                    LOG_INFO("step [set integration time]: wait response");
                     statusReport(100 * EASY_SET_INTEGRATION_TIME / EASY_FINISH,
                                  QString("step [set integration time]: wait response"));
                     m_step_easy = EASY_SET_INTEGRATION_TIME;
@@ -239,10 +243,12 @@ void FormSerial::processEasyConnect() {
             break;
         }
         case EASY_MODE_DOUBLE_DO_THRESHOLD: {
+            LOG_INFO("step [mode double do threshold]: extra");
             statusReport(100 * EASY_MODE_DOUBLE_DO_THRESHOLD / EASY_FINISH,
                          QString("step [mode double do threshold]: extra"));
             if (doThresholdExtra(m_easy_buffer)) {
                 m_easy_buffer.clear();
+                LOG_INFO("step [mode double do baseline]: wait response");
                 statusReport(100 * EASY_MODE_DOUBLE_DO_BASELINE / EASY_FINISH,
                              QString("step [mode double do baseline]: wait response"));
                 m_step_easy = EASY_MODE_DOUBLE_DO_BASELINE;
@@ -252,10 +258,12 @@ void FormSerial::processEasyConnect() {
             break;
         }
         case EASY_MODE_DOUBLE_DO_BASELINE: {
+            LOG_INFO("step [mode double do baseline]: extra");
             statusReport(100 * EASY_MODE_DOUBLE_DO_BASELINE / EASY_FINISH,
                          QString("step [mode double do baseline]: extra"));
             if (doBaselineExtra(m_easy_buffer)) {
                 m_easy_buffer.clear();
+                LOG_INFO("step [data 40 request]: wait response");
                 statusReport(100 * EASY_DATA_REQUEST / EASY_FINISH, QString("step [data 40 request]: wait response"));
                 m_step_easy = EASY_DATA_REQUEST;
                 m_timer_easy->start(1000);
@@ -264,10 +272,12 @@ void FormSerial::processEasyConnect() {
             break;
         }
         case EASY_SET_INTEGRATION_TIME: {
+            LOG_INFO("step [set integration time]: check response");
             statusReport(100 * EASY_SET_INTEGRATION_TIME / PRODUCE_FINISH,
                          QString("step [set integration time]: check response"));
             QByteArray except_integration = QByteArray::fromHex("DE3A000323CEFF");
             if (m_easy_buffer.contains(except_integration)) {
+                LOG_INFO("step [data 30 request]: wait response");
                 statusReport(100 * EASY_DATA_REQUEST / EASY_FINISH, QString("step [data 30 request]: wait response"));
                 m_step_easy = EASY_DATA_REQUEST;
                 m_timer_easy->start(1000);
@@ -277,6 +287,7 @@ void FormSerial::processEasyConnect() {
         }
         case EASY_DATA_REQUEST: {
             if (doFrameExtra(m_easy_buffer)) {
+                LOG_INFO("step [data request]: established");
                 statusReport(100 * EASY_FINISH / EASY_FINISH, QString("step [data request]: established"));
                 m_step_easy = EASY_FINISH;
             }
@@ -303,7 +314,7 @@ void FormSerial::processProduceConnect(const QByteArray &frame) {
         case PRODUCE_HANDSHAKE: {
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
             if (frame.contains(expected_handshake)) {
-                LOG_INFO("cmd: DD3C000310CDFF -> {}", frame.toHex().toUpper());
+                LOG_INFO("handshake ok, cmd: DD3C000310CDFF -> {}", frame.toHex().toUpper());
                 statusReport(100 * PRODUCE_DATA_REQUEST / PRODUCE_FINISH,
                              QString("step [data 40 request]: wait response"));
                 m_step_produce = PRODUCE_DATA_REQUEST;
@@ -314,6 +325,7 @@ void FormSerial::processProduceConnect(const QByteArray &frame) {
             break;
         }
         case PRODUCE_DATA_REQUEST:
+            LOG_INFO("step [data request]: established");
             statusReport(100 * PRODUCE_FINISH / PRODUCE_FINISH, QString("step [data request]: established"));
             m_step_produce = PRODUCE_FINISH;
             break;
@@ -362,7 +374,7 @@ void FormSerial::sendEasyData(const QString &text) {
 void FormSerial::updateFrameTypes(const QString &algorithm) {
     m_algorithm = algorithm;
     m_frameTypes.clear();
-    if (m_algorithm == "F15_curves") {
+    if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_CURVES)) {
         QStringList groups = SETTING_FRAME_F15Curves_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -384,7 +396,7 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
                 SETTING_FRAME_F15Curves_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == "F15_single") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_SINGLE)) {
         QStringList groups = SETTING_FRAME_F15Single_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -405,7 +417,7 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
                 SETTING_FRAME_F15Single_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == "Play_mpu6050") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, "Play_mpu6050")) {
         QStringList groups = SETTING_FRAME_PLAY_MPU6050_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -426,7 +438,7 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
                 SETTING_FRAME_PLAY_MPU6050_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == "F30_curves") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F30_CURVES)) {
         QStringList groups = SETTING_FRAME_F30Curves_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -448,7 +460,7 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
                 SETTING_FRAME_F30Curves_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == "F30_single") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F30_SINGLE)) {
         QStringList groups = SETTING_FRAME_F30Single_GROUPS();
         if (!groups.empty()) {
             for (const auto &g : groups) {
@@ -469,7 +481,7 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
                 SETTING_FRAME_F30Single_SET(frame.name, FRAME_LENGTH, QString::number(frame.length));
             }
         }
-    } else if (m_algorithm == "LLC_curves") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, "LLC_curves")) {
         QStringList groups = SETTING_FRAME_LLC_GROUPS();
         for (const auto &g : groups) {
             FrameType frame;
@@ -950,7 +962,7 @@ void FormSerial::on_cBoxPortName_activated(int index) {
 }
 
 void FormSerial::handleFrame(const QString &type, const QByteArray &data, const QByteArray &temp) {
-    if (m_algorithm == "F30_curves") {
+    if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F30_CURVES)) {
         if (type == "F30_31") {
             m_frame.data31 = data;
         } else if (type == "F30_33") {
@@ -978,10 +990,10 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
                 m_frame.Clear();
             }
         }
-    } else if (m_algorithm == "F30_single") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F30_SINGLE)) {
         m_frame.data31 = data;
         emit recv2PlotF30(m_frame, {});
-    } else if (m_algorithm == "F15_curves") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_CURVES)) {
         if (type == "F15_31") {
             m_frame.data31 = data;
         } else if (type == "F15_33") {
@@ -991,13 +1003,13 @@ void FormSerial::handleFrame(const QString &type, const QByteArray &data, const 
                 m_frame.Clear();
             }
         }
-    } else if (m_algorithm == "F15_single") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, CFG_ALGORITHM_F15_SINGLE)) {
         if (type == "F15_31") {
             emit recv2PlotF15(m_frame, {});
         }
-    } else if (m_algorithm == "Play_mpu6050") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, "Play_mpu6050")) {
         emit recv2MPU(data);
-    } else if (m_algorithm == "LLC_curves") {
+    } else if (COMPARE_CaseInsensitive(m_algorithm, "LLC_curves")) {
         if (type == "F30_31") {
             m_frame.data31 = data;
         } else if (type == "F30_33") {

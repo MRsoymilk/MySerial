@@ -17,19 +17,29 @@ int main(int argc, char *argv[]) {
     parser.addHelpOption();
 
     QCommandLineOption option_mode("mode", "Run mode: easy | produce | expert", "mode");
+    QCommandLineOption option_algorithm("algorithm", "Run algorithm: F15_single | F15_curves | F30_single | F30_curves");
 
     parser.addOption(option_mode);
+    parser.addOption(option_algorithm);
     parser.process(a);
 
     QString mode = parser.value(option_mode).toLower();
-
     if (mode.isEmpty()) {
         mode = "expert";
     }
-
     if (mode != "easy" && mode != "produce" && mode != "expert") {
         QMessageBox::warning(nullptr, TITLE_WARNING, QObject::tr("Invalid mode! Use easy/produce/expert"));
         LOG_WARN("Invalid mode: {}", mode);
+        return 0;
+    }
+
+    QString algorithm = parser.value(option_algorithm);
+    if(algorithm.isEmpty()) {
+        algorithm = "F30_curves";
+    }
+    if(algorithm != "F15_single" && algorithm != "F15_curves" && algorithm != "F30_single" && algorithm != "F30_curves") {
+        QMessageBox::warning(nullptr, TITLE_WARNING, QObject::tr("Invalid algorithm! Use F15_single/F15_curves/F30_single/F30_curves"));
+        LOG_WARN("Invalid algorithm: {}", algorithm);
         return 0;
     }
 
@@ -46,6 +56,7 @@ int main(int argc, char *argv[]) {
 
     MainWindow w;
     w.setMode(mode);
+    w.setAlgorithm(algorithm);
     w.show();
 
     return a.exec();

@@ -69,7 +69,6 @@ void FormSetting::on_radioButtonUseSingle_clicked(bool checked) {
 void FormSetting::on_radioButtonUseDouble_clicked(bool checked) {
     if (checked) {
         SETTING_CONFIG_SET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
-        on_tBtnLoadThreshold_clicked();
     }
 }
 
