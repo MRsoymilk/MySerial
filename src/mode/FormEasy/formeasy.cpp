@@ -14,7 +14,6 @@
 #include "../form/plot/PointsTracker/pointstracker.h"
 #include "../form/plot/SignalNoiseRatio/signalnoiseratio.h"
 #include "../form/serial/formserial.h"
-#include "../form/setting/formsetting.h"
 #include "DraggableLine/draggableline.h"
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
@@ -258,9 +257,6 @@ void FormEasy::init() {
     m_darkSpectrum = new DarkSpectrum;
     m_darkSpectrum->hide();
 
-    m_setting = new FormSetting;
-    m_setting->hide();
-
     initAxisControl();
     initChart();
     initConnectInfo();
@@ -289,9 +285,9 @@ void FormEasy::init() {
     connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData, Qt::QueuedConnection);
 
     connect(m_worker, &ThreadWorker::plotReady4k, this, &FormEasy::updatePlot4k, Qt::QueuedConnection);
-    connect(m_setting, &FormSetting::sendThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold);
+    connect(this, &FormEasy::recvThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold);
+    connect(this, &FormEasy::recvThresholdOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption);
     connect(this, &FormEasy::sendOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption);
-    connect(m_setting, &FormSetting::sendThresholdOption, m_worker, &ThreadWorker::onUseLoadedThreadsholdOption);
 
     connect(formSerial, &FormSerial::sendThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold,
             Qt::QueuedConnection);
@@ -319,10 +315,6 @@ void FormEasy::init() {
     connect(m_fourierTransform, &FourierTransform::windowClose, this, [this]() {
         m_enableFourier = false;
         ui->tBtnFourier->setChecked(false);
-    });
-    connect(m_setting, &FormSetting::windowClose, this, [this]() {
-        m_enableSetting = false;
-        ui->tBtnSetting->setChecked(false);
     });
 }
 
@@ -533,7 +525,6 @@ void FormEasy::closeEvent(QCloseEvent *event) {
     m_derivation->close();
     m_snr->close();
     m_accumulate->close();
-    m_setting->close();
     m_pointsTracker->close();
     m_darkSpectrum->close();
 }
@@ -804,11 +795,6 @@ void FormEasy::doDarkSpectrum() {
     m_enableDarkSpectrum = !m_enableDarkSpectrum;
     m_darkSpectrum->setVisible(m_enableDarkSpectrum);
     m_tBtnDarkSpectrum->setChecked(m_enableDarkSpectrum);
-}
-
-void FormEasy::on_tBtnSetting_clicked() {
-    m_enableSetting = !m_enableSetting;
-    m_setting->setVisible(m_enableSetting);
 }
 
 void FormEasy::on_tBtnAxisY_clicked() {

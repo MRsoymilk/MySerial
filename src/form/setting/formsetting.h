@@ -24,6 +24,7 @@ signals:
     void windowClose();
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendThresholdOption(const QJsonObject &option);
+    void fullyControl(bool isUse);
 
 private slots:
     void on_radioButtonUseSingle_clicked(bool checked);
@@ -32,6 +33,7 @@ private slots:
     void on_checkBoxEnableInterpolation_clicked();
     void on_checkBoxEnableDebug_checkStateChanged(const Qt::CheckState &state);
     void on_checkBoxEnableLocalThreshold_clicked();
+    void on_checkBoxFullyMode_clicked();
 
 private:
     void init();

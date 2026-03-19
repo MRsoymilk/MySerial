@@ -43,6 +43,8 @@ public:
 signals:
     void toHistory(const MY_DATA &my_data);
     void sendOption(const QJsonObject &option);
+    void recvThreshold(bool isUse, const QList<double> &values);
+    void recvThresholdOption(const QJsonObject &option);
 
 public slots:
     void updatePlot4k(const MY_DATA &my_data, bool record);
@@ -62,7 +64,6 @@ private slots:
     void on_spinBoxIntegrationTime_valueChanged(int val);
     void on_tBtnFourier_clicked();
     void on_tBtnAccumulate_clicked();
-    void on_tBtnSetting_clicked();
     void on_tBtnAxisY_clicked();
     void on_tBtnToVoltage_clicked();
     void on_spinBoxYStart_valueChanged(int val);
@@ -137,7 +138,7 @@ private:
     Derivation *m_derivation = nullptr;
     SignalNoiseRatio *m_snr = nullptr;
     Accumulate *m_accumulate = nullptr;
-    FormSetting *m_setting = nullptr;
+    // FormSetting *m_setting = nullptr;
     PointsTracker *m_pointsTracker = nullptr;
     DarkSpectrum *m_darkSpectrum = nullptr;
     PeakTrajectory *m_trajectory;

@@ -47,9 +47,6 @@ void FormExpert::retranslateUI() {
     if (formLog) {
         formLog->retranslateUI();
     }
-    if (formSetting) {
-        formSetting->retranslateUI();
-    }
     if (formAutoUpdate) {
         formAutoUpdate->retranslateUI();
     }
@@ -66,17 +63,17 @@ void FormExpert::setAlgorithm(const QString &algorithm) {
 
 void FormExpert::initToolbar() {
     QList<QToolButton *> buttonList = {
-        ui->btnSerial, ui->btnLog, ui->btnPlot, ui->btnUpdate, ui->btnSetting, ui->btnExternal,
+        ui->btnSerial, ui->btnLog, ui->btnPlot, ui->btnUpdate, ui->btnExternal,
     };
 
     QMap<QToolButton *, QString> onIcons = {
         {ui->btnSerial, "usb-on"},    {ui->btnLog, "log-on"},         {ui->btnPlot, "plot-on"},
-        {ui->btnUpdate, "update-on"}, {ui->btnSetting, "setting-on"}, {ui->btnExternal, "external-on"},
+        {ui->btnUpdate, "update-on"}, {ui->btnExternal, "external-on"},
     };
 
     QMap<QToolButton *, QString> offIcons = {
         {ui->btnSerial, "usb-off"},    {ui->btnLog, "log-off"},         {ui->btnPlot, "plot-off"},
-        {ui->btnUpdate, "update-off"}, {ui->btnSetting, "setting-off"}, {ui->btnExternal, "external-off"},
+        {ui->btnUpdate, "update-off"}, {ui->btnExternal, "external-off"},
     };
 
     for (QToolButton *btn : buttonList) {
@@ -132,9 +129,6 @@ void FormExpert::initStackWidget() {
     formLog = new FormLog(this);
     ui->stackedWidget->addWidget(formLog);
 
-    formSetting = new FormSetting(this);
-    ui->stackedWidget->addWidget(formSetting);
-
     formExternal = new FormExternal(this);
     ui->stackedWidget->addWidget(formExternal);
 
@@ -149,13 +143,11 @@ void FormExpert::initStackWidget() {
     QShortcut *shortcut_Serial = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_1), this);
     QShortcut *shortcut_Plot = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_2), this);
     QShortcut *shortcut_Log = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_3), this);
-    QShortcut *shortcut_Setting = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_4), this);
     QShortcut *shortcut_Play = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_5), this);
     QShortcut *shortcut_External = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_6), this);
     connect(shortcut_Serial, &QShortcut::activated, this, [this]() { ui->btnSerial->click(); });
     connect(shortcut_Plot, &QShortcut::activated, this, [this]() { ui->btnPlot->click(); });
     connect(shortcut_Log, &QShortcut::activated, this, [this]() { ui->btnLog->click(); });
-    connect(shortcut_Setting, &QShortcut::activated, this, [this]() { ui->btnSetting->click(); });
     connect(shortcut_Play, &QShortcut::activated, this, [this]() { ui->stackedWidget->setCurrentWidget(playMPU6050); });
     connect(shortcut_External, &QShortcut::activated, this, [this]() { ui->btnExternal->click(); });
 }
@@ -206,7 +198,6 @@ void FormExpert::closeEvent(QCloseEvent *event) {
     formAutoUpdate->close();
     formExternal->close();
     formSerial->close();
-    formSetting->close();
 }
 
 void FormExpert::init() {
@@ -302,5 +293,3 @@ void FormExpert::keyPressEvent(QKeyEvent *event) {
         event->accept();
     }
 }
-
-void FormExpert::on_btnSetting_clicked() { ui->stackedWidget->setCurrentWidget(formSetting); }

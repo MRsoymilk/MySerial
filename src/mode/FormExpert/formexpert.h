@@ -6,7 +6,6 @@
 class FormSerial;
 class FormPlot;
 class FormLog;
-class FormSetting;
 class FormPlayMPU6050;
 class AutoUpdate;
 class ThreadWorker;
@@ -32,7 +31,6 @@ private slots:
     void on_btnSerial_clicked();
     void on_btnPlot_clicked();
     void on_btnLog_clicked();
-    void on_btnSetting_clicked();
     void on_btnUpdate_clicked();
     void on_btnExternal_clicked();
 
@@ -49,7 +47,6 @@ private:
     FormSerial *formSerial;
     FormPlot *formPlot;
     FormLog *formLog;
-    FormSetting *formSetting;
     FormPlayMPU6050 *playMPU6050;
     FormExternal *formExternal;
     AutoUpdate *formAutoUpdate;

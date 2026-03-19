@@ -105,10 +105,24 @@
           <string>Debug</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="checkBoxFullyMode">
+            <property name="text">
+             <string>fully mode</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QCheckBox" name="checkBoxEnableDebug">
             <property name="text">
              <string>enable</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLineEdit" name="lineEditFullyMode">
+            <property name="placeholderText">
+             <string>Please enter &quot;Fully Mode&quot;</string>
             </property>
            </widget>
           </item>

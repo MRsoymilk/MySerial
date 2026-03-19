@@ -6,6 +6,7 @@
 class FormEasy;
 class FormExpert;
 class FormProduce;
+class FormSetting;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -33,6 +34,8 @@ private slots:
     void on_actionExpert_triggered();
     void on_actionProduce_triggered();
 
+    void on_actionSetting_triggered();
+
 private:
     void init();
     void initMsgBar();
@@ -52,7 +55,8 @@ private:
     FormEasy *m_formEasy = nullptr;
     FormExpert *m_formExpert = nullptr;
     FormProduce *m_formProduce = nullptr;
-
+    FormSetting *m_formSetting = nullptr;
+    bool m_enableSetting = false;
     void safeDelete(QWidget *&w);
 
 protected:

@@ -243,16 +243,6 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QToolButton" name="tBtnSetting">
-       <property name="text">
-        <string>Setting</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item row="1" column="0">

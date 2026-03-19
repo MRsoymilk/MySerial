@@ -202,6 +202,7 @@
     </property>
     <addaction name="actionAbout"/>
     <addaction name="actionUser_Guide"/>
+    <addaction name="actionSetting"/>
    </widget>
    <addaction name="menuMode"/>
    <addaction name="menuAlgorithm"/>
@@ -354,6 +355,11 @@
    </property>
    <property name="text">
     <string>Produce</string>
+   </property>
+  </action>
+  <action name="actionSetting">
+   <property name="text">
+    <string>Setting</string>
    </property>
   </action>
  </widget>

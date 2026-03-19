@@ -144,3 +144,15 @@ void FormSetting::on_checkBoxEnableLocalThreshold_clicked() {
     } else {
     }
 }
+
+void FormSetting::on_checkBoxFullyMode_clicked()
+{
+    bool isFully = false;
+    if(ui->checkBoxFullyMode->isChecked()) {
+        if(ui->lineEditFullyMode->text() == "Fully Mode") {
+            isFully = true;
+        }
+    }
+    emit fullyControl(isFully);
+}
+

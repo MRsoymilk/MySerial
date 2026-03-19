@@ -8,9 +8,9 @@
 #include "../mode/FormEasy/formeasy.h"
 #include "../mode/FormExpert/formexpert.h"
 #include "../mode/FormProduce/formproduce.h"
+#include "../form/setting/formsetting.h"
 #include "./ui_mainwindow.h"
 #include "funcdef.h"
-#include "global.h"
 #include "version.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -175,6 +175,8 @@ void MainWindow::setMode(const QString &mode) {
         if (!m_formEasy) {
             m_formEasy = new FormEasy;
             ui->stackedWidgetMode->addWidget(m_formEasy);
+            connect(m_formSetting, &FormSetting::sendThreshold, m_formEasy, &FormEasy::recvThreshold);
+            connect(m_formSetting, &FormSetting::sendThresholdOption, m_formEasy, &FormEasy::recvThresholdOption);
         }
         ui->stackedWidgetMode->setCurrentWidget(m_formEasy);
 
@@ -210,6 +212,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     }
     if (m_formProduce) {
         m_formProduce->close();
+    }
+    if(m_formSetting) {
+        m_formSetting->close();
     }
 }
 
@@ -277,9 +282,29 @@ void MainWindow::on_actionProduce_triggered() {
 }
 
 void MainWindow::init() {
+    m_formSetting = new FormSetting;
+    connect(m_formSetting, &FormSetting::fullyControl, this, [=](bool isFully){
+        ui->menuAlgorithm->menuAction()->setVisible(isFully);
+        ui->menuMode->menuAction()->setVisible(isFully);
+    });
+    connect(m_formSetting, &FormSetting::windowClose, this, [=]() {
+        m_enableSetting = false;
+        m_formSetting->setVisible(false);
+    });
+
     initMsgBar();
     initMode();
     initTheme();
     initLanguage();
     initAlgorithm();
+
+    ui->menuAlgorithm->menuAction()->setVisible(false);
+    ui->menuMode->menuAction()->setVisible(false);
 }
+
+void MainWindow::on_actionSetting_triggered()
+{
+    m_enableSetting = !m_enableSetting;
+    m_formSetting->setVisible(m_enableSetting);
+}
+
