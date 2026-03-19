@@ -7,7 +7,6 @@ class FormSerial;
 class FormPlot;
 class FormLog;
 class FormPlayMPU6050;
-class AutoUpdate;
 class ThreadWorker;
 class FormPlotSimulate;
 class FormPlotHistory;
@@ -31,7 +30,6 @@ private slots:
     void on_btnSerial_clicked();
     void on_btnPlot_clicked();
     void on_btnLog_clicked();
-    void on_btnUpdate_clicked();
     void on_btnExternal_clicked();
 
     void plotHistoryClose();
@@ -49,7 +47,6 @@ private:
     FormLog *formLog;
     FormPlayMPU6050 *playMPU6050;
     FormExternal *formExternal;
-    AutoUpdate *formAutoUpdate;
     QThread *m_workerThread;
     ThreadWorker *m_worker;
     FormPlotSimulate *m_plotSimulate = nullptr;

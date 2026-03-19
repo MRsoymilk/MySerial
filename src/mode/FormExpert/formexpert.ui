@@ -78,13 +78,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="btnUpdate">
-       <property name="text">
-        <string>update</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QToolButton" name="btnExternal">
        <property name="text">
         <string>external</string>

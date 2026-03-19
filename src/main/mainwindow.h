@@ -37,6 +37,8 @@ private slots:
 
     void on_actionSetting_triggered();
 
+    void on_actionUpdate_triggered();
+
 private:
     void init();
     void initMsgBar();

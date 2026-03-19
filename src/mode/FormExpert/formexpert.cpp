@@ -1,7 +1,6 @@
 #include "formexpert.h"
 
 #include "../ThreadWorker/threadworker.h"
-#include "../form/AutoUpdate/autoupdate.h"
 #include "../form/FormExternal/formexternal.h"
 #include "../form/FormPlotCorrection/formplotcorrection.h"
 #include "../form/FormPlotHistory/formplothistory.h"
@@ -10,7 +9,6 @@
 #include "../form/play/formplaympu6050.h"
 #include "../form/plot/formplot.h"
 #include "../form/serial/formserial.h"
-#include "../form/setting/formsetting.h"
 #include "ui_formexpert.h"
 
 FormExpert::FormExpert(QWidget *parent) : QWidget(parent), ui(new Ui::FormExpert) {
@@ -47,9 +45,6 @@ void FormExpert::retranslateUI() {
     if (formLog) {
         formLog->retranslateUI();
     }
-    if (formAutoUpdate) {
-        formAutoUpdate->retranslateUI();
-    }
     if (formExternal) {
         formExternal->retranslateUI();
     }
@@ -63,17 +58,17 @@ void FormExpert::setAlgorithm(const QString &algorithm) {
 
 void FormExpert::initToolbar() {
     QList<QToolButton *> buttonList = {
-        ui->btnSerial, ui->btnLog, ui->btnPlot, ui->btnUpdate, ui->btnExternal,
+        ui->btnSerial, ui->btnLog, ui->btnPlot, ui->btnExternal,
     };
 
     QMap<QToolButton *, QString> onIcons = {
         {ui->btnSerial, "usb-on"},    {ui->btnLog, "log-on"},         {ui->btnPlot, "plot-on"},
-        {ui->btnUpdate, "update-on"}, {ui->btnExternal, "external-on"},
+       {ui->btnExternal, "external-on"},
     };
 
     QMap<QToolButton *, QString> offIcons = {
         {ui->btnSerial, "usb-off"},    {ui->btnLog, "log-off"},         {ui->btnPlot, "plot-off"},
-        {ui->btnUpdate, "update-off"}, {ui->btnExternal, "external-off"},
+       {ui->btnExternal, "external-off"},
     };
 
     for (QToolButton *btn : buttonList) {
@@ -131,9 +126,6 @@ void FormExpert::initStackWidget() {
 
     formExternal = new FormExternal(this);
     ui->stackedWidget->addWidget(formExternal);
-
-    formAutoUpdate = new AutoUpdate(this);
-    ui->stackedWidget->addWidget(formAutoUpdate);
 
     playMPU6050 = new FormPlayMPU6050(this);
     ui->stackedWidget->addWidget(playMPU6050);
@@ -195,7 +187,6 @@ void FormExpert::closeEvent(QCloseEvent *event) {
     m_plotSimulate->close();
     formPlot->close();
     formLog->close();
-    formAutoUpdate->close();
     formExternal->close();
     formSerial->close();
 }
@@ -276,8 +267,6 @@ void FormExpert::on_btnSerial_clicked() { ui->stackedWidget->setCurrentWidget(fo
 void FormExpert::on_btnPlot_clicked() { ui->stackedWidget->setCurrentWidget(formPlot); }
 
 void FormExpert::on_btnLog_clicked() { ui->stackedWidget->setCurrentWidget(formLog); }
-
-void FormExpert::on_btnUpdate_clicked() { ui->stackedWidget->setCurrentWidget(formAutoUpdate); }
 
 void FormExpert::on_btnExternal_clicked() { ui->stackedWidget->setCurrentWidget(formExternal); }
 

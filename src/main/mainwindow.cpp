@@ -9,6 +9,7 @@
 #include "../mode/FormExpert/formexpert.h"
 #include "../mode/FormProduce/formproduce.h"
 #include "../form/setting/formsetting.h"
+#include "../form/AutoUpdate/autoupdate.h"
 #include "./ui_mainwindow.h"
 #include "funcdef.h"
 #include "version.h"
@@ -318,5 +319,11 @@ void MainWindow::on_actionSetting_triggered()
 {
     m_enableSetting = !m_enableSetting;
     m_formSetting->setVisible(m_enableSetting);
+}
+
+void MainWindow::on_actionUpdate_triggered()
+{
+    AutoUpdate *upt = new AutoUpdate;
+    upt->show();
 }
 

@@ -203,6 +203,7 @@
     <addaction name="actionAbout"/>
     <addaction name="actionUser_Guide"/>
     <addaction name="actionSetting"/>
+    <addaction name="actionUpdate"/>
    </widget>
    <addaction name="menuMode"/>
    <addaction name="menuAlgorithm"/>
@@ -360,6 +361,11 @@
   <action name="actionSetting">
    <property name="text">
     <string>Setting</string>
+   </property>
+  </action>
+  <action name="actionUpdate">
+   <property name="text">
+    <string>Update</string>
    </property>
   </action>
  </widget>
