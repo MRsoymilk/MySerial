@@ -290,10 +290,10 @@ void MainWindow::init() {
     });
     connect(m_formSetting, &FormSetting::sendDouble, this, [=](bool isDouble){
         if(isDouble) {
-            setAlgorithm(CFG_ALGORITHM_F30_SINGLE);
+            setAlgorithm(CFG_ALGORITHM_F30_CURVES);
         }
         else {
-            setAlgorithm(CFG_ALGORITHM_F30_CURVES);
+            setAlgorithm(CFG_ALGORITHM_F30_SINGLE);
         }
     });
     connect(m_formSetting, &FormSetting::windowClose, this, [=]() {
