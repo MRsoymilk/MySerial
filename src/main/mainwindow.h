@@ -22,6 +22,7 @@ public:
     ~MainWindow();
     void setMode(const QString &mode);
     void setAlgorithm(const QString &algorithm);
+    void setCli();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

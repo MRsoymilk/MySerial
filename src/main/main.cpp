@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
             LOG_WARN("Invalid algorithm: {}", algorithm);
             return 0;
         }
-
+        w.setCli();
         w.setMode(mode);
         w.setAlgorithm(algorithm);
     } else {

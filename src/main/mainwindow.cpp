@@ -151,6 +151,12 @@ void MainWindow::setAlgorithm(const QString &algorithm) {
     }
 }
 
+void MainWindow::setCli()
+{
+    ui->menuAlgorithm->menuAction()->setVisible(false);
+    ui->menuMode->menuAction()->setVisible(false);
+}
+
 void MainWindow::safeDelete(QWidget *&w) {
     if (!w) return;
 
@@ -306,9 +312,6 @@ void MainWindow::init() {
     initTheme();
     initLanguage();
     initAlgorithm();
-
-    ui->menuAlgorithm->menuAction()->setVisible(false);
-    ui->menuMode->menuAction()->setVisible(false);
 }
 
 void MainWindow::on_actionSetting_triggered()
