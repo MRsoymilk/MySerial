@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     parser.addOption(option_cli);
     QCommandLineOption option_mode("mode", "Run mode: easy | produce | expert", "mode");
     parser.addOption(option_mode);
-    QCommandLineOption option_algorithm("algorithm", "Run algorithm: F15_single | F15_curves | F30_single | F30_curves", "algorithm");
+    QCommandLineOption option_algorithm("algorithm", "Run algorithm: F15_Single | F15_Curves | F30_Single | F30_Curves", "algorithm");
     parser.addOption(option_algorithm);
 
     parser.process(a);
@@ -55,17 +55,21 @@ int main(int argc, char *argv[]) {
 
         QString algorithm = parser.value(option_algorithm);
         if(algorithm.isEmpty()) {
-            algorithm = "F30_curves";
+            algorithm = "F30_Curves";
             LOG_INFO("use default algorithm: {}", algorithm);
         }
         else {
             LOG_INFO("use algorithm: {}", algorithm);
         }
-        if(algorithm != "F15_single" && algorithm != "F15_curves" && algorithm != "F30_single" && algorithm != "F30_curves") {
+        if(!(COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F15_SINGLE)
+              || COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F15_CURVES)
+              || COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F30_SINGLE)
+              || COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F30_CURVES))){
             QMessageBox::warning(nullptr, TITLE_WARNING, QObject::tr("Invalid algorithm! Use F15_single/F15_curves/F30_single/F30_curves"));
             LOG_WARN("Invalid algorithm: {}", algorithm);
             return 0;
         }
+
         w.setMode(mode);
         w.setAlgorithm(algorithm);
     } else {
