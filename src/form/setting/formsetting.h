@@ -18,6 +18,8 @@ public:
     explicit FormSetting(QWidget *parent = nullptr);
     ~FormSetting();
     void retranslateUI();
+
+public slots:
     void initThreshold();
 
 signals:

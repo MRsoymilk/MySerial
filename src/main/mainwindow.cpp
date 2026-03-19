@@ -175,6 +175,7 @@ void MainWindow::setMode(const QString &mode) {
         if (!m_formEasy) {
             m_formEasy = new FormEasy;
             ui->stackedWidgetMode->addWidget(m_formEasy);
+            connect(m_formEasy, &FormEasy::initThreshold, m_formSetting, &FormSetting::initThreshold);
             connect(m_formSetting, &FormSetting::sendThreshold, m_formEasy, &FormEasy::recvThreshold);
             connect(m_formSetting, &FormSetting::sendThresholdOption, m_formEasy, &FormEasy::recvThresholdOption);
         }

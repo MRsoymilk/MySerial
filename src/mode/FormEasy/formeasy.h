@@ -45,6 +45,7 @@ signals:
     void sendOption(const QJsonObject &option);
     void recvThreshold(bool isUse, const QList<double> &values);
     void recvThresholdOption(const QJsonObject &option);
+    void initThreshold();
 
 public slots:
     void updatePlot4k(const MY_DATA &my_data, bool record);
