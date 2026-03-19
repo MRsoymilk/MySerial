@@ -6,23 +6,23 @@
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="14"/>
         <source>Accumulate</source>
-        <translation type="unfinished"></translation>
+        <translation>累加</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="20"/>
-        <location filename="../../src/form/plot/Accumulate/accumulate.cpp" line="247"/>
+        <location filename="../../src/form/plot/Accumulate/accumulate.cpp" line="296"/>
         <source>Noise</source>
-        <translation type="unfinished"></translation>
+        <translation>噪聲</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="46"/>
         <source>smooth window</source>
-        <translation type="unfinished"></translation>
+        <translation>平滑窗口</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="64"/>
         <source>polynomial order</source>
-        <translation type="unfinished"></translation>
+        <translation>多項式階</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="80"/>
@@ -44,17 +44,27 @@
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="128"/>
         <source>Enable Accumulate</source>
-        <translation type="unfinished"></translation>
+        <translation>啓用累加</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="161"/>
         <source>enable div</source>
-        <translation type="unfinished"></translation>
+        <translation>啓用除法</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Accumulate/accumulate.ui" line="178"/>
         <source>Enable Baseline Deduction</source>
-        <translation type="unfinished"></translation>
+        <translation>啓用基線扣除</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.cpp" line="300"/>
+        <source>Noise Fit</source>
+        <translation>噪聲擬合</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/Accumulate/accumulate.cpp" line="302"/>
+        <source>Noise Min,Max</source>
+        <translation>噪聲 最小，最大</translation>
     </message>
 </context>
 <context>
@@ -124,56 +134,84 @@
         <translation>處理</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="35"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="26"/>
         <source>temperature (R)</source>
-        <translation type="unfinished"></translation>
+        <translation>溫度（電阻）</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="36"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="27"/>
         <source>slope (mV)</source>
         <translation>斜率 (mV)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="37"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="28"/>
         <source>intercept (mV)</source>
         <translation>截距 (mV)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="54"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="41"/>
         <source>Context Menu</source>
         <translation>上下文菜單</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="56"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="43"/>
         <source>Display</source>
         <translation>顯示</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="60"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="47"/>
         <source>Delete</source>
         <translation>刪除</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="85"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="106"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="71"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="92"/>
         <source>Slope (mV)</source>
         <translation>斜率 (mV)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="87"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="110"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="73"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="96"/>
         <source>Intercept (mV)</source>
         <translation>截距 (mV)</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="98"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="84"/>
         <source>Temperature vs Slope &amp; Intercept</source>
         <translation>溫度 &amp; 斜率 &amp; 截距</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="102"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/CalculateKB/calculatekb.cpp" line="88"/>
         <source>Temperature (℃)</source>
         <translation>溫度 (℃)</translation>
+    </message>
+</context>
+<context>
+    <name>DarkSpectrum</name>
+    <message>
+        <location filename="../../src/form/plot/DarkSpectrum/darkspectrum.ui" line="14"/>
+        <source>DarkSpectrum</source>
+        <translation>暗光譜</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/DarkSpectrum/darkspectrum.ui" line="22"/>
+        <source>BaseLine</source>
+        <translation>基線</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/DarkSpectrum/darkspectrum.ui" line="32"/>
+        <source>𝜎</source>
+        <translation>𝜎</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/DarkSpectrum/darkspectrum.ui" line="42"/>
+        <source>Dynamic Range</source>
+        <translation>動態範圍</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/DarkSpectrum/darkspectrum.ui" line="54"/>
+        <source>refresh</source>
+        <translation>更新</translation>
     </message>
 </context>
 <context>
@@ -189,32 +227,32 @@
     <message>
         <location filename="../../src/form/plot/Derivation/derivation.ui" line="14"/>
         <source>Derivation</source>
-        <translation type="unfinished"></translation>
+        <translation>求導</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Derivation/derivation.ui" line="28"/>
         <source>FindPeak</source>
-        <translation type="unfinished"></translation>
+        <translation>找峯</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Derivation/derivation.ui" line="48"/>
         <source>min length</source>
-        <translation type="unfinished"></translation>
+        <translation>最小長度</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Derivation/derivation.ui" line="80"/>
         <source>prev</source>
-        <translation type="unfinished">前一項</translation>
+        <translation>前一項</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Derivation/derivation.ui" line="87"/>
         <source>page</source>
-        <translation type="unfinished">頁</translation>
+        <translation>頁</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/Derivation/derivation.ui" line="97"/>
         <source>next</source>
-        <translation type="unfinished">後一項</translation>
+        <translation>後一項</translation>
     </message>
 </context>
 <context>
@@ -246,208 +284,270 @@
     </message>
 </context>
 <context>
-    <name>FormData</name>
-    <message>
-        <location filename="../../src/form/data/formdata.ui" line="14"/>
-        <source>Data</source>
-        <translation>數據</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.ui" line="47"/>
-        <source>data limit</source>
-        <translation>數據限制</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="93"/>
-        <source>Context Menu</source>
-        <translation>上下文菜單</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="95"/>
-        <source>Clear</source>
-        <translation>清除</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="99"/>
-        <source>Export Selected to CSV</source>
-        <translation>導出所選到CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="103"/>
-        <source>Export All to CSV</source>
-        <translation>導出所有至CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="131"/>
-        <source>Save All to CSV</source>
-        <translation>保存所有至CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="182"/>
-        <source>Save CSV</source>
-        <translation>保存CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/data/formdata.cpp" line="133"/>
-        <location filename="../../src/form/data/formdata.cpp" line="184"/>
-        <source>CSV Files (*.csv)</source>
-        <translation>CSV文件（*.csv）</translation>
-    </message>
-</context>
-<context>
     <name>FormEasy</name>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="14"/>
         <source>EasyMode</source>
-        <translation type="unfinished"></translation>
+        <translation>簡易模式</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="32"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="159"/>
         <source>pause</source>
         <translation>暫停</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="42"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="160"/>
         <source>zoom</source>
         <translation>縮放</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="52"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="161"/>
         <source>crop</source>
         <translation>裁剪</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="62"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="70"/>
         <source>peak</source>
         <translation>峯</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="72"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="80"/>
+        <source>track</source>
+        <translation>追蹤</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="89"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="163"/>
         <source>FWHM</source>
         <translation>FWHM</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="82"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="99"/>
         <source>img</source>
         <translation>图像</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="92"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="242"/>
+        <source>info</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="179"/>
         <source>simulate</source>
         <translation>模擬</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="102"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="185"/>
         <source>history</source>
         <translation>歷史</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="112"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="109"/>
         <source>Fourier</source>
         <translation>傅立叶变换</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="122"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="119"/>
         <source>Accumulate</source>
-        <translation type="unfinished"></translation>
+        <translation>累加</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="132"/>
-        <source>SNR</source>
-        <translation>SNR</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="142"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="129"/>
         <source>to voltage</source>
-        <translation type="unfinished"></translation>
+        <translation>轉電壓</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="160"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="147"/>
         <source>y axis</source>
-        <translation type="unfinished"></translation>
+        <translation>y 軸</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="179"/>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="217"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="166"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="211"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="205"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="192"/>
         <source>x axis</source>
-        <translation type="unfinished">x axis</translation>
+        <translation>x axis</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="244"/>
-        <source>Setting</source>
-        <translation>設置</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="296"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="291"/>
         <source>Integration time</source>
-        <translation type="unfinished"></translation>
+        <translation>積分時間</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="317"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="318"/>
         <source>current value</source>
-        <translation type="unfinished"></translation>
+        <translation>當前值</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="326"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="327"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="339"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="340"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="346"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="347"/>
         <source>nm</source>
-        <translation type="unfinished"></translation>
+        <translation>nm</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="359"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="360"/>
         <source>Min Intensity</source>
-        <translation type="unfinished"></translation>
+        <translation>最低強度</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.ui" line="366"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="367"/>
         <source>Max Intensity</source>
-        <translation type="unfinished"></translation>
+        <translation>最高強度</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="108"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="120"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="127"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="146"/>
         <source>index</source>
         <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="109"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="121"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="128"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="147"/>
         <source>intensity</source>
-        <translation type="unfinished">強度</translation>
+        <translation>強度</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="110"/>
-        <source>wavelength</source>
-        <translation type="unfinished">波長</translation>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="116"/>
+        <source>curve</source>
+        <translation>曲線</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="122"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="129"/>
+        <source>Spectral</source>
+        <translation>光譜</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="148"/>
         <source>raw</source>
-        <translation type="unfinished"></translation>
+        <translation>原始值</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="152"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="158"/>
+        <source>switch</source>
+        <translation>切換</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="162"/>
+        <source>find peak</source>
+        <translation>找峯</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="164"/>
+        <source>save image</source>
+        <translation>保存圖像</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="165"/>
+        <source>fourier</source>
+        <translation>傅里葉變換</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="166"/>
+        <source>accumulate</source>
+        <translation>累加</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="191"/>
+        <source>signal noise ratio</source>
+        <translation>信噪比</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="197"/>
+        <source>Points Tracker</source>
+        <translation>點追蹤</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="203"/>
+        <source>Dark Spectrum</source>
+        <translation>暗光譜</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="272"/>
         <source>Peaks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="350"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="473"/>
         <source>Save Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>保存圖表</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="895"/>
+        <source>Load Chart</source>
+        <translation>加載圖表</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="896"/>
+        <source>Export Chart</source>
+        <translation>導出圖表</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="901"/>
+        <source>Add Points Tracker</source>
+        <translation>添加點追蹤</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="902"/>
+        <source>Clear Tracker</source>
+        <translation>清除點追蹤</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="927"/>
+        <source>Add Point</source>
+        <translation>加入點</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="927"/>
+        <source>Input position:</source>
+        <translation>輸入位置：</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="935"/>
+        <source>choose file</source>
+        <translation>選擇文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="935"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="987"/>
+        <source>CSV Files (*.csv)</source>
+        <translation>CSV文件（*.csv）</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="941"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="994"/>
+        <source>Cannot open file.</source>
+        <translation>無法打開文件。</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="983"/>
+        <source>CSV loaded successfully.</source>
+        <translation>CSV加載成功。</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="987"/>
+        <source>Export CSV</source>
+        <translation>導出CSV</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1006"/>
+        <source>CSV exported successfully.</source>
+        <translation>CSV導出成功。</translation>
     </message>
 </context>
 <context>
@@ -455,62 +555,45 @@
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="14"/>
         <source>ExpertMode</source>
-        <translation type="unfinished"></translation>
+        <translation>專家模式</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="22"/>
         <source>Serial</source>
-        <translation type="unfinished">串口</translation>
+        <translation>串口</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="29"/>
-        <location filename="../../src/mode/FormExpert/formexpert.ui" line="77"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="137"/>
-        <source>Data</source>
-        <translation type="unfinished">數據</translation>
+        <source>Plot</source>
+        <translation>圖像</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormExpert/formexpert.ui" line="36"/>
-        <source>Plot</source>
-        <translation type="unfinished">圖像</translation>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="49"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="113"/>
+        <source>Correction</source>
+        <translation>校正</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="56"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="158"/>
-        <source>Correction</source>
-        <translation type="unfinished">校正</translation>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="106"/>
+        <source>Simulate</source>
+        <translation>模擬</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="63"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="151"/>
-        <source>Simulate</source>
-        <translation type="unfinished">模擬</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormExpert/formexpert.ui" line="70"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="144"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="99"/>
         <source>History</source>
-        <translation type="unfinished">歷史</translation>
+        <translation>歷史</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormExpert/formexpert.ui" line="97"/>
-        <source>update</source>
-        <translation type="unfinished">更新</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormExpert/formexpert.ui" line="104"/>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="83"/>
         <source>external</source>
-        <translation type="unfinished"></translation>
+        <translation>對外</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormExpert/formexpert.ui" line="111"/>
+        <location filename="../../src/mode/FormExpert/formexpert.ui" line="90"/>
         <source>Log</source>
-        <translation type="unfinished">日誌</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormExpert/formexpert.ui" line="118"/>
-        <source>Setting</source>
-        <translation type="unfinished">設置</translation>
+        <translation>日誌</translation>
     </message>
 </context>
 <context>
@@ -585,12 +668,12 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="68"/>
         <source>Calculate_k1b1k2b2</source>
-        <translation type="unfinished"></translation>
+        <translation>計算_k1b1k2b2</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="95"/>
         <source>Fitting ArcSin</source>
-        <translation type="unfinished"></translation>
+        <translation>擬合ArcSin</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="153"/>
@@ -615,7 +698,7 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="241"/>
         <source>set temperature R</source>
-        <translation type="unfinished"></translation>
+        <translation>設置溫度R</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="253"/>
@@ -648,7 +731,7 @@
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="298"/>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="377"/>
         <source>T/R</source>
-        <translation type="unfinished"></translation>
+        <translation>T/R</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.ui" line="311"/>
@@ -769,68 +852,68 @@
         <translation>發送公式</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="40"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="28"/>
         <source>index</source>
         <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="53"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="38"/>
         <source>lambda</source>
         <translation>波長</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="41"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="29"/>
         <source>fitting curve Raw(curve33)</source>
-        <translation type="unfinished"></translation>
+        <translation>擬合原始值（curve33）</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="54"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="39"/>
         <source>curve33(raw)</source>
-        <translation type="unfinished"></translation>
+        <translation>曲線33（原始）</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="96"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="68"/>
         <source>Context Menu</source>
         <translation>上下文菜單</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="98"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="70"/>
         <source>Export Threshold to CSV</source>
         <translation>導出閾值到CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="101"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="73"/>
         <source>to Hex</source>
-        <translation type="unfinished"></translation>
+        <translation>轉16進制</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="104"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="76"/>
         <source>to Array</source>
-        <translation type="unfinished"></translation>
+        <translation>轉數組</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="129"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="146"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="116"/>
         <source>export success</source>
-        <translation type="unfinished"></translation>
+        <translation>導出成功</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="129"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="100"/>
         <source>hex add to clip board.</source>
-        <translation type="unfinished"></translation>
+        <translation>16進制代碼添加到剪貼板。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="146"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="116"/>
         <source>array add to clip board.</source>
-        <translation type="unfinished"></translation>
+        <translation>數組添加到剪貼板。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="152"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="120"/>
         <source>Export Threshold Data to CSV</source>
         <translation>導出閾值數據到CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="154"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingarcsin.cpp" line="121"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
@@ -926,6 +1009,100 @@
     </message>
 </context>
 <context>
+    <name>FormFittingPoints</name>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="14"/>
+        <source>FittingPoints</source>
+        <translation>擬合點</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="22"/>
+        <source>dir</source>
+        <translation>目錄</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="32"/>
+        <source>select</source>
+        <translation>選擇</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="43"/>
+        <source>end</source>
+        <translation>結束</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="50"/>
+        <source>step</source>
+        <translation>步長</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="64"/>
+        <source>start</source>
+        <translation>開始</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="83"/>
+        <source>collect</source>
+        <translation>採集</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="95"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.cpp" line="32"/>
+        <source>wavelength</source>
+        <translation>波長</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="112"/>
+        <source>data count</source>
+        <translation>數據點數</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.ui" line="126"/>
+        <source>refresh</source>
+        <translation>更新</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.cpp" line="32"/>
+        <source>file_name</source>
+        <translation>文件名</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.cpp" line="32"/>
+        <source>file_path</source>
+        <translation>文件路徑</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.cpp" line="32"/>
+        <source>status</source>
+        <translation>狀態</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.cpp" line="32"/>
+        <source>intensity</source>
+        <translation>強度</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.cpp" line="194"/>
+        <source>choose dir</source>
+        <translation>選額目錄</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.h" line="16"/>
+        <source>not_collected</source>
+        <translation>未收集</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.h" line="16"/>
+        <source>collected</source>
+        <translation>已收集</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingpoints.h" line="16"/>
+        <source>value_write</source>
+        <translation>值寫入</translation>
+    </message>
+</context>
+<context>
     <name>FormFittingSelf</name>
     <message>
         <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.ui" line="14"/>
@@ -974,17 +1151,17 @@
         <translation>包尾</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="35"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="26"/>
         <source>generate file fitting_self.csv</source>
         <translation>生成文件fitting_self.csv</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="142"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="127"/>
         <source>line</source>
         <translation>直線</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="152"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingself.cpp" line="137"/>
         <source>fitting line display</source>
         <translation>擬合線顯示</translation>
     </message>
@@ -1228,68 +1405,68 @@
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="49"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="51"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="42"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="44"/>
         <source>Double click to zoom.</source>
         <translation>雙擊進行縮放。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="80"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="69"/>
         <source>Context Menu</source>
         <translation>上下文菜單</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="82"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="71"/>
         <source>Export All to CSV</source>
         <translation>導出所有至CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="92"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="80"/>
         <source>Export All Data to CSV</source>
         <translation>導出所有數據至CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="94"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="80"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="157"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="167"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="484"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="487"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="736"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="142"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="152"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="450"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="453"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="683"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="157"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="142"/>
         <source>Cannot open file for writing</source>
         <translation>無法打開文件進行寫入</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="167"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="152"/>
         <source>Failed to write complete data</source>
         <translation>無法寫入完整數據</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="169"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="154"/>
         <source>Success</source>
         <translation>成功</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="169"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="154"/>
         <source>File saved successfully</source>
         <translation>文件成功保存</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="484"/>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="487"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="450"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="453"/>
         <source>points can not be same!</source>
         <translation>點位不能相同！</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="736"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/formfittingsin.cpp" line="683"/>
         <source>Please finish step 1 and step 2!</source>
         <translation>請完成步驟1和步驟2！</translation>
     </message>
@@ -1320,17 +1497,17 @@
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="266"/>
         <source>offset_31bit</source>
-        <translation type="unfinished"></translation>
+        <translation>31bit偏移</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="287"/>
         <source>offset_33bit</source>
-        <translation type="unfinished"></translation>
+        <translation>33bit偏移</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="321"/>
         <source>y axis</source>
-        <translation type="unfinished"></translation>
+        <translation>y軸</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="368"/>
@@ -1346,7 +1523,7 @@
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="390"/>
         <source>Conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>轉換</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="431"/>
@@ -1371,32 +1548,32 @@
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="116"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="172"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="152"/>
         <source>crop</source>
         <translation>裁剪</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="123"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="204"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="184"/>
         <source>Fourier</source>
-        <translation type="unfinished">傅立叶变换</translation>
+        <translation>傅里葉變換</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="130"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="219"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="199"/>
         <source>Accumulate</source>
-        <translation type="unfinished"></translation>
+        <translation>累加</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="143"/>
         <source>SNR</source>
-        <translation type="unfinished">SNR</translation>
+        <translation>SNR</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="150"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="214"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="194"/>
         <source>Derivation</source>
-        <translation type="unfinished"></translation>
+        <translation>求導</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="165"/>
@@ -1406,18 +1583,18 @@
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="178"/>
         <source>highest Trajectory</source>
-        <translation type="unfinished"></translation>
+        <translation>最高峯追蹤</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="195"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="199"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="179"/>
         <source>FWHM</source>
-        <translation type="unfinished">FWHM</translation>
+        <translation>FWHM</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="204"/>
         <source>limit</source>
-        <translation type="unfinished"></translation>
+        <translation>限制</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="229"/>
@@ -1427,16 +1604,16 @@
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="236"/>
         <source>to_Voltage</source>
-        <translation type="unfinished"></translation>
+        <translation>轉電壓</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="243"/>
         <source>to_external</source>
-        <translation type="unfinished"></translation>
+        <translation>到外部</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/formplot.ui" line="250"/>
-        <location filename="../../src/form/plot/formplot.cpp" line="194"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="174"/>
         <source>pause</source>
         <translation>暫停</translation>
     </message>
@@ -1446,74 +1623,74 @@
         <translation>縮放</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="129"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="110"/>
         <source>curve31</source>
-        <translation type="unfinished"></translation>
+        <translation>曲線31</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="130"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="111"/>
         <source>curve33</source>
-        <translation type="unfinished"></translation>
+        <translation>曲線33</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="135"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="116"/>
         <source>Peaks</source>
-        <translation type="unfinished"></translation>
+        <translation>峯</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="143"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="124"/>
         <source>index</source>
-        <translation type="unfinished">索引</translation>
+        <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="145"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="126"/>
         <source>Voltage (V)</source>
         <translation>電壓（V）</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="159"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="140"/>
         <source>Live ADC Waveform</source>
         <translation>實時 ADC 波形</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="179"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="159"/>
         <source>Auto Zoom</source>
         <translation>自動縮放</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="184"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="164"/>
         <source>image save (ctrl+s)</source>
         <translation>圖像保存（ctrl+s）</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="189"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="169"/>
         <source>find peaks</source>
         <translation>找峯值</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="209"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="189"/>
         <source>Signal-to-noise ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>信噪比</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="224"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="204"/>
         <source>Temperature</source>
-        <translation type="unfinished">溫度</translation>
+        <translation>溫度</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="229"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="209"/>
         <source>ToExternal</source>
-        <translation type="unfinished"></translation>
+        <translation>轉外部</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="234"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="214"/>
         <source>ToVoltage</source>
-        <translation type="unfinished"></translation>
+        <translation>轉電壓</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/formplot.cpp" line="574"/>
+        <location filename="../../src/form/plot/formplot.cpp" line="534"/>
         <source>Save Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>保存圖表</translation>
     </message>
 </context>
 <context>
@@ -1539,125 +1716,9 @@
         <translation>顯示校正曲線</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="188"/>
-        <source>Warning</source>
-        <translation>警告</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="189"/>
+        <location filename="../../src/form/FormPlotCorrection/formplotcorrection.cpp" line="171"/>
         <source>only support fitting_sin or fitting_arcsin</source>
         <translation>僅支持 fitting_sin 或 fitting_arcsin</translation>
-    </message>
-</context>
-<context>
-    <name>FormPlotData</name>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="14"/>
-        <source>PlotData</source>
-        <translation>圖像數據</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="130"/>
-        <source>Go</source>
-        <translation>開始</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="140"/>
-        <source>0/0</source>
-        <translation>0/0</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="147"/>
-        <source>prev</source>
-        <translation>前一項</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="154"/>
-        <source>next</source>
-        <translation>後一項</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="165"/>
-        <source>highlight MinMax</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="172"/>
-        <source>Min Max info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="35"/>
-        <source>v14</source>
-        <translation>v14</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="42"/>
-        <source>v24</source>
-        <translation>v24</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="49"/>
-        <source>raw14</source>
-        <translation>raw14</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="56"/>
-        <source>raw24</source>
-        <translation>raw24</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.ui" line="103"/>
-        <source>choose group</source>
-        <translation>選擇組</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="163"/>
-        <source>Context Menu</source>
-        <translation>上下文菜單</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="165"/>
-        <source>Clear</source>
-        <translation>清除</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="169"/>
-        <source>Export Current to CSV</source>
-        <translation>導出當前至CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="173"/>
-        <source>Export All to CSV</source>
-        <translation>導出所有至CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="222"/>
-        <source>Export All Data to CSV</source>
-        <translation>導出所有數據到CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="324"/>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="363"/>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="385"/>
-        <source>Export</source>
-        <translation>導出</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="363"/>
-        <source>No data columns selected for export.</source>
-        <translation>未選擇要導出的數據列。</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="331"/>
-        <source>Save CSV</source>
-        <translation>保存CSV</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="224"/>
-        <location filename="../../src/form/FormPlotData/formplotdata.cpp" line="333"/>
-        <source>CSV Files (*.csv)</source>
-        <translation>CSV文件（*.csv）</translation>
     </message>
 </context>
 <context>
@@ -1668,168 +1729,146 @@
         <translation>圖像歷史</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="119"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="173"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="46"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="50"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="26"/>
+        <source>curve</source>
+        <translation>曲線</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="33"/>
         <source>prev</source>
         <translation>前一項</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="126"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="180"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="48"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="52"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="40"/>
         <source>next</source>
         <translation>後一項</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="137"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="191"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="181"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="196"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="51"/>
         <source>status</source>
         <translation>狀態</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="146"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="200"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="60"/>
         <source>go:</source>
         <translation>跳轉：</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="35"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="155"/>
+        <source>dump raw</source>
+        <translation>下載原始值</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="175"/>
         <source>To Plot</source>
         <translation>發送到圖像</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="55"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="128"/>
         <source>show data</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示數據</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="62"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="114"/>
         <source>to_voltage</source>
-        <translation type="unfinished"></translation>
+        <translation>轉電壓</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="112"/>
-        <source>curve31</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="199"/>
+        <source>To Plot With</source>
+        <translation>在以下條件轉發到圖像</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="166"/>
-        <source>curve33</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="206"/>
+        <source>range</source>
+        <translation>範圍</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="220"/>
-        <source>To Plot With</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="227"/>
-        <source>range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="241"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="258"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="237"/>
         <source>temperature</source>
-        <translation type="unfinished">溫度</translation>
+        <translation>溫度</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="292"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="121"/>
         <source>dump plot</source>
         <translation>下載圖像</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="313"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="144"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="162"/>
         <source>all</source>
         <translation>所有</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="306"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="137"/>
         <source>dump data</source>
         <translation>下載數據</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="69"/>
-        <source>Split</source>
-        <translation>分離</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="76"/>
-        <source>Mix</source>
-        <translation>混合</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="26"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.ui" line="84"/>
         <source>Temperature</source>
         <translation>溫度</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="62"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="34"/>
         <source>curve_mix</source>
         <translation>混合曲線</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="416"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="443"/>
-        <source>Export Failed</source>
-        <translation>導出失敗</translation>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="146"/>
+        <source>Clear</source>
+        <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="416"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="443"/>
-        <source>Only support Mix!</source>
-        <translation>僅支持混合！</translation>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="148"/>
+        <source>Remove</source>
+        <translation>移除</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="437"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="492"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="530"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="212"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="267"/>
         <source>Export Successful</source>
         <translation>導出成功</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="437"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="212"/>
         <source>Img exported to:
 %1</source>
         <translation>圖片導出至：
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="447"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="497"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="225"/>
         <source>Save Curve Data</source>
         <translation>保存曲線數據</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="449"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="499"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="225"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="455"/>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="506"/>
-        <source>Failed to Open File</source>
-        <translation>無法打開文件</translation>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="326"/>
+        <source>No data to export.</source>
+        <translation>沒有曲線數據可供導出。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="493"/>
-        <source>All data exported to:
-%1</source>
-        <translation>所有數據導出至：
-%1</translation>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="340"/>
+        <source>Cannot open file.</source>
+        <translation>無法打開文件。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="531"/>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="361"/>
+        <source>Export finished.</source>
+        <translation>導出結束。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/formplothistory.cpp" line="267"/>
         <source>Data exported to:
 %1</source>
         <translation>數據導出至：
@@ -1854,19 +1893,183 @@
         <translation>重做</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="42"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="46"/>
         <source>choose file</source>
         <translation>選擇文件</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="85"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="100"/>
         <source>Error Read CSV</source>
         <translation>讀取CSV時出錯</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="85"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="100"/>
         <source>no data column found!</source>
         <translation>未找到數據列！</translation>
+    </message>
+</context>
+<context>
+    <name>FormProduce</name>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="14"/>
+        <source>ProduceMode</source>
+        <translation>生產模式</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="24"/>
+        <source>Device Information</source>
+        <translation>設備信息</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="35"/>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="118"/>
+        <source>write</source>
+        <translation>寫入</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="46"/>
+        <source>Device serial number:</source>
+        <translation>設備序列號：</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="77"/>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="160"/>
+        <source>query</source>
+        <translation>查詢</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="97"/>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="180"/>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="205"/>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="246"/>
+        <source>done</source>
+        <translation>完成</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="107"/>
+        <source>Baseline</source>
+        <translation>基線</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="129"/>
+        <source>Baseline:</source>
+        <translation>基線：</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="190"/>
+        <source>Correction</source>
+        <translation>校正</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="198"/>
+        <source>start correction</source>
+        <translation>開始校正</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="228"/>
+        <source>SelfCheck</source>
+        <translation>自檢</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="239"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="348"/>
+        <source>start self check</source>
+        <translation>開始自檢</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="264"/>
+        <source>switch</source>
+        <translation>切換</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="274"/>
+        <source>to voltage</source>
+        <translation>轉電壓</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="301"/>
+        <source>update sign</source>
+        <translation>更新標誌</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="100"/>
+        <source>is done</source>
+        <translation>是否完成</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="130"/>
+        <source>curve31</source>
+        <translation>曲線31</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="133"/>
+        <source>curve33</source>
+        <translation>曲線33</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="150"/>
+        <source>index</source>
+        <translation>索引</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="151"/>
+        <source>intensity</source>
+        <translation>強度</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="152"/>
+        <source>Spectral</source>
+        <translation>光譜</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="337"/>
+        <source>Job Done!</source>
+        <translation>工作完成！</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="377"/>
+        <source>No fault</source>
+        <translation>無錯</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="379"/>
+        <source>Module not working</source>
+        <translation>模塊無法正常工作</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="381"/>
+        <source>Temperature too high (above 50℃)</source>
+        <translation>溫度過高（高於50℃）</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="383"/>
+        <source>Temperature too low (below -20℃)</source>
+        <translation>溫度過低（低於-20℃）</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="385"/>
+        <source>TEC not working</source>
+        <translation>TEC 無法正常工作</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="387"/>
+        <source>TEC unable to power on</source>
+        <translation>TEC 無法開機</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="389"/>
+        <source>Fan not working</source>
+        <translation>風扇不工作</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="391"/>
+        <source>DAC no output</source>
+        <translation>DAC 無輸出</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="393"/>
+        <source>Module unstable</source>
+        <translation>模塊不穩定</translation>
     </message>
 </context>
 <context>
@@ -2018,50 +2221,44 @@
         <translation>增強</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="363"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="555"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="363"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="555"/>
         <source>Serial not open!</source>
         <translation>串口未打開！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="527"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="749"/>
         <source>No available serial port found!</source>
         <translation>未找到可用的串行端口！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="527"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="573"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="964"/>
-        <source>warning</source>
-        <translation>警告</translation>
+        <location filename="../../src/form/serial/formserial.cpp" line="990"/>
+        <source>To Open</source>
+        <translation>打開</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="573"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="359"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="808"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="878"/>
         <source>serial not open!</source>
         <translation>串口未打開！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="904"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="916"/>
-        <source>Warning</source>
-        <translation>警告</translation>
-    </message>
-    <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="904"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="1177"/>
         <source>Please open serial port!</source>
         <translation>請打開串口！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="916"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="1189"/>
         <source>Please set valid time(ms)!</source>
         <translation>請設置有效時間（毫秒）！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="964"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="1233"/>
         <source>No ports available!</source>
         <translation>沒有可用的端口！</translation>
     </message>
@@ -2072,6 +2269,71 @@
         <location filename="../../src/form/setting/formsetting.ui" line="14"/>
         <source>Setting</source>
         <translation>設置</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="47"/>
+        <source>F30 Shown</source>
+        <translation>F30 展示</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="53"/>
+        <source>enable interpolation</source>
+        <translation>啓用插值</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="62"/>
+        <source>threshold</source>
+        <translation>閾值</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="72"/>
+        <source>load</source>
+        <translation>加載</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="81"/>
+        <source>Use Single</source>
+        <translation>使用 Single 模式</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="88"/>
+        <source>Use Double</source>
+        <translation>使用 Double 模式</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="95"/>
+        <source>enable local threshold</source>
+        <translation>啓用本地閾值</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="105"/>
+        <source>Debug</source>
+        <translation>調試</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="111"/>
+        <source>fully mode</source>
+        <translation>完全模式</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="118"/>
+        <source>enable</source>
+        <translation>啓用</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.ui" line="125"/>
+        <source>Please enter &quot;Fully Mode&quot;</source>
+        <translation>請輸入“Fully Mode”</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.cpp" line="79"/>
+        <source>can&apos;t open file: %1</source>
+        <translation>無法打開文件：%1</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/setting/formsetting.cpp" line="117"/>
+        <source>empty path: %1</source>
+        <translation>空路徑：%1</translation>
     </message>
 </context>
 <context>
@@ -2087,49 +2349,49 @@
     <message>
         <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="14"/>
         <source>FourierTransform</source>
-        <translation type="unfinished"></translation>
+        <translation>傅里葉變換</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="46"/>
         <source>x axis</source>
-        <translation type="unfinished">x axis</translation>
+        <translation>x 軸</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="62"/>
         <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="137"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="87"/>
         <source>sample rate</source>
-        <translation type="unfinished"></translation>
+        <translation>採樣頻率</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="106"/>
         <source>Hz</source>
-        <translation type="unfinished"></translation>
+        <translation>Hz</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/FourierTransform/fouriertransform.ui" line="121"/>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>範圍</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="224"/>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="196"/>
         <source>Frequency Spectrum (FFT)</source>
-        <translation type="unfinished"></translation>
+        <translation>頻率頻譜（FFT）</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="243"/>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="215"/>
         <source>Filtered Signal (IFFT)</source>
-        <translation type="unfinished"></translation>
+        <translation>濾波信號（IFFT）</translation>
     </message>
 </context>
 <context>
     <name>ImageViewer</name>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp" line="11"/>
+        <location filename="../../src/form/FormPlotCorrection/fitting/ImageViewer/imageviewer.cpp" line="9"/>
         <source>image viewer</source>
         <translation>圖像查看</translation>
     </message>
@@ -2150,19 +2412,24 @@
 <context>
     <name>LoadingOverLay</name>
     <message>
-        <location filename="../../src/mode/FormEasy/LoadingOverLay/loadingoverlay.ui" line="14"/>
+        <location filename="../../src/mode/LoadingOverLay/loadingoverlay.ui" line="14"/>
         <source>LoadingOverLay</source>
-        <translation type="unfinished"></translation>
+        <translation>加載蒙版</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/LoadingOverLay/loadingoverlay.ui" line="86"/>
+        <location filename="../../src/mode/LoadingOverLay/loadingoverlay.ui" line="86"/>
         <source>info</source>
-        <translation type="unfinished"></translation>
+        <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/LoadingOverLay/loadingoverlay.ui" line="96"/>
+        <location filename="../../src/mode/LoadingOverLay/loadingoverlay.ui" line="103"/>
+        <source>stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/LoadingOverLay/loadingoverlay.ui" line="66"/>
         <source>try []:</source>
-        <translation type="unfinished"></translation>
+        <translation>嘗試 []：</translation>
     </message>
 </context>
 <context>
@@ -2206,12 +2473,12 @@
     <message>
         <location filename="../../src/main/mainwindow.ui" line="117"/>
         <source>update</source>
-        <translation type="unfinished">更新</translation>
+        <translation>更新</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="124"/>
         <source>external</source>
-        <translation type="unfinished"></translation>
+        <translation>外部</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="131"/>
@@ -2220,6 +2487,7 @@
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="138"/>
+        <location filename="../../src/main/mainwindow.ui" line="363"/>
         <source>Setting</source>
         <translation>設置</translation>
     </message>
@@ -2236,92 +2504,117 @@
     <message>
         <location filename="../../src/main/mainwindow.ui" line="183"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>模式</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="190"/>
+        <location filename="../../src/main/mainwindow.ui" line="191"/>
         <source>Algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>算法</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="209"/>
+        <location filename="../../src/main/mainwindow.ui" line="201"/>
+        <source>Help</source>
+        <translation>幫助</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="220"/>
         <source>en</source>
         <translation>en</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="217"/>
+        <location filename="../../src/main/mainwindow.ui" line="228"/>
         <source>zh_simple</source>
         <translation>zh_simple</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="225"/>
+        <location filename="../../src/main/mainwindow.ui" line="236"/>
         <source>zh_traditional</source>
         <translation>zh_traditional</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="233"/>
+        <location filename="../../src/main/mainwindow.ui" line="244"/>
         <source>Lite</source>
         <translation>Lite</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="241"/>
+        <location filename="../../src/main/mainwindow.ui" line="252"/>
         <source>Dark</source>
         <translation>Dark</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="249"/>
+        <location filename="../../src/main/mainwindow.ui" line="260"/>
         <source>OSX_Lite</source>
         <translation>OSX_Lite</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="257"/>
+        <location filename="../../src/main/mainwindow.ui" line="268"/>
         <source>OSX_Dark</source>
         <translation>OSX_Dark</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="265"/>
+        <location filename="../../src/main/mainwindow.ui" line="276"/>
         <source>HelloKitty</source>
         <translation>HelloKitty</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="273"/>
+        <location filename="../../src/main/mainwindow.ui" line="284"/>
         <source>Easy</source>
-        <translation type="unfinished"></translation>
+        <translation>簡易</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="281"/>
+        <location filename="../../src/main/mainwindow.ui" line="292"/>
         <source>Expert</source>
-        <translation type="unfinished"></translation>
+        <translation>專家</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="289"/>
+        <location filename="../../src/main/mainwindow.ui" line="300"/>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Blue</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="297"/>
+        <location filename="../../src/main/mainwindow.ui" line="308"/>
         <source>Freedom</source>
-        <translation type="unfinished"></translation>
+        <translation>Freedom</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="305"/>
+        <location filename="../../src/main/mainwindow.ui" line="316"/>
         <source>F15_single</source>
-        <translation type="unfinished"></translation>
+        <translation>F15_single</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="313"/>
+        <location filename="../../src/main/mainwindow.ui" line="324"/>
         <source>F15_curves</source>
-        <translation type="unfinished"></translation>
+        <translation>F15_curves</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="321"/>
+        <location filename="../../src/main/mainwindow.ui" line="332"/>
         <source>F30_single</source>
-        <translation type="unfinished"></translation>
+        <translation>F30_single</translation>
     </message>
     <message>
-        <location filename="../../src/main/mainwindow.ui" line="329"/>
+        <location filename="../../src/main/mainwindow.ui" line="340"/>
         <source>F30_curves</source>
-        <translation type="unfinished"></translation>
+        <translation>F30_curves</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="345"/>
+        <source>User Guide</source>
+        <translation>用戶指南</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="350"/>
+        <source>About</source>
+        <translation>關於</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="358"/>
+        <source>Produce</source>
+        <translation>生產</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/mainwindow.ui" line="368"/>
+        <source>Update</source>
+        <translation>更新</translation>
     </message>
 </context>
 <context>
@@ -2329,66 +2622,124 @@
     <message>
         <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="14"/>
         <source>PeakTrajectory</source>
-        <translation type="unfinished"></translation>
+        <translation>峯追蹤</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="20"/>
         <source>info</source>
-        <translation type="unfinished"></translation>
+        <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="35"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="53"/>
+        <source>broadcast</source>
+        <translation>廣播</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="63"/>
+        <source>auto clean</source>
+        <translation>自動清除</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="80"/>
         <source>axis y</source>
-        <translation type="unfinished"></translation>
+        <translation>y 軸</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="51"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.ui" line="96"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="26"/>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="36"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="20"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="29"/>
         <source>Set Range</source>
-        <translation type="unfinished"></translation>
+        <translation>設置範圍</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="27"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="21"/>
         <source>Clear Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>清除圖表</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="36"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="22"/>
+        <source>Remove Current Point</source>
+        <translation>清除當前點</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="29"/>
         <source>Range:</source>
-        <translation type="unfinished"></translation>
+        <translation>範圍：</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="127"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="162"/>
         <source>index</source>
-        <translation type="unfinished">索引</translation>
+        <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="128"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="163"/>
         <source>intensity</source>
-        <translation type="unfinished">強度</translation>
+        <translation>強度</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="129"/>
+        <location filename="../../src/form/plot/PeakTrajectory/peaktrajectory.cpp" line="164"/>
         <source>peak trajectory</source>
-        <translation type="unfinished"></translation>
+        <translation>峯追蹤</translation>
+    </message>
+</context>
+<context>
+    <name>PointsTracker</name>
+    <message>
+        <location filename="../../src/form/plot/PointsTracker/pointstracker.ui" line="14"/>
+        <source>PointsTracker</source>
+        <translation>點追蹤</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PointsTracker/pointstracker.cpp" line="54"/>
+        <source>Points Tracker</source>
+        <translation>點追蹤</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PointsTracker/pointstracker.cpp" line="57"/>
+        <source>Index</source>
+        <translation>索引</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/PointsTracker/pointstracker.cpp" line="60"/>
+        <source>Value</source>
+        <translation>值</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/main/main.cpp" line="18"/>
+        <location filename="../../src/include/keydef.h" line="117"/>
+        <source>Info</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <location filename="../../src/include/keydef.h" line="118"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/main/main.cpp" line="19"/>
+        <location filename="../../src/include/keydef.h" line="119"/>
+        <source>Error</source>
+        <translation>錯誤</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/main.cpp" line="18"/>
         <source>Application is already running!</source>
         <translation>程序已經在運行！</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/main.cpp" line="51"/>
+        <source>Invalid mode! Use easy/produce/expert</source>
+        <translation>無效模式！請使用 easy/produce/expert</translation>
+    </message>
+    <message>
+        <location filename="../../src/main/main.cpp" line="68"/>
+        <source>Invalid algorithm! Use F15_single/F15_curves/F30_single/F30_curves</source>
+        <translation>無效算法！請使用 F15_single/F15_curves/F30_single/F30_curves</translation>
     </message>
 </context>
 <context>
@@ -2406,10 +2757,10 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="68"/>
         <source>export raw</source>
-        <translation type="unfinished"></translation>
+        <translation>導出原始值</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="175"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="185"/>
         <source>Temperature</source>
         <translation>溫度</translation>
     </message>
@@ -2421,17 +2772,17 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="47"/>
         <source>clear</source>
-        <translation type="unfinished"></translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="54"/>
         <source>to external</source>
-        <translation type="unfinished"></translation>
+        <translation>到外部</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="61"/>
         <source>export curve</source>
-        <translation type="unfinished"></translation>
+        <translation>導出曲線</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="92"/>
@@ -2446,127 +2797,159 @@
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="134"/>
         <source>y axis</source>
-        <translation type="unfinished"></translation>
+        <translation>y 軸</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="150"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="182"/>
-        <source>where Threshold</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="171"/>
+        <source>interpolation</source>
+        <translation>插值</translation>
     </message>
     <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="192"/>
+        <source>where Threshold</source>
+        <translation>閾值表位置</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="199"/>
+        <source>enable threshold</source>
+        <translation>啓用閾值</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="209"/>
         <source>Threshold</source>
         <translation>閾值</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="203"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="220"/>
         <source>offset</source>
         <translation>偏移</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="217"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="234"/>
         <source>step</source>
         <translation>步長</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="227"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="244"/>
         <source>count</source>
-        <translation type="unfinished">數量</translation>
+        <translation>數量</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="241"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="258"/>
         <source>Apply Option</source>
-        <translation type="unfinished"></translation>
+        <translation>應用選項</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="265"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="282"/>
         <source>load data from .csv</source>
-        <translation type="unfinished"></translation>
+        <translation>從 csv 中加載數據</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="272"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.ui" line="289"/>
         <source>load data from input</source>
-        <translation type="unfinished"></translation>
+        <translation>從輸入中加載數據</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="93"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="74"/>
         <source>wavelength</source>
         <translation>波長</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="94"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="75"/>
         <source>intensity</source>
         <translation>強度</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="95"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="76"/>
         <source>correction curve</source>
         <translation>校正曲線</translation>
     </message>
     <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="116"/>
+        <source>Context Menu</source>
+        <translation>上下文菜單</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="117"/>
+        <source>to Hex</source>
+        <translation>轉16進制</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="140"/>
+        <source>export success</source>
+        <translation>導出成功</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="140"/>
+        <source>hex add to clip board.</source>
+        <translation>16進制代碼添加到剪貼板。</translation>
+    </message>
+    <message>
         <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="214"/>
-        <source>选择数据 CSV 文件</source>
-        <translation type="unfinished"></translation>
+        <source>choose csv file</source>
+        <translation>選擇 csv 文件</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="216"/>
-        <source>CSV Files (*.csv)</source>
-        <translation type="unfinished">CSV文件（*.csv）</translation>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="224"/>
+        <source>can&apos;t open file: %1</source>
+        <translation>無法打開文件：%1</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="226"/>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="314"/>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="328"/>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="370"/>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="383"/>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="413"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="309"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="320"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="359"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="369"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="399"/>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="226"/>
-        <source>can&apos;t open file %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="314"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="309"/>
         <source>no curve data to export.</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有曲線數據可導出。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="319"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="313"/>
         <source>Export Curve to CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>導出曲線到 CSV 文件</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="328"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="320"/>
         <source>Failed to open export file</source>
-        <translation type="unfinished"></translation>
+        <translation>無法打開導出文件</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="370"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="359"/>
         <source>No raw data to export.</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有原始數據可供導出。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="375"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="363"/>
         <source>Export raw to txt</source>
-        <translation type="unfinished"></translation>
+        <translation>將原始數據導出爲txt文件</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="383"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="369"/>
         <source>Failed to open export file.</source>
-        <translation type="unfinished"></translation>
+        <translation>導出文件打開失敗。</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="413"/>
+        <location filename="../../src/form/FormPlotCorrection/ShowCorrectionCurve/showcorrectioncurve.cpp" line="399"/>
         <source>Export finished: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>導出完成：%1</translation>
+    </message>
+</context>
+<context>
+    <name>ShowData</name>
+    <message>
+        <location filename="../../src/form/FormPlotHistory/ShowData/showdata.ui" line="14"/>
+        <source>ShowData</source>
+        <translation>顯示數據</translation>
     </message>
 </context>
 <context>
@@ -2574,57 +2957,127 @@
     <message>
         <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="14"/>
         <source>SignalNoiseRatio</source>
-        <translation type="unfinished"></translation>
+        <translation>信噪比</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="22"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="24"/>
+        <source>signal / std(noise)</source>
+        <translation>信號 / 標準差（噪聲）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="62"/>
+        <source>ExcludeRadius</source>
+        <translation>排除半徑</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="75"/>
+        <source>mean(signal) / std(signal)</source>
+        <translation>均值（信號） / 標準差（信號）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="83"/>
+        <source>avg signal</source>
+        <translation>平均信號</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="90"/>
+        <source>std signal</source>
+        <translation>標準差信號</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="103"/>
+        <source>SNR</source>
+        <translation>SNR</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="124"/>
         <source>use idx</source>
-        <translation type="unfinished"></translation>
+        <translation>使用坐標</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="40"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="142"/>
         <source>peak intensity</source>
-        <translation type="unfinished"></translation>
+        <translation>峯值強度</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="47"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="32"/>
         <source>Noise (Std)</source>
-        <translation type="unfinished"></translation>
+        <translation>噪聲（標準差）</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="54"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="42"/>
         <source>Signal-to-noise ratio (linear)</source>
-        <translation type="unfinished"></translation>
+        <translation>信噪比（線性）</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="61"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="52"/>
         <source>Signal-to-noise ratio (dB)</source>
-        <translation type="unfinished"></translation>
+        <translation>信噪比（dB）</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.ui" line="85"/>
-        <source>avg info</source>
-        <translation type="unfinished"></translation>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="17"/>
+        <source>Insufficient data</source>
+        <translation>數據不足</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="158"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="42"/>
+        <source>Index=%1, Value=%2</source>
+        <translation>索引=%1，值=%2</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="55"/>
+        <source>Noise insufficient</source>
+        <translation>噪聲不足</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="122"/>
         <source>index</source>
-        <translation type="unfinished">索引</translation>
+        <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="159"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="123"/>
         <source>intensity</source>
-        <translation type="unfinished">強度</translation>
+        <translation>強度</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="161"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="125"/>
         <source>value trajectory</source>
-        <translation type="unfinished"></translation>
+        <translation>值追蹤</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="173"/>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="130"/>
+        <source>peak / noise(std)</source>
+        <translation>峯值 / 噪聲（標準差）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="144"/>
         <source>Clear Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>清空圖表</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="146"/>
+        <source>Export Chart</source>
+        <translation>導出圖表</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="168"/>
+        <source>Export CSV</source>
+        <translation>導出CSV</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="168"/>
+        <source>CSV Files (*.csv)</source>
+        <translation>CSV文件（*.csv）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="175"/>
+        <source>Cannot open file.</source>
+        <translation>無法打開文件。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/SignalNoiseRatio/signalnoiseratio.cpp" line="197"/>
+        <source>CSV exported successfully.</source>
+        <translation>CSV導出成功。</translation>
     </message>
 </context>
 <context>
@@ -2632,17 +3085,17 @@
     <message>
         <location filename="../../src/form/plot/TemperatureConversion/temperatureconversion.ui" line="14"/>
         <source>TemperatureConversion</source>
-        <translation type="unfinished"></translation>
+        <translation>溫度轉換</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/TemperatureConversion/temperatureconversion.ui" line="22"/>
         <source>R = temperature * </source>
-        <translation type="unfinished"></translation>
+        <translation>R = temperature * </translation>
     </message>
     <message>
         <location filename="../../src/form/plot/TemperatureConversion/temperatureconversion.ui" line="42"/>
         <source> + </source>
-        <translation type="unfinished"></translation>
+        <translation> + </translation>
     </message>
 </context>
 <context>
@@ -2650,43 +3103,43 @@
     <message>
         <location filename="../../src/form/plot/TemperatureView/temperatureview.ui" line="14"/>
         <source>Temperature</source>
-        <translation type="unfinished">溫度</translation>
+        <translation>溫度</translation>
     </message>
     <message>
         <location filename="../../src/form/plot/TemperatureView/temperatureview.ui" line="23"/>
         <source>info</source>
-        <translation type="unfinished"></translation>
+        <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="22"/>
-        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="32"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="16"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="24"/>
         <source>Set Range</source>
-        <translation type="unfinished"></translation>
+        <translation>設置範圍</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="23"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="17"/>
         <source>Clear Chart</source>
-        <translation type="unfinished"></translation>
+        <translation>清空圖表</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="32"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="24"/>
         <source>Range:</source>
-        <translation type="unfinished"></translation>
+        <translation>範圍：</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="65"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="56"/>
         <source>index</source>
-        <translation type="unfinished">索引</translation>
+        <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="66"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="57"/>
         <source>degree</source>
-        <translation type="unfinished"></translation>
+        <translation>度數</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="67"/>
+        <location filename="../../src/form/plot/TemperatureView/temperatureview.cpp" line="58"/>
         <source>temperature</source>
-        <translation type="unfinished">溫度</translation>
+        <translation>溫度</translation>
     </message>
 </context>
 </TS>

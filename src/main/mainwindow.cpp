@@ -113,6 +113,9 @@ void MainWindow::setLanguage(const QString &language) {
         if (m_formProduce) {
             m_formProduce->retranslateUI();
         }
+        if(m_formSetting) {
+            m_formSetting->retranslateUI();
+        }
     }
 }
 

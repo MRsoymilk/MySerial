@@ -211,7 +211,7 @@ void ShowCorrectionCurve::on_tBtnLoadDataFromCSV_clicked() {
 
     // 选择 CSV 文件
     QString filePath =
-        QFileDialog::getOpenFileName(this, tr("选择数据 CSV 文件"), "", "CSV Files (*.csv);;All Files (*)");
+        QFileDialog::getOpenFileName(this, tr("choose csv file"), "", "CSV Files (*.csv);;All Files (*)");
 
     if (filePath.isEmpty()) {
         ui->tBtnLoadDataFromCSV->setChecked(false);
