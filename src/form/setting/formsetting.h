@@ -27,6 +27,7 @@ signals:
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendThresholdOption(const QJsonObject &option);
     void fullyControl(bool isUse);
+    void sendDouble(bool isDouble);
 
 private slots:
     void on_radioButtonUseSingle_clicked(bool checked);

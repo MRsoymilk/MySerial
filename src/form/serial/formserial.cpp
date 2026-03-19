@@ -402,9 +402,9 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
             }
         } else {
             m_frameTypes = {
-                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 6007},
-                {"F15_33", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 6007},
-            };
+                            {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 6007},
+                            {"F15_33", QByteArray::fromHex("DE3A096633"), QByteArray::fromHex("CEFF"), 6007},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F15Curves_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
                 SETTING_FRAME_F15Curves_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
@@ -424,8 +424,8 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
             }
         } else {
             m_frameTypes = {
-                {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
-            };
+                            {"F15_31", QByteArray::fromHex("DE3A096631"), QByteArray::fromHex("CEFF"), 1612},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F15Single_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
                 SETTING_FRAME_F15Single_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
@@ -445,8 +445,8 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
             }
         } else {
             m_frameTypes = {
-                {"MPU6050", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
-            };
+                            {"MPU6050", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_PLAY_MPU6050_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
                 SETTING_FRAME_PLAY_MPU6050_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
@@ -466,9 +466,9 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
             }
         } else {
             m_frameTypes = {
-                {"F30_31", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
-                {"F30_33", QByteArray::fromHex("DE3A177333"), QByteArray::fromHex("CEFF"), 6007},
-            };
+                            {"F30_31", QByteArray::fromHex("DE3A177331"), QByteArray::fromHex("CEFF"), 6007},
+                            {"F30_33", QByteArray::fromHex("DE3A177333"), QByteArray::fromHex("CEFF"), 6007},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F30Curves_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
                 SETTING_FRAME_F30Curves_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
@@ -488,8 +488,8 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
             }
         } else {
             m_frameTypes = {
-                {"F30_31", QByteArray::fromHex("DE3A064531"), QByteArray::fromHex("CEFF"), 1609},
-            };
+                            {"F30_31", QByteArray::fromHex("DE3A064531"), QByteArray::fromHex("CEFF"), 1609},
+                            };
             for (const auto &frame : m_frameTypes) {
                 SETTING_FRAME_F30Single_SET(frame.name, FRAME_HEADER, frame.header.toHex().toUpper());
                 SETTING_FRAME_F30Single_SET(frame.name, FRAME_FOOTER, frame.footer.toHex().toUpper());
@@ -575,7 +575,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
         int firstHeaderIdx = -1;
         FrameType current_frame;
 
-        // 查找所有已知帧头
+                // 查找所有已知帧头
         for (const auto &type : m_frameTypes) {
             int idx = m_easy_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
@@ -584,7 +584,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
             }
         }
 
-        // 没有帧头，清理或等待
+                // 没有帧头，清理或等待
         if (firstHeaderIdx == -1) {
             if (m_easy_buffer.size() > 10 * 1024) {
                 LOG_WARN("Buffer overflow, clearing");
@@ -593,7 +593,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
             break;
         }
 
-        // 丢弃无效数据
+                // 丢弃无效数据
         if (firstHeaderIdx > 0) {
             LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
             m_easy_buffer.remove(0, firstHeaderIdx);
@@ -705,18 +705,8 @@ void FormSerial::onEasyModeTimeout()
 {
     LOG_WARN("easy timeout, step = {}", static_cast<int>(m_step_easy));
 
+    m_easy_buffer.clear();
     m_easy_wait = false;
-
-    static int retry = 0;
-    retry++;
-
-    if (retry < 2) {
-        LOG_WARN("retry current step");
-        processEasyRetry();
-        return;
-    }
-
-    retry = 0;
 
     if (m_serial) {
         disconnect(m_serial, nullptr, this, nullptr);
@@ -724,9 +714,6 @@ void FormSerial::onEasyModeTimeout()
         m_serial->deleteLater();
         m_serial = nullptr;
     }
-
-    m_easy_buffer.clear();
-    m_easy_wait = false;
 
     ++m_port_index;
 
@@ -755,7 +742,7 @@ void FormSerial::init() {
     // ini
     getINI();
 
-    // init port
+            // init port
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
         LOG_WARN("No available serial port found!");
@@ -787,7 +774,7 @@ void FormSerial::init() {
     ui->btnSend->setIcon(QIcon(":/res/icons/send-on.png"));
     ui->btnSend->setIconSize(QSize(32, 32));
 
-    // TODO
+            // TODO
     ui->groupBoxEnhancement->hide();
 
     QSignalBlocker blocker(ui->cBoxSendFormat);

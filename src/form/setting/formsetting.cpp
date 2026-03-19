@@ -34,6 +34,7 @@ void FormSetting::initThreshold() {
     if (ui->radioButtonUseDouble->isChecked()) {
         enable_double = true;
     }
+    emit sendDouble(enable_double);
     bool enable_interpolation = false;
     if (ui->checkBoxEnableInterpolation->isChecked()) {
         enable_interpolation = true;

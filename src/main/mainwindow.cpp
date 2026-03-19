@@ -288,6 +288,14 @@ void MainWindow::init() {
         ui->menuAlgorithm->menuAction()->setVisible(isFully);
         ui->menuMode->menuAction()->setVisible(isFully);
     });
+    connect(m_formSetting, &FormSetting::sendDouble, this, [=](bool isDouble){
+        if(isDouble) {
+            setAlgorithm(CFG_ALGORITHM_F30_SINGLE);
+        }
+        else {
+            setAlgorithm(CFG_ALGORITHM_F30_CURVES);
+        }
+    });
     connect(m_formSetting, &FormSetting::windowClose, this, [=]() {
         m_enableSetting = false;
         m_formSetting->setVisible(false);
