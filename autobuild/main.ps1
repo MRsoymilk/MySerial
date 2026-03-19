@@ -43,8 +43,35 @@ $makensis = "D:\software\NSIS\makensis.exe"
 $nsisScript = "D:\work\output\auto_build\MySerial\nsis_MySerial.nsi"
 
 if (Test-Path $makensis) {
+    # 原版
     Write-Host ">> 正在打包安装程序 MySerial_Setup_${timestamp}.exe"
-    & $makensis /DVERSION=$version /DTIMESTAMP=$timestamp /DOUTDIR=$outputDir $nsisScript
+    & $makensis `
+    /DAPP_NAME=MySerial `
+    /DAPP_ARGS="" `
+    /DVERSION=$version `
+    /DTIMESTAMP=$timestamp `
+    /DOUTDIR=$outputDir `
+    $nsisScript
+
+    # C版
+    Write-Host ">> 正在打包安装程序 C_MySerial_Setup_${timestamp}.exe"
+    & $makensis `
+    /DAPP_NAME=C_MySerial `
+    /DAPP_ARGS="--cli --mode easy --algorithm F30_Curves" `
+    /DVERSION=$version `
+    /DTIMESTAMP=$timestamp `
+    /DOUTDIR=$outputDir `
+    $nsisScript
+
+    # P版
+    Write-Host ">> 正在打包安装程序 P_MySerial_Setup_${timestamp}.exe"
+    & $makensis `
+    /DAPP_NAME=P_MySerial `
+    /DAPP_ARGS="--cli --mode produce --algorithm F30_Curves" `
+    /DVERSION=$version `
+    /DTIMESTAMP=$timestamp `
+    /DOUTDIR=$outputDir `
+    $nsisScript
 } else {
     Write-Warning "⚠️ 找不到 makensis.exe，请确认 NSIS 已正确安装。"
 }

@@ -1,8 +1,13 @@
 !include "MUI2.nsh"
-; MySerial Installation Script (ASCII-only, no plugins required)
-Name "MySerial"
 
-!define MUI_ICON "D:\work\output\auto_build\MySerial\nsis_MySerial.ico"
+; ================= params =================
+!ifndef APP_NAME
+  !define APP_NAME "MySerial"
+!endif
+
+!ifndef APP_ARGS
+  !define APP_ARGS ""
+!endif
 
 !ifndef VERSION
   !define VERSION "0.0.0"
@@ -16,11 +21,14 @@ Name "MySerial"
   !define TIMESTAMP "unknown"
 !endif
 
-OutFile "${OUTDIR}\MySerial_${VERSION}_${TIMESTAMP}.exe"
-InstallDir "$PROGRAMFILES\MySerial"
-RequestExecutionLevel admin
+; ================= basic info =================
+Name "${APP_NAME}"
 
-!include MUI2.nsh
+!define MUI_ICON "D:\work\output\auto_build\MySerial\nsis_MySerial.ico"
+
+OutFile "${OUTDIR}\${APP_NAME}_${VERSION}_${TIMESTAMP}.exe"
+InstallDir "$PROGRAMFILES\${APP_NAME}"
+RequestExecutionLevel admin
 
 !define MUI_ABORTWARNING
 !insertmacro MUI_PAGE_WELCOME
@@ -37,25 +45,23 @@ Var RemoveConfig
 Var RemoveLog
 Var LaunchProgram
 
-!define REGKEY "Software\MySerial"
+!define REGKEY "Software\${APP_NAME}"
 !define REGVALUE_INSTALLDIR "InstallDir"
 
+; ================= init =================
 Function .onInit
-  ; Initialize plugins directory for temporary files
   InitPluginsDir
 
-  ; Extract kill_MySerial.bat from the source directory
   File /nonfatal /oname=$PLUGINSDIR\kill_MySerial.bat "D:\work\output\MySerial\latest\kill_MySerial.bat"
 
-  ; Run the batch file to terminate MySerial.exe
   nsExec::ExecToStack '"$PLUGINSDIR\kill_MySerial.bat"'
-  Pop $0 ; Return value
-  Pop $1 ; Output (if any)
+  Pop $0
+  Pop $1
 
-  ; Check if the batch file failed (non-zero return code)
   StrCmp $0 0 +3
     MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "Cannot terminate MySerial.exe. Please close it manually and retry, or cancel to abort." IDRETRY retry
     Abort
+
   retry:
     nsExec::ExecToStack '"$PLUGINSDIR\kill_MySerial.bat"'
     Pop $0
@@ -63,10 +69,10 @@ Function .onInit
     StrCmp $0 0 +2
       MessageBox MB_OK|MB_ICONEXCLAMATION "Failed to terminate MySerial.exe. Continuing installation anyway."
 
-  ; Read the previous installation path from the registry
   ReadRegStr $INSTDIR HKLM "${REGKEY}" "${REGVALUE_INSTALLDIR}"
 FunctionEnd
 
+; ================= self option =================
 Function OptionsPage
   !insertmacro MUI_HEADER_TEXT "Installation Options" "Select which folders to keep and whether to launch the program"
   nsDialogs::Create 1018
@@ -80,7 +86,7 @@ Function OptionsPage
   Pop $RemoveLog
   ${NSD_SetState} $RemoveLog ${BST_CHECKED}
 
-  ${NSD_CreateCheckbox} 0 50u 100% 10u "Launch MySerial after installation"
+  ${NSD_CreateCheckbox} 0 50u 100% 10u "Launch ${APP_NAME} after installation"
   Pop $LaunchProgram
   ${NSD_SetState} $LaunchProgram ${BST_CHECKED}
 
@@ -93,14 +99,13 @@ Function OptionsPageLeave
   ${NSD_GetState} $LaunchProgram $LaunchProgram
 FunctionEnd
 
+; ================= install =================
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite on
 
-  ; Install all files (except config, log, and kill_MySerial.bat)
   File /r /x "config" /x "log" /x "kill_MySerial.bat" "D:\work\output\MySerial\latest\*.*"
 
-  ; Install config and log directories based on user selection
   ${If} $RemoveConfig == ${BST_CHECKED}
     File /nonfatal /r "D:\work\output\MySerial\latest\config"
   ${EndIf}
@@ -109,28 +114,25 @@ Section "MainSection" SEC01
     File /nonfatal /r "D:\work\output\MySerial\latest\log"
   ${EndIf}
 
-  ; Delete existing desktop shortcut if it exists
-  Delete "$DESKTOP\MySerial.lnk"
+  Delete "$DESKTOP\${APP_NAME}.lnk"
 
-  ; Create desktop shortcut for MySerial.exe
-  CreateShortCut "$DESKTOP\MySerial.lnk" "$INSTDIR\MySerial.exe" "" "$INSTDIR\MySerial.exe" 0
+  CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\MySerial.exe" "${APP_ARGS}" "$INSTDIR\MySerial.exe" 0
 
-  ; Create uninstaller
   WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr HKLM "${REGKEY}" "${REGVALUE_INSTALLDIR}" "$INSTDIR"
+
 SectionEnd
 
+; ================= uninstall =================
 Section "Uninstall"
-  ; Remove desktop shortcut
-  Delete "$DESKTOP\MySerial.lnk"
-
-  ; Remove installation directory
+  Delete "$DESKTOP\${APP_NAME}.lnk"
   RMDir /r "$INSTDIR"
   DeleteRegKey HKLM "${REGKEY}"
 SectionEnd
 
+; ================= app start =================
 Function LaunchApp
   ${If} $LaunchProgram == ${BST_CHECKED}
-    ExecShell "" "$INSTDIR\MySerial.exe"
+    ExecShell "" "$INSTDIR\MySerial.exe" "${APP_ARGS}"
   ${EndIf}
 FunctionEnd
