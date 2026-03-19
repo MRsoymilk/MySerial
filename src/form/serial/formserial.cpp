@@ -222,23 +222,22 @@ void FormSerial::processEasyConnect() {
             if (m_easy_buffer.contains(expected_handshake)) {
                 LOG_INFO("handshake ok, cmd: DD3C000310CDFF -> {}", m_easy_buffer.toHex().toUpper());
                 m_easy_buffer.clear();
+                m_easy_wait = false;
                 if (m_easy_mode == CFG_F30_MODE_DOUBLE) {
+                    m_step_easy = EASY_MODE_DOUBLE_DO_THRESHOLD;
+
                     LOG_INFO("step [mode double do threshold]: wait response");
                     statusReport(100 * EASY_MODE_DOUBLE_DO_THRESHOLD / EASY_FINISH,
                                  QString("step [mode double do threshold]: wait response"));
-                    m_step_easy = EASY_MODE_DOUBLE_DO_THRESHOLD;
-                    m_timer_easy->start(1000);
                     sendEasyData("DD3C000368CDFF");
                 } else {
+                    m_step_easy = EASY_SET_INTEGRATION_TIME;
+
                     LOG_INFO("step [set integration time]: wait response");
                     statusReport(100 * EASY_SET_INTEGRATION_TIME / EASY_FINISH,
                                  QString("step [set integration time]: wait response"));
-                    m_step_easy = EASY_SET_INTEGRATION_TIME;
-                    m_timer_easy->start(1000);
                     sendEasyData("DD3C000622000005CDFF");
                 }
-            } else {
-                onEasyModeTimeout();
             }
             break;
         }
@@ -248,11 +247,12 @@ void FormSerial::processEasyConnect() {
                          QString("step [mode double do threshold]: extra"));
             if (doThresholdExtra(m_easy_buffer)) {
                 m_easy_buffer.clear();
+                m_easy_wait = false;
+                m_step_easy = EASY_MODE_DOUBLE_DO_BASELINE;
+
                 LOG_INFO("step [mode double do baseline]: wait response");
                 statusReport(100 * EASY_MODE_DOUBLE_DO_BASELINE / EASY_FINISH,
                              QString("step [mode double do baseline]: wait response"));
-                m_step_easy = EASY_MODE_DOUBLE_DO_BASELINE;
-                m_timer_easy->start(1000);
                 sendEasyData("DD3C000370CDFF");
             }
             break;
@@ -263,11 +263,12 @@ void FormSerial::processEasyConnect() {
                          QString("step [mode double do baseline]: extra"));
             if (doBaselineExtra(m_easy_buffer)) {
                 m_easy_buffer.clear();
+                m_easy_wait = false;
+                m_step_easy = EASY_DATA_REQUEST;
+
                 LOG_INFO("step [data 40 request]: wait response");
                 statusReport(100 * EASY_DATA_REQUEST / EASY_FINISH, QString("step [data 40 request]: wait response"));
-                m_step_easy = EASY_DATA_REQUEST;
-                m_timer_easy->start(1000);
-                sendEasyData("DD3C000340CDFF");
+                sendEasyData("DD3C000340CDFF", 2000);
             }
             break;
         }
@@ -277,19 +278,23 @@ void FormSerial::processEasyConnect() {
                          QString("step [set integration time]: check response"));
             QByteArray except_integration = QByteArray::fromHex("DE3A000323CEFF");
             if (m_easy_buffer.contains(except_integration)) {
+                m_easy_buffer.clear();
+                m_easy_wait = false;
+                m_step_easy = EASY_DATA_REQUEST;
+
                 LOG_INFO("step [data 30 request]: wait response");
                 statusReport(100 * EASY_DATA_REQUEST / EASY_FINISH, QString("step [data 30 request]: wait response"));
-                m_step_easy = EASY_DATA_REQUEST;
-                m_timer_easy->start(1000);
                 sendEasyData("DD3C000330CDFF");
             }
             break;
         }
         case EASY_DATA_REQUEST: {
             if (doFrameExtra(m_easy_buffer)) {
+                m_easy_wait = false;
+                m_step_easy = EASY_FINISH;
+
                 LOG_INFO("step [data request]: established");
                 statusReport(100 * EASY_FINISH / EASY_FINISH, QString("step [data request]: established"));
-                m_step_easy = EASY_FINISH;
             }
             break;
         }
@@ -338,7 +343,17 @@ void FormSerial::processProduceConnect(const QByteArray &frame) {
     }
 }
 
-void FormSerial::sendEasyData(const QString &text) {
+void FormSerial::sendEasyData(const QString &text, int timeout) {
+    if(m_easy_wait) {
+        LOG_WARN("skip send (waiting response): {}", text);
+        return;
+    }
+
+    m_easy_wait = true;
+    if (m_timer_easy) {
+        m_timer_easy->start(timeout);
+    }
+
     LOG_INFO("serial send: {}", text);
     if (!(m_serial && m_serial->isOpen())) {
         SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("serial not open!"));
@@ -666,12 +681,55 @@ void FormSerial::initMultSend() {
     ui->labelPage->setText("1 / 6");
 }
 
-void FormSerial::onEasyModeTimeout() {
-    LOG_WARN("easy mode timeout, switch port");
-    if (m_serial) {
-        m_serial->close();
+void FormSerial::processEasyRetry()
+{
+    switch (m_step_easy) {
+        case EASY_HANDSHAKE:
+            sendEasyData("DD3C000310CDFF");
+            break;
+        case EASY_MODE_DOUBLE_DO_THRESHOLD:
+            sendEasyData("DD3C000368CDFF");
+            break;
+        case EASY_MODE_DOUBLE_DO_BASELINE:
+            sendEasyData("DD3C000370CDFF");
+            break;
+        case EASY_DATA_REQUEST:
+            sendEasyData("DD3C000340CDFF", 2000);
+            break;
+        default:
+            break;
     }
+}
+
+void FormSerial::onEasyModeTimeout()
+{
+    LOG_WARN("easy timeout, step = {}", static_cast<int>(m_step_easy));
+
+    m_easy_wait = false;
+
+    static int retry = 0;
+    retry++;
+
+    if (retry < 2) {
+        LOG_WARN("retry current step");
+        processEasyRetry();
+        return;
+    }
+
+    retry = 0;
+
+    if (m_serial) {
+        disconnect(m_serial, nullptr, this, nullptr);
+        m_serial->close();
+        m_serial->deleteLater();
+        m_serial = nullptr;
+    }
+
+    m_easy_buffer.clear();
+    m_easy_wait = false;
+
     ++m_port_index;
+
     QTimer::singleShot(0, this, &FormSerial::doEasyConnect);
 }
 

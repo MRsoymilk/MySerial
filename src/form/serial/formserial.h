@@ -59,7 +59,7 @@ public:
     bool startEasyConnect(const QString &F30_shown_mode);
     bool startProduceConnect();
     void stopFSeriesConnect();
-    void sendEasyData(const QString &text);
+    void sendEasyData(const QString &text, int timeout = 1000);
     void sendExpertData(const QString &text);
     void updateFrameTypes(const QString &idx);
     void sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func = nullptr);
@@ -162,7 +162,9 @@ private:
     void onEasyModeReadyRead();
     void doEasyConnect();
     void processEasyConnect();
+    void processEasyRetry();
     QTimer *m_timer_easy = nullptr;
+    bool m_easy_wait = false;
     STEP_EASY_CONNECT m_step_easy = EASY_CONNECT_PORT;
     QString m_easy_mode = CFG_F30_MODE_DOUBLE;
     QByteArray m_easy_buffer;
