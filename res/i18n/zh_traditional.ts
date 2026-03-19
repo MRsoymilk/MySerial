@@ -2559,12 +2559,12 @@
     <message>
         <location filename="../../src/main/mainwindow.ui" line="284"/>
         <source>Easy</source>
-        <translation>簡易</translation>
+        <translation>Easy</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="292"/>
         <source>Expert</source>
-        <translation>專家</translation>
+        <translation>Expert</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="300"/>
@@ -2609,7 +2609,7 @@
     <message>
         <location filename="../../src/main/mainwindow.ui" line="358"/>
         <source>Produce</source>
-        <translation>生產</translation>
+        <translation>Produce</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="368"/>

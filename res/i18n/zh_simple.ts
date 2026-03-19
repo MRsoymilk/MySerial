@@ -2609,7 +2609,7 @@
     <message>
         <location filename="../../src/main/mainwindow.ui" line="358"/>
         <source>Produce</source>
-        <translation>生产</translation>
+        <translation>Produce</translation>
     </message>
     <message>
         <location filename="../../src/main/mainwindow.ui" line="368"/>
