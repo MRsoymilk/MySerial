@@ -19,23 +19,27 @@ Serial port assistant based on Qt6
 
 ![mode expert](README/mode_expert.jpg)
 
+### Produce
+
+![mode produce](README/mode_produce.jpg)
+
 ## Function
 
 ### Serial
 
 ![Serial](README/serial.jpg)
 
-### Data
-
-![Data](README/data.jpg)
-
 ### Plot
 
 ![Plot](README/plot.jpg)
 
-Correction
+### Correction
 
-![Plot Correction](README/plot_correction.jpg)
+![Correction](README/correction.jpg)
+
+### History
+
+![History](README/history.jpg)
 
 #### SNR
 
@@ -68,6 +72,10 @@ SNR = mean(signal) / std(signal)
 ### Setting
 
 ![Setting](README/setting.jpg)
+
+### Update
+
+![Update](README/update.jpg)
 
 ### Theme
 
