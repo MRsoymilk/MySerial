@@ -335,12 +335,12 @@
         <translation>info</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="179"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="180"/>
         <source>simulate</source>
         <translation>simulate</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="185"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="186"/>
         <source>history</source>
         <translation>history</translation>
     </message>
@@ -356,6 +356,7 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="129"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="167"/>
         <source>to voltage</source>
         <translation>to voltage</translation>
     </message>
@@ -463,89 +464,89 @@
         <translation>accumulate</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="191"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="192"/>
         <source>signal noise ratio</source>
         <translation>signal noise ratio</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="197"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="198"/>
         <source>Points Tracker</source>
         <translation>Points Tracker</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="203"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="204"/>
         <source>Dark Spectrum</source>
         <translation>Dark Spectrum</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="272"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="273"/>
         <source>Peaks</source>
         <translation>Peaks</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="473"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="474"/>
         <source>Save Chart</source>
         <translation>Save Chart</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="895"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="896"/>
         <source>Load Chart</source>
         <translation>Load Chart</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="896"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="897"/>
         <source>Export Chart</source>
         <translation>Export Chart</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="901"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="902"/>
         <source>Add Points Tracker</source>
         <translation>Add Points Tracker</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="902"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="903"/>
         <source>Clear Tracker</source>
         <translation>Clear Tracker</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="927"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
         <source>Add Point</source>
         <translation>Add Point</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="927"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
         <source>Input position:</source>
         <translation>Input position:</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="935"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
         <source>choose file</source>
         <translation>choose file</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="935"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="987"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV Files (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="941"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="994"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="942"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="995"/>
         <source>Cannot open file.</source>
         <translation>Cannot open file.</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="983"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="984"/>
         <source>CSV loaded successfully.</source>
         <translation>CSV loaded successfully.</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="987"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
         <source>Export CSV</source>
         <translation>Export CSV</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1006"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1007"/>
         <source>CSV exported successfully.</source>
         <translation>CSV exported successfully.</translation>
     </message>

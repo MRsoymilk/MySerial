@@ -335,12 +335,12 @@
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="179"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="180"/>
         <source>simulate</source>
         <translation>模擬</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="185"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="186"/>
         <source>history</source>
         <translation>歷史</translation>
     </message>
@@ -356,6 +356,7 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="129"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="167"/>
         <source>to voltage</source>
         <translation>轉電壓</translation>
     </message>
@@ -463,89 +464,89 @@
         <translation>累加</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="191"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="192"/>
         <source>signal noise ratio</source>
         <translation>信噪比</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="197"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="198"/>
         <source>Points Tracker</source>
         <translation>點追蹤</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="203"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="204"/>
         <source>Dark Spectrum</source>
         <translation>暗光譜</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="272"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="273"/>
         <source>Peaks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="473"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="474"/>
         <source>Save Chart</source>
         <translation>保存圖表</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="895"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="896"/>
         <source>Load Chart</source>
         <translation>加載圖表</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="896"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="897"/>
         <source>Export Chart</source>
         <translation>導出圖表</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="901"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="902"/>
         <source>Add Points Tracker</source>
         <translation>添加點追蹤</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="902"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="903"/>
         <source>Clear Tracker</source>
         <translation>清除點追蹤</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="927"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
         <source>Add Point</source>
         <translation>加入點</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="927"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
         <source>Input position:</source>
         <translation>輸入位置：</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="935"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
         <source>choose file</source>
         <translation>選擇文件</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="935"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="987"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="941"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="994"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="942"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="995"/>
         <source>Cannot open file.</source>
         <translation>無法打開文件。</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="983"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="984"/>
         <source>CSV loaded successfully.</source>
         <translation>CSV加載成功。</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="987"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
         <source>Export CSV</source>
         <translation>導出CSV</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1006"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1007"/>
         <source>CSV exported successfully.</source>
         <translation>CSV導出成功。</translation>
     </message>

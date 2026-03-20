@@ -164,6 +164,7 @@ void FormEasy::initToolButton() {
     ui->tBtnImg->setToolTip(tr("save image"));
     ui->tBtnFourier->setToolTip(tr("fourier"));
     ui->tBtnAccumulate->setToolTip(tr("accumulate"));
+    ui->tBtnToVoltage->setToolTip(tr("to voltage"));
 
     ui->tBtnZoom->setChecked(true);
 
