@@ -9,6 +9,12 @@ Serial port assistant based on Qt6
 - SerialPort
 - Network
 
+## document
+
+- [Easy](doc/document_easy.md)
+- [Expert](doc/document_expert.md)
+- [Produce](doc/document_produce.md)
+
 ## mode
 
 ### Easy

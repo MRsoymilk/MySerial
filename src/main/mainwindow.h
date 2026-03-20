@@ -34,10 +34,9 @@ private slots:
     void on_actionEasy_triggered();
     void on_actionExpert_triggered();
     void on_actionProduce_triggered();
-
     void on_actionSetting_triggered();
-
     void on_actionUpdate_triggered();
+    void on_actionUser_Guide_triggered();
 
 private:
     void init();

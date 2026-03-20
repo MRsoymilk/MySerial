@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+#include <QDesktopServices>
 #include <QFile>
 #include <QLabel>
 #include <QPainter>
@@ -328,5 +329,17 @@ void MainWindow::on_actionUpdate_triggered()
 {
     AutoUpdate *upt = new AutoUpdate;
     upt->show();
+}
+
+void MainWindow::on_actionUser_Guide_triggered()
+{
+    QString pdfPath = QCoreApplication::applicationDirPath() + QString("/document/document_%1.pdf").arg(qApp->property("mode").toString().toLower());
+
+    if (!QFile::exists(pdfPath)) {
+        QMessageBox::critical(this, TITLE_ERROR, tr("Unable to find document: %1").arg(pdfPath));
+        return;
+    }
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(pdfPath));
 }
 
