@@ -778,7 +778,7 @@ void FormSerial::init() {
     ui->groupBoxEnhancement->hide();
 
     QSignalBlocker blocker(ui->cBoxSendFormat);
-    ui->cBoxSendFormat->addItems({VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX, VAL_SERIAL_SEND_HEX_TRANSLATE});
+    ui->cBoxSendFormat->addItems({VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX});
 
     m_send_timer = new QTimer(this);
     connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
@@ -842,15 +842,6 @@ void FormSerial::sendExpertData(const QString &text) {
         }
 
         flag = "send (hex)";
-    } else if (m_ini.send_format == VAL_SERIAL_SEND_HEX_TRANSLATE) {
-        QByteArray byteArray = text.toUtf8();
-
-        QString hexString;
-        for (int i = 0; i < byteArray.length(); ++i) {
-            hexString.append(QString("%1 ").arg((unsigned char)byteArray[i], 2, 16, QChar('0')).toUpper());
-        }
-        data = byteArray;
-        flag = "send (hex translate)";
     } else {
         data = text.toUtf8();
         flag = "send (normal)";
