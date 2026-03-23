@@ -60,6 +60,7 @@ public:
     bool startProduceConnect();
     void stopFSeriesConnect();
     void sendEasyData(const QString &text, int timeout = 1000);
+    void sendProduceCmd(const QString &text, int timeout = 1000);
     void sendExpertData(const QString &text);
     void updateFrameTypes(const QString &idx);
     void sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func = nullptr);
@@ -149,15 +150,19 @@ private:
     bool m_establish = false;
 
 private:
+    bool doProduceFrameExtra();
     void doProduceConnect();
     void onProduceModeTimeout();
     void processProduceConnect(const QByteArray &frame);
+    void processProduceRetry();
     std::function<bool(const QByteArray &)> m_call_produce_func = nullptr;
     QTimer *m_timer_produce = nullptr;
+    bool m_produce_wait = false;
     STEP_PRODUCE_CONNECT m_step_produce = PRODUCE_CONNECT_PORT;
+    QByteArray m_produce_buffer;
 
 private:
-    bool doFrameExtra(const QByteArray &data);
+    bool doEasyFrameExtra();
     void onEasyModeTimeout();
     void onEasyModeReadyRead();
     void doEasyConnect();

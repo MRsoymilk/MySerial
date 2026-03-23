@@ -61,6 +61,8 @@ void FormSerial::doProduceConnect() {
 
     connect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onProduceModeReadyRead, Qt::UniqueConnection);
 
+    m_produce_buffer.clear();
+
     statusReport(100 * PRODUCE_HANDSHAKE / PRODUCE_FINISH, QString("%1 step [handshake]: start").arg(port));
     m_step_produce = PRODUCE_HANDSHAKE;
     m_serial->write(QByteArray::fromHex("DD3C000310CDFF"));
@@ -218,6 +220,7 @@ void FormSerial::processEasyConnect() {
         case EASY_CONNECT_PORT:
             break;
         case EASY_HANDSHAKE: {
+            LOG_INFO("step [handshake]: start");
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
             if (m_easy_buffer.contains(expected_handshake)) {
                 LOG_INFO("handshake ok, cmd: DD3C000310CDFF -> {}", m_easy_buffer.toHex().toUpper());
@@ -289,7 +292,7 @@ void FormSerial::processEasyConnect() {
             break;
         }
         case EASY_DATA_REQUEST: {
-            if (doFrameExtra(m_easy_buffer)) {
+            if (doEasyFrameExtra()) {
                 m_easy_wait = false;
                 m_step_easy = EASY_FINISH;
 
@@ -317,22 +320,28 @@ void FormSerial::processProduceConnect(const QByteArray &frame) {
         case PRODUCE_CONNECT_PORT:
             break;
         case PRODUCE_HANDSHAKE: {
+            LOG_INFO("step [handshake]: start");
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
             if (frame.contains(expected_handshake)) {
+                m_produce_buffer.clear();
+                m_produce_wait = false;
+                m_step_produce = PRODUCE_DATA_REQUEST;
+
                 LOG_INFO("handshake ok, cmd: DD3C000310CDFF -> {}", frame.toHex().toUpper());
                 statusReport(100 * PRODUCE_DATA_REQUEST / PRODUCE_FINISH,
                              QString("step [data 40 request]: wait response"));
-                m_step_produce = PRODUCE_DATA_REQUEST;
-                m_serial->write(QByteArray::fromHex("DD3C000340CDFF"));
-            } else {
-                onProduceModeTimeout();
+                sendProduceCmd("DD3C000340CDFF", 4000);
             }
             break;
         }
         case PRODUCE_DATA_REQUEST:
-            LOG_INFO("step [data request]: established");
-            statusReport(100 * PRODUCE_FINISH / PRODUCE_FINISH, QString("step [data request]: established"));
-            m_step_produce = PRODUCE_FINISH;
+            if(doProduceFrameExtra()) {
+                m_produce_wait = false;
+                m_step_produce = PRODUCE_FINISH;
+
+                LOG_INFO("step [data request]: established");
+                statusReport(100 * PRODUCE_FINISH / PRODUCE_FINISH, QString("step [data request]: established"));
+            }
             break;
         case PRODUCE_FINISH:
             if (!m_establish) {
@@ -341,6 +350,48 @@ void FormSerial::processProduceConnect(const QByteArray &frame) {
             }
             break;
     }
+}
+
+void FormSerial::sendProduceCmd(const QString &text, int timeout) {
+    if(m_produce_wait) {
+        LOG_WARN("skip send (waiting response): {}", text);
+        return;
+    }
+
+    m_produce_wait = true;
+    if(m_timer_produce) {
+        m_timer_produce->start(timeout);
+    }
+    LOG_INFO("serial send: {}", text);
+    if (!(m_serial && m_serial->isOpen())) {
+        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("serial not open!"));
+        LOG_ERROR("Serial not open!");
+        return;
+    }
+
+    QByteArray data;
+    QString cleaned = text;
+    cleaned.remove(QRegularExpression("[^0-9A-Fa-f\\s]"));
+
+    QStringList byteStrings;
+    if (cleaned.contains(QRegularExpression("\\s+"))) {
+        byteStrings = cleaned.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+    } else {
+        for (int i = 0; i + 1 < cleaned.length(); i += 2) {
+            byteStrings << cleaned.mid(i, 2);
+        }
+    }
+
+    for (const QString &byteStr : byteStrings) {
+        bool ok;
+        int byte = byteStr.toInt(&ok, 16);
+        if (ok) {
+            data.append(static_cast<char>(byte));
+        } else {
+            LOG_WARN("illegal hex: {}", byteStr);
+        }
+    }
+    m_serial->write(data);
 }
 
 void FormSerial::sendEasyData(const QString &text, int timeout) {
@@ -566,7 +617,77 @@ void FormSerial::onChangeFrameType(const QString &algorithm) {
     updateFrameTypes(m_algorithm);
 }
 
-bool FormSerial::doFrameExtra(const QByteArray &data) {
+bool FormSerial::doProduceFrameExtra() {
+    while (true) {
+        if (m_frameTypes.isEmpty()) {
+            m_produce_buffer.clear();
+            return false;
+        }
+        int firstHeaderIdx = -1;
+        FrameType current_frame;
+
+        // 查找所有已知帧头
+        for (const auto &type : m_frameTypes) {
+            int idx = m_produce_buffer.indexOf(type.header);
+            if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
+                firstHeaderIdx = idx;
+                current_frame = type;
+            }
+        }
+
+        // 没有帧头，清理或等待
+        if (firstHeaderIdx == -1) {
+            if (m_produce_buffer.size() > 10 * 1024) {
+                LOG_WARN("Buffer overflow, clearing");
+                m_produce_buffer.clear();
+            }
+            break;
+        }
+
+        // 丢弃无效数据
+        if (firstHeaderIdx > 0) {
+            LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
+            m_produce_buffer.remove(0, firstHeaderIdx);
+        }
+
+        if (current_frame.length != 0) {
+            // 长度固定帧
+            if (m_produce_buffer.size() < current_frame.length) break;
+
+            QByteArray frame_candidate = m_produce_buffer.left(current_frame.length);
+            if (!frame_candidate.endsWith(current_frame.footer)) {
+                LOG_WARN("Invalid footer (fixed length), removing header only");
+                m_produce_buffer.remove(0, current_frame.header.size());
+                continue;
+            }
+
+            LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
+            handleFrame(current_frame.name, frame_candidate);
+            m_produce_buffer.remove(0, current_frame.length);
+            return true;
+        } else {
+            // 长度不固定：查找 footer 位置
+            int footerIdx = m_produce_buffer.indexOf(current_frame.footer, current_frame.header.size());
+            if (footerIdx == -1) {
+                // 没找到帧尾，等待更多数据
+                break;
+            }
+
+            int frame_len = footerIdx + current_frame.footer.size();
+            QByteArray frame_candidate;
+            frame_candidate = m_produce_buffer.left(frame_len);
+
+            LOG_INFO("Variable-length frame matched: {}, size = {}", current_frame.name.toStdString(), frame_len);
+            handleFrame(current_frame.name, frame_candidate);
+
+            m_produce_buffer.remove(0, frame_len);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool FormSerial::doEasyFrameExtra() {
     while (true) {
         if (m_frameTypes.isEmpty()) {
             m_easy_buffer.clear();
@@ -575,7 +696,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
         int firstHeaderIdx = -1;
         FrameType current_frame;
 
-                // 查找所有已知帧头
+        // 查找所有已知帧头
         for (const auto &type : m_frameTypes) {
             int idx = m_easy_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
@@ -584,7 +705,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
             }
         }
 
-                // 没有帧头，清理或等待
+        // 没有帧头，清理或等待
         if (firstHeaderIdx == -1) {
             if (m_easy_buffer.size() > 10 * 1024) {
                 LOG_WARN("Buffer overflow, clearing");
@@ -593,7 +714,7 @@ bool FormSerial::doFrameExtra(const QByteArray &data) {
             break;
         }
 
-                // 丢弃无效数据
+        // 丢弃无效数据
         if (firstHeaderIdx > 0) {
             LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
             m_easy_buffer.remove(0, firstHeaderIdx);
@@ -681,6 +802,19 @@ void FormSerial::initMultSend() {
     ui->labelPage->setText("1 / 6");
 }
 
+void FormSerial::processProduceRetry() {
+    switch(m_step_produce) {
+        case PRODUCE_HANDSHAKE:
+            sendProduceCmd("DD3C000310CDFF");
+            break;
+        case PRODUCE_DATA_REQUEST:
+            sendProduceCmd("DD3C000340CDFF", 5000);
+            break;
+        default:
+            break;
+    }
+}
+
 void FormSerial::processEasyRetry()
 {
     switch (m_step_easy) {
@@ -694,7 +828,7 @@ void FormSerial::processEasyRetry()
             sendEasyData("DD3C000370CDFF");
             break;
         case EASY_DATA_REQUEST:
-            sendEasyData("DD3C000340CDFF", 2000);
+            sendEasyData("DD3C000340CDFF", 5000);
             break;
         default:
             break;
@@ -721,11 +855,20 @@ void FormSerial::onEasyModeTimeout()
 }
 
 void FormSerial::onProduceModeTimeout() {
-    LOG_WARN("produce mode timeout, switch port");
+    LOG_WARN("produce timeout, step = {}", static_cast<int>(m_step_produce));
+
+    m_produce_buffer.clear();
+    m_produce_wait = false;
+
     if (m_serial) {
+        disconnect(m_serial, nullptr, this, nullptr);
         m_serial->close();
+        m_serial->deleteLater();
+        m_serial = nullptr;
     }
+
     ++m_port_index;
+
     QTimer::singleShot(0, this, &FormSerial::doProduceConnect);
 }
 
@@ -742,7 +885,7 @@ void FormSerial::init() {
     // ini
     getINI();
 
-            // init port
+    // init port
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
         LOG_WARN("No available serial port found!");
@@ -764,7 +907,7 @@ void FormSerial::init() {
     ui->tBtnRefresh->setObjectName("refresh");
 
     m_switch = false;
-    ui->btnSerialSwitch->setText("To Open");
+    ui->btnSerialSwitch->setText(tr("To Open"));
     ui->cBoxPortName->addItems(port_names);
 
     ui->cBoxDataBit->addItems({"8", "7", "6", "5"});
@@ -774,7 +917,7 @@ void FormSerial::init() {
     ui->btnSend->setIcon(QIcon(":/res/icons/send-on.png"));
     ui->btnSend->setIconSize(QSize(32, 32));
 
-            // TODO
+    // TODO
     ui->groupBoxEnhancement->hide();
 
     QSignalBlocker blocker(ui->cBoxSendFormat);
@@ -1101,24 +1244,28 @@ void FormSerial::onExpertModeReadyRead() {
 
 void FormSerial::onEasyModeReadyRead() {
     QByteArray data = m_serial->readAll();
-    m_easy_buffer.append(data);
-    processEasyConnect();
     if (m_establish) {
         emit pushParserData(data);
+    }
+    else {
+        m_easy_buffer.append(data);
+        processEasyConnect();
     }
 }
 
 void FormSerial::onProduceModeReadyRead() {
     QByteArray data = m_serial->readAll();
-    processProduceConnect(data);
-    if (!m_establish) {
-        return;
-    }
-    emit pushParserData(data);
-    if (m_call_produce_func) {
-        if (!m_call_produce_func(data)) {
-            m_call_produce_func = nullptr;
+    if(m_establish) {
+        emit pushParserData(data);
+        if (m_call_produce_func) {
+            if (!m_call_produce_func(data)) {
+                m_call_produce_func = nullptr;
+            }
         }
+    }
+    else {
+        m_produce_buffer.append(data);
+        processProduceConnect(data);
     }
 }
 
