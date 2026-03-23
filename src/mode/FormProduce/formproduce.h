@@ -44,6 +44,8 @@ private slots:
     void on_tBtnDoneSelfCheck_clicked();
     void on_tBtnToVoltage_clicked();
 
+    void on_tBtnPause_clicked();
+
 private:
     void init();
     bool connectProduceMode();
@@ -74,6 +76,7 @@ private:
     void initTabUI();
     QVector<QWidget *> m_tabWidgets;
     QVector<QLabel *> m_tabLabels;
+    bool m_pause = false;
 
 protected:
     void closeEvent(QCloseEvent *event);

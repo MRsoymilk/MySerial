@@ -24,7 +24,15 @@ FormProduce::~FormProduce() {
     delete ui;
 }
 
-void FormProduce::retranslateUI() { ui->retranslateUi(this); }
+void FormProduce::retranslateUI() {
+    ui->retranslateUi(this);
+    if(m_formFittingPoints) {
+        m_formFittingPoints->retranslateUI();
+    }
+    for (int i = 0; i < m_tabLabels.size(); ++i) {
+        m_tabLabels[i]->setText(tr("is done"));
+    }
+}
 
 void FormProduce::setAlgorithm(const QString &algorithm) {
     formSerial->onChangeFrameType(algorithm);
@@ -32,6 +40,10 @@ void FormProduce::setAlgorithm(const QString &algorithm) {
 }
 
 void FormProduce::updatePlot4k(const MY_DATA &my_data, bool record) {
+    if(m_pause) {
+        return;
+    }
+
     CURVE plot31 = my_data.curve31;
     CURVE plot33 = my_data.curve33;
     if (m_enableVoltage) {
@@ -98,7 +110,8 @@ void FormProduce::initTabUI() {
         layout->setContentsMargins(6, 2, 6, 2);
 
         QLabel *label = new QLabel(tr("is done"));
-
+        label->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        label->setMinimumWidth(60);
         layout->addWidget(label);
         w->setLayout(layout);
 
@@ -400,3 +413,10 @@ void FormProduce::on_tBtnToVoltage_clicked() {
     m_enableVoltage = !m_enableVoltage;
     ui->tBtnToVoltage->setChecked(m_enableVoltage);
 }
+
+void FormProduce::on_tBtnPause_clicked()
+{
+    m_pause = !m_pause;
+    ui->tBtnPause->setChecked(m_pause);
+}
+
