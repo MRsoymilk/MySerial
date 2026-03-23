@@ -24,6 +24,7 @@ public:
     ~AutoUpdate();
     void init();
     void retranslateUI();
+    void setMode(const QString& mode);
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -40,6 +41,7 @@ private:
     HttpClient *m_http;
     QString m_url;
     QJsonObject m_objUpdate;
+    QString m_mode;
 };
 
 #endif  // AUTOUPDATE_H

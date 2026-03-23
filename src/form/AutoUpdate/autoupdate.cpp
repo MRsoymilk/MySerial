@@ -53,9 +53,20 @@ void AutoUpdate::init() {
 
 void AutoUpdate::retranslateUI() { ui->retranslateUi(this); }
 
+void AutoUpdate::setMode(const QString &mode)
+{
+    m_mode = mode;
+}
+
 void AutoUpdate::on_btnCheck_clicked() {
     ui->progressBar->setVisible(true);
     QString to_downloaded = m_objUpdate["file"].toString();
+    if(m_mode == "easy") {
+        to_downloaded = "C_" + to_downloaded;
+    }
+    else if(m_mode == "produce") {
+        to_downloaded = "P_" + to_downloaded;
+    }
     m_http->downloadBinary(
         ui->lineEditURL->text(),
         [=](QByteArray data) {

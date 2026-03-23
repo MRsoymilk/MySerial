@@ -328,6 +328,7 @@ void MainWindow::on_actionSetting_triggered()
 void MainWindow::on_actionUpdate_triggered()
 {
     AutoUpdate *upt = new AutoUpdate;
+    upt->setMode(qApp->property("mode").toString().toLower());
     upt->show();
 }
 
