@@ -4,10 +4,12 @@
 void HandleModeEasy::stopConnect()
 {
     sendCMD("DD3C000360CDFF");
-    m_serial->waitForBytesWritten(200);
-    m_serial->flush();
     m_timer_easy->stop();
     if(m_serial) {
+        while (m_serial->bytesToWrite() > 0) {
+            m_serial->waitForBytesWritten(50);
+        }
+        m_serial->flush();
         m_serial->close();
         m_serial->deleteLater();
         m_serial = nullptr;
@@ -44,9 +46,6 @@ void HandleModeEasy::sendCMD(const QString &text)
 
     m_serial->write(QByteArray::fromHex(text.toUtf8()));
     m_wait_next_cmd = true;
-
-    // 1秒后允许发送下一条命令
-    QTimer::singleShot(1000, [this]() { m_wait_next_cmd = false; });
 }
 
 bool HandleModeEasy::doThresholdExtra(const QByteArray &data) {
@@ -167,8 +166,11 @@ void HandleModeEasy::processEasyConnect(const QByteArray &data)
         }
             break;
         case EASY_FINISH:
+        {
             m_establish = true;
+            m_wait_next_cmd = false;
             emit connectEstablished();
+        }
             break;
         default:
             break;
@@ -221,7 +223,6 @@ bool HandleModeEasy::doEasyFrameExtra()
             }
 
             LOG_INFO("Fixed-length frame matched: {}", current_frame.name.toStdString());
-            // handleFrame(current_frame.name, frame_candidate);
             m_easy_buffer.remove(0, current_frame.length);
             return true;
         } else {
@@ -237,7 +238,6 @@ bool HandleModeEasy::doEasyFrameExtra()
             frame_candidate = m_easy_buffer.left(frame_len);
 
             LOG_INFO("Variable-length frame matched: {}, size = {}", current_frame.name.toStdString(), frame_len);
-            // handleFrame(current_frame.name, frame_candidate);
 
             m_easy_buffer.remove(0, frame_len);
             return true;
@@ -248,7 +248,9 @@ bool HandleModeEasy::doEasyFrameExtra()
 
 void HandleModeEasy::onEasyModeTimeout()
 {
-
+    qDebug() << "Port timeout, trying next port";
+    ++m_port_index;
+    tryNextPort();
 }
 
 void HandleModeEasy::onEasyModeReadyRead()
@@ -276,6 +278,7 @@ void HandleModeEasy::processEasyRetry()
 
 void HandleModeEasy::doConnect(const QStringList &ports, const QString& mode)
 {
+    stopConnect();
     m_mode = mode;
     m_ports = ports;
     m_port_index = 0;

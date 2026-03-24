@@ -34,10 +34,12 @@ void HandleModeProduce::doConnect(const QStringList &ports)
 void HandleModeProduce::stopConnect()
 {
     sendCMD("DD3C000360CDFF");
-    m_serial->waitForBytesWritten(200);
-    m_serial->flush();
     m_timer_produce->stop();
     if(m_serial) {
+        while (m_serial->bytesToWrite() > 0) {
+            m_serial->waitForBytesWritten(50);
+        }
+        m_serial->flush();
         m_serial->close();
         m_serial->deleteLater();
         m_serial = nullptr;
