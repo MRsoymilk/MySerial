@@ -36,10 +36,6 @@ void HandleModeProduce::stopConnect()
     sendCMD("DD3C000360CDFF");
     m_timer_produce->stop();
     if(m_serial) {
-        while (m_serial->bytesToWrite() > 0) {
-            m_serial->waitForBytesWritten(50);
-        }
-        m_serial->flush();
         m_serial->close();
         m_serial->deleteLater();
         m_serial = nullptr;
@@ -47,6 +43,7 @@ void HandleModeProduce::stopConnect()
     m_wait_next_cmd = false;
     m_wait_next_port = false;
     m_produce_buffer.clear();
+    LOG_INFO("Produce mode stop connect");
 }
 
 void HandleModeProduce::tryNextPort()
@@ -72,22 +69,29 @@ void HandleModeProduce::tryNextPort()
     m_serial->setStopBits(QSerialPort::OneStop);
 
     if (!m_serial->open(QIODevice::ReadWrite)) {
-        LOG_WARN("open failed: {}", m_serial->errorString());
+        LOG_WARN("{} open failed: {}", portName, m_serial->errorString());
+        emit statusReport(PRODUCE_NONE, tr("[%1] open failed: %2").arg(portName).arg(m_serial->errorString()));
+
         ++m_port_index;
-        QTimer::singleShot(10, this, &HandleModeProduce::tryNextPort);
+        m_timer_produce->stop();
+        tryNextPort();
         return;
     }
 
     connect(m_serial, &QSerialPort::readyRead, this, &HandleModeProduce::onProduceModeReadyRead, Qt::UniqueConnection);
 
-    m_step = PRODUCE_HANDSHAKE;
+    emit statusReport(PRODUCE_NONE, tr("[%1] start.").arg(m_ports[m_port_index]));
+
+    m_step = PRODUCE_NONE;
     m_produce_buffer.clear();
-    m_timer_produce->start(60 * 1000);
+    m_timer_produce->start(30 * 1000);
     m_timer_elapsed.start();
     m_wait_next_cmd = false;
 
     qDebug() << "Opened port:" << portName;
-    processProduceConnect("");
+    sendCMD("DD3C000310CDFF");
+    m_step = PRODUCE_HANDSHAKE;
+    emit statusReport(PRODUCE_HANDSHAKE, tr("[%1] start handshake.").arg(m_ports[m_port_index]));
 }
 
 void HandleModeProduce::onProduceModeReadyRead()
@@ -108,9 +112,10 @@ void HandleModeProduce::processProduceConnect(const QByteArray &data)
     m_produce_buffer.append(data);
 
     switch(m_step) {
+        case PRODUCE_NONE:
+            break;
         case PRODUCE_HANDSHAKE:
         {
-            sendCMD("DD3C000310CDFF");
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
             if(m_produce_buffer.contains(expected_handshake)) {
                 m_step = PRODUCE_DATA_REQUEST;
@@ -122,12 +127,19 @@ void HandleModeProduce::processProduceConnect(const QByteArray &data)
         break;
         case PRODUCE_DATA_REQUEST:
         {
+            emit statusReport(PRODUCE_DATA_REQUEST, tr("[%1] start data request.").arg(m_ports[m_port_index]));
+
             if(doProduceFrameExtra()) {
+                m_wait_next_cmd = false;
                 m_step = PRODUCE_FINISH;
             }
         }
         break;
         case PRODUCE_FINISH:
+            emit statusReport(PRODUCE_FINISH, tr("[%1] finish.").arg(m_ports[m_port_index]));
+
+            m_wait_next_cmd = false;
+            m_timer_produce->stop();
             m_establish = true;
             emit connectEstablished();
             break;
@@ -138,25 +150,29 @@ void HandleModeProduce::processProduceConnect(const QByteArray &data)
 
 void HandleModeProduce::sendCMD(const QString &text)
 {
-    if(!m_serial || m_wait_next_cmd) return;
+    if(!m_serial || !m_serial->isOpen() || m_wait_next_cmd) return;
 
+    LOG_INFO("{} send cmd: {}", m_ports[m_port_index], text);
     m_serial->write(QByteArray::fromHex(text.toUtf8()));
-    m_wait_next_cmd = true;
 
-    // 1秒后允许发送下一条命令
-    QTimer::singleShot(1000, [this]() { m_wait_next_cmd = false; });
+    m_serial->waitForBytesWritten(200);
+    m_serial->flush();
+    QThread::msleep(500);
+
+    m_wait_next_cmd = true;
 }
 
 bool HandleModeProduce::doProduceFrameExtra() {
     while (true) {
         if (m_frameTypes.isEmpty()) {
+            LOG_WARN("Empty frame type!");
             m_produce_buffer.clear();
             return false;
         }
         int firstHeaderIdx = -1;
         FrameType current_frame;
 
-                // 查找所有已知帧头
+        // 查找所有已知帧头
         for (const auto &type : m_frameTypes) {
             int idx = m_produce_buffer.indexOf(type.header);
             if (idx != -1 && (firstHeaderIdx == -1 || idx < firstHeaderIdx)) {
@@ -165,16 +181,16 @@ bool HandleModeProduce::doProduceFrameExtra() {
             }
         }
 
-                // 没有帧头，清理或等待
+        // 没有帧头，清理或等待
         if (firstHeaderIdx == -1) {
-            if (m_produce_buffer.size() > 10 * 1024) {
+            if (m_produce_buffer.size() > 50 * 1024) {
                 LOG_WARN("Buffer overflow, clearing");
                 m_produce_buffer.clear();
             }
             break;
         }
 
-                // 丢弃无效数据
+        // 丢弃无效数据
         if (firstHeaderIdx > 0) {
             LOG_WARN("Dropping invalid data before header: {} bytes", firstHeaderIdx);
             m_produce_buffer.remove(0, firstHeaderIdx);

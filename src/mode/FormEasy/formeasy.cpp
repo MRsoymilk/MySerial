@@ -59,8 +59,15 @@ bool FormEasy::connectEasyMode() {
         ui->tBtnSwitch->setChecked(true);
         overlay->close();
     });
-    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     QString F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
+    int count = 1;
+    overlay->updateTry(count);
+    connect(formSerial, &FormSerial::redoConnect, [=]() {
+        formSerial->stopFSeriesConnect();
+        formSerial->startEasyConnect(F30_shown_mode);
+        overlay->reTry();
+    });
+    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     emit initThreshold();
     formSerial->startEasyConnect(F30_shown_mode);
     return true;

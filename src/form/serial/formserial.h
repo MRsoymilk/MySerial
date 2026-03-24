@@ -66,6 +66,7 @@ signals:
     void pushParserData(QByteArray data);
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendOption(const QJsonObject &option);
+    void redoConnect();
 
 public slots:
     void sendRaw(const QByteArray &bytes);

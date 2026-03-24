@@ -12,15 +12,16 @@ class HandleModeProduce : public QObject{
 
 public:
     enum STEP_PRODUCE_CONNECT {
-        PRODUCE_NONE,
-        PRODUCE_HANDSHAKE,
-        PRODUCE_DATA_REQUEST,
-        PRODUCE_FINISH
+        PRODUCE_NONE = 25,
+        PRODUCE_HANDSHAKE = 50,
+        PRODUCE_DATA_REQUEST = 75,
+        PRODUCE_FINISH = 100
     };
 signals:
     void connectEstablished();
     void dataReady(const QByteArray &data);
     void redoConnect();
+    void statusReport(int progress, const QString &msg);
 
 public slots:
     void stopConnect();

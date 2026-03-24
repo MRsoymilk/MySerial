@@ -27,14 +27,16 @@ signals:
     void redoConnect();
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendOption(const QJsonObject &option);
+    void statusReport(int progress, const QString &msg);
+
 public slots:
     void stopConnect();
 
 public:
     HandleModeEasy(QObject *parent = nullptr);
     void setFrameType(QList<FrameType> type);
-
     void doConnect(const QStringList &ports, const QString& mode);
+
 private:
     void init();
     void processEasyConnect(const QByteArray &data);

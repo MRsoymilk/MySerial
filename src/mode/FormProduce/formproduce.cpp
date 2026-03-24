@@ -202,10 +202,17 @@ bool FormProduce::connectProduceMode() {
         ui->tBtnSwitch->setChecked(false);
         overlay->deleteLater();
     });
-    connect(formSerial, &FormSerial::connectProduceModeEstablished, [=]() {
+    connect(formSerial, &FormSerial::connectProduceModeEstablished, this, [=]() {
         m_isPlaying = true;
         ui->tBtnSwitch->setChecked(true);
         overlay->close();
+    });
+    int count = 1;
+    overlay->updateTry(count);
+    connect(formSerial, &FormSerial::redoConnect, this, [=]() {
+        formSerial->stopFSeriesConnect();
+        formSerial->startProduceConnect();
+        overlay->reTry();
     });
     connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     formSerial->startProduceConnect();

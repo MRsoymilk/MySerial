@@ -15,6 +15,7 @@ public:
     ~LoadingOverLay();
 
     void updateTry(int count);
+    void reTry();
 
 signals:
     void stopConnect();
@@ -30,6 +31,7 @@ private:
 
 private:
     Ui::LoadingOverLay *ui;
+    int m_count = 0;
 };
 
 #endif  // LOADINGOVERLAY_H

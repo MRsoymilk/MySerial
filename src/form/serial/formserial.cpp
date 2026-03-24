@@ -47,7 +47,10 @@ bool FormSerial::startProduceConnect() {
     connect(m_connectThread, &QThread::finished, m_handleProduce, &QObject::deleteLater, Qt::QueuedConnection);
     connect(m_handleProduce, &HandleModeProduce::connectEstablished, this, &FormSerial::connectProduceModeEstablished);
     connect(m_handleProduce, &HandleModeProduce::dataReady, this, &FormSerial::pushParserData);
+    connect(m_handleProduce, &HandleModeProduce::statusReport, this, &FormSerial::statusReport);
+    connect(m_handleProduce, &HandleModeProduce::redoConnect, this, &FormSerial::redoConnect);
     connect(this, &FormSerial::stopProduceConnect, m_handleProduce, &HandleModeProduce::stopConnect);
+
     m_connectThread->start();
     return true;
 }
@@ -69,6 +72,7 @@ bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
     connect(m_handleEasy, &HandleModeEasy::dataReady, this, &FormSerial::pushParserData);
     connect(m_handleEasy, &HandleModeEasy::sendOption, this, &FormSerial::sendOption);
     connect(m_handleEasy, &HandleModeEasy::sendThreshold, this, &FormSerial::sendThreshold);
+     connect(m_handleEasy, &HandleModeEasy::statusReport, this, &FormSerial::statusReport);
     connect(this, &FormSerial::stopEasyConnect, m_handleEasy, &HandleModeEasy::stopConnect);
 
     m_connectThread->start();
