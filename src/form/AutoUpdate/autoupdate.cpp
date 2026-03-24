@@ -23,7 +23,14 @@ void AutoUpdate::showEvent(QShowEvent *event) {
 
     ui->progressBar->setVisible(false);
 
-    ui->lineEditURL->setText(QString("%1/%2").arg(res["url"].toString(), res["file"].toString()));
+    QString to_downloaded = res["file"].toString();
+    if(m_mode == "easy") {
+        to_downloaded = "C_" + to_downloaded;
+    }
+    else if(m_mode == "produce") {
+        to_downloaded = "P_" + to_downloaded;
+    }
+    ui->lineEditURL->setText(QString("%1/%2").arg(res["url"].toString(), to_downloaded));
     ui->textBrowser->setText(res["description"].toString());
     ui->lineEditTargetVersion->setText(res["version"].toString());
     ui->lineEditCurrentVersion->setText(APP_VERSION);
