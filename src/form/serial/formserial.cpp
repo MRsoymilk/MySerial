@@ -82,11 +82,11 @@ bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
 
 void FormSerial::stopFSeriesConnect() {
     if(m_handleProduce) {
-        QMetaObject::invokeMethod(m_handleProduce, "stopConnect", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(m_handleProduce, "stopConnect", Qt::QueuedConnection);
     }
 
     if(m_handleEasy) {
-        QMetaObject::invokeMethod(m_handleEasy, "stopConnect", Qt::BlockingQueuedConnection);
+        QMetaObject::invokeMethod(m_handleEasy, "stopConnect", Qt::QueuedConnection);
     }
     if(m_connectThread) {
         m_connectThread->quit();
