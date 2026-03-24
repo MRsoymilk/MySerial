@@ -13,6 +13,7 @@ class MyChartView;
 class FormSerial;
 class ThreadWorker;
 class FormFittingPoints;
+class LoadingOverLay;
 
 namespace Ui {
 class FormProduce;
@@ -76,6 +77,7 @@ private:
     QVector<QWidget *> m_tabWidgets;
     QVector<QLabel *> m_tabLabels;
     bool m_pause = false;
+    LoadingOverLay *m_overlay = nullptr;
 
 protected:
     void closeEvent(QCloseEvent *event);

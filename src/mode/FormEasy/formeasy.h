@@ -11,6 +11,7 @@
 #include <QWidget>
 
 #include "global.h"
+#include "keydef.h"
 
 class MyChartView;
 class FormSerial;
@@ -26,6 +27,7 @@ class PeakTrajectory;
 class DraggableLine;
 class PointsTracker;
 class DarkSpectrum;
+class LoadingOverLay;
 
 namespace Ui {
 class FormEasy;
@@ -165,6 +167,8 @@ private:
     QToolButton *m_tBtnDarkSpectrum = nullptr;
     QVector<double> m_vPointsTracker;
     void sendIntegrationTime();
+    LoadingOverLay *m_overlay = nullptr;
+    QString m_F30_shown_mode = CFG_F30_MODE_DOUBLE;
 };
 
 #endif  // FORMEASY_H

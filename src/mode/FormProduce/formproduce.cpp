@@ -170,6 +170,29 @@ void FormProduce::init() {
     QObject::connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30,
                      Qt::QueuedConnection);
     connect(m_worker, &ThreadWorker::plotReady4k, this, &FormProduce::updatePlot4k, Qt::QueuedConnection);
+
+    m_overlay = new LoadingOverLay(this);
+    m_overlay->hide();
+    connect(m_overlay, &LoadingOverLay::stopConnect, this, [=]() {
+        LOG_INFO("connect stopped by user");
+        formSerial->stopFSeriesConnect();
+        m_isPlaying = false;
+        ui->tBtnSwitch->setChecked(false);
+        m_overlay->hide();
+    });
+    connect(formSerial, &FormSerial::connectProduceModeEstablished, this, [=]() {
+        m_isPlaying = true;
+        ui->tBtnSwitch->setChecked(true);
+        m_overlay->hide();
+    });
+
+    connect(formSerial, &FormSerial::redoConnect, this, [=]() {
+        formSerial->stopFSeriesConnect();
+        formSerial->startProduceConnect();
+        m_overlay->reTry();
+    });
+    connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
+
 }
 
 void FormProduce::on_tBtnSwitch_clicked() {
@@ -189,32 +212,14 @@ void FormProduce::on_tBtnSwitch_clicked() {
 }
 
 bool FormProduce::connectProduceMode() {
-    LoadingOverLay *overlay = new LoadingOverLay(this);
-    overlay->resize(this->size());
-    overlay->show();
+    m_overlay->resize(this->size());
+    m_overlay->show();
+    m_overlay->updateTry(1);
+
     QString algorithm = qApp->property("algorithm").toString();
     formSerial->updateFrameTypes(algorithm);
     m_worker->setAlgorithm(algorithm);
-    connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
-        LOG_INFO("connect stopped by user");
-        formSerial->stopFSeriesConnect();
-        m_isPlaying = false;
-        ui->tBtnSwitch->setChecked(false);
-        overlay->deleteLater();
-    });
-    connect(formSerial, &FormSerial::connectProduceModeEstablished, this, [=]() {
-        m_isPlaying = true;
-        ui->tBtnSwitch->setChecked(true);
-        overlay->close();
-    });
-    int count = 1;
-    overlay->updateTry(count);
-    connect(formSerial, &FormSerial::redoConnect, this, [=]() {
-        formSerial->stopFSeriesConnect();
-        formSerial->startProduceConnect();
-        overlay->reTry();
-    });
-    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
+
     formSerial->startProduceConnect();
     return true;
 }

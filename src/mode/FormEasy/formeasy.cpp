@@ -41,35 +41,16 @@ void FormEasy::setAlgorithm(const QString &algorithm) {
 }
 
 bool FormEasy::connectEasyMode() {
-    LoadingOverLay *overlay = new LoadingOverLay(this);
-    overlay->resize(this->size());
-    overlay->show();
+    m_overlay->resize(this->size());
+    m_overlay->updateTry(1);
+    m_overlay->show();
+
     QString algorithm = qApp->property("algorithm").toString();
     formSerial->updateFrameTypes(algorithm);
     m_worker->setAlgorithm(algorithm);
-    connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
-        LOG_INFO("connect stopped by user");
-        m_isPlaying = false;
-        ui->tBtnSwitch->setChecked(false);
-        closeEasyMode();
-        overlay->deleteLater();
-    });
-    connect(formSerial, &FormSerial::connectEasyModeEstablished, [=]() {
-        m_isPlaying = true;
-        ui->tBtnSwitch->setChecked(true);
-        overlay->close();
-    });
-    QString F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
-    int count = 1;
-    overlay->updateTry(count);
-    connect(formSerial, &FormSerial::redoConnect, [=]() {
-        formSerial->stopFSeriesConnect();
-        formSerial->startEasyConnect(F30_shown_mode);
-        overlay->reTry();
-    });
-    connect(formSerial, &FormSerial::statusReport, overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
+    m_F30_shown_mode = SETTING_CONFIG_GET(CFG_GROUP_F30_SHOWN, CFG_F30_SHOWN_MODE, CFG_F30_MODE_DOUBLE);
     emit initThreshold();
-    formSerial->startEasyConnect(F30_shown_mode);
+    formSerial->startEasyConnect(m_F30_shown_mode);
     return true;
 }
 
@@ -324,6 +305,27 @@ void FormEasy::init() {
         m_enableFourier = false;
         ui->tBtnFourier->setChecked(false);
     });
+
+    m_overlay = new LoadingOverLay(this);
+    m_overlay->hide();
+    connect(m_overlay, &LoadingOverLay::stopConnect, this, [this]() {
+        LOG_INFO("connect stopped by user");
+        m_isPlaying = false;
+        ui->tBtnSwitch->setChecked(false);
+        closeEasyMode();
+        m_overlay->hide();
+    });
+    connect(formSerial, &FormSerial::connectEasyModeEstablished, this, [this]() {
+        m_isPlaying = true;
+        ui->tBtnSwitch->setChecked(true);
+        m_overlay->hide();
+    });
+    connect(formSerial, &FormSerial::redoConnect, this, [this]() {
+        formSerial->stopFSeriesConnect();
+        formSerial->startEasyConnect(m_F30_shown_mode);
+        m_overlay->reTry();
+    });
+    connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
 }
 
 void FormEasy::highlightRowByX(double x) {
