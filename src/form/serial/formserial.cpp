@@ -73,6 +73,7 @@ bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
     connect(m_handleEasy, &HandleModeEasy::sendOption, this, &FormSerial::sendOption);
     connect(m_handleEasy, &HandleModeEasy::sendThreshold, this, &FormSerial::sendThreshold);
      connect(m_handleEasy, &HandleModeEasy::statusReport, this, &FormSerial::statusReport);
+    connect(m_handleEasy, &HandleModeEasy::redoConnect, this, &FormSerial::redoConnect);
     connect(this, &FormSerial::stopEasyConnect, m_handleEasy, &HandleModeEasy::stopConnect);
 
     m_connectThread->start();

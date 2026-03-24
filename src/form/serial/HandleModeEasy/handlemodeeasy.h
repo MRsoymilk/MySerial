@@ -12,13 +12,14 @@ class HandleModeEasy  : public QObject{
 
 public:
     enum STEP_EASY_CONNECT {
-        EASY_CONNECT_PORT = 1,
-        EASY_HANDSHAKE,
-        EASY_MODE_DOUBLE_DO_THRESHOLD,
-        EASY_MODE_DOUBLE_DO_BASELINE,
-        EASY_SET_INTEGRATION_TIME,
-        EASY_DATA_REQUEST,
-        EASY_FINISH
+        EASY_NONE,
+        EASY_CONNECT_PORT = 15,
+        EASY_HANDSHAKE = 30,
+        EASY_MODE_DOUBLE_DO_THRESHOLD = 45,
+        EASY_MODE_DOUBLE_DO_BASELINE = 60,
+        EASY_SET_INTEGRATION_TIME = 75,
+        EASY_DATA_REQUEST = 90,
+        EASY_FINISH = 100
     };
 
 signals:
