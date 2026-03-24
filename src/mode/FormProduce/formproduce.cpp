@@ -197,6 +197,7 @@ bool FormProduce::connectProduceMode() {
     m_worker->setAlgorithm(algorithm);
     connect(overlay, &LoadingOverLay::stopConnect, this, [=]() {
         LOG_INFO("connect stopped by user");
+        formSerial->stopFSeriesConnect();
         m_isPlaying = false;
         ui->tBtnSwitch->setChecked(false);
         overlay->deleteLater();

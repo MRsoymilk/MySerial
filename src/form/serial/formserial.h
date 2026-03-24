@@ -7,10 +7,11 @@
 #include <QWidget>
 
 #include "global.h"
-#include "keydef.h"
 
 class LineSend;
 class ThreadParser;
+class HandleModeProduce;
+class HandleModeEasy;
 
 namespace Ui {
 class FormSerial;
@@ -21,16 +22,6 @@ class FormSerial : public QWidget {
 
 public:
     enum class SEND_FORMAT { NORMAL = 0, HEX, HEX_TRANSLATE };
-    enum STEP_PRODUCE_CONNECT { PRODUCE_CONNECT_PORT = 1, PRODUCE_HANDSHAKE, PRODUCE_DATA_REQUEST, PRODUCE_FINISH };
-    enum STEP_EASY_CONNECT {
-        EASY_CONNECT_PORT = 1,
-        EASY_HANDSHAKE,
-        EASY_MODE_DOUBLE_DO_THRESHOLD,
-        EASY_MODE_DOUBLE_DO_BASELINE,
-        EASY_SET_INTEGRATION_TIME,
-        EASY_DATA_REQUEST,
-        EASY_FINISH
-    };
 
     struct SERIAL {
         QString Description;
@@ -59,11 +50,10 @@ public:
     bool startEasyConnect(const QString &F30_shown_mode);
     bool startProduceConnect();
     void stopFSeriesConnect();
-    void sendEasyData(const QString &text, int timeout = 1000);
-    void sendProduceCmd(const QString &text, int timeout = 1000);
+    void sendEasyData(const QString &text);
     void sendExpertData(const QString &text);
-    void updateFrameTypes(const QString &idx);
     void sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func = nullptr);
+    void updateFrameTypes(const QString &idx);
 
 signals:
     void recv2PlotLLC(const FRAME &frame, const double &temperature = 0.0);
@@ -81,7 +71,6 @@ public slots:
     void sendRaw(const QByteArray &bytes);
     void onChangeFrameType(const QString &algorithm);
     void onSimulateRecv(const QByteArray &bytes);
-    void clearData();
     void handleFrame(const QString &frameName, const QByteArray &frame_candidate, const QByteArray &temp = "");
 
 protected:
@@ -105,7 +94,6 @@ private slots:
     void on_btnSend_clicked();
     void on_btnSerialSwitch_clicked();
     void on_cBoxPortName_activated(int index);
-    void onProduceModeReadyRead();
     void on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &state);
     void on_cBoxSendFormat_currentTextChanged(const QString &format);
     void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &state);
@@ -142,37 +130,13 @@ private:
     bool m_acceptTemperature = false;
     QThread *m_workerThread = nullptr;
     ThreadParser *m_parser = nullptr;
+    QThread *m_connectThread = nullptr;
+    HandleModeProduce *m_handleProduce = nullptr;
+    HandleModeEasy *m_handleEasy = nullptr;
 
-private:
-    void doPortsScan();
-    int m_port_index = 0;
-    QStringList m_ports;
-    bool m_establish = false;
-
-private:
-    bool doProduceFrameExtra();
-    void doProduceConnect();
-    void onProduceModeTimeout();
-    void processProduceConnect(const QByteArray &frame);
-    void processProduceRetry();
-    std::function<bool(const QByteArray &)> m_call_produce_func = nullptr;
-    QTimer *m_timer_produce = nullptr;
-    bool m_produce_wait = false;
-    STEP_PRODUCE_CONNECT m_step_produce = PRODUCE_CONNECT_PORT;
-    QByteArray m_produce_buffer;
-
-private:
-    bool doEasyFrameExtra();
-    void onEasyModeTimeout();
-    void onEasyModeReadyRead();
-    void doEasyConnect();
-    void processEasyConnect();
-    void processEasyRetry();
-    QTimer *m_timer_easy = nullptr;
-    bool m_easy_wait = false;
-    STEP_EASY_CONNECT m_step_easy = EASY_CONNECT_PORT;
-    QString m_easy_mode = CFG_F30_MODE_DOUBLE;
-    QByteArray m_easy_buffer;
+signals:
+    bool stopProduceConnect();
+    bool stopEasyConnect();
 };
 
 #endif  // FORMSERIAL_H

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.5.4 LANGUAGES CXX)
+project(MySerial VERSION 1.5.5 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -22,6 +22,12 @@ set(FORM_SERIAL
     src/form/serial/LineSend/linesend.ui
     src/form/serial/ThreadParser/threadparser.h
     src/form/serial/ThreadParser/threadparser.cpp
+    src/form/serial/HandleModeProduce/handlemodeproduce.h
+    src/form/serial/HandleModeProduce/handlemodeproduce.cpp
+    src/form/serial/HandleModeExpert/handlemodeexpert.h
+    src/form/serial/HandleModeExpert/handlemodeexpert.cpp
+    src/form/serial/HandleModeEasy/handlemodeeasy.h
+    src/form/serial/HandleModeEasy/handlemodeeasy.cpp
 )
 
 set(FORM_PLOT

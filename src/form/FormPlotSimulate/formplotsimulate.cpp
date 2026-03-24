@@ -73,8 +73,6 @@ void FormPlotSimulate::closeEvent(QCloseEvent *event) {
 void FormPlotSimulate::simulate4k() {
     if (m_timer->isActive()) m_timer->stop();
 
-    emit simulateReset();
-
     m_frames.clear();
     m_frameIndex = 0;
 

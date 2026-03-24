@@ -43,7 +43,6 @@ private slots:
     void on_btnStartSelfCheck_clicked();
     void on_tBtnDoneSelfCheck_clicked();
     void on_tBtnToVoltage_clicked();
-
     void on_tBtnPause_clicked();
 
 private:

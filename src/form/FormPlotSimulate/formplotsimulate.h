@@ -19,7 +19,6 @@ public:
 
 signals:
     void simulateDataReady(const QByteArray &data);
-    void simulateReset();
     void windowClose();
 
 public slots:

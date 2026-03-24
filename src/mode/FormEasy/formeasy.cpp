@@ -284,7 +284,6 @@ void FormEasy::init() {
 
     connect(m_plotSimulate, &FormPlotSimulate::simulateDataReady, formSerial, &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
-    connect(m_plotSimulate, &FormPlotSimulate::simulateReset, formSerial, &FormSerial::clearData, Qt::QueuedConnection);
 
     connect(m_worker, &ThreadWorker::plotReady4k, this, &FormEasy::updatePlot4k, Qt::QueuedConnection);
     connect(this, &FormEasy::recvThreshold, m_worker, &ThreadWorker::onUseLoadedThreshold);
