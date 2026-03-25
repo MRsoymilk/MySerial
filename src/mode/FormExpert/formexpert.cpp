@@ -58,17 +58,24 @@ void FormExpert::setAlgorithm(const QString &algorithm) {
 
 void FormExpert::initToolbar() {
     QList<QToolButton *> buttonList = {
-        ui->btnSerial, ui->btnLog, ui->btnPlot, ui->btnExternal,
+        ui->btnSerial,
+        ui->btnLog,
+        ui->btnPlot,
+        ui->btnExternal,
     };
 
     QMap<QToolButton *, QString> onIcons = {
-        {ui->btnSerial, "usb-on"},    {ui->btnLog, "log-on"},         {ui->btnPlot, "plot-on"},
-       {ui->btnExternal, "external-on"},
+        {ui->btnSerial, "usb-on"},
+        {ui->btnLog, "log-on"},
+        {ui->btnPlot, "plot-on"},
+        {ui->btnExternal, "external-on"},
     };
 
     QMap<QToolButton *, QString> offIcons = {
-        {ui->btnSerial, "usb-off"},    {ui->btnLog, "log-off"},         {ui->btnPlot, "plot-off"},
-       {ui->btnExternal, "external-off"},
+        {ui->btnSerial, "usb-off"},
+        {ui->btnLog, "log-off"},
+        {ui->btnPlot, "plot-off"},
+        {ui->btnExternal, "external-off"},
     };
 
     for (QToolButton *btn : buttonList) {

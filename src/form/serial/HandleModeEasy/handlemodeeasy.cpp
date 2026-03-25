@@ -1,13 +1,13 @@
 #include "handlemodeeasy.h"
-#include "funcdef.h"
 
 #include <QThread>
 
-void HandleModeEasy::stopConnect()
-{
+#include "funcdef.h"
+
+void HandleModeEasy::stopConnect() {
     sendCMD("DD3C000360CDFF");
     m_timer_easy->stop();
-    if(m_serial) {
+    if (m_serial) {
         m_serial->close();
         m_serial->deleteLater();
         m_serial = nullptr;
@@ -17,17 +17,11 @@ void HandleModeEasy::stopConnect()
     m_easy_buffer.clear();
 }
 
-HandleModeEasy::HandleModeEasy(QObject *parent) : QObject(parent) {
-    init();
-}
+HandleModeEasy::HandleModeEasy(QObject *parent) : QObject(parent) { init(); }
 
-void HandleModeEasy::setFrameType(QList<FrameType> type)
-{
-    m_frameTypes = type;
-}
+void HandleModeEasy::setFrameType(QList<FrameType> type) { m_frameTypes = type; }
 
-void HandleModeEasy::init()
-{
+void HandleModeEasy::init() {
     m_timer_easy = new QTimer(this);
     m_timer_easy->setSingleShot(true);
     connect(m_timer_easy, &QTimer::timeout, this, &HandleModeEasy::onEasyModeTimeout);
@@ -38,9 +32,8 @@ void HandleModeEasy::init()
     m_establish = false;
 }
 
-void HandleModeEasy::sendCMD(const QString &text)
-{
-    if(!m_serial || !m_serial->isOpen() || m_wait_next_cmd) return;
+void HandleModeEasy::sendCMD(const QString &text) {
+    if (!m_serial || !m_serial->isOpen() || m_wait_next_cmd) return;
 
     LOG_INFO("{} send cmd: {}", m_ports[m_port_index], text);
     m_serial->write(QByteArray::fromHex(text.toUtf8()));
@@ -107,31 +100,27 @@ bool HandleModeEasy::doBaselineExtra(const QByteArray &data) {
     return true;
 }
 
-void HandleModeEasy::processEasyConnect(const QByteArray &data)
-{
+void HandleModeEasy::processEasyConnect(const QByteArray &data) {
     m_easy_buffer.append(data);
     switch (m_step) {
-        case EASY_HANDSHAKE:
-        {
+        case EASY_HANDSHAKE: {
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
-            if(m_easy_buffer.contains(expected_handshake)) {
+            if (m_easy_buffer.contains(expected_handshake)) {
                 m_wait_next_cmd = false;
                 m_easy_buffer.clear();
 
-                if(m_mode == CFG_F30_MODE_SINGLE) {
+                if (m_mode == CFG_F30_MODE_SINGLE) {
                     m_step = EASY_SET_INTEGRATION_TIME;
                     sendCMD("DD3C000622000005CDFF");
-                }
-                else {
+                } else {
                     m_step = EASY_MODE_DOUBLE_DO_THRESHOLD;
                     sendCMD("DD3C000368CDFF");
                 }
             }
-        }
-            break;
-        case EASY_MODE_DOUBLE_DO_THRESHOLD:
-        {
-            emit statusReport(EASY_MODE_DOUBLE_DO_THRESHOLD, tr("[%1] mode double, do threshold.").arg(m_ports[m_port_index]));
+        } break;
+        case EASY_MODE_DOUBLE_DO_THRESHOLD: {
+            emit statusReport(EASY_MODE_DOUBLE_DO_THRESHOLD,
+                              tr("[%1] mode double, do threshold.").arg(m_ports[m_port_index]));
 
             if (doThresholdExtra(m_easy_buffer)) {
                 m_easy_buffer.clear();
@@ -139,11 +128,10 @@ void HandleModeEasy::processEasyConnect(const QByteArray &data)
                 m_wait_next_cmd = false;
                 sendCMD("DD3C000370CDFF");
             }
-        }
-            break;
-        case EASY_MODE_DOUBLE_DO_BASELINE:
-        {
-            emit statusReport(EASY_MODE_DOUBLE_DO_BASELINE, tr("[%1] mode double, do baseline.").arg(m_ports[m_port_index]));
+        } break;
+        case EASY_MODE_DOUBLE_DO_BASELINE: {
+            emit statusReport(EASY_MODE_DOUBLE_DO_BASELINE,
+                              tr("[%1] mode double, do baseline.").arg(m_ports[m_port_index]));
 
             if (doBaselineExtra(m_easy_buffer)) {
                 m_easy_buffer.clear();
@@ -151,10 +139,8 @@ void HandleModeEasy::processEasyConnect(const QByteArray &data)
                 m_wait_next_cmd = false;
                 sendCMD("DD3C000340CDFF");
             }
-        }
-            break;
-        case EASY_SET_INTEGRATION_TIME:
-        {
+        } break;
+        case EASY_SET_INTEGRATION_TIME: {
             emit statusReport(EASY_SET_INTEGRATION_TIME, tr("[%1] set integration time.").arg(m_ports[m_port_index]));
 
             QByteArray except_integration = QByteArray::fromHex("DE3A000323CEFF");
@@ -164,35 +150,29 @@ void HandleModeEasy::processEasyConnect(const QByteArray &data)
                 m_step = EASY_DATA_REQUEST;
                 sendCMD("DD3C000330CDFF");
             }
-        }
-            break;
-        case EASY_DATA_REQUEST:
-        {
+        } break;
+        case EASY_DATA_REQUEST: {
             emit statusReport(EASY_DATA_REQUEST, tr("[%1] start data request.").arg(m_ports[m_port_index]));
 
             if (doEasyFrameExtra()) {
                 m_wait_next_cmd = false;
                 m_step = EASY_FINISH;
             }
-        }
-            break;
-        case EASY_FINISH:
-        {
+        } break;
+        case EASY_FINISH: {
             emit statusReport(EASY_FINISH, tr("[%1] finish.").arg(m_ports[m_port_index]));
 
             m_establish = true;
             m_wait_next_cmd = false;
             m_timer_easy->stop();
             emit connectEstablished();
-        }
-            break;
+        } break;
         default:
             break;
     }
 }
 
-bool HandleModeEasy::doEasyFrameExtra()
-{
+bool HandleModeEasy::doEasyFrameExtra() {
     while (true) {
         if (m_frameTypes.isEmpty()) {
             m_easy_buffer.clear();
@@ -260,38 +240,24 @@ bool HandleModeEasy::doEasyFrameExtra()
     return false;
 }
 
-void HandleModeEasy::onEasyModeTimeout()
-{
+void HandleModeEasy::onEasyModeTimeout() {
     qDebug() << "Port timeout, trying next port";
     ++m_port_index;
     tryNextPort();
 }
 
-void HandleModeEasy::onEasyModeReadyRead()
-{
-    if(!m_serial) return;
+void HandleModeEasy::onEasyModeReadyRead() {
+    if (!m_serial) return;
 
     QByteArray data = m_serial->readAll();
-    if(m_establish) {
+    if (m_establish) {
         emit dataReady(data);
-    }
-    else {
+    } else {
         processEasyConnect(data);
     }
 }
 
-void HandleModeEasy::doEasyConnect()
-{
-
-}
-
-void HandleModeEasy::processEasyRetry()
-{
-
-}
-
-void HandleModeEasy::doConnect(const QStringList &ports, const QString& mode)
-{
+void HandleModeEasy::doConnect(const QStringList &ports, const QString &mode) {
     stopConnect();
     m_mode = mode;
     m_ports = ports;
@@ -299,16 +265,14 @@ void HandleModeEasy::doConnect(const QStringList &ports, const QString& mode)
     tryNextPort();
 }
 
-
-void HandleModeEasy::tryNextPort()
-{
+void HandleModeEasy::tryNextPort() {
     if (m_port_index >= m_ports.size()) {
         qDebug() << "All ports tried, handshake failed";
         emit redoConnect();
         return;
     }
 
-    if(m_serial) {
+    if (m_serial) {
         m_serial->close();
         m_serial->deleteLater();
         m_serial = nullptr;

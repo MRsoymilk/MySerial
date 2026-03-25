@@ -1,12 +1,12 @@
 #include "handlemodeproduce.h"
-#include "funcdef.h"
+
+#include <QSerialPortInfo>
 #include <QThread>
 #include <QTimer>
-#include <QSerialPortInfo>
 
-HandleModeProduce::HandleModeProduce(QObject *parent) : QObject(parent) {
-    init();
-}
+#include "funcdef.h"
+
+HandleModeProduce::HandleModeProduce(QObject *parent) : QObject(parent) { init(); }
 
 void HandleModeProduce::init() {
     m_timer_produce = new QTimer(this);
@@ -19,23 +19,18 @@ void HandleModeProduce::init() {
     m_establish = false;
 }
 
-void HandleModeProduce::setFrameType(QList<FrameType> type)
-{
-    m_frameTypes = type;
-}
+void HandleModeProduce::setFrameType(QList<FrameType> type) { m_frameTypes = type; }
 
-void HandleModeProduce::doConnect(const QStringList &ports)
-{
+void HandleModeProduce::doConnect(const QStringList &ports) {
     m_ports = ports;
     m_port_index = 0;
     tryNextPort();
 }
 
-void HandleModeProduce::stopConnect()
-{
+void HandleModeProduce::stopConnect() {
     sendCMD("DD3C000360CDFF");
     m_timer_produce->stop();
-    if(m_serial) {
+    if (m_serial) {
         m_serial->close();
         m_serial->deleteLater();
         m_serial = nullptr;
@@ -46,15 +41,14 @@ void HandleModeProduce::stopConnect()
     LOG_INFO("Produce mode stop connect");
 }
 
-void HandleModeProduce::tryNextPort()
-{
+void HandleModeProduce::tryNextPort() {
     if (m_port_index >= m_ports.size()) {
         qDebug() << "All ports tried, handshake failed";
         emit redoConnect();
         return;
     }
 
-    if(m_serial) {
+    if (m_serial) {
         m_serial->close();
         m_serial->deleteLater();
         m_serial = nullptr;
@@ -94,47 +88,40 @@ void HandleModeProduce::tryNextPort()
     emit statusReport(PRODUCE_HANDSHAKE, tr("[%1] start handshake.").arg(m_ports[m_port_index]));
 }
 
-void HandleModeProduce::onProduceModeReadyRead()
-{
-    if(!m_serial) return;
+void HandleModeProduce::onProduceModeReadyRead() {
+    if (!m_serial) return;
 
     QByteArray data = m_serial->readAll();
-    if(m_establish) {
+    if (m_establish) {
         emit dataReady(data);
-    }
-    else {
+    } else {
         processProduceConnect(data);
     }
 }
 
-void HandleModeProduce::processProduceConnect(const QByteArray &data)
-{
+void HandleModeProduce::processProduceConnect(const QByteArray &data) {
     m_produce_buffer.append(data);
 
-    switch(m_step) {
+    switch (m_step) {
         case PRODUCE_NONE:
             break;
-        case PRODUCE_HANDSHAKE:
-        {
+        case PRODUCE_HANDSHAKE: {
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
-            if(m_produce_buffer.contains(expected_handshake)) {
+            if (m_produce_buffer.contains(expected_handshake)) {
                 m_step = PRODUCE_DATA_REQUEST;
                 m_wait_next_cmd = false;
                 m_produce_buffer.clear();
                 sendCMD("DD3C000340CDFF");
             }
-        }
-        break;
-        case PRODUCE_DATA_REQUEST:
-        {
+        } break;
+        case PRODUCE_DATA_REQUEST: {
             emit statusReport(PRODUCE_DATA_REQUEST, tr("[%1] start data request.").arg(m_ports[m_port_index]));
 
-            if(doProduceFrameExtra()) {
+            if (doProduceFrameExtra()) {
                 m_wait_next_cmd = false;
                 m_step = PRODUCE_FINISH;
             }
-        }
-        break;
+        } break;
         case PRODUCE_FINISH:
             emit statusReport(PRODUCE_FINISH, tr("[%1] finish.").arg(m_ports[m_port_index]));
 
@@ -148,9 +135,8 @@ void HandleModeProduce::processProduceConnect(const QByteArray &data)
     }
 }
 
-void HandleModeProduce::sendCMD(const QString &text)
-{
-    if(!m_serial || !m_serial->isOpen() || m_wait_next_cmd) return;
+void HandleModeProduce::sendCMD(const QString &text) {
+    if (!m_serial || !m_serial->isOpen() || m_wait_next_cmd) return;
 
     LOG_INFO("{} send cmd: {}", m_ports[m_port_index], text);
     m_serial->write(QByteArray::fromHex(text.toUtf8()));
@@ -233,8 +219,7 @@ bool HandleModeProduce::doProduceFrameExtra() {
     return false;
 }
 
-void HandleModeProduce::onProduceModeTimeout()
-{
+void HandleModeProduce::onProduceModeTimeout() {
     qDebug() << "Port timeout, trying next port";
     ++m_port_index;
     tryNextPort();

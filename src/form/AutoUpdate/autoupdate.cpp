@@ -24,10 +24,9 @@ void AutoUpdate::showEvent(QShowEvent *event) {
     ui->progressBar->setVisible(false);
 
     QString to_downloaded = res["file"].toString();
-    if(m_mode == "easy") {
+    if (m_mode == "easy") {
         to_downloaded = "C_" + to_downloaded;
-    }
-    else if(m_mode == "produce") {
+    } else if (m_mode == "produce") {
         to_downloaded = "P_" + to_downloaded;
     }
     ui->lineEditURL->setText(QString("%1/%2").arg(res["url"].toString(), to_downloaded));
@@ -60,18 +59,14 @@ void AutoUpdate::init() {
 
 void AutoUpdate::retranslateUI() { ui->retranslateUi(this); }
 
-void AutoUpdate::setMode(const QString &mode)
-{
-    m_mode = mode;
-}
+void AutoUpdate::setMode(const QString &mode) { m_mode = mode; }
 
 void AutoUpdate::on_btnCheck_clicked() {
     ui->progressBar->setVisible(true);
     QString to_downloaded = m_objUpdate["file"].toString();
-    if(m_mode == "easy") {
+    if (m_mode == "easy") {
         to_downloaded = "C_" + to_downloaded;
-    }
-    else if(m_mode == "produce") {
+    } else if (m_mode == "produce") {
         to_downloaded = "P_" + to_downloaded;
     }
     m_http->downloadBinary(

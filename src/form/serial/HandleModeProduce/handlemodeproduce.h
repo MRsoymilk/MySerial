@@ -2,12 +2,13 @@
 #define HANDLEMODEPRODUCE_H
 
 #include <QByteArray>
-#include <QTimer>
-#include <QSerialPort>
 #include <QPointer>
+#include <QSerialPort>
+#include <QTimer>
+
 #include "global.h"
 
-class HandleModeProduce : public QObject{
+class HandleModeProduce : public QObject {
     Q_OBJECT
 
 public:
@@ -17,6 +18,7 @@ public:
         PRODUCE_DATA_REQUEST = 75,
         PRODUCE_FINISH = 100
     };
+
 signals:
     void connectEstablished();
     void dataReady(const QByteArray &data);
@@ -28,7 +30,7 @@ public slots:
 
 public:
     explicit HandleModeProduce(QObject *parent = nullptr);
-    void doConnect(const QStringList& ports);
+    void doConnect(const QStringList &ports);
     void setFrameType(QList<FrameType> type);
 
 private slots:
@@ -40,6 +42,7 @@ private:
     void onProduceModeTimeout();
     void processProduceConnect(const QByteArray &data);
     void processProduceRetry();
+
 private:
     std::function<bool(const QByteArray &)> m_call_produce_func = nullptr;
     QTimer *m_timer_produce = nullptr;

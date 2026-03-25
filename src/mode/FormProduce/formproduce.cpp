@@ -26,7 +26,7 @@ FormProduce::~FormProduce() {
 
 void FormProduce::retranslateUI() {
     ui->retranslateUi(this);
-    if(m_formFittingPoints) {
+    if (m_formFittingPoints) {
         m_formFittingPoints->retranslateUI();
     }
     for (int i = 0; i < m_tabLabels.size(); ++i) {
@@ -40,7 +40,7 @@ void FormProduce::setAlgorithm(const QString &algorithm) {
 }
 
 void FormProduce::updatePlot4k(const MY_DATA &my_data, bool record) {
-    if(m_pause) {
+    if (m_pause) {
         return;
     }
 
@@ -192,7 +192,6 @@ void FormProduce::init() {
         m_overlay->reTry();
     });
     connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
-
 }
 
 void FormProduce::on_tBtnSwitch_clicked() {
@@ -427,9 +426,7 @@ void FormProduce::on_tBtnToVoltage_clicked() {
     ui->tBtnToVoltage->setChecked(m_enableVoltage);
 }
 
-void FormProduce::on_tBtnPause_clicked()
-{
+void FormProduce::on_tBtnPause_clicked() {
     m_pause = !m_pause;
     ui->tBtnPause->setChecked(m_pause);
 }
-

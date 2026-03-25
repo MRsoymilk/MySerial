@@ -30,21 +30,21 @@ int main(int argc, char *argv[]) {
     parser.addOption(option_cli);
     QCommandLineOption option_mode("mode", "Run mode: easy | produce | expert", "mode");
     parser.addOption(option_mode);
-    QCommandLineOption option_algorithm("algorithm", "Run algorithm: F15_Single | F15_Curves | F30_Single | F30_Curves", "algorithm");
+    QCommandLineOption option_algorithm("algorithm", "Run algorithm: F15_Single | F15_Curves | F30_Single | F30_Curves",
+                                        "algorithm");
     parser.addOption(option_algorithm);
 
     parser.process(a);
 
     MainWindow w;
     bool is_cli_start = parser.isSet(option_cli);
-    if(is_cli_start) {
+    if (is_cli_start) {
         LOG_INFO("run with cli");
         QString mode = parser.value(option_mode).toLower();
         if (mode.isEmpty()) {
             mode = "expert";
             LOG_INFO("use default mode: {}", mode);
-        }
-        else {
+        } else {
             LOG_INFO("use mode: {}", mode);
         }
         if (mode != "easy" && mode != "produce" && mode != "expert") {
@@ -54,18 +54,18 @@ int main(int argc, char *argv[]) {
         }
 
         QString algorithm = parser.value(option_algorithm);
-        if(algorithm.isEmpty()) {
+        if (algorithm.isEmpty()) {
             algorithm = "F30_Curves";
             LOG_INFO("use default algorithm: {}", algorithm);
-        }
-        else {
+        } else {
             LOG_INFO("use algorithm: {}", algorithm);
         }
-        if(!(COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F15_SINGLE)
-              || COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F15_CURVES)
-              || COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F30_SINGLE)
-              || COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F30_CURVES))){
-            QMessageBox::warning(nullptr, TITLE_WARNING, QObject::tr("Invalid algorithm! Use F15_single/F15_curves/F30_single/F30_curves"));
+        if (!(COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F15_SINGLE) ||
+              COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F15_CURVES) ||
+              COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F30_SINGLE) ||
+              COMPARE_CaseInsensitive(algorithm, CFG_ALGORITHM_F30_CURVES))) {
+            QMessageBox::warning(nullptr, TITLE_WARNING,
+                                 QObject::tr("Invalid algorithm! Use F15_single/F15_curves/F30_single/F30_curves"));
             LOG_WARN("Invalid algorithm: {}", algorithm);
             return 0;
         }

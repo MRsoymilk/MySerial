@@ -6,11 +6,11 @@
 #include <QPainter>
 #include <QTranslator>
 
+#include "../form/AutoUpdate/autoupdate.h"
+#include "../form/setting/formsetting.h"
 #include "../mode/FormEasy/formeasy.h"
 #include "../mode/FormExpert/formexpert.h"
 #include "../mode/FormProduce/formproduce.h"
-#include "../form/setting/formsetting.h"
-#include "../form/AutoUpdate/autoupdate.h"
 #include "./ui_mainwindow.h"
 #include "funcdef.h"
 #include "version.h"
@@ -114,7 +114,7 @@ void MainWindow::setLanguage(const QString &language) {
         if (m_formProduce) {
             m_formProduce->retranslateUI();
         }
-        if(m_formSetting) {
+        if (m_formSetting) {
             m_formSetting->retranslateUI();
         }
     }
@@ -156,8 +156,7 @@ void MainWindow::setAlgorithm(const QString &algorithm) {
     }
 }
 
-void MainWindow::setCli()
-{
+void MainWindow::setCli() {
     ui->menuAlgorithm->menuAction()->setVisible(false);
     ui->menuMode->menuAction()->setVisible(false);
 }
@@ -225,7 +224,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if (m_formProduce) {
         m_formProduce->close();
     }
-    if(m_formSetting) {
+    if (m_formSetting) {
         m_formSetting->close();
     }
 }
@@ -295,15 +294,14 @@ void MainWindow::on_actionProduce_triggered() {
 
 void MainWindow::init() {
     m_formSetting = new FormSetting;
-    connect(m_formSetting, &FormSetting::fullyControl, this, [=](bool isFully){
+    connect(m_formSetting, &FormSetting::fullyControl, this, [=](bool isFully) {
         ui->menuAlgorithm->menuAction()->setVisible(isFully);
         ui->menuMode->menuAction()->setVisible(isFully);
     });
-    connect(m_formSetting, &FormSetting::sendDouble, this, [=](bool isDouble){
-        if(isDouble) {
+    connect(m_formSetting, &FormSetting::sendDouble, this, [=](bool isDouble) {
+        if (isDouble) {
             setAlgorithm(CFG_ALGORITHM_F30_CURVES);
-        }
-        else {
+        } else {
             setAlgorithm(CFG_ALGORITHM_F30_SINGLE);
         }
     });
@@ -319,22 +317,20 @@ void MainWindow::init() {
     initAlgorithm();
 }
 
-void MainWindow::on_actionSetting_triggered()
-{
+void MainWindow::on_actionSetting_triggered() {
     m_enableSetting = !m_enableSetting;
     m_formSetting->setVisible(m_enableSetting);
 }
 
-void MainWindow::on_actionUpdate_triggered()
-{
+void MainWindow::on_actionUpdate_triggered() {
     AutoUpdate *upt = new AutoUpdate;
     upt->setMode(qApp->property("mode").toString().toLower());
     upt->show();
 }
 
-void MainWindow::on_actionUser_Guide_triggered()
-{
-    QString pdfPath = QCoreApplication::applicationDirPath() + QString("/document/document_%1.pdf").arg(qApp->property("mode").toString().toLower());
+void MainWindow::on_actionUser_Guide_triggered() {
+    QString pdfPath = QCoreApplication::applicationDirPath() +
+                      QString("/document/document_%1.pdf").arg(qApp->property("mode").toString().toLower());
 
     if (!QFile::exists(pdfPath)) {
         QMessageBox::critical(this, TITLE_ERROR, tr("Unable to find document: %1").arg(pdfPath));
@@ -343,4 +339,3 @@ void MainWindow::on_actionUser_Guide_triggered()
 
     QDesktopServices::openUrl(QUrl::fromLocalFile(pdfPath));
 }
-

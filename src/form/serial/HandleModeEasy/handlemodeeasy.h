@@ -4,10 +4,11 @@
 #include <QPointer>
 #include <QSerialPort>
 #include <QTimer>
-#include "keydef.h"
-#include "global.h"
 
-class HandleModeEasy  : public QObject{
+#include "global.h"
+#include "keydef.h"
+
+class HandleModeEasy : public QObject {
     Q_OBJECT
 
 public:
@@ -36,7 +37,7 @@ public slots:
 public:
     HandleModeEasy(QObject *parent = nullptr);
     void setFrameType(QList<FrameType> type);
-    void doConnect(const QStringList &ports, const QString& mode);
+    void doConnect(const QStringList &ports, const QString &mode);
 
 private:
     void init();
@@ -44,7 +45,6 @@ private:
     bool doEasyFrameExtra();
     void onEasyModeTimeout();
     void onEasyModeReadyRead();
-    void doEasyConnect();
     void processEasyRetry();
     QTimer *m_timer_easy = nullptr;
     STEP_EASY_CONNECT m_step = EASY_CONNECT_PORT;

@@ -24,7 +24,7 @@ public:
     ~AutoUpdate();
     void init();
     void retranslateUI();
-    void setMode(const QString& mode);
+    void setMode(const QString &mode);
 
 protected:
     void showEvent(QShowEvent *event) override;
