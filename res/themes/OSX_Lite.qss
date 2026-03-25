@@ -1347,4 +1347,43 @@ QToolButton#tBtnDarkSpectrum {
   qproperty-iconSize: 48px 48px;
 }
 
+QToolButton#HtBnRefresh {
+  qproperty-icon: url(:/res/icons/black/HtBnRefresh.png);
+  qproperty-iconSize: 24px 24px;
+}
+
+QToolButton#HtBtnDataRequest {
+  qproperty-icon: url(:/res/icons/black/HtBtnDataRequest.png);
+  qproperty-iconSize: 24px 24px;
+}
+
+QToolButton#HtBtnIntegration {
+  qproperty-icon: url(:/res/icons/black/HtBtnIntegration.png);
+  qproperty-iconSize: 24px 24px;
+}
+
+QToolButton#HtBtnBaseline {
+  qproperty-icon: url(:/res/icons/black/HtBtnBaseline.png);
+  qproperty-iconSize: 24px 24px;
+}
+
+QToolButton#HtBtnHandshake {
+  qproperty-icon: url(:/res/icons/black/HtBtnHandshake.png);
+  qproperty-iconSize: 24px 24px;
+}
+
+QToolButton#HtBtnThreshold {
+  qproperty-icon: url(:/res/icons/black/HtBtnThreshold.png);
+  qproperty-iconSize: 24px 24px;
+}
+
+QToolButton#HtBtnStop {
+  qproperty-icon: url(:/res/icons/black/HtBtnStop.png);
+  qproperty-iconSize: 24px 24px;
+}
+
+QToolButton#HtBtnRefresh {
+  qproperty-icon: url(:/res/icons/black/HtBtnRefresh.png);
+  qproperty-iconSize: 24px 24px;
+}
 /*# sourceMappingURL=OSX%20Lite.qss.map */

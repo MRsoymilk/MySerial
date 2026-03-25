@@ -210,5 +210,33 @@
         <file>res/icons/white/dark_spectrum.png</file>
         <file>res/icons/white/info.png</file>
         <file>res/icons/white/points_tracker.png</file>
+        <file>res/icons/black/HtBtnBaseline.png</file>
+        <file>res/icons/black/HtBtnDataRequest.png</file>
+        <file>res/icons/black/HtBtnHandshake.png</file>
+        <file>res/icons/black/HtBtnIntegration.png</file>
+        <file>res/icons/black/HtBtnStop.png</file>
+        <file>res/icons/blue/HtBtnBaseline.png</file>
+        <file>res/icons/blue/HtBtnDataRequest.png</file>
+        <file>res/icons/blue/HtBtnHandshake.png</file>
+        <file>res/icons/blue/HtBtnIntegration.png</file>
+        <file>res/icons/blue/HtBtnStop.png</file>
+        <file>res/icons/pink/HtBtnBaseline.png</file>
+        <file>res/icons/pink/HtBtnDataRequest.png</file>
+        <file>res/icons/pink/HtBtnHandshake.png</file>
+        <file>res/icons/pink/HtBtnIntegration.png</file>
+        <file>res/icons/pink/HtBtnStop.png</file>
+        <file>res/icons/white/HtBtnBaseline.png</file>
+        <file>res/icons/white/HtBtnDataRequest.png</file>
+        <file>res/icons/white/HtBtnHandshake.png</file>
+        <file>res/icons/white/HtBtnIntegration.png</file>
+        <file>res/icons/white/HtBtnStop.png</file>
+        <file>res/icons/black/HtBtnThreshold.png</file>
+        <file>res/icons/blue/HtBtnThreshold.png</file>
+        <file>res/icons/pink/HtBtnThreshold.png</file>
+        <file>res/icons/white/HtBtnThreshold.png</file>
+        <file>res/icons/black/HtBtnRefresh.png</file>
+        <file>res/icons/blue/HtBtnRefresh.png</file>
+        <file>res/icons/pink/HtBtnRefresh.png</file>
+        <file>res/icons/white/HtBtnRefresh.png</file>
     </qresource>
 </RCC>
