@@ -14,6 +14,7 @@
 #include "../form/plot/PointsTracker/pointstracker.h"
 #include "../form/plot/SignalNoiseRatio/signalnoiseratio.h"
 #include "../form/serial/formserial.h"
+#include "HoverSliderButton/hoversliderbutton.h"
 #include "DraggableLine/draggableline.h"
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
@@ -151,6 +152,17 @@ void FormEasy::initToolButton() {
     ui->tBtnFWHM->setToolTip(tr("FWHM"));
     ui->tBtnImg->setToolTip(tr("save image"));
     ui->tBtnFourier->setToolTip(tr("fourier"));
+    connect(ui->tBtnFourier, &HoverSliderButton::valueChanged, this, [this](int v) {
+        m_fourierTransform->setPercent(v);
+        if(v != 0) {
+            ui->tBtnFourier->setChecked(true);
+            m_enableFourierPercent = true;
+        }
+        else {
+            ui->tBtnFourier->setChecked(false);
+            m_enableFourierPercent = false;
+        }
+    });
     ui->tBtnAccumulate->setToolTip(tr("accumulate"));
     ui->tBtnToVoltage->setToolTip(tr("to voltage"));
 
@@ -379,7 +391,7 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
     }
     m_curve = my_data.curve31;
 
-    if (m_enableFourier) {
+    if (m_enableFourier || m_enableFourierPercent) {
         if (m_toVoltage) {
             auto data = m_fourierTransform->transform(m_curve.data);
             if (!data.isEmpty()) {
@@ -781,6 +793,7 @@ void FormEasy::doHistoryClicked() {
 
 void FormEasy::on_tBtnFourier_clicked() {
     m_enableFourier = !m_enableFourier;
+    m_fourierTransform->setPercent(0);
     m_fourierTransform->setVisible(ui->tBtnFourier->isChecked());
 }
 

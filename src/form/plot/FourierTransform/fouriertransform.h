@@ -22,6 +22,7 @@ public:
 
     QList<QPointF> transform(const QList<QPointF> &data);
     void setSampleRate(double rate);
+    void setPercent(int value);
 
 signals:
     void windowClose();
@@ -73,6 +74,7 @@ private:
     bool m_enableAxisX = false;
     int m_axisXStart = 0;
     int m_axisXEnd = 0;
+    int m_percent = 0;
 };
 
 #endif  // FOURIERTRANSFORM_H

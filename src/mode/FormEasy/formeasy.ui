@@ -104,7 +104,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="tBtnFourier">
+      <widget class="HoverSliderButton" name="tBtnFourier">
        <property name="text">
         <string>Fourier</string>
        </property>
@@ -416,6 +416,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>HoverSliderButton</class>
+   <extends>QToolButton</extends>
+   <header>HoverSliderButton/hoversliderbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

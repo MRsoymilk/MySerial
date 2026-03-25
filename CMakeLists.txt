@@ -89,6 +89,8 @@ set(SRC_ENHANCE
     src/enhance/DraggableLine/draggableline.cpp
     src/enhance/MyChartView/mychartview.h
     src/enhance/MyChartView/mychartview.cpp
+    src/enhance/HoverSliderButton/hoversliderbutton.h
+    src/enhance/HoverSliderButton/hoversliderbutton.cpp
 )
 
 set(SRC_MODULE

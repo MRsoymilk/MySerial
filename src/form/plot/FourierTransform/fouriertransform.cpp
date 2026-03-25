@@ -24,6 +24,11 @@ void FourierTransform::setSampleRate(double rate) {
     }
 }
 
+void FourierTransform::setPercent(int value)
+{
+    m_percent = value;
+}
+
 void FourierTransform::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
 QList<QPointF> FourierTransform::ifftBandLimited(const QList<QPointF> &data, double sampleRate, double freqStart,
@@ -152,12 +157,16 @@ QList<QPointF> FourierTransform::fftAmplitude(const QList<QPointF> &data, double
 QList<QPointF> FourierTransform::transform(const QList<QPointF> &data) {
     if (data.isEmpty()) return {};
 
+    m_currentData = data;
+
+    if(m_percent != 0) {
+        return updateIFFT();
+    }
+
     if (m_enableAxisX) {
         int start = qMax(0, m_axisXStart);
         int end = qMin(data.size(), m_axisXEnd);
         m_currentData = data.mid(start, end - start);
-    } else {
-        m_currentData = data;
     }
 
     fftAmplitude(m_currentData, m_sampleRate);
@@ -186,7 +195,14 @@ QList<QPointF> FourierTransform::transform(const QList<QPointF> &data) {
 
 QList<QPointF> FourierTransform::updateIFFT() {
     if (m_currentData.isEmpty()) return {};
-    return ifftBandLimited(m_currentData, m_sampleRate, m_start, m_end);
+
+    if (m_percent > 0) {
+        double nyquist = m_sampleRate / 2.0;
+        double cutoff = nyquist * m_percent / 100.0;
+        return ifftBandLimited(m_currentData, m_sampleRate, 0, cutoff);
+    } else {
+        return ifftBandLimited(m_currentData, m_sampleRate, m_start, m_end);
+    }
 }
 
 void FourierTransform::init() {

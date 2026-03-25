@@ -141,7 +141,6 @@ private:
     Derivation *m_derivation = nullptr;
     SignalNoiseRatio *m_snr = nullptr;
     Accumulate *m_accumulate = nullptr;
-    // FormSetting *m_setting = nullptr;
     PointsTracker *m_pointsTracker = nullptr;
     DarkSpectrum *m_darkSpectrum = nullptr;
     PeakTrajectory *m_trajectory;
@@ -151,6 +150,7 @@ private:
     int m_trajectory_end;
     bool m_enablePeakTrack = false;
     bool m_enableFourier = false;
+    bool m_enableFourierPercent = false;
     bool m_enableAccumulate = false;
     bool m_enableSNR = false;
     bool m_enableSetting = false;
