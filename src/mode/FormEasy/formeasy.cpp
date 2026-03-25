@@ -148,18 +148,25 @@ void FormEasy::initToolButton() {
     connect(ui->tBtnSwitch, &HoverTbtnButton::buttonClicked, this, [this](int id) {
         switch (id) {
             case HoverTbtnButton::BTN_HANDSHAKE:
+                formSerial->doEasyOpt(HoverTbtnButton::BTN_HANDSHAKE);
                 break;
             case HoverTbtnButton::BTN_SET_INTEGRATION_TIME:
+                formSerial->doEasyOpt(HoverTbtnButton::BTN_SET_INTEGRATION_TIME);
                 break;
             case HoverTbtnButton::BTN_DO_THRESHOLD:
+                formSerial->doEasyOpt(HoverTbtnButton::BTN_DO_THRESHOLD);
                 break;
             case HoverTbtnButton::BTN_DO_BASELINE:
+                formSerial->doEasyOpt(HoverTbtnButton::BTN_DO_BASELINE);
                 break;
             case HoverTbtnButton::BTN_DATA_REQUEST:
+                formSerial->doEasyOpt(HoverTbtnButton::BTN_DATA_REQUEST, m_F30_shown_mode);
                 break;
             case HoverTbtnButton::BTN_STOP:
+                formSerial->doEasyOpt(HoverTbtnButton::BTN_STOP);
                 break;
             case HoverTbtnButton::BTN_REFRESH:
+                formSerial->doEasyOpt(HoverTbtnButton::BTN_REFRESH, ui->tBtnSwitch->getCurrentPort());
                 break;
             default:
                 break;
@@ -359,6 +366,10 @@ void FormEasy::init() {
         m_overlay->reTry();
     });
     connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
+    connect(formSerial, &FormSerial::optReturn, this, [this](int id, const QString& msg) {
+        ui->labelMsg->setText(msg);
+    });
+    formSerial->initEasyConnect();
 }
 
 void FormEasy::highlightRowByX(double x) {

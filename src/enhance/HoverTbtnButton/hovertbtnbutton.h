@@ -50,6 +50,11 @@ public:
         m_popup->installEventFilter(this);
     }
 
+    QString getCurrentPort() {
+        QString port = m_box->currentText();
+        return port;
+    }
+
 public slots:
     void updatePorts(const QStringList &ports) {
         m_box->clear();

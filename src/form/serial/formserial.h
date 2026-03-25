@@ -56,6 +56,7 @@ public:
     void updateFrameTypes(const QString &idx);
     QStringList getPorts();
 
+    void initEasyConnect();
 signals:
     void recv2PlotLLC(const FRAME &frame, const double &temperature = 0.0);
     void recv2PlotF30(const FRAME &frame, const double &temperature = 0.0);

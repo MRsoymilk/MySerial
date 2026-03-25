@@ -37,7 +37,13 @@ class FormEasy : public QWidget {
     Q_OBJECT
 public:
     enum EASY_OPT {
+        EASY_HANDSHAKE,
         EASY_SET_INTEGRATION_TIME,
+        EASY_DO_THRESHOLD,
+        EASY_DO_BASELINE,
+        EASY_DATA_REQUEST,
+        EASY_STOP,
+        EASY_REFRESH
     };
 public:
     explicit FormEasy(QWidget *parent = nullptr);

@@ -15,6 +15,8 @@
 #include "keydef.h"
 #include "ui_formserial.h"
 
+#include <../../mode/FormEasy/formeasy.h>
+
 FormSerial::FormSerial(QWidget *parent) : QWidget(parent), ui(new Ui::FormSerial) {
     ui->setupUi(this);
     init();
@@ -57,18 +59,11 @@ bool FormSerial::startProduceConnect() {
     return true;
 }
 
-bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
+void FormSerial::initEasyConnect() {
     m_connectThread = new QThread(this);
     m_handleEasy = new HandleModeEasy;
     m_handleEasy->setFrameType(m_frameTypes);
     m_handleEasy->moveToThread(m_connectThread);
-    connect(m_connectThread, &QThread::started, [=]() {
-        QStringList ports;
-        for (const QSerialPortInfo &info : QSerialPortInfo::availablePorts()) {
-            ports << info.portName();
-        }
-        m_handleEasy->doConnect(ports, F30_shown_mode);
-    });
     connect(m_connectThread, &QThread::finished, m_handleEasy, &QObject::deleteLater, Qt::QueuedConnection);
     connect(m_handleEasy, &HandleModeEasy::connectEstablished, this, &FormSerial::connectEasyModeEstablished);
     connect(m_handleEasy, &HandleModeEasy::dataReady, this, &FormSerial::pushParserData);
@@ -76,10 +71,19 @@ bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
     connect(m_handleEasy, &HandleModeEasy::sendThreshold, this, &FormSerial::sendThreshold);
     connect(m_handleEasy, &HandleModeEasy::statusReport, this, &FormSerial::statusReport);
     connect(m_handleEasy, &HandleModeEasy::redoConnect, this, &FormSerial::redoConnect);
+    connect(m_handleEasy, &HandleModeEasy::optReturn, this, &FormSerial::optReturn);
     connect(this, &FormSerial::stopEasyConnect, m_handleEasy, &HandleModeEasy::stopConnect);
     connect(this, &FormSerial::doOpt, m_handleEasy, &HandleModeEasy::doOpt);
 
     m_connectThread->start();
+}
+
+bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
+    QStringList ports;
+    for (const QSerialPortInfo &info : QSerialPortInfo::availablePorts()) {
+        ports << info.portName();
+    }
+    m_handleEasy->doConnect(ports, F30_shown_mode);
     return true;
 }
 

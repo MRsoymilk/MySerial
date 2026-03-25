@@ -101,7 +101,51 @@ bool HandleModeEasy::doBaselineExtra(const QByteArray &data) {
     return true;
 }
 
+void HandleModeEasy::processEasyCall(const QByteArray &data)
+{
+    if(m_call_buffer.size() > 10 * 1024) {
+        m_wait_call = false;
+        emit optReturn(FormEasy::EASY_STOP, tr("cmd early stop"));
+    }
+    m_call_buffer.append(data);
+
+    switch(m_call_step) {
+        case FormEasy::EASY_HANDSHAKE:
+        {
+            QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
+            if(m_call_buffer.contains(expected_handshake)) {
+                emit optReturn(FormEasy::EASY_HANDSHAKE, tr("handshake ok"));
+                m_call_buffer.clear();
+                m_wait_call = false;
+            }
+        }
+            break;
+        case FormEasy::EASY_DO_THRESHOLD:
+        {
+            if(doThresholdExtra(m_call_buffer)) {
+                emit optReturn(FormEasy::EASY_DO_THRESHOLD, tr("do threshold ok"));
+                m_call_buffer.clear();
+                m_wait_call = false;
+            }
+        }
+            break;
+        case FormEasy::EASY_DO_BASELINE:
+        {
+            if(doBaselineExtra(m_call_buffer)) {
+                emit optReturn(FormEasy::EASY_DO_BASELINE, tr("do baseline ok"));
+                m_call_buffer.clear();
+                m_wait_call = false;
+            }
+        }
+            break;
+    }
+}
+
 void HandleModeEasy::processEasyConnect(const QByteArray &data) {
+    if (m_easy_buffer.size() > 50 * 1024) {
+        LOG_WARN("Buffer overflow, clearing");
+        m_easy_buffer.clear();
+    }
     m_easy_buffer.append(data);
     switch (m_step) {
         case EASY_HANDSHAKE: {
@@ -193,10 +237,6 @@ bool HandleModeEasy::doEasyFrameExtra() {
 
         // 没有帧头，清理或等待
         if (firstHeaderIdx == -1) {
-            if (m_easy_buffer.size() > 50 * 1024) {
-                LOG_WARN("Buffer overflow, clearing");
-                m_easy_buffer.clear();
-            }
             break;
         }
 
@@ -251,6 +291,9 @@ void HandleModeEasy::onEasyModeReadyRead() {
     if (!m_serial) return;
 
     QByteArray data = m_serial->readAll();
+    if(m_wait_call) {
+        processEasyCall(data);
+    }
     if (m_establish) {
         emit dataReady(data);
     } else {
@@ -270,9 +313,78 @@ void HandleModeEasy::doOpt(int id, const QString &msg)
 {
     m_call_step = id;
     switch (id) {
+        case FormEasy::EASY_REFRESH:
+        {
+            m_ports.clear();
+            m_ports.append(msg);
+            m_port_index = 0;
+            if (m_serial) {
+                m_serial->close();
+                m_serial->deleteLater();
+                m_serial = nullptr;
+            }
+
+            QString portName = msg;
+            m_serial = new QSerialPort(this);
+            m_serial->setPortName(portName);
+            m_serial->setBaudRate(QSerialPort::Baud115200);
+            m_serial->setDataBits(QSerialPort::Data8);
+            m_serial->setParity(QSerialPort::NoParity);
+            m_serial->setStopBits(QSerialPort::OneStop);
+
+            if (!m_serial->open(QIODevice::ReadWrite)) {
+                LOG_WARN("{} open failed: {}", portName, m_serial->errorString());
+                emit optReturn(FormEasy::EASY_REFRESH, tr("[%1] open failed: %2").arg(portName).arg(m_serial->errorString()));
+                return;
+            }
+
+            connect(m_serial, &QSerialPort::readyRead, this, &HandleModeEasy::onEasyModeReadyRead, Qt::UniqueConnection);
+            m_establish = true;
+            emit optReturn(FormEasy::EASY_REFRESH,tr("[%1] start.").arg(portName));
+        }
+            break;
+        case FormEasy::EASY_HANDSHAKE:
+        {
+            m_wait_call = true;
+            sendCMD("DD3C000310CDFF");
+            m_wait_next_cmd = false;
+        }
+            break;
         case FormEasy::EASY_SET_INTEGRATION_TIME:
+        {
             sendCMD(msg);
             m_wait_next_cmd = false;
+        }
+            break;
+        case FormEasy::EASY_DO_THRESHOLD:
+        {
+            m_wait_call = true;
+            sendCMD("DD3C000368CDFF");
+            m_wait_next_cmd = false;
+        }
+            break;
+        case FormEasy::EASY_DO_BASELINE:
+        {
+            m_wait_call = true;
+            sendCMD("DD3C000370CDFF");
+            m_wait_next_cmd = false;
+        }
+            break;
+        case FormEasy::EASY_DATA_REQUEST:
+        {
+            if(msg == CFG_F30_MODE_DOUBLE) {
+                sendCMD("DD3C000340CDFF");
+            }
+            else if(msg == CFG_F30_MODE_SINGLE) {
+                sendCMD("DD3C000330CDFF");
+            }
+            m_wait_next_cmd = false;
+        }
+            break;
+        case FormEasy::EASY_STOP:
+        {
+            stopConnect();
+        }
             break;
     }
 }

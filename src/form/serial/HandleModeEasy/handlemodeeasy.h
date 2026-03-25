@@ -30,6 +30,7 @@ signals:
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendOption(const QJsonObject &option);
     void statusReport(int progress, const QString &msg);
+    void optReturn(int id, const QString& msg);
 
 public slots:
     void stopConnect();
@@ -65,7 +66,10 @@ private:
     void sendCMD(const QString &text);
     bool doThresholdExtra(const QByteArray &data);
     bool doBaselineExtra(const QByteArray &data);
+    bool m_wait_call = false;
     int m_call_step = 0;
+    void processEasyCall(const QByteArray &data);
+    QByteArray m_call_buffer;
 };
 
 #endif  // HANDLEMODEEASY_H

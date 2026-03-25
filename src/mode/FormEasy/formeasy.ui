@@ -385,6 +385,13 @@
             </layout>
            </item>
            <item>
+            <widget class="QLabel" name="labelMsg">
+             <property name="text">
+              <string>msg</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Orientation::Vertical</enum>
