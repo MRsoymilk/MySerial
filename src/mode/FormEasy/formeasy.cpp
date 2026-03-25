@@ -14,8 +14,8 @@
 #include "../form/plot/PointsTracker/pointstracker.h"
 #include "../form/plot/SignalNoiseRatio/signalnoiseratio.h"
 #include "../form/serial/formserial.h"
-#include "HoverSliderButton/hoversliderbutton.h"
 #include "DraggableLine/draggableline.h"
+#include "HoverSliderButton/hoversliderbutton.h"
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
 #include "ui_formeasy.h"
@@ -145,6 +145,28 @@ void FormEasy::initTable() {
 
 void FormEasy::initToolButton() {
     ui->tBtnSwitch->setToolTip(tr("switch"));
+    connect(ui->tBtnSwitch, &HoverTbtnButton::buttonClicked, this, [this](int id) {
+        switch (id) {
+            case HoverTbtnButton::BTN_HANDSHAKE:
+                break;
+            case HoverTbtnButton::BTN_SET_INTEGRATION_TIME:
+                break;
+            case HoverTbtnButton::BTN_DO_THRESHOLD:
+                break;
+            case HoverTbtnButton::BTN_DO_BASELINE:
+                break;
+            case HoverTbtnButton::BTN_DATA_REQUEST:
+                break;
+            case HoverTbtnButton::BTN_STOP:
+                break;
+            case HoverTbtnButton::BTN_REFRESH:
+                break;
+            default:
+                break;
+        }
+    });
+    connect(ui->tBtnSwitch, &HoverTbtnButton::buttonHover, this,
+            [this]() { ui->tBtnSwitch->updatePorts(formSerial->getPorts()); });
     ui->tBtnPause->setToolTip(tr("pause"));
     ui->tBtnZoom->setToolTip(tr("zoom"));
     ui->tBtnCrop->setToolTip(tr("crop"));
@@ -154,11 +176,10 @@ void FormEasy::initToolButton() {
     ui->tBtnFourier->setToolTip(tr("fourier"));
     connect(ui->tBtnFourier, &HoverSliderButton::valueChanged, this, [this](int v) {
         m_fourierTransform->setPercent(v);
-        if(v != 0) {
+        if (v != 0) {
             ui->tBtnFourier->setChecked(true);
             m_enableFourierPercent = true;
-        }
-        else {
+        } else {
             ui->tBtnFourier->setChecked(false);
             m_enableFourierPercent = false;
         }
@@ -508,7 +529,7 @@ void FormEasy::sendIntegrationTime() {
     }
     int count = (val + 1) / 5;
     emit sendOption({{"integration", count}});
-    formSerial->sendEasyData(calcIntegrationTime(val));
+    formSerial->doEasyOpt(EASY_SET_INTEGRATION_TIME, calcIntegrationTime(val));
 }
 
 void FormEasy::on_spinBoxIntegrationTime_valueChanged(int val) {

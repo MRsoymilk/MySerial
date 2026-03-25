@@ -3,6 +3,7 @@
 #include <QThread>
 
 #include "funcdef.h"
+#include "../../mode/FormEasy/formeasy.h"
 
 void HandleModeEasy::stopConnect() {
     sendCMD("DD3C000360CDFF");
@@ -263,6 +264,17 @@ void HandleModeEasy::doConnect(const QStringList &ports, const QString &mode) {
     m_ports = ports;
     m_port_index = 0;
     tryNextPort();
+}
+
+void HandleModeEasy::doOpt(int id, const QString &msg)
+{
+    m_call_step = id;
+    switch (id) {
+        case FormEasy::EASY_SET_INTEGRATION_TIME:
+            sendCMD(msg);
+            m_wait_next_cmd = false;
+            break;
+    }
 }
 
 void HandleModeEasy::tryNextPort() {

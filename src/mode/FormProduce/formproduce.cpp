@@ -192,6 +192,7 @@ void FormProduce::init() {
         m_overlay->reTry();
     });
     connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
+    connect(formSerial, &FormSerial::optReturn, this, &FormProduce::onOptReturn);
 }
 
 void FormProduce::on_tBtnSwitch_clicked() {
@@ -229,39 +230,26 @@ void FormProduce::closeProduceMode() {
     formSerial->stopFSeriesConnect();
 }
 
+void FormProduce::onOptReturn(int id, const QString& msg) {
+    if(id == PRODUCE_QUERY_DEVICE_SERIAL) {
+        ui->labelValDeviceSerial->setText(msg);
+    }
+    else if(id == PRODUCE_QUERY_BASEINE) {
+        ui->labelValBaseline->setText(msg);
+    }
+    else if(id == PRODUCE_SELF_CHECK) {
+        ui->textBrowserSelfCheckInfo->append(msg);
+    }
+}
+
 void FormProduce::on_btnWriteDeviceSerial_clicked() {
     QString data = ui->lineEditDeviceSerial->text();
     QString msg = QString("%1%2%3").arg("DD3C000920").arg(data).arg("CDFF");
-    formSerial->sendProduceData(msg);
+    formSerial->doProduceOpt(PRODUCE_WRITE_DEVICE_SERIAL, msg);
 }
 
 void FormProduce::on_btnQueryDeviceSerial_clicked() {
-    const QByteArray header = QByteArray::fromHex("DE3A000913");
-    const QByteArray tail = QByteArray::fromHex("CEFF");
-    formSerial->sendProduceData("DD3C000312CDFF", [this, header, tail](const QByteArray &buf) -> bool {
-        QByteArray data = buf;
-        int headPos = data.indexOf(header);
-        if (headPos < 0) {
-            LOG_WARN("DeviceSerial: not found header: DE3A000913");
-            return false;
-        }
-        data.remove(0, headPos);
-        int tailPos = data.indexOf(tail);
-        if (tailPos < 0) {
-            LOG_WARN("DeviceSerial: not found tail: CEFF");
-            return false;
-        }
-
-        int start = header.size();
-        int len = tailPos - start;
-        if (len <= 0) {
-            LOG_WARN("DeviceSerial: invalid length");
-            return false;
-        }
-        data = data.mid(start, len);
-        ui->labelValDeviceSerial->setText(data.toHex(' ').toUpper());
-        return false;
-    });
+    formSerial->doProduceOpt(PRODUCE_QUERY_DEVICE_SERIAL);
 }
 
 void FormProduce::on_btnWriteBaseline_clicked() {
@@ -274,40 +262,11 @@ void FormProduce::on_btnWriteBaseline_clicked() {
                                 QChar('0'))
                            .toUpper();
     QString msg = QString("%1%2%3").arg("DD3C000644").arg(byte_val).arg("CDFF");
-    formSerial->sendProduceData(msg);
+    formSerial->doProduceOpt(PRODUCE_WRITE_BASEINE, msg);
 }
 
 void FormProduce::on_btnQueryBaseline_clicked() {
-    const QByteArray header = QByteArray::fromHex("DE3A000671");
-    const QByteArray tail = QByteArray::fromHex("CEFF");
-    formSerial->sendProduceData("DD3C000370CDFF", [this, header, tail](const QByteArray &buf) -> bool {
-        QByteArray data = buf;
-        int headPos = data.indexOf(header);
-        if (headPos < 0) {
-            LOG_WARN("Baseline: not found header: DE3A000671");
-            return false;
-        }
-        data.remove(0, headPos);
-        int tailPos = data.indexOf(tail);
-        if (tailPos < 0) {
-            LOG_WARN("Baseline: not found tail: CEFF");
-            return false;
-        }
-
-        int start = header.size();
-        int len = tailPos - start;
-
-        if (len <= 0) {
-            LOG_WARN("Baseline: invalid length");
-            return false;
-        }
-
-        data = data.mid(start, len);
-        int val =
-            (static_cast<quint8>(data[0]) << 16) | (static_cast<quint8>(data[1]) << 8) | static_cast<quint8>(data[2]);
-        ui->labelValBaseline->setText(QString::number(val));
-        return false;
-    });
+    formSerial->doProduceOpt(PRODUCE_QUERY_BASEINE);
 }
 
 void FormProduce::updateTabStyle() {
@@ -368,57 +327,7 @@ void FormProduce::on_btnStartCorrection_clicked() {
 }
 
 void FormProduce::on_btnStartSelfCheck_clicked() {
-    formSerial->sendProduceData("DD3C000350CDFF", [this](const QByteArray &buf) -> bool {
-        if (buf.contains(QByteArray::fromHex("DE3A000351CEFF"))) {
-            ui->textBrowserSelfCheckInfo->append(tr("start self check"));
-            return true;
-        }
-        const QByteArray header = QByteArray::fromHex("DE3A000453");
-        const QByteArray tail = QByteArray::fromHex("CEFF");
-        QByteArray data = buf;
-        int headPos = data.indexOf(header);
-        if (headPos < 0) {
-            LOG_WARN("SelfCheck: not found header: DE3A000453");
-            return false;
-        }
-        data.remove(0, headPos);
-        int tailPos = data.indexOf(tail);
-        if (tailPos < 0) {
-            LOG_WARN("SelfCheck: not found tail: CEFF");
-            return false;
-        }
-
-        int start = header.size();
-        int len = tailPos - start;
-
-        if (len <= 0) {
-            LOG_WARN("SelfCheck: invalid length");
-            return false;
-        }
-
-        data = data.mid(start, len);
-        const qint8 code = static_cast<quint8>(data[0]);
-        if (code == 0) {
-            ui->textBrowserSelfCheckInfo->append(tr("No fault"));
-        } else if (code == 1) {
-            ui->textBrowserSelfCheckInfo->append(tr("Module not working"));
-        } else if (code == 2) {
-            ui->textBrowserSelfCheckInfo->append(tr("Temperature too high (above 50℃)"));
-        } else if (code == 3) {
-            ui->textBrowserSelfCheckInfo->append(tr("Temperature too low (below -20℃)"));
-        } else if (code == 4) {
-            ui->textBrowserSelfCheckInfo->append(tr("TEC not working"));
-        } else if (code == 5) {
-            ui->textBrowserSelfCheckInfo->append(tr("TEC unable to power on"));
-        } else if (code == 6) {
-            ui->textBrowserSelfCheckInfo->append(tr("Fan not working"));
-        } else if (code == 7) {
-            ui->textBrowserSelfCheckInfo->append(tr("DAC no output"));
-        } else if (code == 8) {
-            ui->textBrowserSelfCheckInfo->append(tr("Module unstable"));
-        }
-        return false;
-    });
+    formSerial->doProduceOpt(PRODUCE_SELF_CHECK);
 }
 
 void FormProduce::on_tBtnToVoltage_clicked() {

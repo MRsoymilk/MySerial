@@ -50,10 +50,11 @@ public:
     bool startEasyConnect(const QString &F30_shown_mode);
     bool startProduceConnect();
     void stopFSeriesConnect();
-    void sendEasyData(const QString &text);
+    void doProduceOpt(int id, const QString &msg = "");
+    void doEasyOpt(int id, const QString& msg = "");
     void sendExpertData(const QString &text);
-    void sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func = nullptr);
     void updateFrameTypes(const QString &idx);
+    QStringList getPorts();
 
 signals:
     void recv2PlotLLC(const FRAME &frame, const double &temperature = 0.0);
@@ -67,6 +68,8 @@ signals:
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendOption(const QJsonObject &option);
     void redoConnect();
+    void optReturn(int id, const QString& msg);
+    void doOpt(int id, const QString& msg);
 
 public slots:
     void sendRaw(const QByteArray &bytes);

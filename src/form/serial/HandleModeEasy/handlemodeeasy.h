@@ -33,6 +33,7 @@ signals:
 
 public slots:
     void stopConnect();
+    void doOpt(int id, const QString& msg);
 
 public:
     HandleModeEasy(QObject *parent = nullptr);
@@ -64,6 +65,7 @@ private:
     void sendCMD(const QString &text);
     bool doThresholdExtra(const QByteArray &data);
     bool doBaselineExtra(const QByteArray &data);
+    int m_call_step = 0;
 };
 
 #endif  // HANDLEMODEEASY_H

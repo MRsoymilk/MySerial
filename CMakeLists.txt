@@ -91,6 +91,8 @@ set(SRC_ENHANCE
     src/enhance/MyChartView/mychartview.cpp
     src/enhance/HoverSliderButton/hoversliderbutton.h
     src/enhance/HoverSliderButton/hoversliderbutton.cpp
+    src/enhance/HoverTbtnButton/hovertbtnbutton.h
+    src/enhance/HoverTbtnButton/hovertbtnbutton.cpp
 )
 
 set(SRC_MODULE

@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="hLayOperation">
      <item>
-      <widget class="QToolButton" name="tBtnSwitch">
+      <widget class="HoverTbtnButton" name="tBtnSwitch">
        <property name="text">
         <string/>
        </property>
@@ -247,7 +247,7 @@
    </item>
    <item row="1" column="0">
     <widget class="QWidget" name="widgetEasyInfo" native="true">
-     <layout class="QGridLayout" name="gridLayout_3" rowstretch="5,5" columnstretch="3,7">
+     <layout class="QGridLayout" name="gridLayout_3" rowstretch="5,5,0" columnstretch="3,7">
       <property name="leftMargin">
        <number>20</number>
       </property>
@@ -402,7 +402,7 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1" rowspan="2">
+      <item row="0" column="1" rowspan="3">
        <widget class="QWidget" name="widgetPlot" native="true">
         <layout class="QGridLayout" name="gridLayout_6">
          <item row="0" column="0">
@@ -421,6 +421,11 @@
    <class>HoverSliderButton</class>
    <extends>QToolButton</extends>
    <header>HoverSliderButton/hoversliderbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>HoverTbtnButton</class>
+   <extends>QToolButton</extends>
+   <header>HoverTbtnButton/hovertbtnbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

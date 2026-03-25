@@ -35,7 +35,10 @@ class FormEasy;
 
 class FormEasy : public QWidget {
     Q_OBJECT
-
+public:
+    enum EASY_OPT {
+        EASY_SET_INTEGRATION_TIME,
+    };
 public:
     explicit FormEasy(QWidget *parent = nullptr);
     ~FormEasy();

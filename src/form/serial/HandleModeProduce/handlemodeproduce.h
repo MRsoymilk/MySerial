@@ -24,9 +24,11 @@ signals:
     void dataReady(const QByteArray &data);
     void redoConnect();
     void statusReport(int progress, const QString &msg);
+    void optReturn(int id, const QString& msg);
 
 public slots:
     void stopConnect();
+    void doOpt(int id, const QString& msg);
 
 public:
     explicit HandleModeProduce(QObject *parent = nullptr);
@@ -60,6 +62,10 @@ private:
     int m_port_index = 0;
     QStringList m_ports;
     void tryNextPort();
+    bool m_wait_call = false;
+    int m_call_step = 0;
+    void processProduceCall(const QByteArray &data);
+    QByteArray m_call_buffer;
 };
 
 #endif  // HANDLEMODEPRODUCE_H

@@ -21,7 +21,14 @@ class FormProduce;
 
 class FormProduce : public QWidget {
     Q_OBJECT
-
+public:
+    enum PRODUCE_OPT{
+        PRODUCE_WRITE_DEVICE_SERIAL,
+        PRODUCE_QUERY_DEVICE_SERIAL,
+        PRODUCE_WRITE_BASEINE,
+        PRODUCE_QUERY_BASEINE,
+        PRODUCE_SELF_CHECK
+    };
 public:
     explicit FormProduce(QWidget *parent = nullptr);
     ~FormProduce();
@@ -30,6 +37,7 @@ public:
 
 public slots:
     void updatePlot4k(const MY_DATA &my_data, bool record = true);
+    void onOptReturn(int id, const QString &msg);
 
 private slots:
     void on_tBtnSwitch_clicked();

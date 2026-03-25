@@ -49,7 +49,9 @@ bool FormSerial::startProduceConnect() {
     connect(m_handleProduce, &HandleModeProduce::dataReady, this, &FormSerial::pushParserData);
     connect(m_handleProduce, &HandleModeProduce::statusReport, this, &FormSerial::statusReport);
     connect(m_handleProduce, &HandleModeProduce::redoConnect, this, &FormSerial::redoConnect);
+    connect(m_handleProduce, &HandleModeProduce::optReturn, this, &FormSerial::optReturn);
     connect(this, &FormSerial::stopProduceConnect, m_handleProduce, &HandleModeProduce::stopConnect);
+    connect(this, &FormSerial::doOpt, m_handleProduce, &HandleModeProduce::doOpt);
 
     m_connectThread->start();
     return true;
@@ -75,6 +77,7 @@ bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
     connect(m_handleEasy, &HandleModeEasy::statusReport, this, &FormSerial::statusReport);
     connect(m_handleEasy, &HandleModeEasy::redoConnect, this, &FormSerial::redoConnect);
     connect(this, &FormSerial::stopEasyConnect, m_handleEasy, &HandleModeEasy::stopConnect);
+    connect(this, &FormSerial::doOpt, m_handleEasy, &HandleModeEasy::doOpt);
 
     m_connectThread->start();
     return true;
@@ -111,72 +114,14 @@ void FormSerial::stopFSeriesConnect() {
     closeSerial();
 }
 
-void FormSerial::sendProduceData(const QString &text, std::function<bool(const QByteArray &)> func) {
-    LOG_INFO("serial send: {}", text);
-    if (!(m_serial && m_serial->isOpen())) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("serial not open!"));
-        LOG_ERROR("Serial not open!");
-        return;
-    }
-
-    QByteArray data;
-    QString cleaned = text;
-    cleaned.remove(QRegularExpression("[^0-9A-Fa-f\\s]"));
-
-    QStringList byteStrings;
-    if (cleaned.contains(QRegularExpression("\\s+"))) {
-        byteStrings = cleaned.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-    } else {
-        for (int i = 0; i + 1 < cleaned.length(); i += 2) {
-            byteStrings << cleaned.mid(i, 2);
-        }
-    }
-
-    for (const QString &byteStr : byteStrings) {
-        bool ok;
-        int byte = byteStr.toInt(&ok, 16);
-        if (ok) {
-            data.append(static_cast<char>(byte));
-        } else {
-            LOG_WARN("illegal hex: {}", byteStr);
-        }
-    }
-    // m_call_produce_func = func;
-    m_serial->write(data);
+void FormSerial::doProduceOpt(int id, const QString &msg)
+{
+    emit doOpt(id, msg);
 }
 
-void FormSerial::sendEasyData(const QString &text) {
-    LOG_INFO("serial send: {}", text);
-    if (!(m_serial && m_serial->isOpen())) {
-        SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("serial not open!"));
-        LOG_ERROR("Serial not open!");
-        return;
-    }
-
-    QByteArray data;
-    QString cleaned = text;
-    cleaned.remove(QRegularExpression("[^0-9A-Fa-f\\s]"));
-
-    QStringList byteStrings;
-    if (cleaned.contains(QRegularExpression("\\s+"))) {
-        byteStrings = cleaned.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-    } else {
-        for (int i = 0; i + 1 < cleaned.length(); i += 2) {
-            byteStrings << cleaned.mid(i, 2);
-        }
-    }
-
-    for (const QString &byteStr : byteStrings) {
-        bool ok;
-        int byte = byteStr.toInt(&ok, 16);
-        if (ok) {
-            data.append(static_cast<char>(byte));
-        } else {
-            LOG_WARN("illegal hex: {}", byteStr);
-        }
-    }
-    m_serial->write(data);
-    m_serial->waitForBytesWritten(200);
+void FormSerial::doEasyOpt(int id, const QString &msg)
+{
+    emit doOpt(id, msg);
 }
 
 void FormSerial::updateFrameTypes(const QString &algorithm) {
@@ -303,6 +248,15 @@ void FormSerial::updateFrameTypes(const QString &algorithm) {
         m_frameTypes = {};
     }
     QMetaObject::invokeMethod(m_parser, [this]() { m_parser->setFrameTypes(m_frameTypes); }, Qt::QueuedConnection);
+}
+
+QStringList FormSerial::getPorts() {
+    QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
+    QStringList port_names;
+    for (const auto &port : list_port) {
+        port_names.push_back(port.portName());
+    }
+    return port_names;
 }
 
 void FormSerial::getINI() {
