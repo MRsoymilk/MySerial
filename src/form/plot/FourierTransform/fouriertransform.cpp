@@ -24,10 +24,7 @@ void FourierTransform::setSampleRate(double rate) {
     }
 }
 
-void FourierTransform::setPercent(int value)
-{
-    m_percent = value;
-}
+void FourierTransform::setPercent(int value) { m_percent = value; }
 
 void FourierTransform::closeEvent(QCloseEvent *event) { emit windowClose(); }
 
@@ -159,7 +156,7 @@ QList<QPointF> FourierTransform::transform(const QList<QPointF> &data) {
 
     m_currentData = data;
 
-    if(m_percent != 0) {
+    if (m_percent != 0) {
         return updateIFFT();
     }
 
@@ -212,12 +209,12 @@ void FourierTransform::init() {
     m_chartFFT->setTitle(tr("Frequency Spectrum (FFT)"));
 
     m_axisXFFT = new QValueAxis();
-    m_axisXFFT->setTitleText("Frequency (Hz)");
+    m_axisXFFT->setTitleText(tr("Frequency (Hz)"));
     m_chartFFT->addAxis(m_axisXFFT, Qt::AlignBottom);
     m_lineFFT->attachAxis(m_axisXFFT);
 
     m_axisYFFT = new QValueAxis();
-    m_axisYFFT->setTitleText("Amplitude");
+    m_axisYFFT->setTitleText(tr("Amplitude"));
     m_chartFFT->addAxis(m_axisYFFT, Qt::AlignLeft);
     m_lineFFT->attachAxis(m_axisYFFT);
 
@@ -231,12 +228,12 @@ void FourierTransform::init() {
     m_chartIFFT->setTitle(tr("Filtered Signal (IFFT)"));
 
     m_axisXIFFT = new QValueAxis();
-    m_axisXIFFT->setTitleText("Time (s)");
+    m_axisXIFFT->setTitleText(tr("Time (s)"));
     m_chartIFFT->addAxis(m_axisXIFFT, Qt::AlignBottom);
     m_lineIFFT->attachAxis(m_axisXIFFT);
 
     m_axisYIFFT = new QValueAxis();
-    m_axisYIFFT->setTitleText("Value");
+    m_axisYIFFT->setTitleText(tr("Value"));
     m_chartIFFT->addAxis(m_axisYIFFT, Qt::AlignLeft);
     m_lineIFFT->attachAxis(m_axisYIFFT);
 

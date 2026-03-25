@@ -1,21 +1,18 @@
 #ifndef HOVERSLIDERBUTTON_H
 #define HOVERSLIDERBUTTON_H
 
-#include <QToolButton>
-#include <QSlider>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QLabel>
 #include <QEnterEvent>
 #include <QEvent>
+#include <QLabel>
+#include <QSlider>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
-class HoverSliderButton : public QToolButton
-{
+class HoverSliderButton : public QToolButton {
     Q_OBJECT
 public:
-    explicit HoverSliderButton(QWidget *parent = nullptr)
-        : QToolButton(parent)
-    {
+    explicit HoverSliderButton(QWidget *parent = nullptr) : QToolButton(parent) {
         setMouseTracking(true);
 
         m_popup = new QWidget(nullptr, Qt::Popup);
@@ -37,8 +34,7 @@ public:
 
         layout->addWidget(m_slider);
 
-        connect(m_slider, &QSlider::valueChanged, this, [=](int v){
-
+        connect(m_slider, &QSlider::valueChanged, this, [=](int v) {
             m_label->setText(QString("%1 %").arg(v));
 
             int min = m_slider->minimum();
@@ -67,24 +63,21 @@ signals:
     void valueChanged(int v);
 
 protected:
-    void enterEvent(QEnterEvent *event) override
-    {
+    void enterEvent(QEnterEvent *event) override {
         Q_UNUSED(event);
 
-        if (m_popup->isVisible())
-            return;
+        if (m_popup->isVisible()) return;
 
         QPoint btnGlobal = mapToGlobal(QPoint(0, 0));
 
-        int x = btnGlobal.x() + width()/2 - m_popup->width()/2;
+        int x = btnGlobal.x() + width() / 2 - m_popup->width() / 2;
         int y = btnGlobal.y() + height() + 4;
 
         m_popup->move(x, y);
         m_popup->show();
     }
 
-    bool eventFilter(QObject *obj, QEvent *event) override
-    {
+    bool eventFilter(QObject *obj, QEvent *event) override {
         if (obj == m_popup) {
             if (event->type() == QEvent::Leave) {
                 m_popup->hide();
@@ -99,4 +92,4 @@ private:
     QLabel *m_label;
 };
 
-#endif // HOVERSLIDERBUTTON_H
+#endif  // HOVERSLIDERBUTTON_H
