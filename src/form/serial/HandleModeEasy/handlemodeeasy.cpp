@@ -13,6 +13,7 @@ void HandleModeEasy::stopConnect() {
         m_serial->deleteLater();
         m_serial = nullptr;
     }
+    m_establish = false;
     m_wait_next_cmd = false;
     m_wait_next_port = false;
     m_easy_buffer.clear();
@@ -105,7 +106,7 @@ void HandleModeEasy::processEasyCall(const QByteArray &data)
 {
     if(m_call_buffer.size() > 10 * 1024) {
         m_wait_call = false;
-        emit optReturn(FormEasy::EASY_STOP, tr("cmd early stop"));
+        emit optReturn(FormEasy::EASY_DISCONNECT, tr("cmd early stop"));
     }
     m_call_buffer.append(data);
 
@@ -313,7 +314,7 @@ void HandleModeEasy::doOpt(int id, const QString &msg)
 {
     m_call_step = id;
     switch (id) {
-        case FormEasy::EASY_REFRESH:
+        case FormEasy::EASY_CONNECT:
         {
             m_ports.clear();
             m_ports.append(msg);
@@ -334,13 +335,13 @@ void HandleModeEasy::doOpt(int id, const QString &msg)
 
             if (!m_serial->open(QIODevice::ReadWrite)) {
                 LOG_WARN("{} open failed: {}", portName, m_serial->errorString());
-                emit optReturn(FormEasy::EASY_REFRESH, tr("[%1] open failed: %2").arg(portName).arg(m_serial->errorString()));
+                emit optReturn(FormEasy::EASY_CONNECT, tr("[%1] open failed: %2").arg(portName).arg(m_serial->errorString()));
                 return;
             }
 
             connect(m_serial, &QSerialPort::readyRead, this, &HandleModeEasy::onEasyModeReadyRead, Qt::UniqueConnection);
             m_establish = true;
-            emit optReturn(FormEasy::EASY_REFRESH,tr("[%1] start.").arg(portName));
+            emit optReturn(FormEasy::EASY_CONNECT,tr("[%1] start.").arg(portName));
         }
             break;
         case FormEasy::EASY_HANDSHAKE:
@@ -381,7 +382,7 @@ void HandleModeEasy::doOpt(int id, const QString &msg)
             m_wait_next_cmd = false;
         }
             break;
-        case FormEasy::EASY_STOP:
+        case FormEasy::EASY_DISCONNECT:
         {
             stopConnect();
         }

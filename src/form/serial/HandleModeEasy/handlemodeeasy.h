@@ -35,11 +35,11 @@ signals:
 public slots:
     void stopConnect();
     void doOpt(int id, const QString& msg);
+    void doConnect(const QStringList &ports, const QString &mode);
 
 public:
     HandleModeEasy(QObject *parent = nullptr);
     void setFrameType(QList<FrameType> type);
-    void doConnect(const QStringList &ports, const QString &mode);
 
 private:
     void init();

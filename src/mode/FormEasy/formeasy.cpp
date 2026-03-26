@@ -145,28 +145,28 @@ void FormEasy::initTable() {
 
 void FormEasy::initToolButton() {
     ui->tBtnSwitch->setToolTip(tr("switch"));
-    connect(ui->tBtnSwitch, &HoverTbtnButton::buttonClicked, this, [this](int id) {
+    connect(ui->tBtnSwitch, &HoverTbtnButton::buttonClicked, this, [this](int id, bool status) {
         switch (id) {
             case HoverTbtnButton::BTN_HANDSHAKE:
-                formSerial->doEasyOpt(HoverTbtnButton::BTN_HANDSHAKE);
+                formSerial->doEasyOpt(EASY_HANDSHAKE);
                 break;
             case HoverTbtnButton::BTN_SET_INTEGRATION_TIME:
-                formSerial->doEasyOpt(HoverTbtnButton::BTN_SET_INTEGRATION_TIME);
+                formSerial->doEasyOpt(EASY_SET_INTEGRATION_TIME);
                 break;
             case HoverTbtnButton::BTN_DO_THRESHOLD:
-                formSerial->doEasyOpt(HoverTbtnButton::BTN_DO_THRESHOLD);
+                formSerial->doEasyOpt(EASY_DO_THRESHOLD);
                 break;
             case HoverTbtnButton::BTN_DO_BASELINE:
-                formSerial->doEasyOpt(HoverTbtnButton::BTN_DO_BASELINE);
+                formSerial->doEasyOpt(EASY_DO_BASELINE);
                 break;
             case HoverTbtnButton::BTN_DATA_REQUEST:
-                formSerial->doEasyOpt(HoverTbtnButton::BTN_DATA_REQUEST, m_F30_shown_mode);
+                formSerial->doEasyOpt(EASY_DATA_REQUEST, m_F30_shown_mode);
                 break;
             case HoverTbtnButton::BTN_STOP:
-                formSerial->doEasyOpt(HoverTbtnButton::BTN_STOP);
+                formSerial->doEasyOpt(EASY_DISCONNECT);
                 break;
-            case HoverTbtnButton::BTN_REFRESH:
-                formSerial->doEasyOpt(HoverTbtnButton::BTN_REFRESH, ui->tBtnSwitch->getCurrentPort());
+            case HoverTbtnButton::BTN_CONNECT:
+                formSerial->doEasyOpt(EASY_CONNECT, ui->tBtnSwitch->getCurrentPort());
                 break;
             default:
                 break;
@@ -361,7 +361,6 @@ void FormEasy::init() {
         m_overlay->hide();
     });
     connect(formSerial, &FormSerial::redoConnect, this, [this]() {
-        formSerial->stopFSeriesConnect();
         formSerial->startEasyConnect(m_F30_shown_mode);
         m_overlay->reTry();
     });

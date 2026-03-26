@@ -56,7 +56,9 @@ public:
     void updateFrameTypes(const QString &idx);
     QStringList getPorts();
 
+    void initProduceConnect();
     void initEasyConnect();
+
 signals:
     void recv2PlotLLC(const FRAME &frame, const double &temperature = 0.0);
     void recv2PlotF30(const FRAME &frame, const double &temperature = 0.0);
@@ -71,6 +73,9 @@ signals:
     void redoConnect();
     void optReturn(int id, const QString& msg);
     void doOpt(int id, const QString& msg);
+    void doProduceConnect(const QStringList& ports);
+    void doEasyConnect(const QStringList& ports, const QString& mode);
+    void setFrameType(QList<FrameType> type);
 
 public slots:
     void sendRaw(const QByteArray &bytes);

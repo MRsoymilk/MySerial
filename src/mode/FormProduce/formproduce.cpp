@@ -187,12 +187,12 @@ void FormProduce::init() {
     });
 
     connect(formSerial, &FormSerial::redoConnect, this, [=]() {
-        formSerial->stopFSeriesConnect();
         formSerial->startProduceConnect();
         m_overlay->reTry();
     });
     connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::optReturn, this, &FormProduce::onOptReturn);
+    formSerial->initProduceConnect();
 }
 
 void FormProduce::on_tBtnSwitch_clicked() {

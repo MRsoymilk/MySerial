@@ -66,6 +66,7 @@ void HandleModeProduce::stopConnect() {
         m_serial->deleteLater();
         m_serial = nullptr;
     }
+    m_establish = false;
     m_wait_next_cmd = false;
     m_wait_next_port = false;
     m_produce_buffer.clear();

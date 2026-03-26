@@ -42,8 +42,8 @@ public:
         EASY_DO_THRESHOLD,
         EASY_DO_BASELINE,
         EASY_DATA_REQUEST,
-        EASY_STOP,
-        EASY_REFRESH
+        EASY_DISCONNECT,
+        EASY_CONNECT
     };
 public:
     explicit FormEasy(QWidget *parent = nullptr);

@@ -28,41 +28,54 @@ FormSerial::~FormSerial() {
         m_workerThread->quit();
         m_workerThread->wait();
     }
+
+    if (m_connectThread) {
+        m_connectThread->quit();
+        if (!m_connectThread->wait(1000)) {
+            m_connectThread->terminate();
+            m_connectThread->wait(1000);
+        }
+        m_connectThread->deleteLater();
+        m_connectThread = nullptr;
+    }
     delete ui;
 }
 
 void FormSerial::retranslateUI() { ui->retranslateUi(this); }
 
-bool FormSerial::startProduceConnect() {
+void FormSerial::initProduceConnect() {
     m_connectThread = new QThread(this);
 
     m_handleProduce = new HandleModeProduce;
-    m_handleProduce->setFrameType(m_frameTypes);
     m_handleProduce->moveToThread(m_connectThread);
-    connect(m_connectThread, &QThread::started, [=]() {
-        QStringList ports;
-        for (const QSerialPortInfo &info : QSerialPortInfo::availablePorts()) {
-            ports << info.portName();
-        }
-        m_handleProduce->doConnect(ports);
-    });
     connect(m_connectThread, &QThread::finished, m_handleProduce, &QObject::deleteLater, Qt::QueuedConnection);
     connect(m_handleProduce, &HandleModeProduce::connectEstablished, this, &FormSerial::connectProduceModeEstablished);
     connect(m_handleProduce, &HandleModeProduce::dataReady, this, &FormSerial::pushParserData);
     connect(m_handleProduce, &HandleModeProduce::statusReport, this, &FormSerial::statusReport);
     connect(m_handleProduce, &HandleModeProduce::redoConnect, this, &FormSerial::redoConnect);
     connect(m_handleProduce, &HandleModeProduce::optReturn, this, &FormSerial::optReturn);
+    connect(this, &FormSerial::setFrameType, m_handleProduce, &HandleModeProduce::setFrameType);
     connect(this, &FormSerial::stopProduceConnect, m_handleProduce, &HandleModeProduce::stopConnect);
     connect(this, &FormSerial::doOpt, m_handleProduce, &HandleModeProduce::doOpt);
+    connect(this, &FormSerial::doProduceConnect, m_handleProduce, &HandleModeProduce::doConnect);
 
     m_connectThread->start();
+}
+
+bool FormSerial::startProduceConnect() {
+    emit setFrameType(m_frameTypes);
+
+    QStringList ports;
+    for (const QSerialPortInfo &info : QSerialPortInfo::availablePorts()) {
+        ports << info.portName();
+    }
+    emit doProduceConnect(ports);
     return true;
 }
 
 void FormSerial::initEasyConnect() {
     m_connectThread = new QThread(this);
     m_handleEasy = new HandleModeEasy;
-    m_handleEasy->setFrameType(m_frameTypes);
     m_handleEasy->moveToThread(m_connectThread);
     connect(m_connectThread, &QThread::finished, m_handleEasy, &QObject::deleteLater, Qt::QueuedConnection);
     connect(m_handleEasy, &HandleModeEasy::connectEstablished, this, &FormSerial::connectEasyModeEstablished);
@@ -72,18 +85,22 @@ void FormSerial::initEasyConnect() {
     connect(m_handleEasy, &HandleModeEasy::statusReport, this, &FormSerial::statusReport);
     connect(m_handleEasy, &HandleModeEasy::redoConnect, this, &FormSerial::redoConnect);
     connect(m_handleEasy, &HandleModeEasy::optReturn, this, &FormSerial::optReturn);
+    connect(this, &FormSerial::setFrameType, m_handleEasy, &HandleModeEasy::setFrameType);
     connect(this, &FormSerial::stopEasyConnect, m_handleEasy, &HandleModeEasy::stopConnect);
     connect(this, &FormSerial::doOpt, m_handleEasy, &HandleModeEasy::doOpt);
+    connect(this, &FormSerial::doEasyConnect, m_handleEasy, &HandleModeEasy::doConnect);
 
     m_connectThread->start();
 }
 
 bool FormSerial::startEasyConnect(const QString &F30_shown_mode) {
+    emit setFrameType(m_frameTypes);
+
     QStringList ports;
     for (const QSerialPortInfo &info : QSerialPortInfo::availablePorts()) {
         ports << info.portName();
     }
-    m_handleEasy->doConnect(ports, F30_shown_mode);
+    emit doEasyConnect(ports, F30_shown_mode);
     return true;
 }
 
@@ -94,16 +111,6 @@ void FormSerial::stopFSeriesConnect() {
 
     if (m_handleEasy) {
         QMetaObject::invokeMethod(m_handleEasy, "stopConnect", Qt::QueuedConnection);
-    }
-
-    if (m_connectThread) {
-        m_connectThread->quit();
-        if (!m_connectThread->wait(1000)) {
-            m_connectThread->terminate();
-            m_connectThread->wait(1000);
-        }
-        m_connectThread->deleteLater();
-        m_connectThread = nullptr;
     }
 
     if (m_serial) {
