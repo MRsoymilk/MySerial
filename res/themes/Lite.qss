@@ -1355,8 +1355,8 @@ QToolButton#tBtnDarkSpectrum {
   qproperty-iconSize: 48px 48px;
 }
 
-QToolButton#HtBnRefresh {
-  qproperty-icon: url(:/res/icons/black/HtBnRefresh.png);
+QToolButton#HtBtnConnect {
+  qproperty-icon: url(:/res/icons/black/HtBtnConnect.png);
   qproperty-iconSize: 24px 24px;
 }
 
@@ -1390,9 +1390,5 @@ QToolButton#HtBtnStop {
   qproperty-iconSize: 24px 24px;
 }
 
-QToolButton#HtBtnRefresh {
-  qproperty-icon: url(:/res/icons/black/HtBtnRefresh.png);
-  qproperty-iconSize: 24px 24px;
-}
 
 /*# sourceMappingURL=Lite.qss.map */

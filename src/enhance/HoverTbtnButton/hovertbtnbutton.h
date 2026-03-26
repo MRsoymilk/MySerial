@@ -7,9 +7,12 @@
 #include <QEnterEvent>
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QTimer>
 #include <QToolButton>
 #include <QWidget>
+
+#include "keydef.h"
 
 class HoverTbtnButton : public QToolButton {
     Q_OBJECT
@@ -21,7 +24,7 @@ public:
         BTN_DO_BASELINE,
         BTN_DATA_REQUEST,
         BTN_STOP,
-        BTN_REFRESH
+        BTN_CONNECT
     };
 
 public:
@@ -45,7 +48,14 @@ public:
         addButton(layout, tr("baseline"), "HtBtnBaseline", BTN_DO_BASELINE);
         addButton(layout, tr("data request"), "HtBtnDataRequest", BTN_DATA_REQUEST);
         addButton(layout, tr("stop"), "HtBtnStop", BTN_STOP);
-        addButton(layout, tr("refresh"), "HtBtnRefresh", BTN_REFRESH);
+
+        m_tBtnConnect = new QToolButton;
+        m_tBtnConnect->setObjectName("HtBtnConnect");
+        m_tBtnConnect->setCheckable(true);
+        connect(m_tBtnConnect, &QToolButton::clicked, this, [this](){
+            emit buttonClicked(BTN_CONNECT, m_connected);
+        });
+        layout->addWidget(m_tBtnConnect);
 
         m_popup->installEventFilter(this);
     }
@@ -55,6 +65,11 @@ public:
         return port;
     }
 
+    void isConnect(bool status) {
+        m_connected = status;
+        m_tBtnConnect->setChecked(m_connected);
+    }
+
 public slots:
     void updatePorts(const QStringList &ports) {
         m_box->clear();
@@ -62,7 +77,7 @@ public slots:
     }
 
 signals:
-    void buttonClicked(int id);
+    void buttonClicked(int id, bool status = false);
     void buttonHover();
 
 protected:
@@ -127,6 +142,8 @@ protected:
 private:
     QWidget *m_popup;
     QComboBox *m_box;
+    bool m_connected = false;
+    QToolButton *m_tBtnConnect;
 
 private:
     void addButton(QHBoxLayout *layout, const QString &text, const QString &name, int id) {
@@ -135,10 +152,15 @@ private:
         btn->setText(text);
         btn->setToolTip(text);
         btn->setAutoRaise(true);
-
         layout->addWidget(btn);
 
-        connect(btn, &QToolButton::clicked, this, [=]() { emit buttonClicked(id); });
+        connect(btn, &QToolButton::clicked, this, [=]() {
+            if(!m_connected) {
+                QMessageBox::warning(nullptr, TITLE_WARNING, tr("port not open!"));
+                return;
+            }
+            emit buttonClicked(id);
+        });
     }
 };
 

@@ -335,12 +335,14 @@ void HandleModeEasy::doOpt(int id, const QString &msg)
 
             if (!m_serial->open(QIODevice::ReadWrite)) {
                 LOG_WARN("{} open failed: {}", portName, m_serial->errorString());
+                emit optReturn(FormEasy::EASY_CONNECT_STOP, "");
                 emit optReturn(FormEasy::EASY_CONNECT, tr("[%1] open failed: %2").arg(portName).arg(m_serial->errorString()));
                 return;
             }
 
             connect(m_serial, &QSerialPort::readyRead, this, &HandleModeEasy::onEasyModeReadyRead, Qt::UniqueConnection);
             m_establish = true;
+            emit optReturn(FormEasy::EASY_CONNECT_SUCCESS, "");
             emit optReturn(FormEasy::EASY_CONNECT,tr("[%1] start.").arg(portName));
         }
             break;
@@ -385,6 +387,8 @@ void HandleModeEasy::doOpt(int id, const QString &msg)
         case FormEasy::EASY_DISCONNECT:
         {
             stopConnect();
+            emit optReturn(FormEasy::EASY_CONNECT_STOP, "");
+            emit optReturn(FormEasy::EASY_DISCONNECT, tr("disconnect"));
         }
             break;
     }

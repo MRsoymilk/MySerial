@@ -234,9 +234,9 @@
         <file>res/icons/blue/HtBtnThreshold.png</file>
         <file>res/icons/pink/HtBtnThreshold.png</file>
         <file>res/icons/white/HtBtnThreshold.png</file>
-        <file>res/icons/black/HtBtnRefresh.png</file>
-        <file>res/icons/blue/HtBtnRefresh.png</file>
-        <file>res/icons/pink/HtBtnRefresh.png</file>
-        <file>res/icons/white/HtBtnRefresh.png</file>
+        <file>res/icons/black/HtBtnConnect.png</file>
+        <file>res/icons/blue/HtBtnConnect.png</file>
+        <file>res/icons/pink/HtBtnConnect.png</file>
+        <file>res/icons/white/HtBtnConnect.png</file>
     </qresource>
 </RCC>

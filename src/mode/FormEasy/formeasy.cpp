@@ -166,7 +166,12 @@ void FormEasy::initToolButton() {
                 formSerial->doEasyOpt(EASY_DISCONNECT);
                 break;
             case HoverTbtnButton::BTN_CONNECT:
-                formSerial->doEasyOpt(EASY_CONNECT, ui->tBtnSwitch->getCurrentPort());
+                if(!status) {
+                    formSerial->doEasyOpt(EASY_CONNECT, ui->tBtnSwitch->getCurrentPort());
+                }
+                else {
+                    formSerial->doEasyOpt(EASY_DISCONNECT, ui->tBtnSwitch->getCurrentPort());
+                }
                 break;
             default:
                 break;
@@ -366,6 +371,12 @@ void FormEasy::init() {
     });
     connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
     connect(formSerial, &FormSerial::optReturn, this, [this](int id, const QString& msg) {
+        if(id == EASY_CONNECT_SUCCESS) {
+            ui->tBtnSwitch->isConnect(true);
+        }
+        if(id == EASY_CONNECT_STOP) {
+            ui->tBtnSwitch->isConnect(false);
+        }
         ui->labelMsg->setText(msg);
     });
     formSerial->initEasyConnect();
