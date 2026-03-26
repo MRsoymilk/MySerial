@@ -292,19 +292,19 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="32"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="159"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="182"/>
         <source>pause</source>
         <translation>pause</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="42"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="160"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="183"/>
         <source>zoom</source>
         <translation>zoom</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="52"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="161"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="184"/>
         <source>crop</source>
         <translation>crop</translation>
     </message>
@@ -320,7 +320,7 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="89"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="163"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="186"/>
         <source>FWHM</source>
         <translation>FWHM</translation>
     </message>
@@ -335,12 +335,12 @@
         <translation>info</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="180"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="213"/>
         <source>simulate</source>
         <translation>simulate</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="186"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="219"/>
         <source>history</source>
         <translation>history</translation>
     </message>
@@ -356,7 +356,7 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="129"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="167"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="200"/>
         <source>to voltage</source>
         <translation>to voltage</translation>
     </message>
@@ -412,141 +412,146 @@
         <translation>Max Intensity</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="127"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="146"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="390"/>
+        <source>msg</source>
+        <translation>msg</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="116"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="135"/>
         <source>index</source>
         <translation>index</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="128"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="147"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="117"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="136"/>
         <source>intensity</source>
         <translation>intensity</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="116"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="105"/>
         <source>curve</source>
         <translation>curve</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="129"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="118"/>
         <source>Spectral</source>
         <translation>Spectral</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="148"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="137"/>
         <source>raw</source>
         <translation>raw</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="158"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="147"/>
         <source>switch</source>
         <translation>switch</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="162"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="185"/>
         <source>find peak</source>
         <translation>find peak</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="164"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="187"/>
         <source>save image</source>
         <translation>save image</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="165"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="188"/>
         <source>fourier</source>
         <translation>fourier</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="166"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="199"/>
         <source>accumulate</source>
         <translation>accumulate</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="192"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="225"/>
         <source>signal noise ratio</source>
         <translation>signal noise ratio</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="198"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="231"/>
         <source>Points Tracker</source>
         <translation>Points Tracker</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="204"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="237"/>
         <source>Dark Spectrum</source>
         <translation>Dark Spectrum</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="273"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="306"/>
         <source>Peaks</source>
         <translation>Peaks</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="474"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="536"/>
         <source>Save Chart</source>
         <translation>Save Chart</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="896"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="959"/>
         <source>Load Chart</source>
         <translation>Load Chart</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="897"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="960"/>
         <source>Export Chart</source>
         <translation>Export Chart</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="902"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="965"/>
         <source>Add Points Tracker</source>
         <translation>Add Points Tracker</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="903"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="966"/>
         <source>Clear Tracker</source>
         <translation>Clear Tracker</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="991"/>
         <source>Add Point</source>
         <translation>Add Point</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="991"/>
         <source>Input position:</source>
         <translation>Input position:</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="999"/>
         <source>choose file</source>
         <translation>choose file</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="999"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1051"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV Files (*.csv)</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="942"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="995"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1005"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1058"/>
         <source>Cannot open file.</source>
         <translation>Cannot open file.</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="984"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1047"/>
         <source>CSV loaded successfully.</source>
         <translation>CSV loaded successfully.</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1051"/>
         <source>Export CSV</source>
         <translation>Export CSV</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1007"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1070"/>
         <source>CSV exported successfully.</source>
         <translation>CSV exported successfully.</translation>
     </message>
@@ -570,19 +575,19 @@
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="49"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="113"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="120"/>
         <source>Correction</source>
         <translation>Correction</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="56"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="106"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="113"/>
         <source>Simulate</source>
         <translation>Simulate</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="63"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="99"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="106"/>
         <source>History</source>
         <translation>History</translation>
     </message>
@@ -1899,12 +1904,12 @@
         <translation>choose file</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="98"/>
         <source>Error Read CSV</source>
         <translation>Error Read CSV</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="98"/>
         <source>no data column found!</source>
         <translation>no data column found!</translation>
     </message>
@@ -1973,7 +1978,6 @@
     </message>
     <message>
         <location filename="../../src/mode/FormProduce/formproduce.ui" line="239"/>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="348"/>
         <source>start self check</source>
         <translation>start self check</translation>
     </message>
@@ -1984,93 +1988,54 @@
     </message>
     <message>
         <location filename="../../src/mode/FormProduce/formproduce.ui" line="274"/>
+        <source>pause</source>
+        <translation>pause</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="284"/>
         <source>to voltage</source>
         <translation>to voltage</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.ui" line="301"/>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="311"/>
         <source>update sign</source>
         <translation>update sign</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="100"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="33"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="112"/>
         <source>is done</source>
         <translation>is done</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="130"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="143"/>
         <source>curve31</source>
         <translation>curve31</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="133"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="146"/>
         <source>curve33</source>
         <translation>curve33</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="150"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="163"/>
         <source>index</source>
         <translation>index</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="151"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="164"/>
         <source>intensity</source>
         <translation>intensity</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="152"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="165"/>
         <source>Spectral</source>
         <translation>Spectral</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="337"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="321"/>
         <source>Job Done!</source>
         <translation>Job Done!</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="377"/>
-        <source>No fault</source>
-        <translation>No fault</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="379"/>
-        <source>Module not working</source>
-        <translation>Module not working</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="381"/>
-        <source>Temperature too high (above 50℃)</source>
-        <translation>Temperature too high (above 50℃)</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="383"/>
-        <source>Temperature too low (below -20℃)</source>
-        <translation>Temperature too low (below -20℃)</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="385"/>
-        <source>TEC not working</source>
-        <translation>TEC not working</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="387"/>
-        <source>TEC unable to power on</source>
-        <translation>TEC unable to power on</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="389"/>
-        <source>Fan not working</source>
-        <translation>Fan not working</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="391"/>
-        <source>DAC no output</source>
-        <translation>DAC no output</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="393"/>
-        <source>Module unstable</source>
-        <translation>Module unstable</translation>
     </message>
 </context>
 <context>
@@ -2222,44 +2187,43 @@
         <translation>Enhancement</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="555"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="313"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="555"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="313"/>
         <source>Serial not open!</source>
         <translation>Serial not open!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="749"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="378"/>
         <source>No available serial port found!</source>
         <translation>No available serial port found!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="990"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="396"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="576"/>
         <source>To Open</source>
         <translation>To Open</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="359"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="808"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="878"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="437"/>
         <source>serial not open!</source>
         <translation>serial not open!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="1177"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="740"/>
         <source>Please open serial port!</source>
         <translation>Please open serial port!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="1189"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="752"/>
         <source>Please set valid time(ms)!</source>
         <translation>Please set valid time(ms)!</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="1233"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="796"/>
         <source>No ports available!</source>
         <translation>No ports available!</translation>
     </message>
@@ -2379,14 +2343,220 @@
         <translation>Range</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="196"/>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="209"/>
         <source>Frequency Spectrum (FFT)</source>
         <translation>Frequency Spectrum (FFT)</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="215"/>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="212"/>
+        <source>Frequency (Hz)</source>
+        <translation>Frequency (Hz)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="217"/>
+        <source>Amplitude</source>
+        <translation>Amplitude</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="228"/>
         <source>Filtered Signal (IFFT)</source>
         <translation>Filtered Signal (IFFT)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="231"/>
+        <source>Time (s)</source>
+        <translation>Time (s)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="236"/>
+        <source>Value</source>
+        <translation>Value</translation>
+    </message>
+</context>
+<context>
+    <name>HandleModeEasy</name>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="109"/>
+        <source>cmd early stop</source>
+        <translation>cmd early stop</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="118"/>
+        <source>handshake ok</source>
+        <translation>handshake ok</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="127"/>
+        <source>do threshold ok</source>
+        <translation>do threshold ok</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="136"/>
+        <source>do baseline ok</source>
+        <translation>do baseline ok</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="169"/>
+        <source>[%1] mode double, do threshold.</source>
+        <translation>[%1] mode double, do threshold.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="180"/>
+        <source>[%1] mode double, do baseline.</source>
+        <translation>[%1] mode double, do baseline.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="190"/>
+        <source>[%1] set integration time.</source>
+        <translation>[%1] set integration time.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="201"/>
+        <source>[%1] start data request.</source>
+        <translation>[%1] start data request.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="209"/>
+        <source>[%1] finish.</source>
+        <translation>[%1] finish.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="339"/>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="420"/>
+        <source>[%1] open failed: %2</source>
+        <translation>[%1] open failed: %2</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="346"/>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="429"/>
+        <source>[%1] start.</source>
+        <translation>[%1] start.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="391"/>
+        <source>disconnect</source>
+        <translation>disconnect</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="440"/>
+        <source>[%1] start handshake.</source>
+        <translation>[%1] start handshake.</translation>
+    </message>
+</context>
+<context>
+    <name>HandleModeProduce</name>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="99"/>
+        <source>[%1] open failed: %2</source>
+        <translation>[%1] open failed: %2</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="109"/>
+        <source>[%1] start.</source>
+        <translation>[%1] start.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="124"/>
+        <source>[%1] start handshake.</source>
+        <translation>[%1] start handshake.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="212"/>
+        <source>start self check</source>
+        <translation>start self check</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="238"/>
+        <source>No fault</source>
+        <translation>No fault</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="240"/>
+        <source>Module not working</source>
+        <translation>Module not working</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="242"/>
+        <source>Temperature too high (above 50℃)</source>
+        <translation>Temperature too high (above 50℃)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="244"/>
+        <source>Temperature too low (below -20℃)</source>
+        <translation>Temperature too low (below -20℃)</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="246"/>
+        <source>TEC not working</source>
+        <translation>TEC not working</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="248"/>
+        <source>TEC unable to power on</source>
+        <translation>TEC unable to power on</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="250"/>
+        <source>Fan not working</source>
+        <translation>Fan not working</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="252"/>
+        <source>DAC no output</source>
+        <translation>DAC no output</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="254"/>
+        <source>Module unstable</source>
+        <translation>Module unstable</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="280"/>
+        <source>[%1] start data request.</source>
+        <translation>[%1] start data request.</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="288"/>
+        <source>[%1] finish.</source>
+        <translation>[%1] finish.</translation>
+    </message>
+</context>
+<context>
+    <name>HoverTbtnButton</name>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="45"/>
+        <source>handshake</source>
+        <translation>handshake</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="46"/>
+        <source>integration</source>
+        <translation>integration</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="47"/>
+        <source>threshold</source>
+        <translation>threshold</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="48"/>
+        <source>baseline</source>
+        <translation>baseline</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="49"/>
+        <source>data request</source>
+        <translation>data request</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="50"/>
+        <source>stop</source>
+        <translation>stop</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="159"/>
+        <source>port not open!</source>
+        <translation>port not open!</translation>
     </message>
 </context>
 <context>
@@ -2617,6 +2787,11 @@
         <source>Update</source>
         <translation>Update</translation>
     </message>
+    <message>
+        <location filename="../../src/main/mainwindow.cpp" line="336"/>
+        <source>Unable to find document: %1</source>
+        <translation>Unable to find document: %1</translation>
+    </message>
 </context>
 <context>
     <name>PeakTrajectory</name>
@@ -2713,17 +2888,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/include/keydef.h" line="117"/>
+        <location filename="../../src/include/keydef.h" line="116"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../src/include/keydef.h" line="118"/>
+        <location filename="../../src/include/keydef.h" line="117"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../../src/include/keydef.h" line="119"/>
+        <location filename="../../src/include/keydef.h" line="118"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>

@@ -292,19 +292,19 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="32"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="159"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="182"/>
         <source>pause</source>
         <translation>暫停</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="42"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="160"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="183"/>
         <source>zoom</source>
         <translation>縮放</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="52"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="161"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="184"/>
         <source>crop</source>
         <translation>裁剪</translation>
     </message>
@@ -320,7 +320,7 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="89"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="163"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="186"/>
         <source>FWHM</source>
         <translation>FWHM</translation>
     </message>
@@ -335,12 +335,12 @@
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="180"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="213"/>
         <source>simulate</source>
         <translation>模擬</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="186"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="219"/>
         <source>history</source>
         <translation>歷史</translation>
     </message>
@@ -356,7 +356,7 @@
     </message>
     <message>
         <location filename="../../src/mode/FormEasy/formeasy.ui" line="129"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="167"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="200"/>
         <source>to voltage</source>
         <translation>轉電壓</translation>
     </message>
@@ -412,141 +412,146 @@
         <translation>最高強度</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="127"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="146"/>
+        <location filename="../../src/mode/FormEasy/formeasy.ui" line="390"/>
+        <source>msg</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="116"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="135"/>
         <source>index</source>
         <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="128"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="147"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="117"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="136"/>
         <source>intensity</source>
         <translation>強度</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="116"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="105"/>
         <source>curve</source>
         <translation>曲線</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="129"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="118"/>
         <source>Spectral</source>
         <translation>光譜</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="148"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="137"/>
         <source>raw</source>
         <translation>原始值</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="158"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="147"/>
         <source>switch</source>
         <translation>切換</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="162"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="185"/>
         <source>find peak</source>
         <translation>找峯</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="164"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="187"/>
         <source>save image</source>
         <translation>保存圖像</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="165"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="188"/>
         <source>fourier</source>
         <translation>傅里葉變換</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="166"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="199"/>
         <source>accumulate</source>
         <translation>累加</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="192"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="225"/>
         <source>signal noise ratio</source>
         <translation>信噪比</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="198"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="231"/>
         <source>Points Tracker</source>
         <translation>點追蹤</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="204"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="237"/>
         <source>Dark Spectrum</source>
         <translation>暗光譜</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="273"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="306"/>
         <source>Peaks</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="474"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="536"/>
         <source>Save Chart</source>
         <translation>保存圖表</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="896"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="959"/>
         <source>Load Chart</source>
         <translation>加載圖表</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="897"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="960"/>
         <source>Export Chart</source>
         <translation>導出圖表</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="902"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="965"/>
         <source>Add Points Tracker</source>
         <translation>添加點追蹤</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="903"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="966"/>
         <source>Clear Tracker</source>
         <translation>清除點追蹤</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="991"/>
         <source>Add Point</source>
         <translation>加入點</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="928"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="991"/>
         <source>Input position:</source>
         <translation>輸入位置：</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="999"/>
         <source>choose file</source>
         <translation>選擇文件</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="936"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="999"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1051"/>
         <source>CSV Files (*.csv)</source>
         <translation>CSV文件（*.csv）</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="942"/>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="995"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1005"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1058"/>
         <source>Cannot open file.</source>
         <translation>無法打開文件。</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="984"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1047"/>
         <source>CSV loaded successfully.</source>
         <translation>CSV加載成功。</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="988"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1051"/>
         <source>Export CSV</source>
         <translation>導出CSV</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1007"/>
+        <location filename="../../src/mode/FormEasy/formeasy.cpp" line="1070"/>
         <source>CSV exported successfully.</source>
         <translation>CSV導出成功。</translation>
     </message>
@@ -570,19 +575,19 @@
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="49"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="113"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="120"/>
         <source>Correction</source>
         <translation>校正</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="56"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="106"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="113"/>
         <source>Simulate</source>
         <translation>模擬</translation>
     </message>
     <message>
         <location filename="../../src/mode/FormExpert/formexpert.ui" line="63"/>
-        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="99"/>
+        <location filename="../../src/mode/FormExpert/formexpert.cpp" line="106"/>
         <source>History</source>
         <translation>歷史</translation>
     </message>
@@ -1899,12 +1904,12 @@
         <translation>選擇文件</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="98"/>
         <source>Error Read CSV</source>
         <translation>讀取CSV時出錯</translation>
     </message>
     <message>
-        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="100"/>
+        <location filename="../../src/form/FormPlotSimulate/formplotsimulate.cpp" line="98"/>
         <source>no data column found!</source>
         <translation>未找到數據列！</translation>
     </message>
@@ -1973,7 +1978,6 @@
     </message>
     <message>
         <location filename="../../src/mode/FormProduce/formproduce.ui" line="239"/>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="348"/>
         <source>start self check</source>
         <translation>開始自檢</translation>
     </message>
@@ -1984,93 +1988,54 @@
     </message>
     <message>
         <location filename="../../src/mode/FormProduce/formproduce.ui" line="274"/>
+        <source>pause</source>
+        <translation>暫停</translation>
+    </message>
+    <message>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="284"/>
         <source>to voltage</source>
         <translation>轉電壓</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.ui" line="301"/>
+        <location filename="../../src/mode/FormProduce/formproduce.ui" line="311"/>
         <source>update sign</source>
         <translation>更新標誌</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="100"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="33"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="112"/>
         <source>is done</source>
         <translation>是否完成</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="130"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="143"/>
         <source>curve31</source>
         <translation>曲線31</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="133"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="146"/>
         <source>curve33</source>
         <translation>曲線33</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="150"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="163"/>
         <source>index</source>
         <translation>索引</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="151"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="164"/>
         <source>intensity</source>
         <translation>強度</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="152"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="165"/>
         <source>Spectral</source>
         <translation>光譜</translation>
     </message>
     <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="337"/>
+        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="321"/>
         <source>Job Done!</source>
         <translation>工作完成！</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="377"/>
-        <source>No fault</source>
-        <translation>無錯</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="379"/>
-        <source>Module not working</source>
-        <translation>模塊無法正常工作</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="381"/>
-        <source>Temperature too high (above 50℃)</source>
-        <translation>溫度過高（高於50℃）</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="383"/>
-        <source>Temperature too low (below -20℃)</source>
-        <translation>溫度過低（低於-20℃）</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="385"/>
-        <source>TEC not working</source>
-        <translation>TEC 無法正常工作</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="387"/>
-        <source>TEC unable to power on</source>
-        <translation>TEC 無法開機</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="389"/>
-        <source>Fan not working</source>
-        <translation>風扇不工作</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="391"/>
-        <source>DAC no output</source>
-        <translation>DAC 無輸出</translation>
-    </message>
-    <message>
-        <location filename="../../src/mode/FormProduce/formproduce.cpp" line="393"/>
-        <source>Module unstable</source>
-        <translation>模塊不穩定</translation>
     </message>
 </context>
 <context>
@@ -2222,44 +2187,43 @@
         <translation>增強</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="555"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="313"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="555"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="313"/>
         <source>Serial not open!</source>
         <translation>串口未打開！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="749"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="378"/>
         <source>No available serial port found!</source>
         <translation>未找到可用的串行端口！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="990"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="396"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="576"/>
         <source>To Open</source>
         <translation>打開</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="359"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="808"/>
-        <location filename="../../src/form/serial/formserial.cpp" line="878"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="437"/>
         <source>serial not open!</source>
         <translation>串口未打開！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="1177"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="740"/>
         <source>Please open serial port!</source>
         <translation>請打開串口！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="1189"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="752"/>
         <source>Please set valid time(ms)!</source>
         <translation>請設置有效時間（毫秒）！</translation>
     </message>
     <message>
-        <location filename="../../src/form/serial/formserial.cpp" line="1233"/>
+        <location filename="../../src/form/serial/formserial.cpp" line="796"/>
         <source>No ports available!</source>
         <translation>沒有可用的端口！</translation>
     </message>
@@ -2379,14 +2343,220 @@
         <translation>範圍</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="196"/>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="209"/>
         <source>Frequency Spectrum (FFT)</source>
         <translation>頻率頻譜（FFT）</translation>
     </message>
     <message>
-        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="215"/>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="212"/>
+        <source>Frequency (Hz)</source>
+        <translation>頻率（赫茲）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="217"/>
+        <source>Amplitude</source>
+        <translation>振幅</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="228"/>
         <source>Filtered Signal (IFFT)</source>
         <translation>濾波信號（IFFT）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="231"/>
+        <source>Time (s)</source>
+        <translation>時間（秒）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/plot/FourierTransform/fouriertransform.cpp" line="236"/>
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
+</context>
+<context>
+    <name>HandleModeEasy</name>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="109"/>
+        <source>cmd early stop</source>
+        <translation>命令提前停止</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="118"/>
+        <source>handshake ok</source>
+        <translation>握手成功</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="127"/>
+        <source>do threshold ok</source>
+        <translation>閾值設置正確</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="136"/>
+        <source>do baseline ok</source>
+        <translation>基線設置成功</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="169"/>
+        <source>[%1] mode double, do threshold.</source>
+        <translation>[%1] 模式 雙，設置閾值。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="180"/>
+        <source>[%1] mode double, do baseline.</source>
+        <translation>[%1] 模式 雙，設置基線。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="190"/>
+        <source>[%1] set integration time.</source>
+        <translation>[%] 設置積分時間。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="201"/>
+        <source>[%1] start data request.</source>
+        <translation>[%1] 開始請求數據。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="209"/>
+        <source>[%1] finish.</source>
+        <translation>[%1] 結束。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="339"/>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="420"/>
+        <source>[%1] open failed: %2</source>
+        <translation>[%1] 打開失敗：%2</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="346"/>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="429"/>
+        <source>[%1] start.</source>
+        <translation>[%1] 開始。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="391"/>
+        <source>disconnect</source>
+        <translation>斷開連接</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeEasy/handlemodeeasy.cpp" line="440"/>
+        <source>[%1] start handshake.</source>
+        <translation>[%1] 開始握手。</translation>
+    </message>
+</context>
+<context>
+    <name>HandleModeProduce</name>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="99"/>
+        <source>[%1] open failed: %2</source>
+        <translation>[%1] 打開失敗：%2</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="109"/>
+        <source>[%1] start.</source>
+        <translation>[%1] 開始。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="124"/>
+        <source>[%1] start handshake.</source>
+        <translation>[%1] 開始握手。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="212"/>
+        <source>start self check</source>
+        <translation>開始自檢</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="238"/>
+        <source>No fault</source>
+        <translation>無錯</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="240"/>
+        <source>Module not working</source>
+        <translation>模塊無法正常工作</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="242"/>
+        <source>Temperature too high (above 50℃)</source>
+        <translation>溫度過高（高於50℃）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="244"/>
+        <source>Temperature too low (below -20℃)</source>
+        <translation>溫度過低（低於-20℃）</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="246"/>
+        <source>TEC not working</source>
+        <translation>TEC 無法正常工作</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="248"/>
+        <source>TEC unable to power on</source>
+        <translation>TEC 無法開機</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="250"/>
+        <source>Fan not working</source>
+        <translation>風扇不工作</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="252"/>
+        <source>DAC no output</source>
+        <translation>DAC 無輸出</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="254"/>
+        <source>Module unstable</source>
+        <translation>模塊不穩定</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="280"/>
+        <source>[%1] start data request.</source>
+        <translation>[%1] 開始請求數據。</translation>
+    </message>
+    <message>
+        <location filename="../../src/form/serial/HandleModeProduce/handlemodeproduce.cpp" line="288"/>
+        <source>[%1] finish.</source>
+        <translation>[%1] 結束。</translation>
+    </message>
+</context>
+<context>
+    <name>HoverTbtnButton</name>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="45"/>
+        <source>handshake</source>
+        <translation>握手</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="46"/>
+        <source>integration</source>
+        <translation>積分</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="47"/>
+        <source>threshold</source>
+        <translation>閾值</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="48"/>
+        <source>baseline</source>
+        <translation>基線</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="49"/>
+        <source>data request</source>
+        <translation>請求數據</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="50"/>
+        <source>stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../../src/enhance/HoverTbtnButton/hovertbtnbutton.h" line="159"/>
+        <source>port not open!</source>
+        <translation>串口未打開！</translation>
     </message>
 </context>
 <context>
@@ -2617,6 +2787,11 @@
         <source>Update</source>
         <translation>更新</translation>
     </message>
+    <message>
+        <location filename="../../src/main/mainwindow.cpp" line="336"/>
+        <source>Unable to find document: %1</source>
+        <translation>無法找到文檔：%1</translation>
+    </message>
 </context>
 <context>
     <name>PeakTrajectory</name>
@@ -2713,17 +2888,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/include/keydef.h" line="117"/>
+        <location filename="../../src/include/keydef.h" line="116"/>
         <source>Info</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../../src/include/keydef.h" line="118"/>
+        <location filename="../../src/include/keydef.h" line="117"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/include/keydef.h" line="119"/>
+        <location filename="../../src/include/keydef.h" line="118"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
