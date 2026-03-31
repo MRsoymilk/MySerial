@@ -1,5 +1,6 @@
 build
 CMakeLists.txt.user
+.cache
 
 simulation/venv
 simulation/packet*
