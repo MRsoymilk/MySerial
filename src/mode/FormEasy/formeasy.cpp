@@ -533,7 +533,7 @@ void FormEasy::on_tBtnFWHM_clicked() {
 }
 
 void FormEasy::on_tBtnImg_clicked() {
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Save Chart"), QString("%1.png").arg(TIMESTAMP_0()),
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Save Chart"), QString("%1.png").arg(TIMESTAMP_1("yyyyMMdd_hhmmss")),
                                                     "PNG Image (*.png);;JPEG Image (*.jpg)");
     if (!filePath.isEmpty()) {
         saveChartAsImage(filePath);
