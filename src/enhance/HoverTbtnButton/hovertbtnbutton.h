@@ -31,7 +31,12 @@ public:
     explicit HoverTbtnButton(QWidget *parent = nullptr) : QToolButton(parent) {
         setMouseTracking(true);
 
-        m_popup = new QWidget(nullptr, Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        m_popup = new QWidget(nullptr,
+                              Qt::Tool |
+                                  Qt::WindowStaysOnTopHint |
+                                  Qt::WindowCloseButtonHint
+                              );
+        m_popup->setWindowTitle(tr("Manual Connection"));
         m_popup->setFocusPolicy(Qt::StrongFocus);
         m_popup->setFixedSize(360, 40);
 
