@@ -195,10 +195,16 @@ void FormPlotHistory::on_lineEditGo_editingFinished() {
 }
 
 void FormPlotHistory::on_tBtnDumpPlot_clicked() {
-    QString filePath = QFileDialog::getSaveFileName(this, "Save Chart", QString("%1.png").arg(m_index + 1),
+    QString filePath = QFileDialog::getSaveFileName(this, "Save Chart",
+                                                    QString("%1.png").arg(m_index + 1),
                                                     "PNG Image (*.png);;JPEG Image (*.jpg)");
-
     if (filePath.isEmpty()) return;
+
+    m_line31->setUseOpenGL(false);
+    m_line33->setUseOpenGL(false);
+
+    m_chartView->repaint();
+    QCoreApplication::processEvents();
 
     QImage image(m_chartView->size(), QImage::Format_ARGB32);
     image.fill(Qt::white);
@@ -207,9 +213,13 @@ void FormPlotHistory::on_tBtnDumpPlot_clicked() {
     m_chartView->render(&painter);
     painter.end();
 
+    m_line31->setUseOpenGL(true);
+    m_line33->setUseOpenGL(true);
+
     image.save(filePath);
 
-    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Successful"), tr("Img exported to:\n%1").arg(filePath));
+    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Successful"),
+                           tr("Img exported to:\n%1").arg(filePath));
 }
 
 void FormPlotHistory::on_tBtnDumpData_clicked() {
