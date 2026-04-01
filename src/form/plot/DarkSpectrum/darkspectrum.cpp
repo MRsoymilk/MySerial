@@ -32,7 +32,7 @@ void DarkSpectrum::calculate(const QVector<double> &v) {
 
     ui->lineEditRMS->setText(QString::number(sigma));
 
-    const double maxADC = std::pow(2.0, 23) - 1.0;
+    const double maxADC = std::pow(2.0, 16) - 1.0;
 
     double dr = (maxADC - avg) / sigma;
 
