@@ -1093,8 +1093,10 @@ void FormEasy::on_tBtnInfo_clicked() {
 void FormEasy::on_comboBoxTimeUnit_currentIndexChanged(int index) {
     if (index == 0) {
         ui->spinBoxIntegrationTime->setSingleStep(5);
+        ui->spinBoxIntegrationTime->setMinimum(5);
     } else if (index == 1) {
         ui->spinBoxIntegrationTime->setSingleStep(1);
+        ui->spinBoxIntegrationTime->setMinimum(1);
     }
     sendIntegrationTime();
 }
