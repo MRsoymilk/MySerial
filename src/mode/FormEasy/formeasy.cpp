@@ -332,6 +332,7 @@ void FormEasy::init() {
     connect(formSerial, &FormSerial::recv2PlotF15, m_worker, &ThreadWorker::processDataF15, Qt::QueuedConnection);
 
     connect(this, &FormEasy::toHistory, m_plotHistory, &FormPlotHistory::onHistoryRecv, Qt::QueuedConnection);
+    connect(m_plotHistory, &FormPlotHistory::sendToPlot, this, &FormEasy::updatePlot4k, Qt::QueuedConnection);
 
     connect(m_chartView, &MyChartView::toSelect, this, [&](const QPointF &point) {
         ui->lineEditCurrentX->setText(QString::number(point.x()));
