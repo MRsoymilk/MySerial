@@ -126,7 +126,7 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33, QVector<double> &
     }
 }
 
-void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const double &temperature) {
+void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const QString& frame, const double &temperature) {
     QVector<int> v_idx;
 
     int idx_max = 0;
@@ -215,7 +215,7 @@ void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, con
             m_data.curve31.x_max = m_data.curve31.raw.x_max;
             m_data.curve31.y_min = static_cast<double>(y_min) * 50.358 / 1000000.0;
             m_data.curve31.y_max = static_cast<double>(y_max) * 50.358 / 1000000.0;
-
+            m_data.frame = frame;
             emit plotReady4k(m_data);
         }
     }
@@ -276,7 +276,7 @@ void ThreadWorker::processDataF30(const FRAME &frame, const double &temperature)
         }
     }
     if (m_enable_double) {
-        applyThresholdForModeEasy(curve31, curve33, temperature);
+        applyThresholdForModeEasy(curve31, curve33, frame.ToFrameString(), temperature);
         return;
     }
 
