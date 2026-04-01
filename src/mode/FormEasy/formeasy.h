@@ -102,8 +102,7 @@ private:
     void initToolButton();
     void init();
     void updatePlot(const CURVE &curve31, const CURVE &curve33, const double &temperature = 0.0, bool record = true);
-    void updateTable(const QVector<double> &v14, const QVector<double> &v24, const QVector<double> &raw14,
-                     const QVector<double> &raw24);
+    void updateTable(const QList<QPointF> &data, const QList<QPointF> &data_raw);
     void callFindPeak();
     void callCalcFWHM();
     QString calcIntegrationTime(int value);

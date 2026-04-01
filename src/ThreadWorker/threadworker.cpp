@@ -205,9 +205,10 @@ void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, con
                 y_min = std::min(y_min, y);
                 y_max = std::max(y_max, y);
             }
-
-            m_data.curve31.raw.x_min = m_data.curve31.raw.data.front().x();
-            m_data.curve31.raw.x_max = m_data.curve31.raw.data.back().x();
+            if(!m_data.curve31.raw.data.isEmpty()) {
+                m_data.curve31.raw.x_min = m_data.curve31.raw.data.front().x();
+                m_data.curve31.raw.x_max = m_data.curve31.raw.data.back().x();
+            }
             m_data.curve31.raw.y_min = y_min;
             m_data.curve31.raw.y_max = y_max;
             m_data.curve31.x_min = m_data.curve31.raw.x_min;

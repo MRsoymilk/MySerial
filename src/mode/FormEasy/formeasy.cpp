@@ -496,7 +496,7 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
     for (int i = 0; i < m_curve.raw.data.size(); ++i) {
         r31.push_back(m_curve.raw.data.at(i).y());
     }
-    updateTable(v31, {}, r31, {});
+    updateTable(m_curve.data, m_curve.raw.data);
 
     if (m_enableDarkSpectrum) {
         if (m_doDarkSpectrumCalc) {
@@ -669,19 +669,18 @@ void FormEasy::updatePlot(const CURVE &curve31, const CURVE &curve33, const doub
     callCalcFWHM();
 }
 
-void FormEasy::updateTable(const QVector<double> &v14, const QVector<double> &v24, const QVector<double> &raw14,
-                           const QVector<double> &raw24) {
+void FormEasy::updateTable(const QList<QPointF> &data, const QList<QPointF> &data_raw) {
     if (m_pause) {
         return;
     }
     if (m_modelValue->rowCount() > 0) {
         m_modelValue->removeRows(0, m_modelValue->rowCount());
     }
-    int count = qMax(qMax(v14.size(), v24.size()), qMax(raw14.size(), raw24.size()));
+    int count = qMax(data.size(), data_raw.size());
     for (int i = 0; i < count; ++i) {
-        QString index = QString::number(i + 900);
-        QString yV14 = (i < v14.size()) ? QString::number(v14[i]) : "";
-        QString yR14 = (i < raw14.size()) ? QString::number(raw14[i]) : "";
+        QString index = QString::number(data.at(i).x());
+        QString yV14 = (i < data.size()) ? QString::number(data.at(i).y()) : "";
+        QString yR14 = (i < data_raw.size()) ? QString::number(data_raw.at(i).y()) : "";
 
         QList<QStandardItem *> rowItems;
         rowItems << new QStandardItem(index);
