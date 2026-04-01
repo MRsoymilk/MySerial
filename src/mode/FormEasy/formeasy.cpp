@@ -447,6 +447,20 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
         }
     }
 
+    if(m_enableAccumulate) {
+        if (m_toVoltage) {
+            auto data = m_accumulate->accumulate(m_curve.data);
+            if (!data.isEmpty()) {
+                m_curve.data = data;
+            }
+        } else {
+            auto data = m_accumulate->accumulate(m_curve.raw.data);
+            if (!data.isEmpty()) {
+                m_curve.raw.data = data;
+            }
+        }
+    }
+
     if (m_enablePointsTracker) {
         QMap<QString, double> values;
         for (double pos : m_vPointsTracker) {
