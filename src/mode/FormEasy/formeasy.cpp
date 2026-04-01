@@ -386,22 +386,26 @@ void FormEasy::init() {
 void FormEasy::highlightRowByX(double x) {
     if (!m_modelValue) return;
 
-    int row = qRound(x) - 900;
+    int targetRow = -1;
+    for (int row = 0; row < m_modelValue->rowCount(); ++row) {
+        QVariant data = m_modelValue->data(m_modelValue->index(row, 0));
+        if (qFuzzyCompare(data.toDouble(), x)) {
+            targetRow = row;
+            break;
+        }
+    }
 
-    if (row < 0 || row >= m_modelValue->rowCount()) return;
+    if (targetRow < 0) return;
 
     QTableView *table = ui->tableViewValue;
-
-    table->setCurrentIndex(m_modelValue->index(row, 0));
+    table->setCurrentIndex(m_modelValue->index(targetRow, 0));
 
     QItemSelectionModel *sel = table->selectionModel();
     sel->clearSelection();
-
-    QItemSelection selection(m_modelValue->index(row, 0), m_modelValue->index(row, m_modelValue->columnCount() - 1));
-
+    QItemSelection selection(m_modelValue->index(targetRow, 0),
+                             m_modelValue->index(targetRow, m_modelValue->columnCount() - 1));
     sel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
-
-    table->scrollTo(m_modelValue->index(row, 0), QAbstractItemView::PositionAtCenter);
+    table->scrollTo(m_modelValue->index(targetRow, 0), QAbstractItemView::PositionAtCenter);
 }
 
 static int findClosestIndex(const QVector<QPointF> &data, double pos) {
