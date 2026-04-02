@@ -977,7 +977,7 @@ void FormEasy::addToPointsTracker() {
 }
 
 void FormEasy::loadChart() {
-    QString path = QFileDialog::getOpenFileName(this, tr("choose file"), "", tr("CSV Files (*.csv)"));
+    QString path = QFileDialog::getOpenFileName(this, tr("choose file"), "", "CSV Files (*.csv)");
 
     if (path.isEmpty()) return;
 
@@ -1029,7 +1029,7 @@ void FormEasy::loadChart() {
 }
 
 void FormEasy::exportChart() {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "spectral.csv", tr("CSV Files (*.csv)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "spectral.csv", "CSV Files (*.csv)");
 
     if (fileName.isEmpty()) return;
 

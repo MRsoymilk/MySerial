@@ -118,7 +118,7 @@ void FormFittingArcSin::exportThresholdToArray() {
 
 void FormFittingArcSin::exportThresholdToCSV() {
     QString path = QFileDialog::getSaveFileName(this, tr("Export Threshold Data to CSV"), "data_threshold.csv",
-                                                tr("CSV Files (*.csv)"));
+                                                "CSV Files (*.csv)");
     if (path.isEmpty()) {
         LOG_WARN("CSV path is empty!");
         return;

@@ -184,7 +184,7 @@ void SignalNoiseRatio::clearChart() {
 }
 
 void SignalNoiseRatio::exportChart() {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "snr_data.csv", tr("CSV Files (*.csv)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Export CSV"), "snr_data.csv", "CSV Files (*.csv)");
 
     if (fileName.isEmpty()) return;
 

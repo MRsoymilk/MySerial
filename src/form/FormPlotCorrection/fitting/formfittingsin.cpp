@@ -77,7 +77,7 @@ void FormFittingSin::showContextMenu(const QPoint &pos) {
 
 void FormFittingSin::exportAllToCSV() {
     QString path =
-        QFileDialog::getSaveFileName(this, tr("Export All Data to CSV"), "data_all.csv", tr("CSV Files (*.csv)"));
+        QFileDialog::getSaveFileName(this, tr("Export All Data to CSV"), "data_all.csv", "CSV Files (*.csv)");
     if (path.isEmpty()) {
         LOG_WARN("CSV path is empty!");
         return;
