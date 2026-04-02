@@ -176,6 +176,8 @@ set(SRC_COMMON
     src/common/mylog.h
     src/common/mylog.cpp
     src/common/UILogSink.h
+    src/common/findpeak.h
+    src/common/findpeak.cpp
 )
 
 set(SRC_INCLUDE
@@ -225,6 +227,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(MySerial
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    src/enhance/peakcfg.h src/enhance/peakcfg.cpp src/enhance/peakcfg.ui
   )
 
 target_include_directories(MySerial PUBLIC

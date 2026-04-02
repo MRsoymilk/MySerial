@@ -28,6 +28,7 @@ class DraggableLine;
 class PointsTracker;
 class DarkSpectrum;
 class LoadingOverLay;
+class PeakCfg;
 
 namespace Ui {
 class FormEasy;
@@ -133,6 +134,7 @@ private:
     bool m_enableAxisY = false;
     bool m_enableAxisX = false;
     bool m_pause = false;
+    PeakCfg *m_peakCfg;
     bool m_findPeak = false;
     bool m_calcFWHM = false;
     bool m_toVoltage = false;

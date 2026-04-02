@@ -19,6 +19,8 @@
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
 #include "ui_formeasy.h"
+#include "findpeak.h"
+#include "peakcfg.h"
 
 FormEasy::FormEasy(QWidget *parent) : QWidget(parent), ui(new Ui::FormEasy) {
     ui->setupUi(this);
@@ -298,6 +300,7 @@ void FormEasy::init() {
     initTable();
     initToolButton();
 
+    m_peakCfg = new PeakCfg;
     m_peaks = new QScatterSeries();
     m_chart->addSeries(m_peaks);
     m_peaks->attachAxis(m_axisX);
@@ -542,6 +545,7 @@ void FormEasy::on_tBtnPeak_clicked() {
     m_findPeak = !m_findPeak;
     ui->tBtnPeak->setChecked(m_findPeak);
     m_peaks->setVisible(m_findPeak);
+    m_peakCfg->setVisible(m_findPeak);
     callFindPeak();
 }
 
@@ -600,7 +604,7 @@ void FormEasy::saveChartAsImage(const QString &filePath) {
 
 void FormEasy::closeEvent(QCloseEvent *event) {
     closeEasyMode();
-
+    m_peakCfg->close();
     m_trajectory->close();
     m_plotSimulate->close();
     m_plotHistory->close();
@@ -695,50 +699,14 @@ void FormEasy::updateTable(const QList<QPointF> &data, const QList<QPointF> &dat
     }
 }
 
-QVector<QPointF> FormEasy::findPeak(int window, double thresholdFactor, double minDist) {
-    QVector<QPointF> peaks;
-    int n = m_line->count();
-
-    QVector<double> values;
-    values.reserve(n);
-    for (int i = 0; i < n; i++) values.append(m_line->at(i).y());
-
-    double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
-    double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
-    double stdev = std::sqrt(sq_sum / n - mean * mean);
-    double threshold = mean + thresholdFactor * stdev;
-
-    double lastPeakX = -1e9;
-    for (int i = window; i < n - window; i++) {
-        double yCurr = m_line->at(i).y();
-        if (yCurr < threshold) continue;
-
-        bool isPeak = true;
-        for (int j = i - window; j <= i + window; j++) {
-            if (m_line->at(j).y() > yCurr) {
-                isPeak = false;
-                break;
-            }
-        }
-
-        if (isPeak) {
-            double xCurr = m_line->at(i).x();
-            if (xCurr - lastPeakX >= minDist) {
-                peaks.append(m_line->at(i));
-                lastPeakX = xCurr;
-            }
-        }
-    }
-    return peaks;
-}
-
 void FormEasy::callFindPeak() {
     if (m_findPeak) {
         if (!m_line || m_line->count() < 5) {
             return;
         }
 
-        QVector<QPointF> peaks24 = findPeak(3, 1.0, 5.0);
+        auto cfg = m_peakCfg->getCfg();
+        QVector<QPointF> peaks24 = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);;
 
         m_peaks->clear();
         for (const auto &pt : peaks24) {
@@ -763,7 +731,8 @@ void FormEasy::callCalcFWHM() {
         }
         m_fwhmLabels.clear();
 
-        auto peaks = findPeak(3, 1.0, 5.0);
+        auto cfg = m_peakCfg->getCfg();
+        auto peaks = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);
         if (peaks.isEmpty()) return;
 
         for (const auto &peak : peaks) {

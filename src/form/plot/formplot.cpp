@@ -22,6 +22,8 @@
 #include "TemperatureView/temperatureview.h"
 #include "funcdef.h"
 #include "ui_formplot.h"
+#include "findpeak.h"
+#include "peakcfg.h"
 
 void FormPlot::saveChartAsImage(const QString &filePath) {
     if (!m_chartView) return;
@@ -232,6 +234,7 @@ void FormPlot::initToolButtons() {
 }
 
 void FormPlot::init() {
+    m_peakCfg = new PeakCfg;
     init2d();
     initToolButtons();
 
@@ -477,6 +480,9 @@ void FormPlot::wheelEvent(QWheelEvent *event) {
 }
 
 void FormPlot::closeEvent(QCloseEvent *event) {
+    if(m_peakCfg) {
+        m_peakCfg->close();
+    }
     if (m_trajectory) {
         m_trajectory->close();
     }
@@ -580,43 +586,6 @@ void FormPlot::on_tBtnStep_clicked() {
     }
 }
 
-QVector<QPointF> FormPlot::findPeak(int window, double thresholdFactor, double minDist) {
-    QVector<QPointF> peaks;
-    int n = m_series31->count();
-
-    QVector<double> values;
-    values.reserve(n);
-    for (int i = 0; i < n; i++) values.append(m_series31->at(i).y());
-
-    double mean = std::accumulate(values.begin(), values.end(), 0.0) / n;
-    double sq_sum = std::inner_product(values.begin(), values.end(), values.begin(), 0.0);
-    double stdev = std::sqrt(sq_sum / n - mean * mean);
-    double threshold = mean + thresholdFactor * stdev;
-
-    double lastPeakX = -1e9;
-    for (int i = window; i < n - window; i++) {
-        double yCurr = m_series31->at(i).y();
-        if (yCurr < threshold) continue;
-
-        bool isPeak = true;
-        for (int j = i - window; j <= i + window; j++) {
-            if (m_series31->at(j).y() > yCurr) {
-                isPeak = false;
-                break;
-            }
-        }
-
-        if (isPeak) {
-            double xCurr = m_series31->at(i).x();
-            if (xCurr - lastPeakX >= minDist) {
-                peaks.append(m_series31->at(i));
-                lastPeakX = xCurr;
-            }
-        }
-    }
-    return peaks;
-}
-
 void FormPlot::callCalcFWHM() {
     if (m_findFWHM) {
         for (auto *line : m_fwhmLines) {
@@ -629,7 +598,8 @@ void FormPlot::callCalcFWHM() {
         }
         m_fwhmLabels.clear();
 
-        auto peaks = findPeak(3, 1.0, 5.0);
+        auto cfg = m_peakCfg->getCfg();
+        auto peaks = FindPeak::find(m_series31, cfg[0], cfg[1], cfg[2]);
         if (peaks.isEmpty()) return;
 
         for (const auto &peak : peaks) {
@@ -753,7 +723,8 @@ void FormPlot::callFindPeak() {
             return;
         }
 
-        QVector<QPointF> peaks31 = findPeak(3, 1.0, 5.0);
+        auto cfg = m_peakCfg->getCfg();
+        auto peaks31 = FindPeak::find(m_series31, cfg[0], cfg[1], cfg[2]);
         if (m_enablePeakTrajectory) {
             peakTrajectory(peaks31);
         }
@@ -788,7 +759,7 @@ void FormPlot::callFindPeak() {
 void FormPlot::on_tBtnFindPeak_clicked() {
     m_findPeak = !m_findPeak;
     ui->tBtnFindPeak->setChecked(m_findPeak);
-
+    m_peakCfg->setVisible(m_findPeak);
     callFindPeak();
 }
 

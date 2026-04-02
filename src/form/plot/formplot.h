@@ -17,6 +17,7 @@ class Derivation;
 class Accumulate;
 class SignalNoiseRatio;
 class TemperatureView;
+class PeakCfg;
 
 namespace Ui {
 class FormPlot;
@@ -111,6 +112,7 @@ private:
     int m_offset = 0;
 
     MyChartView *m_chartView = nullptr;
+    PeakCfg *m_peakCfg;
     bool m_findPeak = false;
     bool m_findFWHM = false;
     bool m_pause = false;
