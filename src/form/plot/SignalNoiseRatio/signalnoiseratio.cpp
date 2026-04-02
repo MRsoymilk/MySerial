@@ -77,14 +77,20 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data) {
         ui->lineEditSignalNoiseSNRLinear->setText(QString::number(snrLinear, 'f', 2));
         ui->lineEditSignalNoiseSNRdB->setText(QString::number(snrDb, 'f', 2) + " dB");
     } else if (m_tab_idx == MODE_SIGNAL_SIGNAL) {
-        double val_avg = std::accumulate(m_vSignal.begin(), m_vSignal.end(), 0.0) / m_vSignal.size();
+        const int n = m_vSignal.size();
+        if (n < 2) return;
+
+        double val_avg = std::accumulate(m_vSignal.begin(), m_vSignal.end(), 0.0) / n;
+
         double sum = 0;
         for (auto v : m_vSignal) {
             double d = v - val_avg;
             sum += d * d;
         }
-        double val_std = std::sqrt(sum / m_vSignal.size());
-        double SNR = val_avg / val_std;
+
+        double val_std = std::sqrt(sum / (n - 1));
+        double SNR     = val_avg / val_std;
+
         ui->lineEditSignalSignalAvgSignal->setText(QString::number(val_avg));
         ui->lineEditSignalSignalStdSignal->setText(QString::number(val_std));
         ui->lineEditSignalSignalSNR->setText(QString::number(SNR));
