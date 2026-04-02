@@ -96,7 +96,20 @@ void SignalNoiseRatio::calculate(const QList<QPointF> &data) {
     m_axisY->setRange(std::min(m_axisY->min(), signalValue), std::max(m_axisY->max(), signalValue));
 }
 
-void SignalNoiseRatio::closeEvent(QCloseEvent *event) { emit windowClose(); }
+void SignalNoiseRatio::closeEvent(QCloseEvent *event) {
+    emit windowClose();
+    m_line->clear();
+    m_vSignal.clear();
+    m_vNoiseStd.clear();
+
+    ui->lineEditPeakValue->clear();
+    ui->lineEditSignalNoiseNoiseStd->clear();
+    ui->lineEditSignalNoiseSNRLinear->clear();
+    ui->lineEditSignalNoiseSNRdB->clear();
+    ui->lineEditSignalSignalAvgSignal->clear();
+    ui->lineEditSignalSignalStdSignal->clear();
+    ui->lineEditSignalSignalSNR->clear();
+}
 
 void SignalNoiseRatio::on_checkBoxUseIdx_checkStateChanged(const Qt::CheckState &state) {
     if (state == Qt::Checked) {
