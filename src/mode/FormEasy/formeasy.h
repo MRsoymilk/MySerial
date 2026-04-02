@@ -181,6 +181,8 @@ private:
     void sendIntegrationTime();
     LoadingOverLay *m_overlay = nullptr;
     QString m_F30_shown_mode = CFG_F30_MODE_DOUBLE;
+    void clearFWHM();
+    void drawFWHM(double xPeak, double xLeft, double xRight, double yHalf);
 };
 
 #endif  // FORMEASY_H

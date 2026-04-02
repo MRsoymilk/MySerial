@@ -144,6 +144,8 @@ private:
     double m_k = 0;
     double m_b = 0;
     QString m_algorithm;
+    void clearFWHM();
+    void drawFWHM(double xPeak, double xLeft, double xRight, double yHalf);
 };
 
 #endif  // FORMPLOT_H

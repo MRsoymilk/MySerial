@@ -20,6 +20,7 @@
 #include "funcdef.h"
 #include "ui_formeasy.h"
 #include "findpeak.h"
+#include "findfwhm.h"
 #include "peakcfg.h"
 
 FormEasy::FormEasy(QWidget *parent) : QWidget(parent), ui(new Ui::FormEasy) {
@@ -545,13 +546,14 @@ void FormEasy::on_tBtnPeak_clicked() {
     m_findPeak = !m_findPeak;
     ui->tBtnPeak->setChecked(m_findPeak);
     m_peaks->setVisible(m_findPeak);
-    m_peakCfg->setVisible(m_findPeak);
+    m_peakCfg->setVisible(m_findPeak || m_calcFWHM);
     callFindPeak();
 }
 
 void FormEasy::on_tBtnFWHM_clicked() {
     m_calcFWHM = !m_calcFWHM;
     ui->tBtnFWHM->setChecked(m_calcFWHM);
+    m_peakCfg->setVisible(m_calcFWHM || m_findPeak);
     callCalcFWHM();
 }
 
@@ -719,82 +721,49 @@ void FormEasy::callFindPeak() {
     }
 }
 
+void FormEasy::clearFWHM() {
+    for (auto *line : m_fwhmLines) {
+        m_chart->removeSeries(line);
+        delete line;
+    }
+    m_fwhmLines.clear();
+    for (auto *label : m_fwhmLabels) {
+        delete label;
+    }
+    m_fwhmLabels.clear();
+}
+
+void FormEasy::drawFWHM(double xPeak, double xLeft, double xRight, double yHalf) {
+    double fwhm = xRight - xLeft;
+
+    QLineSeries *fwhmLine = new QLineSeries();
+    fwhmLine->setColor(Qt::red);
+    fwhmLine->setName(QString("FWHM %1").arg(xPeak, 0, 'f', 1));
+    fwhmLine->append(xLeft, yHalf);
+    fwhmLine->append(xRight, yHalf);
+    m_chart->addSeries(fwhmLine);
+    fwhmLine->attachAxis(m_axisX);
+    fwhmLine->attachAxis(m_axisY);
+    m_fwhmLines.append(fwhmLine);
+
+    QPointF mid((xLeft + xRight) / 2.0, yHalf);
+    QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
+    auto *label = new QGraphicsSimpleTextItem(
+        QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
+    label->setBrush(Qt::red);
+    label->setPos(scenePos + QPointF(5, -15));
+    m_fwhmLabels.append(label);
+}
+
 void FormEasy::callCalcFWHM() {
-    if (m_calcFWHM) {
-        for (auto *line : m_fwhmLines) {
-            m_chart->removeSeries(line);
-            delete line;
-        }
-        m_fwhmLines.clear();
-        for (auto *label : m_fwhmLabels) {
-            delete label;
-        }
-        m_fwhmLabels.clear();
+    clearFWHM();
+    if (!m_calcFWHM) return;
+    auto cfg   = m_peakCfg->getCfg();
+    auto peaks = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);
+    auto fwhms = FindFWHM::find(m_line, peaks);
 
-        auto cfg = m_peakCfg->getCfg();
-        auto peaks = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);
-        if (peaks.isEmpty()) return;
-
-        for (const auto &peak : peaks) {
-            double yPeak = peak.y();
-            double xPeak = peak.x();
-            double yHalf = yPeak / 2.0;
-
-            double xLeft = xPeak, xRight = xPeak;
-            for (int i = m_line->count() - 1; i >= 1; --i) {
-                if (m_line->at(i).x() >= xPeak) continue;
-                double y1 = m_line->at(i).y();
-                double y2 = m_line->at(i - 1).y();
-                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
-                    double x1 = m_line->at(i).x();
-                    double x2 = m_line->at(i - 1).x();
-                    // 线性插值
-                    xLeft = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
-                    break;
-                }
-            }
-            for (int i = 0; i < m_line->count() - 1; ++i) {
-                if (m_line->at(i).x() <= xPeak) continue;
-                double y1 = m_line->at(i).y();
-                double y2 = m_line->at(i + 1).y();
-                if ((y1 >= yHalf && y2 <= yHalf) || (y1 <= yHalf && y2 >= yHalf)) {
-                    double x1 = m_line->at(i).x();
-                    double x2 = m_line->at(i + 1).x();
-                    // 线性插值
-                    xRight = x1 + (yHalf - y1) * (x2 - x1) / (y2 - y1);
-                    break;
-                }
-            }
-            double fwhm = xRight - xLeft;
-
-            QLineSeries *fwhmLine = new QLineSeries();
-            fwhmLine->setColor(Qt::red);
-            fwhmLine->setName(QString("FWHM %1").arg(xPeak, 0, 'f', 1));
-            fwhmLine->append(xLeft, yHalf);
-            fwhmLine->append(xRight, yHalf);
-            m_chart->addSeries(fwhmLine);
-            fwhmLine->attachAxis(m_axisX);
-            fwhmLine->attachAxis(m_axisY);
-            m_fwhmLines.append(fwhmLine);
-
-            QPointF mid((xLeft + xRight) / 2.0, yHalf);
-            QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
-
-            auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
-            label->setBrush(Qt::red);
-            label->setPos(scenePos + QPointF(5, -15));
-            m_fwhmLabels.append(label);
-        }
-    } else {
-        for (auto *line : m_fwhmLines) {
-            m_chart->removeSeries(line);
-            delete line;
-        }
-        m_fwhmLines.clear();
-        for (auto *label : m_fwhmLabels) {
-            delete label;
-        }
-        m_fwhmLabels.clear();
+    for (const auto &r : fwhms) {
+        drawFWHM(r.xPeak, r.xLeft, r.xRight, r.yHalf);
     }
 }
 

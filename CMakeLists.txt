@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.5.6 LANGUAGES CXX)
+project(MySerial VERSION 1.5.7 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -93,6 +93,9 @@ set(SRC_ENHANCE
     src/enhance/HoverSliderButton/hoversliderbutton.cpp
     src/enhance/HoverTbtnButton/hovertbtnbutton.h
     src/enhance/HoverTbtnButton/hovertbtnbutton.cpp
+    src/enhance/peakcfg.h
+    src/enhance/peakcfg.cpp
+    src/enhance/peakcfg.ui
 )
 
 set(SRC_MODULE
@@ -178,6 +181,8 @@ set(SRC_COMMON
     src/common/UILogSink.h
     src/common/findpeak.h
     src/common/findpeak.cpp
+    src/common/findfwhm.h
+    src/common/findfwhm.cpp
 )
 
 set(SRC_INCLUDE
@@ -227,7 +232,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
   qt_add_executable(MySerial
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
-    src/enhance/peakcfg.h src/enhance/peakcfg.cpp src/enhance/peakcfg.ui
   )
 
 target_include_directories(MySerial PUBLIC
