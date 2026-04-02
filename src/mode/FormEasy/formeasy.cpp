@@ -241,8 +241,14 @@ void FormEasy::initToolButton() {
     m_tBtnDarkSpectrum->setCheckable(true);
     connect(m_tBtnDarkSpectrum, &QToolButton::clicked, this, &FormEasy::doDarkSpectrum);
 
-    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [=]() { m_tBtnSimulate->setChecked(false); });
-    connect(m_plotHistory, &FormPlotHistory::windowClose, this, [=]() { m_tBtnHistory->setChecked(false); });
+    connect(m_plotSimulate, &FormPlotSimulate::windowClose, this, [=]() {
+        m_enableSimulate = false;
+        m_tBtnSimulate->setChecked(false);
+    });
+    connect(m_plotHistory, &FormPlotHistory::windowClose, this, [=]() {
+        m_enableHistory = false;
+        m_tBtnHistory->setChecked(false);
+    });
     connect(m_snr, &SignalNoiseRatio::windowClose, this, [=]() {
         m_enableSNR = false;
         m_tBtnSNR->setChecked(false);
