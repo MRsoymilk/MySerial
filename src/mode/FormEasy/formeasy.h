@@ -12,6 +12,7 @@
 
 #include "global.h"
 #include "keydef.h"
+#include "findfwhm.h"
 
 class MyChartView;
 class FormSerial;
@@ -143,6 +144,7 @@ private:
     int m_x_start = 0;
     int m_x_end = 0;
     QScatterSeries *m_peaks;
+    QList<FWHMResult> m_fwhmResults;
     QList<QLineSeries *> m_fwhmLines;
     QList<QGraphicsSimpleTextItem *> m_fwhmLabels;
     ThreadWorker *m_worker;
@@ -183,6 +185,11 @@ private:
     QString m_F30_shown_mode = CFG_F30_MODE_DOUBLE;
     void clearFWHM();
     void drawFWHM(double xPeak, double xLeft, double xRight, double yHalf);
+
+    // QWidget interface
+    void updateFWHMLabels();
+protected:
+    void resizeEvent(QResizeEvent *event);
 };
 
 #endif  // FORMEASY_H

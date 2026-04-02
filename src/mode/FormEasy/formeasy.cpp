@@ -20,7 +20,6 @@
 #include "funcdef.h"
 #include "ui_formeasy.h"
 #include "findpeak.h"
-#include "findfwhm.h"
 #include "peakcfg.h"
 
 FormEasy::FormEasy(QWidget *parent) : QWidget(parent), ui(new Ui::FormEasy) {
@@ -761,14 +760,34 @@ void FormEasy::drawFWHM(double xPeak, double xLeft, double xRight, double yHalf)
     m_fwhmLabels.append(label);
 }
 
+void FormEasy::updateFWHMLabels() {
+    if (m_fwhmLines.size() != m_fwhmLabels.size()) return;
+    if (m_fwhmResults.size() != m_fwhmLabels.size()) return;
+
+    for (int i = 0; i < m_fwhmLabels.size(); ++i) {
+        const auto &r = m_fwhmResults[i];
+        QPointF mid((r.xLeft + r.xRight) / 2.0, r.yHalf);
+        QPointF scenePos = m_chart->mapToPosition(mid, m_fwhmLines[i]);
+        m_fwhmLabels[i]->setPos(scenePos + QPointF(5, -15));
+    }
+}
+
+void FormEasy::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    m_overlay->resize(this->size());
+    updateFWHMLabels();
+}
+
 void FormEasy::callCalcFWHM() {
     clearFWHM();
     if (!m_calcFWHM) return;
+
     auto cfg   = m_peakCfg->getCfg();
     auto peaks = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);
-    auto fwhms = FindFWHM::find(m_line, peaks);
+    m_fwhmResults = FindFWHM::find(m_line, peaks);
 
-    for (const auto &r : fwhms) {
+    for (const auto &r : m_fwhmResults) {
         drawFWHM(r.xPeak, r.xLeft, r.xRight, r.yHalf);
     }
 }
