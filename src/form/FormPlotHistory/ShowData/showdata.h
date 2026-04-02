@@ -18,12 +18,19 @@ public:
     ~ShowData();
     void showData(const MY_DATA &data);
 
+signals:
+    void windowClose();
+
 private:
     void init();
 
 private:
     Ui::ShowData *ui;
     QStandardItemModel *m_model = nullptr;
+
+    // QWidget interface
+protected:
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif  // SHOWDATA_H

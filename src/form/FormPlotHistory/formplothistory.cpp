@@ -29,6 +29,10 @@ void FormPlotHistory::retranslateUI() { ui->retranslateUi(this); }
 void FormPlotHistory::init() {
     m_showData = new ShowData;
     m_showData->setVisible(false);
+    connect(m_showData, &ShowData::windowClose, this, [=](){
+        ui->tBtnShowData->setChecked(false);
+        m_enableShowData = false;
+    });
 
     m_chart = new QChart();
     m_chart->setTitle(tr("curve_mix"));
@@ -74,7 +78,6 @@ void FormPlotHistory::init() {
     QShortcut *shortcut_delete = new QShortcut(QKeySequence(Qt::Key_Delete), this);
     connect(shortcut_delete, &QShortcut::activated, this, &FormPlotHistory::onMenuRemove);
 
-    ui->tBtnToVoltage->setCheckable(true);
     ui->progressBarToPlot->setVisible(false);
 
     ui->tBtnNext->setObjectName("go-next");
@@ -133,6 +136,10 @@ void FormPlotHistory::on_tBtnPrev_clicked() {
 }
 
 void FormPlotHistory::closeEvent(QCloseEvent *event) {
+    if(m_showData) {
+        m_showData->close();
+    }
+
     m_data.clear();
     m_index = 0;
 
@@ -249,8 +256,10 @@ void FormPlotHistory::on_tBtnDumpData_clicked() {
 
     out << "index";
     for (int i = 0; i < data_todo.size(); ++i) {
-        out << ",g" << (i + 1) << "_curve31"
-            << ",g" << (i + 1) << "_curve33";
+        out << ",gVol" << (i + 1) << "_curve31"
+            << ",gVol" << (i + 1) << "_curve33"
+            << ",gRaw" << (i + 1) << "_curve31"
+            << ",gRaw" << (i + 1) << "_curve33";
     }
     out << "\n";
 
@@ -263,11 +272,15 @@ void FormPlotHistory::on_tBtnDumpData_clicked() {
     for (int row = 0; row < maxSize; ++row) {
         out << row;
         for (const auto &data : data_todo) {
-            const auto &list31 = data.curve31.data;
-            const auto &list33 = data.curve33.data;
-            QString y31 = (row < list31.size()) ? QString::number(list31[row].y()) : "";
-            QString y33 = (row < list33.size()) ? QString::number(list33[row].y()) : "";
-            out << "," << y31 << "," << y33;
+            const auto &vol_list31 = data.curve31.data;
+            const auto &vol_list33 = data.curve33.data;
+            const auto &raw_list31 = data.curve31.raw.data;
+            const auto &raw_list33 = data.curve33.raw.data;
+            QString yVol_31 = (row < vol_list31.size()) ? QString::number(vol_list31[row].y()) : "";
+            QString yVol_33 = (row < vol_list33.size()) ? QString::number(vol_list33[row].y()) : "";
+            QString yRaw_31 = (row < raw_list31.size()) ? QString::number(raw_list31[row].y()) : "";
+            QString yRaw_33 = (row < raw_list33.size()) ? QString::number(raw_list33[row].y()) : "";
+            out << "," << yVol_31 << "," << yVol_33 << "," << yRaw_31 << "," << yRaw_33;
         }
         out << "\n";
     }
@@ -323,6 +336,7 @@ void FormPlotHistory::on_tBtnToVoltage_clicked() {
 
 void FormPlotHistory::on_tBtnShowData_clicked() {
     m_enableShowData = !m_enableShowData;
+    ui->tBtnShowData->setChecked(m_enableShowData);
     m_showData->setVisible(m_enableShowData);
     if (m_enableShowData) {
         if (!m_data.empty()) {

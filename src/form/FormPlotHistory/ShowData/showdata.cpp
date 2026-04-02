@@ -47,3 +47,8 @@ void ShowData::init() {
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
+
+void ShowData::closeEvent(QCloseEvent *event)
+{
+    emit windowClose();
+}

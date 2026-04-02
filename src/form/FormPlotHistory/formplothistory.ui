@@ -113,6 +113,9 @@
        <property name="text">
         <string>to_voltage</string>
        </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -126,6 +129,9 @@
       <widget class="QToolButton" name="tBtnShowData">
        <property name="text">
         <string>show data</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
