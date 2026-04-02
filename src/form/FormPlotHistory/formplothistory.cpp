@@ -239,7 +239,7 @@ void FormPlotHistory::on_tBtnDumpData_clicked() {
     if (ui->checkBoxDataAll->isChecked()) {
         fileName = "data_all.csv";
     }
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Save Curve Data"), fileName, tr("CSV Files (*.csv)"));
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Save Curve Data"), fileName, "CSV Files (*.csv)");
 
     if (filePath.isEmpty()) return;
 
