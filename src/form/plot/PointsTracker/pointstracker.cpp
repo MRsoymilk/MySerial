@@ -66,6 +66,92 @@ void PointsTracker::init() {
     m_chartView->setRenderHint(QPainter::Antialiasing);
 
     ui->gLayChart->addWidget(m_chartView);
+
+    m_chartView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(m_chartView, &QWidget::customContextMenuRequested,
+            this, &PointsTracker::onContextMenu);
 }
 
-void PointsTracker::closeEvent(QCloseEvent *event) { emit windowClose(); }
+void PointsTracker::onContextMenu(const QPoint &pos) {
+    if (m_mapLines.isEmpty()) return;
+
+    QMenu menu(this);
+
+    QAction *actAll = menu.addAction(tr("导出全部数据"));
+    connect(actAll, &QAction::triggered, this, &PointsTracker::exportCSV);
+
+    if (m_mapLines.size() > 1) {
+        QMenu *subMenu = menu.addMenu(tr("导出单条数据"));
+        for (auto it = m_mapLines.begin(); it != m_mapLines.end(); ++it) {
+            const QString &name = it.key();
+            QAction *act = subMenu->addAction(name);
+            connect(act, &QAction::triggered, this, [this, name]() {
+                exportSelectedCSV(name);
+            });
+        }
+    }
+
+    menu.exec(m_chartView->mapToGlobal(pos));
+}
+
+void PointsTracker::exportCSV() {
+    if (m_mapLines.isEmpty()) return;
+
+    QString path = QFileDialog::getSaveFileName(
+        this, tr("export all"), "points_tracker.csv",
+        "CSV Files (*.csv)");
+    if (path.isEmpty()) return;
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;
+    QTextStream out(&file);
+
+    QStringList names = m_mapLines.keys();
+    out << "Index";
+    for (const auto &name : names) out << "," << name;
+    out << "\n";
+
+    int maxCount = 0;
+    for (auto *s : m_mapLines) maxCount = std::max(maxCount, s->count());
+
+    for (int i = 0; i < maxCount; ++i) {
+        out << i;
+        for (const auto &name : names) {
+            QLineSeries *s = m_mapLines[name];
+            if (i < s->count()) {
+                double y = s->at(i).y();
+                std::isnan(y) ? out << "," : out << "," << y;
+            } else {
+                out << ",";
+            }
+        }
+        out << "\n";
+    }
+}
+
+void PointsTracker::exportSelectedCSV(const QString &name) {
+    if (!m_mapLines.contains(name)) return;
+
+    QString path = QFileDialog::getSaveFileName(
+        this, tr("export %1").arg(name),
+        QString("%1.csv").arg(name),
+        "CSV Files (*.csv)");
+    if (path.isEmpty()) return;
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return;
+    QTextStream out(&file);
+
+    out << "Index," << name << "\n";
+    QLineSeries *s = m_mapLines[name];
+    for (int i = 0; i < s->count(); ++i) {
+        double y = s->at(i).y();
+        std::isnan(y) ? out << i << "," << "\n"
+                      : out << i << "," << y << "\n";
+    }
+}
+
+void PointsTracker::closeEvent(QCloseEvent *event) {
+    clearPoints();
+    emit windowClose();
+}

@@ -39,6 +39,9 @@ private:
     int m_idx = 0;
 
     // QWidget interface
+    void exportSelectedCSV(const QString &name);
+    void exportCSV();
+    void onContextMenu(const QPoint &pos);
 protected:
     void closeEvent(QCloseEvent *event);
 };
