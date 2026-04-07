@@ -42,7 +42,13 @@ void DarkSpectrum::calculate(const QVector<double> &v) {
     emit doCalculate(false);
 }
 
-void DarkSpectrum::closeEvent(QCloseEvent *event) { emit windowClose(); }
+void DarkSpectrum::closeEvent(QCloseEvent *event) {
+    m_lastDark.clear();
+    ui->lineEditBaseLine->setText("");
+    ui->lineEditRMS->setText("");
+    ui->lineEditDR->setText("");
+    emit windowClose();
+}
 
 void DarkSpectrum::on_btnRefresh_clicked() {
     m_lastDark.clear();
