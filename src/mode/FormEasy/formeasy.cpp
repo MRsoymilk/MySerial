@@ -445,32 +445,32 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
     if (m_pause) {
         return;
     }
-    m_curve = my_data.curve31;
+    m_data = my_data;
 
     if (m_enableFourier || m_enableFourierPercent) {
         if (m_toVoltage) {
-            auto data = m_fourierTransform->transform(m_curve.data);
+            auto data = m_fourierTransform->transform(m_data.curve31.data);
             if (!data.isEmpty()) {
-                m_curve.data = data;
+                m_data.curve31.data = data;
             }
         } else {
-            auto data = m_fourierTransform->transform(m_curve.raw.data);
+            auto data = m_fourierTransform->transform(m_data.curve31.raw.data);
             if (!data.isEmpty()) {
-                m_curve.raw.data = data;
+                m_data.curve31.raw.data = data;
             }
         }
     }
 
     if(m_enableAccumulate) {
         if (m_toVoltage) {
-            auto data = m_accumulate->accumulate(m_curve.data);
+            auto data = m_accumulate->accumulate(m_data.curve31.data);
             if (!data.isEmpty()) {
-                m_curve.data = data;
+                m_data.curve31.data = data;
             }
         } else {
-            auto data = m_accumulate->accumulate(m_curve.raw.data);
+            auto data = m_accumulate->accumulate(m_data.curve31.raw.data);
             if (!data.isEmpty()) {
-                m_curve.raw.data = data;
+                m_data.curve31.raw.data = data;
             }
         }
     }
@@ -478,10 +478,10 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
     if (m_enablePointsTracker) {
         QMap<QString, double> values;
         for (double pos : m_vPointsTracker) {
-            int idx = findClosestIndex(m_toVoltage ? m_curve.data : m_curve.raw.data, pos);
+            int idx = findClosestIndex(m_toVoltage ? m_data.curve31.data : m_data.curve31.raw.data, pos);
 
             if (idx >= 0) {
-                double value = m_toVoltage ? m_curve.data.at(idx).y() : m_curve.raw.data.at(idx).y();
+                double value = m_toVoltage ? m_data.curve31.data.at(idx).y() : m_data.curve31.raw.data.at(idx).y();
                 QString name = QString::number(pos, 'f', 2);
                 values[name] = value;
             }
@@ -492,25 +492,25 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
 
     if (m_enableSNR) {
         if (m_toVoltage) {
-            m_snr->calculate(m_curve.data);
+            m_snr->calculate(m_data.curve31.data);
         } else {
-            m_snr->calculate(m_curve.raw.data);
+            m_snr->calculate(m_data.curve31.raw.data);
         }
     }
 
     if (record) {
-        emit toHistory(my_data);
+        emit toHistory(m_data);
     }
 
-    updatePlot(m_curve, {}, my_data.temperature, record);
+    updatePlot(m_data.curve31, {}, m_data.temperature, record);
     QVector<double> v31, r31;
-    for (int i = 0; i < m_curve.data.size(); ++i) {
-        v31.push_back(m_curve.data.at(i).y());
+    for (int i = 0; i < m_data.curve31.data.size(); ++i) {
+        v31.push_back(m_data.curve31.data.at(i).y());
     }
-    for (int i = 0; i < m_curve.raw.data.size(); ++i) {
-        r31.push_back(m_curve.raw.data.at(i).y());
+    for (int i = 0; i < m_data.curve31.raw.data.size(); ++i) {
+        r31.push_back(m_data.curve31.raw.data.at(i).y());
     }
-    updateTable(m_curve.data, m_curve.raw.data);
+    updateTable(m_data.curve31.data, m_data.curve31.raw.data);
 
     if (m_enableDarkSpectrum) {
         if (m_doDarkSpectrumCalc) {
@@ -1043,8 +1043,8 @@ void FormEasy::exportChart() {
     QTextStream out(&file);
     out << "Index,Intensity_Raw,Intensity_Voltage\n";
     for (int i = 0; i < m_line->count(); ++i) {
-        out << QString::number(m_line->at(i).x()) << "," << QString::number(m_curve.raw.data.at(i).y()) << ","
-            << QString::number(m_curve.data.at(i).y()) << "\n";
+        out << QString::number(m_line->at(i).x()) << "," << QString::number(m_data.curve31.raw.data.at(i).y()) << ","
+            << QString::number(m_data.curve31.data.at(i).y()) << "\n";
     }
     file.close();
 

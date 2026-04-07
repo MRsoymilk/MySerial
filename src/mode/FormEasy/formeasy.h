@@ -127,7 +127,7 @@ private:
     QValueAxis *m_axisY;
     QLineSeries *m_line;
     QStandardItemModel *m_modelValue;
-    CURVE m_curve;
+    MY_DATA m_data;
 
     bool m_isPlaying = false;
     bool m_enableCrop = false;
