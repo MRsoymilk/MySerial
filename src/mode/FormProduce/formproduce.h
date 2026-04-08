@@ -4,6 +4,7 @@
 #include <QChart>
 #include <QLabel>
 #include <QLineSeries>
+#include <QScatterSeries>
 #include <QValueAxis>
 #include <QWidget>
 
@@ -14,6 +15,8 @@ class FormSerial;
 class ThreadWorker;
 class FormFittingPoints;
 class LoadingOverLay;
+class PeakTrajectory;
+class PeakCfg;
 
 namespace Ui {
 class FormProduce;
@@ -53,6 +56,7 @@ private slots:
     void on_tBtnDoneSelfCheck_clicked();
     void on_tBtnToVoltage_clicked();
     void on_tBtnPause_clicked();
+    void on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &arg1);
 
 private:
     void init();
@@ -73,9 +77,11 @@ private:
     QThread *m_workerThread;
     ThreadWorker *m_worker;
     FormFittingPoints *m_formFittingPoints = nullptr;
+    PeakTrajectory *m_trajectory;
     bool m_isPlaying = false;
     bool m_enableVoltage = false;
     bool m_enableFitting = false;
+    bool m_enablePeak = false;
 
     // QWidget interface
     void makeTabTodo();
@@ -86,7 +92,9 @@ private:
     QVector<QLabel *> m_tabLabels;
     bool m_pause = false;
     LoadingOverLay *m_overlay = nullptr;
-
+    void callFindPeak();
+    PeakCfg *m_peakCfg;
+    void peakTrajectory(const QVector<QPointF> &peaks);
 protected:
     void closeEvent(QCloseEvent *event);
 };

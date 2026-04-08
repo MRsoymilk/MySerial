@@ -6,9 +6,12 @@
 #include "../ThreadWorker/threadworker.h"
 #include "../form/FormPlotCorrection/fitting/formfittingpoints.h"
 #include "../form/serial/formserial.h"
+#include "../form/plot/PeakTrajectory/peaktrajectory.h"
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
 #include "ui_formproduce.h"
+#include "findpeak.h"
+#include "peakcfg.h"
 
 FormProduce::FormProduce(QWidget *parent) : QWidget(parent), ui(new Ui::FormProduce) {
     ui->setupUi(this);
@@ -53,6 +56,43 @@ void FormProduce::updatePlot4k(const MY_DATA &my_data, bool record) {
     }
 }
 
+void FormProduce::callFindPeak() {
+    if (m_enablePeak) {
+        if (!m_series31 || m_series31->count() < 5) {
+            return;
+        }
+
+        auto cfg = m_peakCfg->getCfg();
+        auto peaks31 = FindPeak::find(m_series31, cfg[0], cfg[1], cfg[2]);
+        peakTrajectory(peaks31);
+    }
+}
+
+void FormProduce::peakTrajectory(const QVector<QPointF> &peaks) {
+    if (peaks.isEmpty() || !m_series31) return;
+
+    // 找到 peaks 中 Y 最大的点
+    QPointF maxPeak = QPointF(0, std::numeric_limits<float>::lowest());
+    for (const QPointF &p : peaks) {
+
+        if (p.y() > maxPeak.y()) {
+            maxPeak = p;
+        }
+    }
+
+    int xPeak = maxPeak.x();
+    double y = 0;
+    if (m_series33->count() > xPeak) {
+        y = m_series33->at(xPeak).y();
+    }
+    if (m_enableVoltage) {
+        y = y * 0x8000 / 3.3;
+    }
+    if (m_trajectory) {
+        m_trajectory->appendPeak(y);
+    }
+}
+
 void FormProduce::updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33) {
     static bool flip = false;
     flip = !flip;
@@ -93,6 +133,8 @@ void FormProduce::updateAxis() {
 }
 
 void FormProduce::closeEvent(QCloseEvent *event) {
+    m_peakCfg->close();
+    m_trajectory->close();
     m_formFittingPoints->close();
     formSerial->stopFSeriesConnect();
 }
@@ -126,10 +168,16 @@ void FormProduce::init() {
     initTabUI();
     makeTabTodo();
 
+    m_peakCfg = new PeakCfg;
+    m_trajectory = new PeakTrajectory;
+
     m_formFittingPoints = new FormFittingPoints;
     connect(m_formFittingPoints, &FormFittingPoints::windowClose, this, [&]() {
         m_enableFitting = false;
         m_formFittingPoints->setVisible(false);
+    });
+    connect(m_trajectory, &PeakTrajectory::broadcast, m_formFittingPoints, [&](const double &avg) {
+        m_formFittingPoints->setTargetIntensity(avg);
     });
     formSerial = new FormSerial;
     m_workerThread = new QThread(this);
@@ -339,3 +387,21 @@ void FormProduce::on_tBtnPause_clicked() {
     m_pause = !m_pause;
     ui->tBtnPause->setChecked(m_pause);
 }
+
+void FormProduce::on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &state)
+{
+    if(state == Qt::Checked) {
+        m_enablePeak = true;
+    }
+    else {
+        m_enablePeak = false;
+    }
+    m_peakCfg->setVisible(m_enablePeak);
+    m_trajectory->setVisible(m_enablePeak);
+}
+
+void FormProduce::on_btnWriteThreshold_clicked()
+{
+
+}
+
