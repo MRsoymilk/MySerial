@@ -58,6 +58,8 @@ private slots:
     void on_tBtnPause_clicked();
     void on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &arg1);
 
+    void on_btnWriteThreshold_clicked();
+
 private:
     void init();
     bool connectProduceMode();
