@@ -466,6 +466,7 @@ void FormProduce::on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &s
 
 void FormProduce::on_btnWriteThreshold_clicked()
 {
-
+    QString data = ui->textEditThreshold->toPlainText();
+    formSerial->doProduceOpt(PRODUCE_WRITE_THRESHOLD, data);
 }
 

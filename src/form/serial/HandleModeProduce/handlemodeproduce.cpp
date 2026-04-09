@@ -44,6 +44,10 @@ void HandleModeProduce::doOpt(int id, const QString &msg)
             sendCMD("DD3C000370CDFF");
             m_wait_next_cmd = false;
             break;
+        case FormProduce::PRODUCE_WRITE_THRESHOLD:
+            sendCMD(msg);
+            m_wait_next_cmd = false;
+            break;
         case FormProduce::PRODUCE_SELF_CHECK:
             m_wait_call = true;
             sendCMD("DD3C000350CDFF");
