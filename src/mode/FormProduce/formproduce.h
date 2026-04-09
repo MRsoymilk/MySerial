@@ -14,9 +14,11 @@ class MyChartView;
 class FormSerial;
 class ThreadWorker;
 class FormFittingPoints;
+class FormPlotSimulate;
 class LoadingOverLay;
 class PeakTrajectory;
 class PeakCfg;
+class DraggableLine;
 
 namespace Ui {
 class FormProduce;
@@ -79,6 +81,7 @@ private:
     QThread *m_workerThread;
     ThreadWorker *m_worker;
     FormFittingPoints *m_formFittingPoints = nullptr;
+    FormPlotSimulate *m_plotSimulate = nullptr;
     PeakTrajectory *m_trajectory;
     bool m_isPlaying = false;
     bool m_enableVoltage = false;
@@ -96,6 +99,11 @@ private:
     LoadingOverLay *m_overlay = nullptr;
     void callFindPeak();
     PeakCfg *m_peakCfg;
+    QScatterSeries *m_peaks;
+    DraggableLine *m_lineLeft = nullptr;
+    DraggableLine *m_lineRight = nullptr;
+    int m_trajectory_start;
+    int m_trajectory_end;
     void peakTrajectory(const QVector<QPointF> &peaks);
 protected:
     void closeEvent(QCloseEvent *event);

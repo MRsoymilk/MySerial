@@ -14,8 +14,7 @@
 #include "funcdef.h"
 #include "keydef.h"
 #include "ui_formserial.h"
-
-#include <../../mode/FormEasy/formeasy.h>
+#include "../../mode/FormEasy/formeasy.h"
 
 FormSerial::FormSerial(QWidget *parent) : QWidget(parent), ui(new Ui::FormSerial) {
     ui->setupUi(this);

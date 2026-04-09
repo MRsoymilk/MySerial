@@ -7,6 +7,8 @@
 #include "../form/FormPlotCorrection/fitting/formfittingpoints.h"
 #include "../form/serial/formserial.h"
 #include "../form/plot/PeakTrajectory/peaktrajectory.h"
+#include "../form/FormPlotSimulate/formplotsimulate.h"
+#include "DraggableLine/draggableline.h"
 #include "MyChartView/mychartview.h"
 #include "funcdef.h"
 #include "ui_formproduce.h"
@@ -54,6 +56,10 @@ void FormProduce::updatePlot4k(const MY_DATA &my_data, bool record) {
     } else {
         updatePlot2d(plot31.raw.data, plot33.raw.data);
     }
+
+    if(m_enablePeak) {
+        callFindPeak();
+    }
 }
 
 void FormProduce::callFindPeak() {
@@ -65,6 +71,11 @@ void FormProduce::callFindPeak() {
         auto cfg = m_peakCfg->getCfg();
         auto peaks31 = FindPeak::find(m_series31, cfg[0], cfg[1], cfg[2]);
         peakTrajectory(peaks31);
+        m_peaks->clear();
+        for (const auto &pt : peaks31) {
+            m_peaks->append(pt);
+        }
+        m_chart->update();
     }
 }
 
@@ -74,7 +85,9 @@ void FormProduce::peakTrajectory(const QVector<QPointF> &peaks) {
     // 找到 peaks 中 Y 最大的点
     QPointF maxPeak = QPointF(0, std::numeric_limits<float>::lowest());
     for (const QPointF &p : peaks) {
-
+        if (p.x() < m_trajectory_start || p.x() > m_trajectory_end) {
+            continue;
+        }
         if (p.y() > maxPeak.y()) {
             maxPeak = p;
         }
@@ -168,25 +181,6 @@ void FormProduce::init() {
     initTabUI();
     makeTabTodo();
 
-    m_peakCfg = new PeakCfg;
-    m_trajectory = new PeakTrajectory;
-
-    m_formFittingPoints = new FormFittingPoints;
-    connect(m_formFittingPoints, &FormFittingPoints::windowClose, this, [&]() {
-        m_enableFitting = false;
-        m_formFittingPoints->setVisible(false);
-    });
-    connect(m_trajectory, &PeakTrajectory::broadcast, m_formFittingPoints, [&](const double &avg) {
-        m_formFittingPoints->setTargetIntensity(avg);
-    });
-    formSerial = new FormSerial;
-    m_workerThread = new QThread(this);
-    m_worker = new ThreadWorker();
-    m_worker->moveToThread(m_workerThread);
-
-    connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
-    m_workerThread->start();
-
     m_series31 = new QLineSeries();
     m_series31->setName(tr("curve31"));
 
@@ -198,7 +192,6 @@ void FormProduce::init() {
 
     m_axisX = new QValueAxis();
     m_axisY = new QValueAxis();
-
     m_chart = new QChart();
     m_chart->addSeries(m_series31);
     m_chart->addSeries(m_series33);
@@ -214,6 +207,42 @@ void FormProduce::init() {
     m_chartView = new MyChartView(m_chart);
     m_chartView->setRenderHint(QPainter::Antialiasing);
     ui->gLayChart->addWidget(m_chartView);
+
+    m_peakCfg = new PeakCfg;
+    m_peaks = new QScatterSeries();
+    m_chart->addSeries(m_peaks);
+    m_peaks->attachAxis(m_axisX);
+    m_peaks->attachAxis(m_axisY);
+    m_peaks->setColor(Qt::red);
+    m_peaks->setName(tr("Peaks"));
+    m_peaks->setMarkerSize(5.0);
+    m_peaks->setPointLabelsVisible(true);
+    m_peaks->setPointLabelsClipping(false);
+    m_peaks->setPointLabelsColor(Qt::red);
+    m_peaks->setPointLabelsFont(QFont("Arial", 10, QFont::Bold));
+    m_peaks->setPointLabelsFormat("(@xPoint, @yPoint)");
+    m_peaks->setVisible(false);
+    m_trajectory = new PeakTrajectory;
+    m_plotSimulate = new FormPlotSimulate;
+    m_plotSimulate->hide();
+
+    m_formFittingPoints = new FormFittingPoints;
+    connect(m_formFittingPoints, &FormFittingPoints::windowClose, this, [&]() {
+        m_enableFitting = false;
+        m_formFittingPoints->setVisible(false);
+    });
+    connect(m_formFittingPoints, &FormFittingPoints::doFile, m_plotSimulate, &FormPlotSimulate::onDoFile);
+    connect(m_trajectory, &PeakTrajectory::broadcast, m_formFittingPoints, [&](const double &avg) {
+        m_formFittingPoints->setTargetIntensity(avg);
+    });
+    formSerial = new FormSerial;
+    m_workerThread = new QThread(this);
+    m_worker = new ThreadWorker();
+    m_worker->moveToThread(m_workerThread);
+    connect(m_plotSimulate, &FormPlotSimulate::simulateDataReady, formSerial, &FormSerial::onSimulateRecv,
+            Qt::QueuedConnection);
+    connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
+    m_workerThread->start();
 
     QObject::connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30,
                      Qt::QueuedConnection);
@@ -392,10 +421,39 @@ void FormProduce::on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &s
 {
     if(state == Qt::Checked) {
         m_enablePeak = true;
+        m_trajectory_start = m_axisX->min();
+        m_trajectory_end = m_axisX->max();
+        QChart *chart = m_chartView->chart();
+        QRectF plot = chart->plotArea();
+
+        qreal leftX = plot.left();
+        qreal rightX = plot.right();
+        m_lineLeft = new DraggableLine(chart, leftX, Qt::green);
+        m_lineRight = new DraggableLine(chart, rightX, Qt::darkGreen);
+        connect(m_lineLeft, &DraggableLine::xValueChanged, this, [this](qreal x) { m_trajectory_start = x; });
+        connect(m_lineRight, &DraggableLine::xValueChanged, this, [this](qreal x) { m_trajectory_end = x; });
+
+        chart->scene()->addItem(m_lineLeft);
+        chart->scene()->addItem(m_lineRight);
+
+        callFindPeak();
     }
     else {
         m_enablePeak = false;
+        m_peaks->setVisible(false);
+        m_trajectory->hide();
+        if (m_lineLeft) {
+            m_chartView->chart()->scene()->removeItem(m_lineLeft);
+            delete m_lineLeft;
+            m_lineLeft = nullptr;
+        }
+        if (m_lineRight) {
+            m_chartView->chart()->scene()->removeItem(m_lineRight);
+            delete m_lineRight;
+            m_lineRight = nullptr;
+        }
     }
+    m_peaks->setVisible(m_enablePeak);
     m_peakCfg->setVisible(m_enablePeak);
     m_trajectory->setVisible(m_enablePeak);
 }
