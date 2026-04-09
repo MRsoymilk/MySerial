@@ -3,7 +3,8 @@
 
 #include <QProcess>
 
-class MyProcess : public QObject {
+class MyProcess : public QObject
+{
     Q_OBJECT
 
 public:
@@ -13,6 +14,12 @@ public:
     void startAttach(const QString &program, const QStringList &arguments);
     bool startDetach(const QString &program, const QStringList &arguments);
     void stopScript(const int &wait_time = 3000);
+
+signals:
+    void outputReceived(const QString &output);
+    void errorReceived(const QString &error);
+    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
+
 private slots:
     void handleStandardOutput();
     void handleStandardError();

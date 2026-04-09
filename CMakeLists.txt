@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.5.8 LANGUAGES CXX)
+project(MySerial VERSION 1.5.9 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -183,6 +183,10 @@ set(SRC_COMMON
     src/common/findpeak.cpp
     src/common/findfwhm.h
     src/common/findfwhm.cpp
+    src/common/myprocess.h
+    src/common/myprocess.cpp
+    src/common/processthread.h
+    src/common/processthread.cpp
 )
 
 set(SRC_INCLUDE

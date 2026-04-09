@@ -127,6 +127,20 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QToolButton" name="tBtnFitting">
+       <property name="text">
+        <string>fitting</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="tBtnToHex">
+       <property name="text">
+        <string>to hex</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

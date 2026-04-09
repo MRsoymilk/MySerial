@@ -2,6 +2,7 @@
 #define FORMFITTINGPOINTS_H
 
 #include <QStandardItem>
+#include <QTemporaryDir>
 #include <QWidget>
 
 namespace Ui {
@@ -36,6 +37,8 @@ private slots:
     void on_tableViewCollectStatus_doubleClicked(const QModelIndex &index);
     void onTableContextMenu(const QPoint &pos);
     void exportWavelengthIntensityToCsv();
+    void on_tBtnFitting_clicked();
+    void on_tBtnToHex_clicked();
 
 private:
     void init();
@@ -44,7 +47,6 @@ private:
 private:
     Ui::FormFittingPoints *ui;
     QStandardItemModel *m_collectModel = nullptr;
-
     // QWidget interface
 protected:
     void closeEvent(QCloseEvent *event);
