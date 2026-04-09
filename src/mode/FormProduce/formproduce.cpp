@@ -239,11 +239,17 @@ void FormProduce::init() {
     m_workerThread = new QThread(this);
     m_worker = new ThreadWorker();
     m_worker->moveToThread(m_workerThread);
+    connect(m_formFittingPoints, &FormFittingPoints::toCollectionFittingPoints, m_worker,
+            &ThreadWorker::onCollectionFittingPoints, Qt::QueuedConnection);
     connect(m_plotSimulate, &FormPlotSimulate::simulateDataReady, formSerial, &FormSerial::onSimulateRecv,
             Qt::QueuedConnection);
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     m_workerThread->start();
 
+    connect(m_worker, &ThreadWorker::collectionFitingPointsFinish, this,
+            [this](){
+                m_formFittingPoints->updateCollectionStatus(true);
+    }, Qt::QueuedConnection);
     QObject::connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30,
                      Qt::QueuedConnection);
     connect(m_worker, &ThreadWorker::plotReady4k, this, &FormProduce::updatePlot4k, Qt::QueuedConnection);
