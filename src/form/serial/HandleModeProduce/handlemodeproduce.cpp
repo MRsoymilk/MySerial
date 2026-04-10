@@ -114,7 +114,7 @@ void HandleModeProduce::tryNextPort() {
 
     m_step = PRODUCE_NONE;
     m_produce_buffer.clear();
-    m_timer_produce->start(30 * 1000);
+    m_timer_produce->start(10 * 1000);
     m_timer_elapsed.start();
     m_wait_next_cmd = false;
 

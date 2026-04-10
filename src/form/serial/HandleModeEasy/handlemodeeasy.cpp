@@ -430,7 +430,7 @@ void HandleModeEasy::tryNextPort() {
 
     m_step = EASY_NONE;
     m_easy_buffer.clear();
-    m_timer_easy->start(60 * 1000);
+    m_timer_easy->start(10 * 1000);
     m_timer_elapsed.start();
     m_wait_next_cmd = false;
 
