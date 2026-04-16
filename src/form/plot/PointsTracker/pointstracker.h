@@ -24,8 +24,14 @@ public:
 signals:
     void windowClose();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     void init();
+    void exportSelectedCSV(const QString &name);
+    void exportCSV();
+    void onContextMenu(const QPoint &pos);
 
 private:
     Ui::PointsTracker *ui;
@@ -37,13 +43,6 @@ private:
 
     QMap<QString, QLineSeries *> m_mapLines;
     int m_idx = 0;
-
-    // QWidget interface
-    void exportSelectedCSV(const QString &name);
-    void exportCSV();
-    void onContextMenu(const QPoint &pos);
-protected:
-    void closeEvent(QCloseEvent *event);
 };
 
 #endif  // POINTSTRACKER_H

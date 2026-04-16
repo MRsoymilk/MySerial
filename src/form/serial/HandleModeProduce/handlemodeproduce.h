@@ -24,11 +24,11 @@ signals:
     void dataReady(const QByteArray &data);
     void redoConnect();
     void statusReport(int progress, const QString &msg);
-    void optReturn(int id, const QString& msg);
+    void optReturn(int id, const QString &msg);
 
 public slots:
     void stopConnect();
-    void doOpt(int id, const QString& msg);
+    void doOpt(int id, const QString &msg);
     void doConnect(const QStringList &ports);
     void setFrameType(QList<FrameType> type);
 
@@ -39,11 +39,13 @@ private slots:
     void onProduceModeReadyRead();
 
 private:
-    void tryResetHardware();
     bool doProduceFrameExtra();
     void onProduceModeTimeout();
     void processProduceConnect(const QByteArray &data);
-    void processProduceRetry();
+    void sendCMD(const QString &text);
+    void processProduceCall(const QByteArray &data);
+    void init();
+    void tryNextPort();
 
 private:
     std::function<bool(const QByteArray &)> m_call_produce_func = nullptr;
@@ -55,16 +57,12 @@ private:
     QPointer<QSerialPort> m_serial;
 
     QElapsedTimer m_timer_elapsed;
-    void sendCMD(const QString &text);
     QList<FrameType> m_frameTypes = {};
     bool m_establish = false;
-    void init();
     int m_port_index = 0;
     QStringList m_ports;
-    void tryNextPort();
     bool m_wait_call = false;
     int m_call_step = 0;
-    void processProduceCall(const QByteArray &data);
     QByteArray m_call_buffer;
 };
 

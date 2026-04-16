@@ -32,8 +32,8 @@ public slots:
     void onTemperature(double temperature);
 
 protected:
-    void closeEvent(QCloseEvent *event);
-    void contextMenuEvent(QContextMenuEvent *event);
+    void closeEvent(QCloseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private slots:
     void on_tBtnNext_clicked();

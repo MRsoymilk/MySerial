@@ -17,10 +17,10 @@
 #include "DraggableLine/draggableline.h"
 #include "HoverSliderButton/hoversliderbutton.h"
 #include "MyChartView/mychartview.h"
-#include "funcdef.h"
-#include "ui_formeasy.h"
 #include "findpeak.h"
+#include "funcdef.h"
 #include "peakcfg.h"
+#include "ui_formeasy.h"
 
 FormEasy::FormEasy(QWidget *parent) : QWidget(parent), ui(new Ui::FormEasy) {
     ui->setupUi(this);
@@ -168,10 +168,9 @@ void FormEasy::initToolButton() {
                 formSerial->doEasyOpt(EASY_DISCONNECT);
                 break;
             case HoverTbtnButton::BTN_CONNECT:
-                if(!status) {
+                if (!status) {
                     formSerial->doEasyOpt(EASY_CONNECT, ui->tBtnSwitch->getCurrentPort());
-                }
-                else {
+                } else {
                     formSerial->doEasyOpt(EASY_DISCONNECT, ui->tBtnSwitch->getCurrentPort());
                 }
                 break;
@@ -380,11 +379,11 @@ void FormEasy::init() {
         m_overlay->reTry();
     });
     connect(formSerial, &FormSerial::statusReport, m_overlay, &LoadingOverLay::updateInfo, Qt::QueuedConnection);
-    connect(formSerial, &FormSerial::optReturn, this, [this](int id, const QString& msg) {
-        if(id == EASY_CONNECT_SUCCESS) {
+    connect(formSerial, &FormSerial::optReturn, this, [this](int id, const QString &msg) {
+        if (id == EASY_CONNECT_SUCCESS) {
             ui->tBtnSwitch->isConnect(true);
         }
-        if(id == EASY_CONNECT_STOP) {
+        if (id == EASY_CONNECT_STOP) {
             ui->tBtnSwitch->isConnect(false);
         }
         ui->labelMsg->setText(msg);
@@ -461,7 +460,7 @@ void FormEasy::updatePlot4k(const MY_DATA &my_data, bool record) {
         }
     }
 
-    if(m_enableAccumulate) {
+    if (m_enableAccumulate) {
         if (m_toVoltage) {
             auto data = m_accumulate->accumulate(m_data.curve31.data);
             if (!data.isEmpty()) {
@@ -563,8 +562,9 @@ void FormEasy::on_tBtnFWHM_clicked() {
 }
 
 void FormEasy::on_tBtnImg_clicked() {
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Save Chart"), QString("%1.png").arg(TIMESTAMP_1("yyyyMMdd_hhmmss")),
-                                                    "PNG Image (*.png);;JPEG Image (*.jpg)");
+    QString filePath =
+        QFileDialog::getSaveFileName(this, tr("Save Chart"), QString("%1.png").arg(TIMESTAMP_1("yyyyMMdd_hhmmss")),
+                                     "PNG Image (*.png);;JPEG Image (*.jpg)");
     if (!filePath.isEmpty()) {
         saveChartAsImage(filePath);
     }
@@ -713,7 +713,8 @@ void FormEasy::callFindPeak() {
         }
 
         auto cfg = m_peakCfg->getCfg();
-        QVector<QPointF> peaks24 = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);;
+        QVector<QPointF> peaks24 = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);
+        ;
 
         m_peaks->clear();
         for (const auto &pt : peaks24) {
@@ -753,8 +754,7 @@ void FormEasy::drawFWHM(double xPeak, double xLeft, double xRight, double yHalf)
 
     QPointF mid((xLeft + xRight) / 2.0, yHalf);
     QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
-    auto *label = new QGraphicsSimpleTextItem(
-        QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
+    auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
     label->setBrush(Qt::red);
     label->setPos(scenePos + QPointF(5, -15));
     m_fwhmLabels.append(label);
@@ -772,8 +772,7 @@ void FormEasy::updateFWHMLabels() {
     }
 }
 
-void FormEasy::resizeEvent(QResizeEvent *event)
-{
+void FormEasy::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     m_overlay->resize(this->size());
     updateFWHMLabels();
@@ -783,7 +782,7 @@ void FormEasy::callCalcFWHM() {
     clearFWHM();
     if (!m_calcFWHM) return;
 
-    auto cfg   = m_peakCfg->getCfg();
+    auto cfg = m_peakCfg->getCfg();
     auto peaks = FindPeak::find(m_line, cfg[0], cfg[1], cfg[2]);
     m_fwhmResults = FindFWHM::find(m_line, peaks);
 

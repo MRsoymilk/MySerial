@@ -20,11 +20,11 @@
 #include "SignalNoiseRatio/signalnoiseratio.h"
 #include "TemperatureConversion/temperatureconversion.h"
 #include "TemperatureView/temperatureview.h"
-#include "funcdef.h"
-#include "ui_formplot.h"
-#include "findpeak.h"
 #include "findfwhm.h"
+#include "findpeak.h"
+#include "funcdef.h"
 #include "peakcfg.h"
+#include "ui_formplot.h"
 
 void FormPlot::saveChartAsImage(const QString &filePath) {
     if (!m_chartView) return;
@@ -481,7 +481,7 @@ void FormPlot::wheelEvent(QWheelEvent *event) {
 }
 
 void FormPlot::closeEvent(QCloseEvent *event) {
-    if(m_peakCfg) {
+    if (m_peakCfg) {
         m_peakCfg->close();
     }
     if (m_trajectory) {
@@ -587,7 +587,6 @@ void FormPlot::on_tBtnStep_clicked() {
     }
 }
 
-
 void FormPlot::drawFWHM(double xPeak, double xLeft, double xRight, double yHalf) {
     double fwhm = xRight - xLeft;
 
@@ -603,8 +602,7 @@ void FormPlot::drawFWHM(double xPeak, double xLeft, double xRight, double yHalf)
 
     QPointF mid((xLeft + xRight) / 2.0, yHalf);
     QPointF scenePos = m_chart->mapToPosition(mid, fwhmLine);
-    auto *label = new QGraphicsSimpleTextItem(
-        QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
+    auto *label = new QGraphicsSimpleTextItem(QString("FWHM=%1").arg(fwhm, 0, 'f', 2), m_chart);
     label->setBrush(Qt::red);
     label->setPos(scenePos + QPointF(5, -15));
     m_fwhmLabels.append(label);
@@ -624,7 +622,7 @@ void FormPlot::clearFWHM() {
 void FormPlot::callCalcFWHM() {
     clearFWHM();
     if (!m_findFWHM) return;
-    auto cfg   = m_peakCfg->getCfg();
+    auto cfg = m_peakCfg->getCfg();
     auto peaks = FindPeak::find(m_series31, cfg[0], cfg[1], cfg[2]);
     auto fwhms = FindFWHM::find(m_series31, peaks);
 

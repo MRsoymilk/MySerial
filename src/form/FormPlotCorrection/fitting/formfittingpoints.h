@@ -29,6 +29,9 @@ signals:
     void doFile(const QString &path);
     void windowClose();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_tBtnSelectDir_clicked();
     void on_btnCollect_clicked();
@@ -47,9 +50,6 @@ private:
 private:
     Ui::FormFittingPoints *ui;
     QStandardItemModel *m_collectModel = nullptr;
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent *event);
 };
 
 #endif  // FORMFITTINGPOINTS_H

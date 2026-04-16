@@ -4,8 +4,8 @@
 #include <QThread>
 #include <QTimer>
 
-#include "funcdef.h"
 #include "../../mode/FormProduce/formproduce.h"
+#include "funcdef.h"
 
 HandleModeProduce::HandleModeProduce(QObject *parent) : QObject(parent) { init(); }
 
@@ -22,8 +22,7 @@ void HandleModeProduce::init() {
 
 void HandleModeProduce::setFrameType(QList<FrameType> type) { m_frameTypes = type; }
 
-void HandleModeProduce::doOpt(int id, const QString &msg)
-{
+void HandleModeProduce::doOpt(int id, const QString &msg) {
     m_call_step = id;
     switch (id) {
         case FormProduce::PRODUCE_WRITE_DEVICE_SERIAL:
@@ -132,7 +131,7 @@ void HandleModeProduce::onProduceModeReadyRead() {
     if (!m_serial) return;
 
     QByteArray data = m_serial->readAll();
-    if(m_wait_call) {
+    if (m_wait_call) {
         processProduceCall(data);
     }
     if (m_establish) {
@@ -143,14 +142,13 @@ void HandleModeProduce::onProduceModeReadyRead() {
 }
 
 void HandleModeProduce::processProduceCall(const QByteArray &data) {
-    if(m_call_buffer.size() > 10 * 1024) {
+    if (m_call_buffer.size() > 10 * 1024) {
         m_wait_call = false;
     }
     m_call_buffer.append(data);
 
-    switch(m_call_step) {
-        case FormProduce::PRODUCE_QUERY_DEVICE_SERIAL:
-        {
+    switch (m_call_step) {
+        case FormProduce::PRODUCE_QUERY_DEVICE_SERIAL: {
             const QByteArray header = QByteArray::fromHex("DE3A000913");
             const QByteArray tail = QByteArray::fromHex("CEFF");
             int headPos = m_call_buffer.indexOf(header);
@@ -173,10 +171,8 @@ void HandleModeProduce::processProduceCall(const QByteArray &data) {
             emit optReturn(m_call_step, load.toHex(' ').toUpper());
             m_call_buffer.clear();
             m_wait_call = false;
-        }
-            break;
-        case FormProduce::PRODUCE_QUERY_BASEINE:
-        {
+        } break;
+        case FormProduce::PRODUCE_QUERY_BASEINE: {
             const QByteArray header = QByteArray::fromHex("DE3A000671");
             const QByteArray tail = QByteArray::fromHex("CEFF");
             int headPos = m_call_buffer.indexOf(header);
@@ -199,16 +195,14 @@ void HandleModeProduce::processProduceCall(const QByteArray &data) {
                 return;
             }
 
-            QByteArray load  = m_call_buffer.mid(start, len);
-            int val =
-                (static_cast<quint8>(load[0]) << 16) | (static_cast<quint8>(load[1]) << 8) | static_cast<quint8>(load[2]);
+            QByteArray load = m_call_buffer.mid(start, len);
+            int val = (static_cast<quint8>(load[0]) << 16) | (static_cast<quint8>(load[1]) << 8) |
+                      static_cast<quint8>(load[2]);
             emit optReturn(m_call_step, QString::number(val));
             m_call_buffer.clear();
             m_wait_call = false;
-        }
-            break;
-        case FormProduce::PRODUCE_SELF_CHECK:
-        {
+        } break;
+        case FormProduce::PRODUCE_SELF_CHECK: {
             QByteArray sign_check = QByteArray::fromHex("DE3A000351CEFF");
             int index = m_call_buffer.indexOf(sign_check);
             if (index != -1) {
@@ -260,8 +254,7 @@ void HandleModeProduce::processProduceCall(const QByteArray &data) {
             emit optReturn(m_call_step, msg);
             m_call_buffer.clear();
             m_wait_call = false;
-        }
-            break;
+        } break;
     }
 }
 

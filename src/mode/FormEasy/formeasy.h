@@ -10,9 +10,9 @@
 #include <QValueAxis>
 #include <QWidget>
 
+#include "findfwhm.h"
 #include "global.h"
 #include "keydef.h"
-#include "findfwhm.h"
 
 class MyChartView;
 class FormSerial;
@@ -49,6 +49,7 @@ public:
         EASY_CONNECT_SUCCESS,
         EASY_CONNECT_STOP,
     };
+
 public:
     explicit FormEasy(QWidget *parent = nullptr);
     ~FormEasy();
@@ -68,6 +69,7 @@ public slots:
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private slots:
     void on_tBtnSwitch_clicked();
@@ -117,6 +119,10 @@ private:
     void highlightRowByX(double x);
     void addToPointsTracker();
     void clearPointsTracker();
+    void sendIntegrationTime();
+    void clearFWHM();
+    void drawFWHM(double xPeak, double xLeft, double xRight, double yHalf);
+    void updateFWHMLabels();
 
 private:
     Ui::FormEasy *ui;
@@ -180,16 +186,8 @@ private:
     QToolButton *m_tBtnPointsTracker = nullptr;
     QToolButton *m_tBtnDarkSpectrum = nullptr;
     QVector<double> m_vPointsTracker;
-    void sendIntegrationTime();
     LoadingOverLay *m_overlay = nullptr;
     QString m_F30_shown_mode = CFG_F30_MODE_DOUBLE;
-    void clearFWHM();
-    void drawFWHM(double xPeak, double xLeft, double xRight, double yHalf);
-
-    // QWidget interface
-    void updateFWHMLabels();
-protected:
-    void resizeEvent(QResizeEvent *event);
 };
 
 #endif  // FORMEASY_H

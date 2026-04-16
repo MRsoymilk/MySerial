@@ -35,9 +35,11 @@ private slots:
     void on_lineEditURL_editingFinished();
 
 private:
+    QJsonObject checkUpdate();
+
+private:
     Ui::AutoUpdate *ui;
     INI_UPDATE m_iniUpdate;
-    QJsonObject checkUpdate();
     HttpClient *m_http;
     QString m_url;
     QJsonObject m_objUpdate;

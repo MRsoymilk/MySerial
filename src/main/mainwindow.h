@@ -26,6 +26,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void menuLanguageSelect(QAction *selectedAction);
@@ -48,6 +49,7 @@ private:
     void setTheme(const QString &theme);
     void initMode();
     void menuModeSelect(QAction *selectedMode);
+    void safeDelete(QWidget *&w);
 
 private:
     Ui::MainWindow *ui;
@@ -59,9 +61,5 @@ private:
     FormProduce *m_formProduce = nullptr;
     FormSetting *m_formSetting = nullptr;
     bool m_enableSetting = false;
-    void safeDelete(QWidget *&w);
-
-protected:
-    void closeEvent(QCloseEvent *event) override;
 };
 #endif  // MAINWINDOW_H

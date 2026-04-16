@@ -51,11 +51,10 @@ public:
     bool startProduceConnect();
     void stopFSeriesConnect();
     void doProduceOpt(int id, const QString &msg = "");
-    void doEasyOpt(int id, const QString& msg = "");
+    void doEasyOpt(int id, const QString &msg = "");
     void sendExpertData(const QString &text);
     void updateFrameTypes(const QString &idx);
     QStringList getPorts();
-
     void initProduceConnect();
     void initEasyConnect();
 
@@ -71,11 +70,13 @@ signals:
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendOption(const QJsonObject &option);
     void redoConnect();
-    void optReturn(int id, const QString& msg);
-    void doOpt(int id, const QString& msg);
-    void doProduceConnect(const QStringList& ports);
-    void doEasyConnect(const QStringList& ports, const QString& mode);
+    void optReturn(int id, const QString &msg);
+    void doOpt(int id, const QString &msg);
+    void doProduceConnect(const QStringList &ports);
+    void doEasyConnect(const QStringList &ports, const QString &mode);
     void setFrameType(QList<FrameType> type);
+    bool stopProduceConnect();
+    bool stopEasyConnect();
 
 public slots:
     void sendRaw(const QByteArray &bytes);
@@ -143,10 +144,6 @@ private:
     QThread *m_connectThread = nullptr;
     HandleModeProduce *m_handleProduce = nullptr;
     HandleModeEasy *m_handleEasy = nullptr;
-
-signals:
-    bool stopProduceConnect();
-    bool stopEasyConnect();
 };
 
 #endif  // FORMSERIAL_H

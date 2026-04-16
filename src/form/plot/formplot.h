@@ -94,6 +94,8 @@ private:
     void callToExternal(const QList<QPointF> &data);
     void peakTrajectory(const QVector<QPointF> &peaks);
     void updateAxis();
+    void clearFWHM();
+    void drawFWHM(double xPeak, double xLeft, double xRight, double yHalf);
 
 private:
     Ui::FormPlot *ui;
@@ -144,8 +146,6 @@ private:
     double m_k = 0;
     double m_b = 0;
     QString m_algorithm;
-    void clearFWHM();
-    void drawFWHM(double xPeak, double xLeft, double xRight, double yHalf);
 };
 
 #endif  // FORMPLOT_H

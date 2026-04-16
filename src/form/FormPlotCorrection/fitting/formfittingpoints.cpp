@@ -3,16 +3,16 @@
 #include <qclipboard.h>
 #include <qmenu.h>
 
-#include <QFileDialog>
-#include <QTemporaryDir>
 #include <QDir>
 #include <QFile>
+#include <QFileDialog>
+#include <QTemporaryDir>
 #include <QTextStream>
 #include <QThread>
 
 #include "funcdef.h"
-#include "ui_formfittingpoints.h"
 #include "myprocess.h"
+#include "ui_formfittingpoints.h"
 
 FormFittingPoints::FormFittingPoints(QWidget *parent) : QWidget(parent), ui(new Ui::FormFittingPoints) {
     ui->setupUi(this);
@@ -48,12 +48,10 @@ void FormFittingPoints::init() {
     ui->tableViewCollectStatus->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->tableViewCollectStatus, &QTableView::customContextMenuRequested, this,
             &FormFittingPoints::onTableContextMenu);
-    connect(&MY_PROCESS, &MyProcess::outputReceived, this, [](const QString &output){
-        LOG_INFO("progress success: {}", output);
-    });
-    connect(&MY_PROCESS, &MyProcess::errorReceived, this, [](const QString &output){
-        LOG_CRITICAL("progress fail: {}", output);
-    });
+    connect(&MY_PROCESS, &MyProcess::outputReceived, this,
+            [](const QString &output) { LOG_INFO("progress success: {}", output); });
+    connect(&MY_PROCESS, &MyProcess::errorReceived, this,
+            [](const QString &output) { LOG_CRITICAL("progress fail: {}", output); });
 }
 
 void FormFittingPoints::onTableContextMenu(const QPoint &pos) {
@@ -241,9 +239,8 @@ void FormFittingPoints::on_tableViewCollectStatus_doubleClicked(const QModelInde
     emit doFile(path);
 }
 
-void FormFittingPoints::on_tBtnFitting_clicked()
-{
-    QString fileName =  QDir::currentPath() + "/collection.csv";
+void FormFittingPoints::on_tBtnFitting_clicked() {
+    QString fileName = QDir::currentPath() + "/collection.csv";
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -258,10 +255,8 @@ void FormFittingPoints::on_tBtnFitting_clicked()
 
     int rows = m_collectModel->rowCount();
     for (int i = 0; i < rows; ++i) {
-        QString col_wavelength =
-            m_collectModel->item(i, WAVELENGTH) ? m_collectModel->item(i, WAVELENGTH)->text() : "";
-        QString col_intensity =
-            m_collectModel->item(i, INTENSITY) ? m_collectModel->item(i, INTENSITY)->text() : "";
+        QString col_wavelength = m_collectModel->item(i, WAVELENGTH) ? m_collectModel->item(i, WAVELENGTH)->text() : "";
+        QString col_intensity = m_collectModel->item(i, INTENSITY) ? m_collectModel->item(i, INTENSITY)->text() : "";
 
         out << col_wavelength << "," << col_intensity << "\n";
     }
@@ -270,23 +265,16 @@ void FormFittingPoints::on_tBtnFitting_clicked()
 
     QString outFile = QDir::currentPath() + "/result.csv";
 
-    QStringList cmd = {
-        "script/fitting_points.py",
-        "--input", fileName,
-        "--output", outFile
-    };
+    QStringList cmd = {"script/fitting_points.py", "--input", fileName, "--output", outFile};
 
     MY_PROCESS.startAttach("python", cmd);
 }
 
-void FormFittingPoints::on_tBtnToHex_clicked()
-{
+void FormFittingPoints::on_tBtnToHex_clicked() {
     QString resultFile = QDir::currentPath() + "/result.csv";
 
     if (!QFile::exists(resultFile)) {
-        QMessageBox::warning(this,
-                             TITLE_WARNING,
-                             "result.csv not exist! do fitting first!");
+        QMessageBox::warning(this, TITLE_WARNING, "result.csv not exist! do fitting first!");
         return;
     }
 

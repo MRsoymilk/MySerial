@@ -40,10 +40,11 @@ private:
                            double &yMax);
     void processF15Curve33(const QByteArray &data33, QVector<double> &v_voltage33, QVector<double> &raw33, double &yMin,
                            double &yMax);
-    void applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const QString& frame, const double &temperature);
+    void applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const QString &frame, const double &temperature);
     void applyThreshold(const QVector<double> &threshold, const QVector<double> &raw31, const QVector<double> &raw33,
                         const double &temperature);
     void calculateArcSinThreshold(const double &temperature);
+    void doInterpolation(QList<QPointF> &v);
 
 private:
     int m_offset33 = 0;
@@ -60,7 +61,6 @@ private:
     bool m_enable_double = false;
     PARAMS_ARCSIN m_params_arcsin;
     COLLECTION_FITTING_POINTS m_collection_fitting_points;
-    void doInterpolation(QList<QPointF> &v);
     int m_integration_count = 1;
     int m_current_intergration = 0;
     int m_baseline = 0;

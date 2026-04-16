@@ -4,8 +4,8 @@
 #include <Eigen/QR>
 
 #include "MyChartView/mychartview.h"
-#include "ui_accumulate.h"
 #include "keydef.h"
+#include "ui_accumulate.h"
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -407,7 +407,7 @@ void Accumulate::on_tBtnAccumulateEnable_clicked() {
 }
 
 void Accumulate::on_tBtnBaselineDeductionEnable_clicked() {
-    if(m_avgFittedCurve.isEmpty()) {
+    if (m_avgFittedCurve.isEmpty()) {
         QMessageBox::warning(nullptr, TITLE_WARNING, tr("Please enable noise fitting first!"));
         ui->tBtnBaselineDeductionEnable->setChecked(false);
         return;

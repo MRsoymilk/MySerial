@@ -21,16 +21,15 @@ public:
 signals:
     void windowClose();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     void init();
 
 private:
     Ui::ShowData *ui;
     QStandardItemModel *m_model = nullptr;
-
-    // QWidget interface
-protected:
-    void closeEvent(QCloseEvent *event);
 };
 
 #endif  // SHOWDATA_H

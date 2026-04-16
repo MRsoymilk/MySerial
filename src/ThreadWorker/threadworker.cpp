@@ -126,7 +126,8 @@ void ThreadWorker::processF15Curve33(const QByteArray &data33, QVector<double> &
     }
 }
 
-void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const QString& frame, const double &temperature) {
+void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, const QString &frame,
+                                             const double &temperature) {
     QVector<int> v_idx;
 
     int idx_max = 0;
@@ -205,7 +206,7 @@ void ThreadWorker::applyThresholdForModeEasy(CURVE &curve31, CURVE &curve33, con
                 y_min = std::min(y_min, y);
                 y_max = std::max(y_max, y);
             }
-            if(!m_data.curve31.raw.data.isEmpty()) {
+            if (!m_data.curve31.raw.data.isEmpty()) {
                 m_data.curve31.raw.x_min = m_data.curve31.raw.data.front().x();
                 m_data.curve31.raw.x_max = m_data.curve31.raw.data.back().x();
             }

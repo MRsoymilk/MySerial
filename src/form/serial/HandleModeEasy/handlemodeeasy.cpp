@@ -2,8 +2,8 @@
 
 #include <QThread>
 
-#include "funcdef.h"
 #include "../../mode/FormEasy/formeasy.h"
+#include "funcdef.h"
 
 void HandleModeEasy::stopConnect() {
     sendCMD("DD3C000360CDFF");
@@ -102,43 +102,36 @@ bool HandleModeEasy::doBaselineExtra(const QByteArray &data) {
     return true;
 }
 
-void HandleModeEasy::processEasyCall(const QByteArray &data)
-{
-    if(m_call_buffer.size() > 10 * 1024) {
+void HandleModeEasy::processEasyCall(const QByteArray &data) {
+    if (m_call_buffer.size() > 10 * 1024) {
         m_wait_call = false;
         emit optReturn(FormEasy::EASY_DISCONNECT, tr("cmd early stop"));
     }
     m_call_buffer.append(data);
 
-    switch(m_call_step) {
-        case FormEasy::EASY_HANDSHAKE:
-        {
+    switch (m_call_step) {
+        case FormEasy::EASY_HANDSHAKE: {
             QByteArray expected_handshake = QByteArray::fromHex("DE3A000311CEFF");
-            if(m_call_buffer.contains(expected_handshake)) {
+            if (m_call_buffer.contains(expected_handshake)) {
                 emit optReturn(FormEasy::EASY_HANDSHAKE, tr("handshake ok"));
                 m_call_buffer.clear();
                 m_wait_call = false;
             }
-        }
-            break;
-        case FormEasy::EASY_DO_THRESHOLD:
-        {
-            if(doThresholdExtra(m_call_buffer)) {
+        } break;
+        case FormEasy::EASY_DO_THRESHOLD: {
+            if (doThresholdExtra(m_call_buffer)) {
                 emit optReturn(FormEasy::EASY_DO_THRESHOLD, tr("do threshold ok"));
                 m_call_buffer.clear();
                 m_wait_call = false;
             }
-        }
-            break;
-        case FormEasy::EASY_DO_BASELINE:
-        {
-            if(doBaselineExtra(m_call_buffer)) {
+        } break;
+        case FormEasy::EASY_DO_BASELINE: {
+            if (doBaselineExtra(m_call_buffer)) {
                 emit optReturn(FormEasy::EASY_DO_BASELINE, tr("do baseline ok"));
                 m_call_buffer.clear();
                 m_wait_call = false;
             }
-        }
-            break;
+        } break;
     }
 }
 
@@ -292,7 +285,7 @@ void HandleModeEasy::onEasyModeReadyRead() {
     if (!m_serial) return;
 
     QByteArray data = m_serial->readAll();
-    if(m_wait_call) {
+    if (m_wait_call) {
         processEasyCall(data);
     }
     if (m_establish) {
@@ -310,12 +303,10 @@ void HandleModeEasy::doConnect(const QStringList &ports, const QString &mode) {
     tryNextPort();
 }
 
-void HandleModeEasy::doOpt(int id, const QString &msg)
-{
+void HandleModeEasy::doOpt(int id, const QString &msg) {
     m_call_step = id;
     switch (id) {
-        case FormEasy::EASY_CONNECT:
-        {
+        case FormEasy::EASY_CONNECT: {
             m_ports.clear();
             m_ports.append(msg);
             m_port_index = 0;
@@ -336,61 +327,49 @@ void HandleModeEasy::doOpt(int id, const QString &msg)
             if (!m_serial->open(QIODevice::ReadWrite)) {
                 LOG_WARN("{} open failed: {}", portName, m_serial->errorString());
                 emit optReturn(FormEasy::EASY_CONNECT_STOP, "");
-                emit optReturn(FormEasy::EASY_CONNECT, tr("[%1] open failed: %2").arg(portName).arg(m_serial->errorString()));
+                emit optReturn(FormEasy::EASY_CONNECT,
+                               tr("[%1] open failed: %2").arg(portName).arg(m_serial->errorString()));
                 return;
             }
 
-            connect(m_serial, &QSerialPort::readyRead, this, &HandleModeEasy::onEasyModeReadyRead, Qt::UniqueConnection);
+            connect(m_serial, &QSerialPort::readyRead, this, &HandleModeEasy::onEasyModeReadyRead,
+                    Qt::UniqueConnection);
             m_establish = true;
             emit optReturn(FormEasy::EASY_CONNECT_SUCCESS, "");
-            emit optReturn(FormEasy::EASY_CONNECT,tr("[%1] start.").arg(portName));
-        }
-            break;
-        case FormEasy::EASY_HANDSHAKE:
-        {
+            emit optReturn(FormEasy::EASY_CONNECT, tr("[%1] start.").arg(portName));
+        } break;
+        case FormEasy::EASY_HANDSHAKE: {
             m_wait_call = true;
             sendCMD("DD3C000310CDFF");
             m_wait_next_cmd = false;
-        }
-            break;
-        case FormEasy::EASY_SET_INTEGRATION_TIME:
-        {
+        } break;
+        case FormEasy::EASY_SET_INTEGRATION_TIME: {
             sendCMD(msg);
             m_wait_next_cmd = false;
-        }
-            break;
-        case FormEasy::EASY_DO_THRESHOLD:
-        {
+        } break;
+        case FormEasy::EASY_DO_THRESHOLD: {
             m_wait_call = true;
             sendCMD("DD3C000368CDFF");
             m_wait_next_cmd = false;
-        }
-            break;
-        case FormEasy::EASY_DO_BASELINE:
-        {
+        } break;
+        case FormEasy::EASY_DO_BASELINE: {
             m_wait_call = true;
             sendCMD("DD3C000370CDFF");
             m_wait_next_cmd = false;
-        }
-            break;
-        case FormEasy::EASY_DATA_REQUEST:
-        {
-            if(msg == CFG_F30_MODE_DOUBLE) {
+        } break;
+        case FormEasy::EASY_DATA_REQUEST: {
+            if (msg == CFG_F30_MODE_DOUBLE) {
                 sendCMD("DD3C000340CDFF");
-            }
-            else if(msg == CFG_F30_MODE_SINGLE) {
+            } else if (msg == CFG_F30_MODE_SINGLE) {
                 sendCMD("DD3C000330CDFF");
             }
             m_wait_next_cmd = false;
-        }
-            break;
-        case FormEasy::EASY_DISCONNECT:
-        {
+        } break;
+        case FormEasy::EASY_DISCONNECT: {
             stopConnect();
             emit optReturn(FormEasy::EASY_CONNECT_STOP, "");
             emit optReturn(FormEasy::EASY_DISCONNECT, tr("disconnect"));
-        }
-            break;
+        } break;
     }
 }
 

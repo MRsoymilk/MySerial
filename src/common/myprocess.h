@@ -3,8 +3,7 @@
 
 #include <QProcess>
 
-class MyProcess : public QObject
-{
+class MyProcess : public QObject {
     Q_OBJECT
 
 public:

@@ -48,7 +48,4 @@ void ShowData::init() {
     ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
-void ShowData::closeEvent(QCloseEvent *event)
-{
-    emit windowClose();
-}
+void ShowData::closeEvent(QCloseEvent *event) { emit windowClose(); }

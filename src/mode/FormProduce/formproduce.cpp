@@ -5,15 +5,15 @@
 #include "../LoadingOverLay/loadingoverlay.h"
 #include "../ThreadWorker/threadworker.h"
 #include "../form/FormPlotCorrection/fitting/formfittingpoints.h"
-#include "../form/serial/formserial.h"
-#include "../form/plot/PeakTrajectory/peaktrajectory.h"
 #include "../form/FormPlotSimulate/formplotsimulate.h"
+#include "../form/plot/PeakTrajectory/peaktrajectory.h"
+#include "../form/serial/formserial.h"
 #include "DraggableLine/draggableline.h"
 #include "MyChartView/mychartview.h"
-#include "funcdef.h"
-#include "ui_formproduce.h"
 #include "findpeak.h"
+#include "funcdef.h"
 #include "peakcfg.h"
+#include "ui_formproduce.h"
 
 FormProduce::FormProduce(QWidget *parent) : QWidget(parent), ui(new Ui::FormProduce) {
     ui->setupUi(this);
@@ -57,7 +57,7 @@ void FormProduce::updatePlot4k(const MY_DATA &my_data, bool record) {
         updatePlot2d(plot31.raw.data, plot33.raw.data);
     }
 
-    if(m_enablePeak) {
+    if (m_enablePeak) {
         callFindPeak();
     }
 }
@@ -232,9 +232,8 @@ void FormProduce::init() {
         m_formFittingPoints->setVisible(false);
     });
     connect(m_formFittingPoints, &FormFittingPoints::doFile, m_plotSimulate, &FormPlotSimulate::onDoFile);
-    connect(m_trajectory, &PeakTrajectory::broadcast, m_formFittingPoints, [&](const double &avg) {
-        m_formFittingPoints->setTargetIntensity(avg);
-    });
+    connect(m_trajectory, &PeakTrajectory::broadcast, m_formFittingPoints,
+            [&](const double &avg) { m_formFittingPoints->setTargetIntensity(avg); });
     formSerial = new FormSerial;
     m_workerThread = new QThread(this);
     m_worker = new ThreadWorker();
@@ -246,10 +245,9 @@ void FormProduce::init() {
     connect(m_workerThread, &QThread::finished, m_worker, &QObject::deleteLater);
     m_workerThread->start();
 
-    connect(m_worker, &ThreadWorker::collectionFitingPointsFinish, this,
-            [this](){
-                m_formFittingPoints->updateCollectionStatus(true);
-    }, Qt::QueuedConnection);
+    connect(
+        m_worker, &ThreadWorker::collectionFitingPointsFinish, this,
+        [this]() { m_formFittingPoints->updateCollectionStatus(true); }, Qt::QueuedConnection);
     QObject::connect(formSerial, &FormSerial::recv2PlotF30, m_worker, &ThreadWorker::processDataF30,
                      Qt::QueuedConnection);
     connect(m_worker, &ThreadWorker::plotReady4k, this, &FormProduce::updatePlot4k, Qt::QueuedConnection);
@@ -313,14 +311,12 @@ void FormProduce::closeProduceMode() {
     formSerial->stopFSeriesConnect();
 }
 
-void FormProduce::onOptReturn(int id, const QString& msg) {
-    if(id == PRODUCE_QUERY_DEVICE_SERIAL) {
+void FormProduce::onOptReturn(int id, const QString &msg) {
+    if (id == PRODUCE_QUERY_DEVICE_SERIAL) {
         ui->labelValDeviceSerial->setText(msg);
-    }
-    else if(id == PRODUCE_QUERY_BASEINE) {
+    } else if (id == PRODUCE_QUERY_BASEINE) {
         ui->labelValBaseline->setText(msg);
-    }
-    else if(id == PRODUCE_SELF_CHECK) {
+    } else if (id == PRODUCE_SELF_CHECK) {
         ui->textBrowserSelfCheckInfo->append(msg);
     }
 }
@@ -331,9 +327,7 @@ void FormProduce::on_btnWriteDeviceSerial_clicked() {
     formSerial->doProduceOpt(PRODUCE_WRITE_DEVICE_SERIAL, msg);
 }
 
-void FormProduce::on_btnQueryDeviceSerial_clicked() {
-    formSerial->doProduceOpt(PRODUCE_QUERY_DEVICE_SERIAL);
-}
+void FormProduce::on_btnQueryDeviceSerial_clicked() { formSerial->doProduceOpt(PRODUCE_QUERY_DEVICE_SERIAL); }
 
 void FormProduce::on_btnWriteBaseline_clicked() {
     QString baseline = ui->lineEditBaseline->text();
@@ -348,9 +342,7 @@ void FormProduce::on_btnWriteBaseline_clicked() {
     formSerial->doProduceOpt(PRODUCE_WRITE_BASEINE, msg);
 }
 
-void FormProduce::on_btnQueryBaseline_clicked() {
-    formSerial->doProduceOpt(PRODUCE_QUERY_BASEINE);
-}
+void FormProduce::on_btnQueryBaseline_clicked() { formSerial->doProduceOpt(PRODUCE_QUERY_BASEINE); }
 
 void FormProduce::updateTabStyle() {
     for (int i = 0; i < m_tabWidgets.size(); ++i) {
@@ -409,9 +401,7 @@ void FormProduce::on_btnStartCorrection_clicked() {
     m_formFittingPoints->setVisible(m_enableFitting);
 }
 
-void FormProduce::on_btnStartSelfCheck_clicked() {
-    formSerial->doProduceOpt(PRODUCE_SELF_CHECK);
-}
+void FormProduce::on_btnStartSelfCheck_clicked() { formSerial->doProduceOpt(PRODUCE_SELF_CHECK); }
 
 void FormProduce::on_tBtnToVoltage_clicked() {
     m_enableVoltage = !m_enableVoltage;
@@ -423,9 +413,8 @@ void FormProduce::on_tBtnPause_clicked() {
     ui->tBtnPause->setChecked(m_pause);
 }
 
-void FormProduce::on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &state)
-{
-    if(state == Qt::Checked) {
+void FormProduce::on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &state) {
+    if (state == Qt::Checked) {
         m_enablePeak = true;
         m_trajectory_start = m_axisX->min();
         m_trajectory_end = m_axisX->max();
@@ -443,8 +432,7 @@ void FormProduce::on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &s
         chart->scene()->addItem(m_lineRight);
 
         callFindPeak();
-    }
-    else {
+    } else {
         m_enablePeak = false;
         m_peaks->setVisible(false);
         m_trajectory->hide();
@@ -464,9 +452,7 @@ void FormProduce::on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &s
     m_trajectory->setVisible(m_enablePeak);
 }
 
-void FormProduce::on_btnWriteThreshold_clicked()
-{
+void FormProduce::on_btnWriteThreshold_clicked() {
     QString data = ui->textEditThreshold->toPlainText();
     formSerial->doProduceOpt(PRODUCE_WRITE_THRESHOLD, data);
 }
-

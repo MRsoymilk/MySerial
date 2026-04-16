@@ -68,8 +68,7 @@ void PointsTracker::init() {
     ui->gLayChart->addWidget(m_chartView);
 
     m_chartView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(m_chartView, &QWidget::customContextMenuRequested,
-            this, &PointsTracker::onContextMenu);
+    connect(m_chartView, &QWidget::customContextMenuRequested, this, &PointsTracker::onContextMenu);
 }
 
 void PointsTracker::onContextMenu(const QPoint &pos) {
@@ -85,9 +84,7 @@ void PointsTracker::onContextMenu(const QPoint &pos) {
         for (auto it = m_mapLines.begin(); it != m_mapLines.end(); ++it) {
             const QString &name = it.key();
             QAction *act = subMenu->addAction(name);
-            connect(act, &QAction::triggered, this, [this, name]() {
-                exportSelectedCSV(name);
-            });
+            connect(act, &QAction::triggered, this, [this, name]() { exportSelectedCSV(name); });
         }
     }
 
@@ -97,9 +94,7 @@ void PointsTracker::onContextMenu(const QPoint &pos) {
 void PointsTracker::exportCSV() {
     if (m_mapLines.isEmpty()) return;
 
-    QString path = QFileDialog::getSaveFileName(
-        this, tr("export all"), "points_tracker.csv",
-        "CSV Files (*.csv)");
+    QString path = QFileDialog::getSaveFileName(this, tr("export all"), "points_tracker.csv", "CSV Files (*.csv)");
     if (path.isEmpty()) return;
 
     QFile file(path);
@@ -132,10 +127,8 @@ void PointsTracker::exportCSV() {
 void PointsTracker::exportSelectedCSV(const QString &name) {
     if (!m_mapLines.contains(name)) return;
 
-    QString path = QFileDialog::getSaveFileName(
-        this, tr("export %1").arg(name),
-        QString("%1.csv").arg(name),
-        "CSV Files (*.csv)");
+    QString path =
+        QFileDialog::getSaveFileName(this, tr("export %1").arg(name), QString("%1.csv").arg(name), "CSV Files (*.csv)");
     if (path.isEmpty()) return;
 
     QFile file(path);
@@ -146,8 +139,7 @@ void PointsTracker::exportSelectedCSV(const QString &name) {
     QLineSeries *s = m_mapLines[name];
     for (int i = 0; i < s->count(); ++i) {
         double y = s->at(i).y();
-        std::isnan(y) ? out << i << "," << "\n"
-                      : out << i << "," << y << "\n";
+        std::isnan(y) ? out << i << "," << "\n" : out << i << "," << y << "\n";
     }
 }
 

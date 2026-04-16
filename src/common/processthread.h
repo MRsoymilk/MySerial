@@ -4,8 +4,7 @@
 #include <QProcess>
 #include <QThread>
 
-class ProcessThread : public QThread
-{
+class ProcessThread : public QThread {
     Q_OBJECT
 
 public:

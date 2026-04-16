@@ -27,7 +27,7 @@ class FormProduce;
 class FormProduce : public QWidget {
     Q_OBJECT
 public:
-    enum PRODUCE_OPT{
+    enum PRODUCE_OPT {
         PRODUCE_WRITE_DEVICE_SERIAL,
         PRODUCE_QUERY_DEVICE_SERIAL,
         PRODUCE_WRITE_BASEINE,
@@ -35,6 +35,7 @@ public:
         PRODUCE_WRITE_THRESHOLD,
         PRODUCE_SELF_CHECK
     };
+
 public:
     explicit FormProduce(QWidget *parent = nullptr);
     ~FormProduce();
@@ -44,6 +45,9 @@ public:
 public slots:
     void updatePlot4k(const MY_DATA &my_data, bool record = true);
     void onOptReturn(int id, const QString &msg);
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_tBtnSwitch_clicked();
@@ -60,7 +64,6 @@ private slots:
     void on_tBtnToVoltage_clicked();
     void on_tBtnPause_clicked();
     void on_checkBoxTrackPeak_checkStateChanged(const Qt::CheckState &arg1);
-
     void on_btnWriteThreshold_clicked();
 
 private:
@@ -69,6 +72,11 @@ private:
     void closeProduceMode();
     void updatePlot2d(const QList<QPointF> &data31, const QList<QPointF> &data33);
     void updateAxis();
+    void makeTabTodo();
+    void updateTabStyle();
+    void initTabUI();
+    void callFindPeak();
+    void peakTrajectory(const QVector<QPointF> &peaks);
 
 private:
     Ui::FormProduce *ui;
@@ -88,26 +96,17 @@ private:
     bool m_enableVoltage = false;
     bool m_enableFitting = false;
     bool m_enablePeak = false;
-
-    // QWidget interface
-    void makeTabTodo();
     QVector<bool> m_tabDone;
-    void updateTabStyle();
-    void initTabUI();
     QVector<QWidget *> m_tabWidgets;
     QVector<QLabel *> m_tabLabels;
     bool m_pause = false;
     LoadingOverLay *m_overlay = nullptr;
-    void callFindPeak();
     PeakCfg *m_peakCfg;
     QScatterSeries *m_peaks;
     DraggableLine *m_lineLeft = nullptr;
     DraggableLine *m_lineRight = nullptr;
     int m_trajectory_start;
     int m_trajectory_end;
-    void peakTrajectory(const QVector<QPointF> &peaks);
-protected:
-    void closeEvent(QCloseEvent *event);
 };
 
 #endif  // FORMPRODUCE_H

@@ -30,11 +30,11 @@ signals:
     void sendThreshold(bool isUse, const QList<double> &values);
     void sendOption(const QJsonObject &option);
     void statusReport(int progress, const QString &msg);
-    void optReturn(int id, const QString& msg);
+    void optReturn(int id, const QString &msg);
 
 public slots:
     void stopConnect();
-    void doOpt(int id, const QString& msg);
+    void doOpt(int id, const QString &msg);
     void doConnect(const QStringList &ports, const QString &mode);
 
 public:
@@ -48,11 +48,15 @@ private:
     void onEasyModeTimeout();
     void onEasyModeReadyRead();
     void processEasyRetry();
+    void sendCMD(const QString &text);
+    bool doThresholdExtra(const QByteArray &data);
+    bool doBaselineExtra(const QByteArray &data);
+    void processEasyCall(const QByteArray &data);
+
     QTimer *m_timer_easy = nullptr;
     STEP_EASY_CONNECT m_step = EASY_CONNECT_PORT;
     QString m_easy_mode = CFG_F30_MODE_DOUBLE;
     QByteArray m_easy_buffer;
-
     QList<FrameType> m_frameTypes = {};
     bool m_establish = false;
     QStringList m_ports;
@@ -63,12 +67,8 @@ private:
     bool m_wait_next_cmd = false;
     QString m_mode;
     bool m_wait_next_port = false;
-    void sendCMD(const QString &text);
-    bool doThresholdExtra(const QByteArray &data);
-    bool doBaselineExtra(const QByteArray &data);
     bool m_wait_call = false;
     int m_call_step = 0;
-    void processEasyCall(const QByteArray &data);
     QByteArray m_call_buffer;
 };
 

@@ -29,7 +29,7 @@ void FormPlotHistory::retranslateUI() { ui->retranslateUi(this); }
 void FormPlotHistory::init() {
     m_showData = new ShowData;
     m_showData->setVisible(false);
-    connect(m_showData, &ShowData::windowClose, this, [=](){
+    connect(m_showData, &ShowData::windowClose, this, [=]() {
         ui->tBtnShowData->setChecked(false);
         m_enableShowData = false;
     });
@@ -136,7 +136,7 @@ void FormPlotHistory::on_tBtnPrev_clicked() {
 }
 
 void FormPlotHistory::closeEvent(QCloseEvent *event) {
-    if(m_showData) {
+    if (m_showData) {
         m_showData->close();
     }
 
@@ -202,8 +202,7 @@ void FormPlotHistory::on_lineEditGo_editingFinished() {
 }
 
 void FormPlotHistory::on_tBtnDumpPlot_clicked() {
-    QString filePath = QFileDialog::getSaveFileName(this, "Save Chart",
-                                                    QString("%1.png").arg(m_index + 1),
+    QString filePath = QFileDialog::getSaveFileName(this, "Save Chart", QString("%1.png").arg(m_index + 1),
                                                     "PNG Image (*.png);;JPEG Image (*.jpg)");
     if (filePath.isEmpty()) return;
 
@@ -225,8 +224,7 @@ void FormPlotHistory::on_tBtnDumpPlot_clicked() {
 
     image.save(filePath);
 
-    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Successful"),
-                           tr("Img exported to:\n%1").arg(filePath));
+    SHOW_AUTO_CLOSE_MSGBOX(this, tr("Export Successful"), tr("Img exported to:\n%1").arg(filePath));
 }
 
 void FormPlotHistory::on_tBtnDumpData_clicked() {

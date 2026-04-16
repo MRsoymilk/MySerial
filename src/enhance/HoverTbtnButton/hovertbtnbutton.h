@@ -31,11 +31,7 @@ public:
     explicit HoverTbtnButton(QWidget *parent = nullptr) : QToolButton(parent) {
         setMouseTracking(true);
 
-        m_popup = new QWidget(nullptr,
-                              Qt::Tool |
-                                  Qt::WindowStaysOnTopHint |
-                                  Qt::WindowCloseButtonHint
-                              );
+        m_popup = new QWidget(nullptr, Qt::Tool | Qt::WindowStaysOnTopHint | Qt::WindowCloseButtonHint);
         m_popup->setWindowTitle(tr("Manual Connection"));
         m_popup->setFocusPolicy(Qt::StrongFocus);
         m_popup->setFixedSize(360, 40);
@@ -57,9 +53,7 @@ public:
         m_tBtnConnect = new QToolButton;
         m_tBtnConnect->setObjectName("HtBtnConnect");
         m_tBtnConnect->setCheckable(true);
-        connect(m_tBtnConnect, &QToolButton::clicked, this, [this](){
-            emit buttonClicked(BTN_CONNECT, m_connected);
-        });
+        connect(m_tBtnConnect, &QToolButton::clicked, this, [this]() { emit buttonClicked(BTN_CONNECT, m_connected); });
         layout->addWidget(m_tBtnConnect);
 
         m_popup->installEventFilter(this);
@@ -145,12 +139,6 @@ protected:
     }
 
 private:
-    QWidget *m_popup;
-    QComboBox *m_box;
-    bool m_connected = false;
-    QToolButton *m_tBtnConnect;
-
-private:
     void addButton(QHBoxLayout *layout, const QString &text, const QString &name, int id) {
         QToolButton *btn = new QToolButton;
         btn->setObjectName(name);
@@ -160,13 +148,19 @@ private:
         layout->addWidget(btn);
 
         connect(btn, &QToolButton::clicked, this, [=]() {
-            if(!m_connected) {
+            if (!m_connected) {
                 QMessageBox::warning(nullptr, TITLE_WARNING, tr("port not open!"));
                 return;
             }
             emit buttonClicked(id);
         });
     }
+
+private:
+    QWidget *m_popup;
+    QComboBox *m_box;
+    bool m_connected = false;
+    QToolButton *m_tBtnConnect;
 };
 
 #endif  // HOVERTBTNBUTTON_H

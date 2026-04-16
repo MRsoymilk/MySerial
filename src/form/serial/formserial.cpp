@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QToolButton>
 
+#include "../../mode/FormEasy/formeasy.h"
 #include "HandleModeEasy/handlemodeeasy.h"
 #include "HandleModeProduce/handlemodeproduce.h"
 #include "LineSend/linesend.h"
@@ -14,7 +15,6 @@
 #include "funcdef.h"
 #include "keydef.h"
 #include "ui_formserial.h"
-#include "../../mode/FormEasy/formeasy.h"
 
 FormSerial::FormSerial(QWidget *parent) : QWidget(parent), ui(new Ui::FormSerial) {
     ui->setupUi(this);
@@ -124,15 +124,9 @@ void FormSerial::stopFSeriesConnect() {
     closeSerial();
 }
 
-void FormSerial::doProduceOpt(int id, const QString &msg)
-{
-    emit doOpt(id, msg);
-}
+void FormSerial::doProduceOpt(int id, const QString &msg) { emit doOpt(id, msg); }
 
-void FormSerial::doEasyOpt(int id, const QString &msg)
-{
-    emit doOpt(id, msg);
-}
+void FormSerial::doEasyOpt(int id, const QString &msg) { emit doOpt(id, msg); }
 
 void FormSerial::updateFrameTypes(const QString &algorithm) {
     m_algorithm = algorithm;

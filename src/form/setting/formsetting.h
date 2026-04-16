@@ -29,6 +29,9 @@ signals:
     void fullyControl(bool isUse);
     void sendDouble(bool isDouble);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_radioButtonUseSingle_clicked(bool checked);
     void on_radioButtonUseDouble_clicked(bool checked);
@@ -44,9 +47,6 @@ private:
 
 private:
     Ui::FormSetting *ui;
-
-protected:
-    void closeEvent(QCloseEvent *event);
 };
 
 #endif  // FORMSETTING_H
