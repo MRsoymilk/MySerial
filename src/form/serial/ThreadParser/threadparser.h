@@ -32,4 +32,4 @@ private:
     QMutex m_mutex;
 };
 
-#endif // THREADPARSER_H
+#endif  // THREADPARSER_H

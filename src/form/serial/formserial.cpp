@@ -569,7 +569,7 @@ void FormSerial::closeSerial() {
 }
 
 void FormSerial::on_cBoxPortName_activated(int index) {
-    if(m_mapSerial.isEmpty()) {
+    if (m_mapSerial.isEmpty()) {
         return;
     }
     // clear
