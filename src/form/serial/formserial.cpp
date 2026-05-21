@@ -365,11 +365,17 @@ void FormSerial::init() {
     getINI();
 
     // init port
+    ui->tBtnRefresh->setObjectName("refresh");
+    m_switch = false;
+    ui->btnSerialSwitch->setText(tr("To Open"));
+    ui->cBoxBaudRate->setCurrentText("115200");
+    ui->cBoxDataBit->addItems({"8", "7", "6", "5"});
+    ui->cBoxCheckBit->addItems({"None", "Even", "Mark", "Odd"});
+    ui->cBoxStopBit->addItems({"1", "1.5", "2"});
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
         LOG_WARN("No available serial port found!");
         SHOW_AUTO_CLOSE_MSGBOX(this, TITLE_WARNING, tr("No available serial port found!"));
-        return;
     }
     QStringList port_names;
     for (const auto &port : list_port) {
@@ -382,16 +388,8 @@ void FormSerial::init() {
         m_mapSerial.insert(port.portName(), serial);
         port_names.push_back(port.portName());
     }
-
-    ui->tBtnRefresh->setObjectName("refresh");
-
-    m_switch = false;
-    ui->btnSerialSwitch->setText(tr("To Open"));
     ui->cBoxPortName->addItems(port_names);
 
-    ui->cBoxDataBit->addItems({"8", "7", "6", "5"});
-    ui->cBoxCheckBit->addItems({"None", "Even", "Mark", "Odd"});
-    ui->cBoxStopBit->addItems({"1", "1.5", "2"});
     // init send
     ui->btnSend->setIcon(QIcon(":/res/icons/send-on.png"));
     ui->btnSend->setIconSize(QSize(32, 32));
@@ -571,6 +569,9 @@ void FormSerial::closeSerial() {
 }
 
 void FormSerial::on_cBoxPortName_activated(int index) {
+    if(m_mapSerial.isEmpty()) {
+        return;
+    }
     // clear
     ui->cBoxBaudRate->clear();
     // change

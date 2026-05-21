@@ -4,6 +4,7 @@
 #include <QPointer>
 #include <QSerialPort>
 #include <QTimer>
+#include <QElapsedTimer>
 
 #include "global.h"
 #include "keydef.h"
