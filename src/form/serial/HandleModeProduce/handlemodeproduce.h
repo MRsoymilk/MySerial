@@ -2,10 +2,10 @@
 #define HANDLEMODEPRODUCE_H
 
 #include <QByteArray>
+#include <QElapsedTimer>
 #include <QPointer>
 #include <QSerialPort>
 #include <QTimer>
-#include <QElapsedTimer>
 
 #include "global.h"
 
