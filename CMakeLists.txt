@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(MySerial VERSION 1.5.10 LANGUAGES CXX)
+project(MySerial VERSION 1.5.11 LANGUAGES CXX)
 message(STATUS "Project version: ${PROJECT_VERSION}")
 
 set(CMAKE_AUTOUIC ON)
@@ -10,8 +10,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Charts SerialPort Network LinguistTools)
+find_package(Qt6 6.5 REQUIRED COMPONENTS
+    Widgets
+    Charts
+    SerialPort
+    Network
+    LinguistTools
+)
 
 set(FORM_SERIAL
     src/form/serial/formserial.h
@@ -232,13 +237,12 @@ set(PROJECT_SOURCES
         res.qrc
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-  qt_add_executable(MySerial
-    MANUAL_FINALIZATION
-    ${PROJECT_SOURCES}
-  )
+qt_add_executable(${PROJECT_NAME}
+  MANUAL_FINALIZATION
+  ${PROJECT_SOURCES}
+)
 
-target_include_directories(MySerial PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src/include"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/common"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/enhance"
@@ -246,42 +250,18 @@ target_include_directories(MySerial PUBLIC
   "${CMAKE_CURRENT_SOURCE_DIR}/src/module/httpclient"
 )
 
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET MySerial APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(MySerial SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(MySerial
-            ${PROJECT_SOURCES}
-        )
-    endif()
-endif()
-
 if(MSVC)
     add_compile_options(/Zm1000)
 endif()
 
-target_link_libraries(MySerial PRIVATE
-  Qt${QT_VERSION_MAJOR}::Widgets
-  Qt${QT_VERSION_MAJOR}::Charts
-  Qt${QT_VERSION_MAJOR}::SerialPort
-  Qt${QT_VERSION_MAJOR}::Network
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  Qt::Widgets
+  Qt::Charts
+  Qt::SerialPort
+  Qt::Network
 )
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.soymilk.MySerial)
-endif()
-set_target_properties(MySerial PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -290,15 +270,11 @@ set_target_properties(MySerial PROPERTIES
 )
 
 include(GNUInstallDirs)
-install(TARGETS MySerial
+install(TARGETS ${PROJECT_NAME}
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(MySerial)
-endif()
 
 set(TRANSLATIONS
  res/i18n/en.ts

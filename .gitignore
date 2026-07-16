@@ -1,8 +1,10 @@
 build
 CMakeLists.txt.user
+.qtcreator
 .cache
 
 simulation/venv
 simulation/packet*
 
 doc/*.pdf
+
