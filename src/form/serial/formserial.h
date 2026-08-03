@@ -41,6 +41,7 @@ public:
         QString cycle;
         QString send_page;
         QString single_send;
+        bool dtr;
     };
 
 public:
@@ -109,6 +110,7 @@ private slots:
     void on_checkBoxShowSend_checkStateChanged(const Qt::CheckState &state);
     void on_cBoxSendFormat_currentTextChanged(const QString &format);
     void on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &state);
+    void on_cBoxDTR_checkStateChanged(const Qt::CheckState &state);
     void on_checkBoxScheduledDelivery_clicked();
     void onAutoSend();
     void on_lineEditCycle_editingFinished();

@@ -189,28 +189,42 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="labelStopBit">
-          <property name="text">
-           <string>Stop Bit</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="cBoxPortName"/>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="cBoxBaudRate"/>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="cBoxDataBit"/>
-        </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="cBoxCheckBit"/>
-        </item>
-        <item row="4" column="1">
-         <widget class="QComboBox" name="cBoxStopBit"/>
-        </item>
+<item row="4" column="0">
+          <widget class="QLabel" name="labelStopBit">
+           <property name="text">
+            <string>Stop Bit</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="labelDTR">
+           <property name="text">
+            <string>DTR</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="cBoxPortName"/>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cBoxBaudRate"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="cBoxDataBit"/>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="cBoxCheckBit"/>
+         </item>
+         <item row="4" column="1">
+          <widget class="QComboBox" name="cBoxStopBit"/>
+         </item>
+         <item row="5" column="1">
+          <widget class="QCheckBox" name="cBoxDTR">
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
        </layout>
       </item>
       <item>

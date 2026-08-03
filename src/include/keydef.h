@@ -31,6 +31,7 @@ const QString VAL_PAGE_SINGLE = "single";
 const QString VAL_PAGE_MULTIPE = "multipe";
 const QString VAL_ENABLE = "enable";
 const QString VAL_DISABLE = "disable";
+const QString CFG_SERIAL_DTR = "dtr";
 const QString CFG_GROUP_HISTROY = "History";
 const QString CFG_HISTORY_SINGLE_SEND = "single_send";
 const QString CFG_HISTORY_MULT = "mult";
