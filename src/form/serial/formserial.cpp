@@ -376,6 +376,11 @@ void FormSerial::init() {
     ui->cBoxDataBit->addItems({"8", "7", "6", "5"});
     ui->cBoxCheckBit->addItems({"None", "Even", "Mark", "Odd"});
     ui->cBoxStopBit->addItems({"1", "1.5", "2"});
+
+    // init send format combo box
+    QSignalBlocker blocker(ui->cBoxSendFormat);
+    ui->cBoxSendFormat->addItems({VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX});
+
     QList<QSerialPortInfo> list_port = QSerialPortInfo::availablePorts();
     if (list_port.isEmpty()) {
         LOG_WARN("No available serial port found!");
@@ -409,8 +414,6 @@ void FormSerial::init() {
     connect(m_rate_timer, &QTimer::timeout, this, &FormSerial::onRateTimerTimeout);
     m_rate_timer->start(1000);  // Update every second
 
-    QSignalBlocker blocker(ui->cBoxSendFormat);
-
     ui->tBtnNext->setObjectName("go-next");
     ui->tBtnPrev->setObjectName("go-prev");
 
@@ -424,6 +427,9 @@ void FormSerial::init() {
     connect(m_parser, &ThreadParser::frameParsed, this, &FormSerial::handleFrame, Qt::QueuedConnection);
 
     m_workerThread->start();
+
+    // apply settings to UI
+    setINI();
 }
 
 void FormSerial::sendExpertData(const QString &text) {
