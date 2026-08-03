@@ -23,6 +23,10 @@ FormSerial::FormSerial(QWidget *parent) : QWidget(parent), ui(new Ui::FormSerial
 
 FormSerial::~FormSerial() {
     SETTING_CONFIG_SYNC();
+    if (m_rate_timer) {
+        m_rate_timer->stop();
+        m_rate_timer->deleteLater();
+    }
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
@@ -397,15 +401,15 @@ void FormSerial::init() {
     // TODO
     ui->groupBoxEnhancement->hide();
 
-    QSignalBlocker blocker(ui->cBoxSendFormat);
-    ui->cBoxSendFormat->addItems({VAL_SERIAL_SEND_NORMAL, VAL_SERIAL_SEND_HEX});
-
-    m_send_timer = new QTimer(this);
-    connect(m_send_timer, &QTimer::timeout, this, &FormSerial::onAutoSend);
-    ui->txtRecv->document()->setMaximumBlockCount(1000);
-    ui->txtRecv->setUndoRedoEnabled(false);
-    setINI();
+    // Receive rate timer
     m_recv_count = 0;
+    m_recv_bytes_total = 0;
+    m_recv_bytes_last = 0;
+    m_rate_timer = new QTimer(this);
+    connect(m_rate_timer, &QTimer::timeout, this, &FormSerial::onRateTimerTimeout);
+    m_rate_timer->start(1000);  // Update every second
+
+    QSignalBlocker blocker(ui->cBoxSendFormat);
 
     ui->tBtnNext->setObjectName("go-next");
     ui->tBtnPrev->setObjectName("go-prev");
@@ -505,6 +509,7 @@ void FormSerial::on_btnSerialSwitch_clicked() {
 
 void FormSerial::openSerial() {
     LOG_INFO("open serial");
+    m_serial_closing = false;
     m_serial = new QSerialPort(this);
     QString port_name = ui->cBoxPortName->currentText();
     m_serial->setPortName(port_name);
@@ -553,8 +558,9 @@ void FormSerial::openSerial() {
 
 void FormSerial::closeSerial() {
     LOG_INFO("close serial");
+    m_serial_closing = true;
     if (m_serial) {
-        m_serial->disconnect(this);
+        disconnect(m_serial, &QSerialPort::readyRead, this, &FormSerial::onExpertModeReadyRead);
 
         if (m_serial->isOpen()) {
             m_serial->clear();
@@ -668,7 +674,11 @@ void FormSerial::loadPage(int page) {
 }
 
 void FormSerial::onExpertModeReadyRead() {
+    if (m_serial_closing || !m_serial) {
+        return;
+    }
     QByteArray data = m_serial->readAll();
+    m_recv_bytes_total += data.size();
     emit pushParserData(data);
     if (m_ini.hex_display) {
         QString text = data.toHex(' ').toUpper();
@@ -851,4 +861,25 @@ void FormSerial::on_checkBoxAcceptTemperature_clicked() {
             }
         }
     }
+}
+
+void FormSerial::on_btnRecvRateClear_clicked() {
+    m_recv_bytes_total = 0;
+    m_recv_bytes_last = 0;
+    ui->labelRecvRate->setText("Rate: 0 B/s");
+}
+
+void FormSerial::onRateTimerTimeout() {
+    long long bytes_per_sec = m_recv_bytes_total - m_recv_bytes_last;
+    m_recv_bytes_last = m_recv_bytes_total;
+
+    QString rate_str;
+    if (bytes_per_sec >= 1024 * 1024) {
+        rate_str = QString("Rate: %1 MB/s").arg(bytes_per_sec / (1024.0 * 1024.0), 0, 'f', 2);
+    } else if (bytes_per_sec >= 1024) {
+        rate_str = QString("Rate: %1 KB/s").arg(bytes_per_sec / 1024.0, 0, 'f', 2);
+    } else {
+        rate_str = QString("Rate: %1 B/s").arg(bytes_per_sec);
+    }
+    ui->labelRecvRate->setText(rate_str);
 }
