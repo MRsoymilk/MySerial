@@ -374,6 +374,9 @@ void FormSerial::init() {
     ui->tBtnRefresh->setObjectName("refresh");
     m_switch = false;
     ui->btnSerialSwitch->setText(tr("To Open"));
+
+    // init baud rate with common values (fallback for Windows/empty standardBaudRates)
+    ui->cBoxBaudRate->addItems({"9600", "19200", "38400", "57600", "115200", "230400", "460800", "921600"});
     ui->cBoxBaudRate->setCurrentText("115200");
     ui->cBoxDataBit->addItems({"8", "7", "6", "5"});
     ui->cBoxCheckBit->addItems({"None", "Even", "Mark", "Odd"});
@@ -588,16 +591,30 @@ void FormSerial::on_cBoxPortName_activated(int index) {
     if (m_mapSerial.isEmpty()) {
         return;
     }
-    // clear
-    ui->cBoxBaudRate->clear();
-    // change
-    QString name = m_mapSerial.firstKey();
+    // Get selected port name
+    QString name = ui->cBoxPortName->currentText();
+    if (!m_mapSerial.contains(name)) {
+        name = m_mapSerial.firstKey();
+    }
+
+    // Save current selection
+    QString current_baud = ui->cBoxBaudRate->currentText();
+
+    // Update with port-specific baud rates if available
     QStringList list_txt_bauds;
     for (qint32 rate : m_mapSerial[name].StandardBaudRates) {
         list_txt_bauds << QString::number(rate);
     }
-    ui->cBoxBaudRate->addItems(list_txt_bauds);
-    if (!m_ini.baud_rate.isEmpty() && list_txt_bauds.contains(m_ini.baud_rate)) {
+
+    if (!list_txt_bauds.isEmpty()) {
+        ui->cBoxBaudRate->clear();
+        ui->cBoxBaudRate->addItems(list_txt_bauds);
+    }
+
+    // Restore selection if valid, otherwise keep current
+    if (!current_baud.isEmpty() && ui->cBoxBaudRate->findText(current_baud) >= 0) {
+        ui->cBoxBaudRate->setCurrentText(current_baud);
+    } else if (!m_ini.baud_rate.isEmpty() && ui->cBoxBaudRate->findText(m_ini.baud_rate) >= 0) {
         ui->cBoxBaudRate->setCurrentText(m_ini.baud_rate);
     }
 }
