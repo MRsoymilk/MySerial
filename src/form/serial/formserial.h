@@ -102,6 +102,7 @@ private:
 private slots:
     void on_btnRecvSave_clicked();
     void on_btnRecvClear_clicked();
+    void on_btnRecvRateClear_clicked();
     void on_btnSend_clicked();
     void on_btnSerialSwitch_clicked();
     void on_cBoxPortName_activated(int index);
@@ -118,6 +119,7 @@ private slots:
     void on_lineEditPageName_editingFinished();
     void on_checkBoxAcceptTemperature_clicked();
     void onExpertModeReadyRead();
+    void onRateTimerTimeout();
 
 private:
     Ui::FormSerial *ui;
@@ -128,12 +130,18 @@ private:
     bool m_show_send;
     SEND_FORMAT m_send_format;
     bool m_hex_display;
-    QTimer *m_send_timer;
+    QTimer *m_send_timer = nullptr;
 
     QList<FrameType> m_frameTypes = {};
     QString m_algorithm;
     FRAME m_frame;
     long long m_recv_count;
+
+    // Receive rate statistics
+    QTimer *m_rate_timer;
+    long long m_recv_bytes_total;
+    long long m_recv_bytes_last;
+    bool m_serial_closing = false;
 
     QVector<LineSend *> m_lineSends;
     int m_pageSize = 5;

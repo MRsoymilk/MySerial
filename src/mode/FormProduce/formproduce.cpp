@@ -21,6 +21,11 @@ FormProduce::FormProduce(QWidget *parent) : QWidget(parent), ui(new Ui::FormProd
 }
 
 FormProduce::~FormProduce() {
+    if (formSerial) {
+        formSerial->stopFSeriesConnect();
+        delete formSerial;
+        formSerial = nullptr;
+    }
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();

@@ -28,6 +28,11 @@ FormEasy::FormEasy(QWidget *parent) : QWidget(parent), ui(new Ui::FormEasy) {
 }
 
 FormEasy::~FormEasy() {
+    if (formSerial) {
+        formSerial->stopFSeriesConnect();
+        delete formSerial;
+        formSerial = nullptr;
+    }
     if (m_workerThread) {
         m_workerThread->quit();
         m_workerThread->wait();
