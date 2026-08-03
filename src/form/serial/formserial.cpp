@@ -279,6 +279,7 @@ void FormSerial::getINI() {
     m_ini.cycle = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_CYCLE, "1000");
     m_ini.send_page = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_SEND_PAGE, VAL_PAGE_SINGLE);
     m_ini.single_send = SETTING_CONFIG_GET(CFG_GROUP_HISTROY, CFG_HISTORY_SINGLE_SEND);
+    m_ini.dtr = SETTING_CONFIG_GET(CFG_GROUP_SERIAL, CFG_SERIAL_DTR, "enable") == VAL_ENABLE ? true : false;
 
     initMultSend();
 }
@@ -296,6 +297,7 @@ void FormSerial::setINI() {
     on_cBoxSendFormat_currentTextChanged(m_ini.send_format);
     ui->checkBoxShowSend->setChecked(m_ini.show_send);
     ui->checkBoxHexDisplay->setChecked(m_ini.hex_display);
+    ui->cBoxDTR->setChecked(m_ini.dtr);
     ui->lineEditCycle->setText(m_ini.cycle);
     if (m_ini.send_page == VAL_PAGE_SINGLE) {
         ui->tabWidget->setCurrentWidget(ui->tabSingle);
@@ -544,6 +546,8 @@ void FormSerial::openSerial() {
 
     m_serial->setFlowControl(QSerialPort::NoFlowControl);
 
+    m_serial->setDataTerminalReady(ui->cBoxDTR->isChecked());
+
     if (!m_serial->open(QIODevice::ReadWrite)) {
         LOG_WARN("Failed to open serial port: {}", m_serial->errorString());
         QMessageBox::warning(this, "Warning", QString("Failed to open serial port: %1").arg(m_serial->errorString()));
@@ -741,6 +745,14 @@ void FormSerial::on_checkBoxHexDisplay_checkStateChanged(const Qt::CheckState &s
     } else {
         m_ini.hex_display = false;
         SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_HEX_DISPLAY, VAL_DISABLE);
+    }
+}
+
+void FormSerial::on_cBoxDTR_checkStateChanged(const Qt::CheckState &state) {
+    m_ini.dtr = (state == Qt::CheckState::Checked);
+    SETTING_CONFIG_SET(CFG_GROUP_SERIAL, CFG_SERIAL_DTR, m_ini.dtr ? VAL_ENABLE : VAL_DISABLE);
+    if (m_serial && m_serial->isOpen()) {
+        m_serial->setDataTerminalReady(m_ini.dtr);
     }
 }
 
